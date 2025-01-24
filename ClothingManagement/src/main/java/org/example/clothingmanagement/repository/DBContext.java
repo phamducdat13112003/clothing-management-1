@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 public class DBContext {
     public static void main(String[] args) {
-        var url = "jdbc:mysql://localhost:3306/clothingmanagement";
+        var url = "jdbc:mysql://localhost:3306/warehousemanagement";
         var user = "root";
         var password = "";
         try(Connection conn = DriverManager.getConnection(url,user,password)){
