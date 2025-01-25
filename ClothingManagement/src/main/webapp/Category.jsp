@@ -40,6 +40,7 @@
         <th>CreateBy</th>
         <th>Action</th>
     </tr>
+
     <c:forEach var="category" items="${categories}">
         <tr>
             <td>${category.categoryID}</td>
