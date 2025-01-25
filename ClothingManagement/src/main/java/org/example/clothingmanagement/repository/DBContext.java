@@ -1,20 +1,24 @@
 package org.example.clothingmanagement.repository;
 
+
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DBContext {
-    public static void main(String[] args) {
-        var url = "jdbc:mysql://localhost:3306/warehousemanagement";
-        var user = "root";
-        var password = "";
-        try(Connection conn = DriverManager.getConnection(url,user,password)){
-            System.out.println(conn.getCatalog());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+    private static final String jdbcURL = "jdbc:mysql://localhost:3306/warehousemanagement?useSSL=false&serverTimezone=UTC"; // Thay 'testdb' bằng tên cơ sở dữ liệu của bạn
+    private static final String username = "root"; // Tên người dùng mặc định của XAMPP
+    private static final String password = ""; // Mật khẩu mặc định của XAMPP (rỗng)
+
+    public static Connection getConnection() throws SQLException {
+        try {
+            // Tải driver MySQL
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(jdbcURL, username, password);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            throw new SQLException("MySQL Driver không tìm thấy", e);
         }
     }
 }

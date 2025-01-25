@@ -11,6 +11,7 @@ import org.example.clothingmanagement.service.*;
 
 import java.io.IOException;
 
+import java.sql.SQLException;
 import java.util.List;
 
 
@@ -18,10 +19,16 @@ import java.util.List;
 public class CategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
-        List<Category> categories = null;
-        categories = CategoryDAO.selectAll();
+        List<Category> categories= null;
+        try {
+            categories = CategoryDAO.selectAll();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("Category.jsp").forward(request, response);
+
 
     }
 

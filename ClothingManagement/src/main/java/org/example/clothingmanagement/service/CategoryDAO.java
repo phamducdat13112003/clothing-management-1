@@ -9,26 +9,25 @@ import org.example.clothingmanagement.repository.DBContext;
 
 public class CategoryDAO {
 
-    public static List<Category> selectAll() {
-        List<Category> categories = new ArrayList<>();
-        String sql = "SELECT * FROM category";
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/warehousemanagement", "root", "");
-             PreparedStatement pt = conn.prepareStatement(sql);
-             ResultSet rs = pt.executeQuery()) {
-            while (rs.next()) {
-                Category category = new Category();
-                category.setCategoryID(rs.getInt("categoryID"));
-                category.setCategoryName(rs.getString("categoryName"));
-                category.setCreatedDate(rs.getDate("createdDate"));
-                category.setCreatedBy(rs.getInt("createdBy"));
-                categories.add(category);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+
+
+     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
+     public static List<Category> selectAll() throws SQLException {
+    List<Category> categories = new ArrayList<>();
+    String sql = "SELECT * FROM category";
+
+    // Thiết lập kết nối và thực thi truy vấn
+    try (Connection connection = DBContext.getConnection();  // Sử dụng Context.getConnection()
+         Statement stmt = connection.createStatement();
+         ResultSet rs = stmt.executeQuery(sql)) {
+        // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
+        while (rs.next()) {
+            categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
+                    rs.getDate("createdDate"),rs.getInt("createdBy")));
         }
-        return categories;
     }
+    return categories;
+}
 
     // Phương thức lấy xóa Category theo id từ cơ sở dữ liệu
     public static void deleteByIDCategories(int CategoryID) throws SQLException {
@@ -115,14 +114,14 @@ có dính gì đê product
 
 
     // Phương thức main để in dữ liệu
-    public static void main(String[] args) {
-        // Gọi phương thức selectAll để lấy danh sách category
-        List<Category> categories = selectAll();
-
-        // In thông tin của mỗi category
-        for (Category category : categories) {
-            System.out.println(category);
-        }
-    }
+//    public static void main(String[] args) {
+//        // Gọi phương thức selectAll để lấy danh sách category
+//        List<Category> categories = selectAll();
+//
+//        // In thông tin của mỗi category
+//        for (Category category : categories) {
+//            System.out.println(category);
+//        }
+//    }
 }
 
