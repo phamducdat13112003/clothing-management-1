@@ -19,16 +19,14 @@ import java.util.List;
 public class CategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
-        List<Category> categories= null;
+        List<Category> categories = null;
         try {
             categories = CategoryDAO.selectAll();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("Category.jsp").forward(request, response);
-
 
     }
 
