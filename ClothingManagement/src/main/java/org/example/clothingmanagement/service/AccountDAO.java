@@ -1,7 +1,6 @@
 package org.example.clothingmanagement.service;
 
 import org.example.clothingmanagement.entity.Account;
-import org.example.clothingmanagement.entity.Category;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.repository.DBContext;
 
@@ -22,7 +21,7 @@ public class AccountDAO {
                 account.setId(rs.getInt("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
-                account.setRoleID(rs.getInt("roleID"));
+                account.setRoleId(rs.getInt("roleID"));
                 list.add(account);
             }
         } catch (SQLException e) {
@@ -42,7 +41,7 @@ public class AccountDAO {
                 account.setId(rs.getInt("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
-                account.setRoleID(rs.getInt("roleID"));
+                account.setRoleId(rs.getInt("roleID"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,7 +94,7 @@ public class AccountDAO {
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
-            stmt.setInt(3, account.getRoleID());
+            stmt.setInt(3, account.getRoleId());
             stmt.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
