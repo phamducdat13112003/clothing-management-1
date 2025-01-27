@@ -15,10 +15,10 @@ public class Employee {
     private String email;
     private String phone;
     private String address;
-    private int gender; // 1 for Male, 0 for Female
+    private String gender;
     private LocalDate dateOfBirth;
-    private int status; // 1 for Active, 0 for Inactive
+    private String status;
     private int accountID;
     private int warehouseID;
-
+    private String image;
 }
