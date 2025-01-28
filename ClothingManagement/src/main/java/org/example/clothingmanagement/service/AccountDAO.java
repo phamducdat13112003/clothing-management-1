@@ -117,6 +117,25 @@ public class AccountDAO {
         return list;
     }
 
+    public static int getRoleIdByAccountId(int accountId) {
+        String sql = "SELECT RoleID FROM Account WHERE AccountID = ?";
+        try (Connection connection = DBContext.getConnection(); // Use DBContext for connection
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, accountId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("RoleID"); // Return the RoleID if found
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+        return -1; // Return -1 if AccountID is not found or an error occurs
+    }
+
+
     public static void main(String[] args) throws SQLException {
         AccountDAO dao = new AccountDAO();
         List<Role > list= dao.getAllRoles();
