@@ -25,7 +25,7 @@ public class EmployeeDAO {
             try (PreparedStatement ptAccount = conn.prepareStatement(sqlAccount, Statement.RETURN_GENERATED_KEYS)) {
                 ptAccount.setString(1, account.getEmail());
                 ptAccount.setString(2, account.getPassword());
-                ptAccount.setInt(3, account.getRoleID());
+                ptAccount.setInt(3, account.getRoleId());
                 ptAccount.executeUpdate();
 
                 // Get generated AccountID

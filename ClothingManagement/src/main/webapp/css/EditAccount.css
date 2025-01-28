@@ -1,0 +1,133 @@
+body {
+    font-family: 'Roboto', Arial, sans-serif;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #333;
+}
+
+.edit-form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    width: 350px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.edit-form h2 {
+    margin-bottom: 25px;
+    font-size: 24px;
+    color: #ff4a4a;
+    text-align: center;
+}
+
+.edit-form label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    color: #555;
+}
+
+.edit-form input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.edit-form input:focus {
+    outline: none;
+    border-color: #ff4a4a;
+    box-shadow: 0 0 4px rgba(255, 74, 74, 0.3);
+}
+
+.edit-form button {
+    width: calc(50% - 10px);
+    padding: 12px;
+    background: linear-gradient(135deg, #ff4a4a, #c70039);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    margin-right: 10px;
+}
+
+.edit-form button:hover {
+    background: linear-gradient(135deg, #c70039, #900c3f);
+}
+
+.edit-form .cancel {
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+.edit-form .cancel:hover {
+    background: linear-gradient(135deg, #495057, #343a40);
+}
+
+.edit-form .back {
+    width: 100%;
+    margin-top: 15px;
+    padding: 12px;
+    text-align: center;
+    background: transparent;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+    display: inline-block;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+}
+
+.edit-form .back:hover {
+    background: #007bff;
+    color: white;
+}
+
+.password-toggle {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-toggle input {
+    padding-right: 40px;
+}
+
+.password-toggle span {
+    position: absolute;
+    right: 10px;
+    top: 30%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #888;
+    transition: color 0.3s ease;
+}
+
+.password-toggle span:hover {
+    color: #ff4a4a;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -8,9 +8,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Account {
-    private int accountID; // Primary key
-    private String email; // Unique email
-    private String password; // Password for authentication
-    private int roleID; // Foreign key to Role table
+    private int id;
+    private String email;
+    private String password;
+    private int roleId;
+
+    public Account(int id, String email, String password) {
+        this.id = id;
+        this.email = email;
+        this.password = password;
+    }
+
+    public Account( String email, String password, int roleId) {
+        this.email = email;
+        this.password = password;
+        this.roleId = roleId;
+    }
 
 }
