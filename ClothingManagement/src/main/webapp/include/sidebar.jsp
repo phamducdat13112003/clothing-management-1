@@ -21,17 +21,17 @@
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"> 
 
         <!-- Fav Icon -->
-        <link rel="icon" href="img/favicon.png">
+        <link rel="icon" href="../img/favicon.png">
 
         <!-- sherah Stylesheet -->
-        <link rel="stylesheet" href="css/bootstrap.min.css">
-        <link rel="stylesheet" href="css/font-awesome-all.min.css">
-        <link rel="stylesheet" href="css/charts.min.css">
-        <link rel="stylesheet" href="css/datatables.min.css">
-        <link rel="stylesheet" href="css/jvector-map.css">
-        <link rel="stylesheet" href="css/slickslider.min.css">
-        <link rel="stylesheet" href="css/jquery-ui.css">
-        <link rel="stylesheet" href="css/reset.css">
+        <link rel="stylesheet" href="../css/bootstrap.min.css">
+        <link rel="stylesheet" href="../css/font-awesome-all.min.css">
+        <link rel="stylesheet" href="../css/charts.min.css">
+        <link rel="stylesheet" href="../css/datatables.min.css">
+        <link rel="stylesheet" href="../css/jvector-map.css">
+        <link rel="stylesheet" href="../css/slickslider.min.css">
+        <link rel="stylesheet" href="../css/jquery-ui.css">
+        <link rel="stylesheet" href="../css/reset.css">
         <link rel="stylesheet" href="style.css">
 
     </head>
@@ -46,7 +46,7 @@
                     <!-- Logo -->
                     <div class="logo sherah-sidebar-padding">
                         <a href="index.html">
-                            <img class="sherah-logo__main" src="img/logo.png" alt="#">
+                            <img class="sherah-logo__main" src="../img/logo.png" alt="#">
                         </a>
                         <div class="sherah__sicon close-icon d-xl-none">
                             <svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -264,20 +264,20 @@
 
 
             <!-- sherah Scripts -->
-            <script src="js/jquery.min.js"></script>
-            <script src="js/jquery-migrate.js"></script>
-            <script src="js/jquery-ui.min.js"></script>
-            <script src="js/popper.min.js"></script>
-            <script src="js/bootstrap.min.js"></script>
-            <script src="js/charts.js"></script>
+            <script src="../js/jquery.min.js"></script>
+            <script src="../js/jquery-migrate.js"></script>
+            <script src="../js/jquery-ui.min.js"></script>
+            <script src="../js/popper.min.js"></script>
+            <script src="../js/bootstrap.min.js"></script>
+            <script src="../js/charts.js"></script>
             <script src="js/final-countdown.min.js"></script>
             <script src="js/fancy-box.min.js"></script>
             <script src="js/fullcalendar.min.js"></script>
-            <script src="js/datatables.min.js"></script> 
-            <script src="js/circle-progress.min.js"></script>
-            <script src="js/jquery-jvectormap.js"></script>
-            <script src="js/jvector-map.js"></script>
-            <script src="js/main.js"></script>
+            <script src="../js/datatables.min.js"></script>
+            <script src="../js/circle-progress.min.js"></script>
+            <script src="../js/jquery-jvectormap.js"></script>
+            <script src="../js/jvector-map.js"></script>
+            <script src="../js/main.js"></script>
 
     </body>
 </html>

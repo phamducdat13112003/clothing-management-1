@@ -21,17 +21,17 @@
 		<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"> 
 
 		<!-- Fav Icon -->
-		<link rel="icon" href="img/favicon.png">
+		<link rel="icon" href="../img/favicon.png">
 		
 		<!-- sherah Stylesheet -->
-		<link rel="stylesheet" href="css/bootstrap.min.css">
-		<link rel="stylesheet" href="css/font-awesome-all.min.css">
-		<link rel="stylesheet" href="css/charts.min.css">
-		<link rel="stylesheet" href="css/datatables.min.css">
-		<link rel="stylesheet" href="css/jvector-map.css">
-		<link rel="stylesheet" href="css/slickslider.min.css">
-		<link rel="stylesheet" href="css/jquery-ui.css">
-		<link rel="stylesheet" href="css/reset.css">
+		<link rel="stylesheet" href="../css/bootstrap.min.css">
+		<link rel="stylesheet" href="../css/font-awesome-all.min.css">
+		<link rel="stylesheet" href="../css/charts.min.css">
+		<link rel="stylesheet" href="../css/datatables.min.css">
+		<link rel="stylesheet" href="../css/jvector-map.css">
+		<link rel="stylesheet" href="../css/slickslider.min.css">
+		<link rel="stylesheet" href="../css/jquery-ui.css">
+		<link rel="stylesheet" href="../css/reset.css">
 		<link rel="stylesheet" href="style.css">
 		
 	</head>
@@ -114,7 +114,7 @@
 																	<div class="sherah-chatbox__inner">
 																		<div class="sherah-chatbox__author">
 																			<div class="sherah-chatbox__author-img">
-																				<img src="img/chat-author1.png" alt="#">
+																				<img src="../img/chat-author1.png" alt="#">
 																				<span class="sherah-chatbox__author-online"></span>
 																			</div>
 																			<div class="sherah-chatbox__author-content">
@@ -130,7 +130,7 @@
 																	<div class="sherah-chatbox__inner">
 																		<div class="sherah-chatbox__author">
 																			<div class="sherah-chatbox__author-img">
-																				<img src="img/chat-author2.png" alt="#">
+																				<img src="../img/chat-author2.png" alt="#">
 																				<span class="sherah-chatbox__author-online author-not-online"></span>
 																			</div>
 																			<div class="sherah-chatbox__author-content">
@@ -150,7 +150,7 @@
 																	<div class="sherah-chatbox__inner">
 																		<div class="sherah-chatbox__author">
 																			<div class="sherah-chatbox__author-img">
-																				<img src="img/chat-author3.png" alt="#">
+																				<img src="../img/chat-author3.png" alt="#">
 																				<span class="sherah-chatbox__author-online author-not-online"></span>
 																			</div>
 																			<div class="sherah-chatbox__author-content">
@@ -165,7 +165,7 @@
 																	<div class="sherah-chatbox__inner">
 																		<div class="sherah-chatbox__author">
 																			<div class="sherah-chatbox__author-img">
-																				<img src="img/chat-author4.png" alt="#">
+																				<img src="../img/chat-author4.png" alt="#">
 																				<span class="sherah-chatbox__author-online"></span>
 																			</div>
 																			<div class="sherah-chatbox__author-content">
@@ -181,7 +181,7 @@
 																	<div class="sherah-chatbox__inner">
 																		<div class="sherah-chatbox__author">
 																			<div class="sherah-chatbox__author-img">
-																				<img src="img/chat-author5.png" alt="#">
+																				<img src="../img/chat-author5.png" alt="#">
 																				<span class="sherah-chatbox__author-online author-is-busy"></span>
 																			</div>
 																			<div class="sherah-chatbox__author-content">
@@ -310,7 +310,7 @@
 													<!-- Header Author -->
 													<div class="sherah-header__author sherah-flex__center--top">
 														<div class="sherah-header__author-img">
-															<img src="img/profile-pic.png" alt="#">
+															<img src="../img/profile-pic.png" alt="#">
 														</div>
 														<div class="sherah-header__author--info sherah-dflex sherah-dflex__base">
 															<h4 class="sherah-header__author--title  sherah-dflex sherah-dflex__column">Anthony <span class="sherah-header__author--text">USA</span></h4>
@@ -405,20 +405,20 @@
 				
 			
 		<!-- sherah Scripts -->
-		<script src="js/jquery.min.js"></script>
-		<script src="js/jquery-migrate.js"></script>
-		<script src="js/jquery-ui.min.js"></script>
-		<script src="js/popper.min.js"></script>
-		<script src="js/bootstrap.min.js"></script>
-		<script src="js/charts.js"></script>
+		<script src="../js/jquery.min.js"></script>
+		<script src="../js/jquery-migrate.js"></script>
+		<script src="../js/jquery-ui.min.js"></script>
+		<script src="../js/popper.min.js"></script>
+		<script src="../js/bootstrap.min.js"></script>
+		<script src="../js/charts.js"></script>
 		<script src="js/final-countdown.min.js"></script>
 		<script src="js/fancy-box.min.js"></script>
 		<script src="js/fullcalendar.min.js"></script>
-		<script src="js/datatables.min.js"></script> 
-		<script src="js/circle-progress.min.js"></script>
-		<script src="js/jquery-jvectormap.js"></script>
-		<script src="js/jvector-map.js"></script>
-		<script src="js/main.js"></script>
+		<script src="../js/datatables.min.js"></script>
+		<script src="../js/circle-progress.min.js"></script>
+		<script src="../js/jquery-jvectormap.js"></script>
+		<script src="../js/jvector-map.js"></script>
+		<script src="../js/main.js"></script>
 		
 	</body>
 </html>
