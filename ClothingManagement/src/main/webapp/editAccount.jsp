@@ -6,17 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Account</title>
     <link rel="stylesheet" href="css/EditAccount.css">
+    <style>
+        .required {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
 <form action="editaccount" method="post" class="edit-form">
     <h2>Edit Account</h2>
-    <label for="accountID">Account ID</label>
+    <label for="accountID">Account ID <span class="required">*</span></label>
     <input style="width: 95%" type="text" id="accountID" name="accountID" value="${account.id}" readonly>
 
-    <label for="email">Email</label>
+    <label for="email">Email <span class="required">*</span></label>
     <input style="width: 95%" type="email" id="email" name="email" value="${account.email}" required>
 
-    <label for="password">Password</label>
+    <label for="password">Password <span class="required">*</span></label>
     <div class="password-toggle">
         <input type="password" id="password" name="password" value="${account.password}" required>
         <span id="togglePassword">👁️</span>

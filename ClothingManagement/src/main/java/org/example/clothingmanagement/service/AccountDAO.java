@@ -30,6 +30,29 @@ public class AccountDAO {
         return list;
     }
 
+    public List<Account> getAllAccountAvaiable() throws SQLException {
+        List<Account> list = new ArrayList<>();
+        String sql = "SELECT a.AccountID\n" +
+                "FROM Account a\n" +
+                "LEFT JOIN Employee e ON a.AccountID = e.AccountID\n" +
+                "WHERE e.AccountID IS NULL;";
+        try (Connection connection = DBContext.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Account account = new Account();
+                account.setId(rs.getInt("accountId"));
+                account.setEmail(rs.getString("email"));
+                account.setPassword(rs.getString("password"));
+                account.setRoleId(rs.getInt("roleID"));
+                list.add(account);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public Account getAccountById(int accountId) throws SQLException {
         Account account = new Account();
         String sql = "SELECT * FROM account WHERE accountId = ?";

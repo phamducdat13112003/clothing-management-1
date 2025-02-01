@@ -1,93 +1,80 @@
 package org.example.clothingmanagement.service;
 
-import com.mysql.cj.jdbc.MysqlDataSource;
-import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
+import org.example.clothingmanagement.repository.DBContext;
 
-import javax.sql.DataSource;
 import java.sql.*;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAO {
 
-    private static final DataSource dataSource = createDataSource();
+    public boolean createEmployee(Employee employee) {
+        String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, EmployeeImage) " +
+                "VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?,?)";
 
-    private static DataSource createDataSource() {
-        MysqlDataSource ds = new MysqlDataSource();
-        ds.setURL("jdbc:mysql://localhost:3306/warehousemanagement");
-        ds.setUser("root");
-        ds.setPassword("");
-        return ds;
-    }
-
-    // Create a new employee with account
-    public static boolean insertEmployeeWithAccount(Employee employee, Account account) {
-        String sqlAccount = "INSERT INTO Account (Email, Password, RoleID) VALUES (?, ?, ?)";
-        String sqlEmployee = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, Image) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false); // Begin transaction
-
-            // Insert into Account
-            try (PreparedStatement ptAccount = conn.prepareStatement(sqlAccount, Statement.RETURN_GENERATED_KEYS)) {
-                ptAccount.setString(1, account.getEmail());
-                ptAccount.setString(2, account.getPassword());
-                ptAccount.setInt(3, account.getRoleId());
-                ptAccount.executeUpdate();
-
-                // Get generated AccountID
-                try (ResultSet rs = ptAccount.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        int accountID = rs.getInt(1);
-                        employee.setAccountID(accountID); // Set AccountID for Employee
-                    } else {
-                        conn.rollback();
-                        return false;
-                    }
-                }
-            }
-
-            // Insert into Employee
-            try (PreparedStatement ptEmployee = conn.prepareStatement(sqlEmployee)) {
-                ptEmployee.setString(1, employee.getEmployeeName());
-                ptEmployee.setString(2, employee.getEmail());
-                ptEmployee.setString(3, employee.getPhone());
-                ptEmployee.setString(4, employee.getAddress());
-                ptEmployee.setString(5, employee.getGender());
-                ptEmployee.setDate(6, Date.valueOf(employee.getDateOfBirth()));
-                ptEmployee.setString(7, employee.getStatus());
-                ptEmployee.setInt(8, employee.getAccountID());
-                ptEmployee.setInt(9, employee.getWarehouseID());
-                ptEmployee.setString(10, employee.getImage());
-                ptEmployee.executeUpdate();
-            }
-
-            conn.commit(); // Commit transaction
-            return true;
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, employee.getEmployeeName());
+            pt.setString(2, employee.getEmail());
+            pt.setString(3, employee.getPhone());
+            pt.setString(4, employee.getAddress());
+            pt.setInt(5, employee.getGender());
+            pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
+            pt.setInt(7, employee.getAccountID());
+            pt.setInt(8, employee.getWarehouseID());
+            pt.setString(9, employee.getImage());
+            int rowsAffected = pt.executeUpdate();
+            return rowsAffected > 0; // Return true if insertion was successful
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
-    // Update employee information
-    public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE Employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, Image = ? " +
-                "WHERE EmployeeID = ?";
-        try (Connection conn = dataSource.getConnection();
+    public boolean isEmployeeExisted(int employeeId ,String email, String phone) {
+        boolean exists = false;
+        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?) AND employeeId != ? AND status = 1";
+        try (Connection conn = DBContext.getConnection();
+        PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, email);
+            pt.setString(2, phone);
+            pt.setInt(3, employeeId);
+            ResultSet rs = pt.executeQuery();
+            if(rs.next()) {
+                exists = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
+
+    public boolean isEmployeeExistedWhenAdd(String email, String phone) {
+        boolean exists = false;
+        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?)  AND status = 1";
+        try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
-            pt.setString(1, employee.getEmployeeName());
-            pt.setString(2, employee.getEmail());
-            pt.setString(3, employee.getPhone());
-            pt.setString(4, employee.getAddress());
-            pt.setString(5, employee.getGender());
-            pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
-            pt.setString(7, employee.getStatus());
-            pt.setInt(8, employee.getWarehouseID());
-            pt.setString(9, employee.getImage());
-            pt.setInt(10, employee.getEmployeeID());
+            pt.setString(1, email);
+            pt.setString(2, phone);
+            ResultSet rs = pt.executeQuery();
+            if(rs.next()) {
+                exists = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
+
+
+
+    public boolean updatePassword(int accountID, String newPassword) {
+        String sql = "UPDATE Account SET Password = ? WHERE AccountID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, newPassword);
+            pt.setInt(2, accountID);
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -95,14 +82,53 @@ public class EmployeeDAO {
         return false;
     }
 
-    // Read all employees
-    public static List<Employee> selectAll() {
+    public boolean isAccountIdExist(int accountId) {
+        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 1 ";
+        try (Connection conn = DBContext.getConnection();
+        PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setInt(1, accountId);
+            ResultSet rs = pt.executeQuery();
+            if(rs.next()) {
+                int count = rs.getInt(1);
+                return count > 1;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // Update employee information
+    public boolean updateEmployee(Employee employee) {
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, EmployeeImage = ? WHERE EmployeeID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, employee.getEmployeeName());
+            pt.setString(2, employee.getEmail());
+            pt.setString(3, employee.getPhone());
+            pt.setString(4, employee.getAddress());
+            pt.setInt(5, employee.getGender());
+            pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
+            pt.setInt(7, employee.getAccountID());
+            pt.setInt(8, employee.getWarehouseID());
+            pt.setString(9, employee.getImage());
+            pt.setInt(10, employee.getEmployeeID());
+            return pt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false; // Nếu có lỗi, trả về false
+        }
+    }
+
+
+
+    public List<Employee> getAllEmployee() {
         List<Employee> employees = new ArrayList<>();
         String sql = "SELECT * FROM Employee";
-        try (Connection conn = dataSource.getConnection();
+        try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql);
              ResultSet rs = pt.executeQuery()) {
-
             while (rs.next()) {
                 Employee employee = new Employee();
                 employee.setEmployeeID(rs.getInt("EmployeeID"));
@@ -110,12 +136,12 @@ public class EmployeeDAO {
                 employee.setEmail(rs.getString("Email"));
                 employee.setPhone(rs.getString("Phone"));
                 employee.setAddress(rs.getString("Address"));
-                employee.setGender(rs.getString("Gender"));
+                employee.setGender(rs.getInt("Gender"));
                 employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
-                employee.setStatus(rs.getString("Status"));
+                employee.setStatus(rs.getInt("Status"));
                 employee.setAccountID(rs.getInt("AccountID"));
                 employee.setWarehouseID(rs.getInt("WarehouseID"));
-                employee.setImage(rs.getString("Image"));
+                employee.setImage(rs.getString("EmployeeImage"));
                 employees.add(employee);
             }
         } catch (SQLException e) {
@@ -124,10 +150,39 @@ public class EmployeeDAO {
         return employees;
     }
 
-    // Delete employee by ID
-    public static boolean deleteEmployee(int employeeID) {
-        String sql = "DELETE FROM Employee WHERE EmployeeID = ?";
-        try (Connection conn = dataSource.getConnection();
+    public Employee getEmployeeByID(int employeeID) {
+        Employee employee = null;
+        String sql = "SELECT * FROM Employee WHERE EmployeeID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)){
+            pt.setInt(1, employeeID);
+            try (ResultSet rs = pt.executeQuery()) {
+                while (rs.next()) {
+                    employee = new Employee();
+                    employee.setEmployeeID(rs.getInt("EmployeeID"));
+                    employee.setEmployeeName(rs.getString("EmployeeName"));
+                    employee.setEmail(rs.getString("Email"));
+                    employee.setPhone(rs.getString("Phone"));
+                    employee.setAddress(rs.getString("Address"));
+                    employee.setGender(rs.getInt("Gender"));
+                    employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                    employee.setStatus(rs.getInt("Status"));
+                    employee.setAccountID(rs.getInt("AccountID"));
+                    employee.setWarehouseID(rs.getInt("WarehouseID"));
+                    employee.setImage(rs.getString("EmployeeImage"));
+                }
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return employee;
+    }
+
+    public boolean deleteEmployee(int employeeID) {
+        String sql = "UPDATE Employee SET Status = 0 WHERE EmployeeID = ?";
+        try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setInt(1, employeeID);
             return pt.executeUpdate() > 0;
@@ -137,73 +192,27 @@ public class EmployeeDAO {
         return false;
     }
 
-    public static int getAccountIdByEmployeeId(int employeeID) {
-        String sql = "SELECT AccountID FROM Employee WHERE EmployeeID = ?";
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement pt = conn.prepareStatement(sql)) {
-
-            pt.setInt(1, employeeID);
-
-            try (ResultSet resultSet = pt.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getInt("AccountID");
-                }
+    public int getEmployeeId(){
+        String sql ="SELECT MAX(EmployeeID) FROM Employee";
+        try (Connection conn = DBContext.getConnection();
+        PreparedStatement pt = conn.prepareStatement(sql)) {
+            ResultSet rs = pt.executeQuery();
+            if(rs.next()) {
+                return rs.getInt(1) + 1;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return -1; // Return -1 if no account is found or an error occurs
+        return 0;
     }
 
-    public static String getEmployeeNameByEmployeeId(int employeeID) {
-        String sql = "SELECT EmployeeName FROM Employee WHERE EmployeeID = ?";
-        try (Connection conn = dataSource.getConnection(); // Sử dụng DataSource để kết nối
-             PreparedStatement pt = conn.prepareStatement(sql)) {
-
-            // Thiết lập giá trị cho tham số trong SQL
-            pt.setInt(1, employeeID);
-
-            // Thực thi truy vấn và xử lý kết quả
-            try (ResultSet resultSet = pt.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getString("EmployeeName"); // Lấy giá trị EmployeeName từ kết quả
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace(); // Log lỗi nếu có vấn đề xảy ra với truy vấn SQL
-        }
-        return null; // Trả về null nếu không tìm thấy hoặc có lỗi
-    }
-
-
-
-
-
-    // Main method to test SelectAll
     public static void main(String[] args) {
-        // Create an Employee object with updated information
-        Employee updatedEmployee = new Employee();
-        updatedEmployee.setEmployeeID(1); // Replace with the actual EmployeeID you want to update
-        updatedEmployee.setEmployeeName("John Doe Updated");
-        updatedEmployee.setEmail("johndoe@example.com"); // Ensure this matches the email in your database
-        updatedEmployee.setPhone("9876543210");
-        updatedEmployee.setAddress("123 Updated Address");
-        updatedEmployee.setGender("Male"); // Ensure the value is valid
-        updatedEmployee.setDateOfBirth(LocalDate.of(1990, 1, 1));
-        updatedEmployee.setStatus("Active"); // Ensure the value is valid
-        updatedEmployee.setWarehouseID(1); // Ensure this matches a valid WarehouseID in your database
-        updatedEmployee.setImage("path/to/updated-profile.jpg"); // Replace with the actual image path
-
-        // Call the update method and print the result
-        boolean isUpdated = EmployeeDAO.updateEmployee(updatedEmployee);
-
-        if (isUpdated) {
-            System.out.println("Employee information updated successfully.");
-        } else {
-            System.out.println("Failed to update employee information.");
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        Employee employee = employeeDAO.getEmployeeByID(1);
+        List<Employee> list= employeeDAO.getAllEmployee();
+        for (Employee e : list) {
+            System.out.println(e);
         }
     }
-
-
 
 }

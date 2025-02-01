@@ -1,9 +1,18 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%--
+  Created by IntelliJ IDEA.
+  User: LENOVO
+  Date: 1/28/2025
+  Time: 3:07 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html class="no-js" lang="zxx">
 <head>
+    <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="keywords" content="Site keywords here">
@@ -11,7 +20,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>Sherah - HTML eCommerce Dashboard Template</title>
+    <title>Add Employee</title>
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -34,8 +43,43 @@
             color: red;
             font-weight: bold;
         }
-    </style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .choose-file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
 
+        .choose-file-label:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .choose-file-label:active {
+            background-color: #003f7f;
+        }
+        #image {
+            margin-top: 10px;            /* Khoảng cách giữa ảnh và nút */
+            max-width: 200px;            /* Giới hạn chiều rộng tối đa của ảnh */
+            height: auto;                /* Giữ tỷ lệ cho ảnh */
+            border-radius: 8px;          /* Bo góc cho ảnh */
+            border: 2px solid #ddd;     /* Viền cho ảnh */
+            display: block;              /* Đảm bảo ảnh không bị kéo giãn */
+            margin-left: auto;           /* Căn giữa ảnh */
+            margin-right: auto;          /* Căn giữa ảnh */
+        }
+    </style>
 </head>
 <body id="sherah-dark-light">
 
@@ -72,7 +116,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Dashboard</span></span></a></span>
+									<span class="menu-bar__name">Dashboard</span></span></a>
 
                         </li>
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item_vendors"><span class="menu-bar__text">
@@ -85,7 +129,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Vendors</span></span> <span class="sherah__toggle"></span></a></span>
+									<span class="menu-bar__name">Vendors</span></span> <span class="sherah__toggle"></span></a>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item_vendors"  data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
@@ -106,7 +150,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Customers</span></span> <span class="sherah__toggle"></span></a></span>
+									<span class="menu-bar__name">Customers</span></span> <span class="sherah__toggle"></span></a>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item__customers"  data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
@@ -121,7 +165,7 @@
 											<path id="Path_218" data-name="Path 218" d="M558.766,384.526c.177-.092.32-.164.46-.24l6.468-3.491a1.9,1.9,0,0,1,.368-.179.506.506,0,0,1,.632.248.487.487,0,0,1-.127.656,1.743,1.743,0,0,1-.315.191c-2.517,1.359-5.038,2.712-7.549,4.083a.98.98,0,0,1-1.036.012q-3.781-1.986-7.582-3.934a.811.811,0,0,1-.505-.831c.02-1.3,0-2.6.014-3.9a.486.486,0,0,0-.3-.508c-.45-.232-.889-.486-1.326-.742a.539.539,0,0,1-.221-.877c.62-.926,1.244-1.849,1.883-2.762a1.17,1.17,0,0,1,.442-.344c2.561-1.246,5.127-2.482,7.688-3.728a.879.879,0,0,1,.822-.01c2.568,1.2,5.143,2.387,7.709,3.591a1.24,1.24,0,0,1,.478.42c.61.916,1.2,1.844,1.794,2.771.3.463.23.71-.265.989q-3.631,2.046-7.265,4.086c-.454.255-.643.212-.981-.2-.412-.5-.823-1.011-1.292-1.587Zm-7.409-12.033c.133.076.214.126.3.17,2.065,1.073,4.133,2.141,6.191,3.225a.625.625,0,0,0,.674-.018c2.031-1.106,4.069-2.2,6.1-3.3.118-.064.232-.133.367-.21a1.6,1.6,0,0,0-.164-.106c-2.124-.986-4.246-1.977-6.378-2.945a.814.814,0,0,0-.6.038c-2.04.971-4.071,1.96-6.1,2.945C551.626,372.349,551.511,372.412,551.357,372.492Zm-.688,4.945c0,1.092.01,2.129-.007,3.165a.5.5,0,0,0,.321.528c2.093,1.074,4.179,2.162,6.267,3.245.1.054.216.1.344.152v-6.293l-1.263,1.551c-.386.473-.552.507-1.076.212q-2.074-1.166-4.147-2.334C550.982,377.593,550.85,377.53,550.668,377.438Zm10.08,1.529,6.694-3.769-1.4-2.171-7.033,3.792Zm-3.4-2.142-7.037-3.652-1.38,2.033,6.683,3.76Z" transform="translate(-547.61 -368.076)"/>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Products</span></span> <span class="sherah__toggle"></span></a></span>
+									<span class="menu-bar__name">Products</span></span> <span class="sherah__toggle"></span></a>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item_products" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
@@ -137,7 +181,15 @@
 											<path id="Path_229" data-name="Path 229" d="M601.866,379.059c.384-.409.661-.738.973-1.031a6.035,6.035,0,0,1,8.378.092,5.886,5.886,0,0,1,.126,8.307c-2.912,2.961-5.887,5.861-8.839,8.783a.788.788,0,0,1-1.258.011c-2.964-2.933-5.954-5.841-8.872-8.819a5.875,5.875,0,0,1,.169-8.3,6.037,6.037,0,0,1,8.343-.082C601.208,378.318,601.493,378.66,601.866,379.059Zm.008,14.528c.112-.1.187-.168.257-.237q3.966-3.931,7.928-7.866a4.341,4.341,0,0,0,.055-6.23,4.455,4.455,0,0,0-6.287.011c-.38.365-.749.741-1.124,1.112-.676.669-.985.672-1.648.017-.41-.405-.806-.826-1.233-1.213a4.4,4.4,0,0,0-6.158,6.284c2.629,2.636,5.283,5.246,7.927,7.867C601.67,393.412,601.758,393.484,601.874,393.588Z" transform="translate(-590.738 -376.383)"/>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Account</span></span></a></span>
+									<span class="menu-bar__name">Account</span></span></a>
+                        </li>
+                        <li><a href="employee" class="collapsed"><span class="menu-bar__text">
+									<span class="sherah-menu-icon sherah-svg-icon__v1">
+										<svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.259" height="19.146" viewBox="0 0 22.259 19.146">
+											<path id="Path_229" data-name="Path 229" d="M601.866,379.059c.384-.409.661-.738.973-1.031a6.035,6.035,0,0,1,8.378.092,5.886,5.886,0,0,1,.126,8.307c-2.912,2.961-5.887,5.861-8.839,8.783a.788.788,0,0,1-1.258.011c-2.964-2.933-5.954-5.841-8.872-8.819a5.875,5.875,0,0,1,.169-8.3,6.037,6.037,0,0,1,8.343-.082C601.208,378.318,601.493,378.66,601.866,379.059Zm.008,14.528c.112-.1.187-.168.257-.237q3.966-3.931,7.928-7.866a4.341,4.341,0,0,0,.055-6.23,4.455,4.455,0,0,0-6.287.011c-.38.365-.749.741-1.124,1.112-.676.669-.985.672-1.648.017-.41-.405-.806-.826-1.233-1.213a4.4,4.4,0,0,0-6.158,6.284c2.629,2.636,5.283,5.246,7.927,7.867C601.67,393.412,601.758,393.484,601.874,393.588Z" transform="translate(-590.738 -376.383)"/>
+										</svg>
+									</span>
+									<span class="menu-bar__name">Employee</span></span></a>
                         </li>
                         <li><a href="wishlist.html" class="collapsed"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -145,7 +197,7 @@
 											<path id="Path_229" data-name="Path 229" d="M601.866,379.059c.384-.409.661-.738.973-1.031a6.035,6.035,0,0,1,8.378.092,5.886,5.886,0,0,1,.126,8.307c-2.912,2.961-5.887,5.861-8.839,8.783a.788.788,0,0,1-1.258.011c-2.964-2.933-5.954-5.841-8.872-8.819a5.875,5.875,0,0,1,.169-8.3,6.037,6.037,0,0,1,8.343-.082C601.208,378.318,601.493,378.66,601.866,379.059Zm.008,14.528c.112-.1.187-.168.257-.237q3.966-3.931,7.928-7.866a4.341,4.341,0,0,0,.055-6.23,4.455,4.455,0,0,0-6.287.011c-.38.365-.749.741-1.124,1.112-.676.669-.985.672-1.648.017-.41-.405-.806-.826-1.233-1.213a4.4,4.4,0,0,0-6.158,6.284c2.629,2.636,5.283,5.246,7.927,7.867C601.67,393.412,601.758,393.484,601.874,393.588Z" transform="translate(-590.738 -376.383)"/>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Wishlist</span></span></a></span>
+									<span class="menu-bar__name">Wishlist</span></span></a>
                         </li>
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__orders"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -156,7 +208,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Orders</span></span><span class="sherah__toggle"></span></a></span>
+									<span class="menu-bar__name">Orders</span></span><span class="sherah__toggle"></span></a>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item__orders" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
@@ -177,7 +229,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Invoice</span></span></a></span>
+									<span class="menu-bar__name">Invoice</span></span></a>
                         </li>
                         <li><a href="history.html" class="collapsed"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -189,7 +241,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">History</span></span></a></span>
+									<span class="menu-bar__name">History</span></span></a>
                         </li>
                         <li><a class="collapsed" href="profile-info.html"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -202,7 +254,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Settings</span></span></a></span>
+									<span class="menu-bar__name">Settings</span></span></a>
                         </li>
                         <li><a href="chat-messages.html" class="collapsed"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -215,7 +267,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Message</span></span></a></span>
+									<span class="menu-bar__name">Message</span></span></a>
                         </li>
 
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span class="menu-bar__text">
@@ -228,7 +280,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Pages</span></span><span class="sherah__toggle"></span></a></span>
+									<span class="menu-bar__name">Pages</span></span><span class="sherah__toggle"></span></a>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item__9" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
@@ -248,7 +300,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Language</span></span></a></span>
+									<span class="menu-bar__name">Language</span></span></a>
                         </li>
                         <li><a class="collapsed" href="login.html"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -260,7 +312,7 @@
 											</g>
 										</svg>
 									</span>
-									<span class="menu-bar__name">Login</span></span></a></span>
+									<span class="menu-bar__name">Login</span></span></a>
                         </li>
 
                     </ul>
@@ -329,221 +381,6 @@
                                                 </button>
                                             </div>
                                             <!-- End Header Zoom -->
-                                            <!-- Header Message -->
-                                            <div class="sherah-header__dropmenu sherah-header__dropmenu--messages">
-
-                                                <svg class="sherah-offset__fill" xmlns="http://www.w3.org/2000/svg" width="28.08" height="26.196" viewBox="0 0 28.08 26.196">
-                                                    <g id="Icon" transform="translate(0 0)">
-                                                        <path id="Path_194" data-name="Path 194" d="M617.194,423.523c-.93,0-1.784.005-2.638,0a2.807,2.807,0,0,1-2.973-2.966q-.011-7.335,0-14.669a2.791,2.791,0,0,1,2.933-2.945q11.106-.01,22.212,0a2.782,2.782,0,0,1,2.921,2.9q.016,7.393,0,14.786a2.784,2.784,0,0,1-2.924,2.895c-3.546.01-7.092-.007-10.638.019a1.832,1.832,0,0,0-1.043.355c-2.043,1.593-4.059,3.22-6.08,4.841-.364.292-.726.538-1.217.308-.513-.24-.56-.689-.557-1.18C617.2,426.442,617.194,425.023,617.194,423.523Zm1.874,2.7c.266-.2.451-.327.627-.468,1.476-1.179,2.963-2.346,4.419-3.55a2.307,2.307,0,0,1,1.591-.564c3.643.024,7.287.014,10.931.01.8,0,1.142-.335,1.142-1.133q0-7.276,0-14.552c0-.809-.332-1.149-1.126-1.149q-11.048,0-22.1,0c-.76,0-1.1.346-1.1,1.113q-.005,7.306,0,14.611c0,.764.343,1.1,1.106,1.109,1.091.007,2.182,0,3.273,0,.918,0,1.229.311,1.232,1.221C619.07,423.954,619.068,425.037,619.068,426.219Z" transform="translate(-611.577 -402.937)" />
-                                                        <path id="Path_195" data-name="Path 195" d="M668.075,468.825h-7.008a5.076,5.076,0,0,1-.525-.008.93.93,0,0,1-.01-1.856,4.967,4.967,0,0,1,.525-.009h14.075c.136,0,.273-.005.409,0a.934.934,0,1,1,.01,1.867c-.155.01-.311,0-.467,0Z" transform="translate(-654.045 -459.465)" />
-                                                        <path id="Path_196" data-name="Path 196" d="M664.4,498.961c1.167,0,2.334,0,3.5,0,.691,0,1.1.357,1.11.925s-.41.942-1.091.944q-3.588.009-7.177,0c-.675,0-1.092-.385-1.08-.955a.939.939,0,0,1,1.061-.913C661.952,498.954,663.178,498.961,664.4,498.961Z" transform="translate(-654.043 -487.732)"/>
-                                                    </g>
-                                                </svg>
-                                                <span class="sherah-header__message--animate sherah-color3__bg--light"><span class="sherah-color3__bg"></span></span>
-                                                <div class="sherah-dropdown-card sherah-dropdown-card__alarm sherah-border">
-                                                    <svg class="sherah-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="43.488" height="22.207" viewBox="0 0 43.488 22.207">
-                                                        <path id="Path_1271" data-name="Path 1271" d="M-15383,7197.438l20.555-20.992,20.555,20.992Z" transform="translate(15384.189 -7175.73)" stroke-width="1"/>
-                                                    </svg>
-                                                    <h3 class="sherah-dropdown-card__title sherah-border-btm">Recent Message</h3>
-                                                    <ul class="sherah-dropdown-card_list sherah-chatbox__list sherah-chatbox__list__header">
-                                                        <!-- Single List -->
-                                                        <li>
-                                                            <div class="sherah-chatbox__inner">
-                                                                <div class="sherah-chatbox__author">
-                                                                    <div class="sherah-chatbox__author-img">
-                                                                        <img src="img/chat-author1.png" alt="#">
-                                                                        <span class="sherah-chatbox__author-online"></span>
-                                                                    </div>
-                                                                    <div class="sherah-chatbox__author-content">
-                                                                        <h4 class="sherah-chatbox__author-title">Jamen Oliver</h4>
-                                                                        <p class="sherah-chatbox__author-desc">Hey! You forgot your keys....</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <!-- End Single List -->
-                                                        <!-- Single List -->
-                                                        <li>
-                                                            <div class="sherah-chatbox__inner">
-                                                                <div class="sherah-chatbox__author">
-                                                                    <div class="sherah-chatbox__author-img">
-                                                                        <img src="img/chat-author2.png" alt="#">
-                                                                        <span class="sherah-chatbox__author-online author-not-online"></span>
-                                                                    </div>
-                                                                    <div class="sherah-chatbox__author-content">
-                                                                        <h4 class="sherah-chatbox__author-title">Orian Heho</h4>
-                                                                        <p class="sherah-chatbox__author-desc">How are you?</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sherah-chatbox__right">
-                                                                    <span class="sherah-chatbox__unread sherah-color1__bg">5</span>
-
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <!-- End Single List -->
-                                                        <!-- Single List -->
-                                                        <li>
-                                                            <div class="sherah-chatbox__inner">
-                                                                <div class="sherah-chatbox__author">
-                                                                    <div class="sherah-chatbox__author-img">
-                                                                        <img src="img/chat-author3.png" alt="#">
-                                                                        <span class="sherah-chatbox__author-online author-not-online"></span>
-                                                                    </div>
-                                                                    <div class="sherah-chatbox__author-content">
-                                                                        <h4 class="sherah-chatbox__author-title">Brotherhood</h4>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <!-- End Single List -->
-                                                        <!-- Single List -->
-                                                        <li>
-                                                            <div class="sherah-chatbox__inner">
-                                                                <div class="sherah-chatbox__author">
-                                                                    <div class="sherah-chatbox__author-img">
-                                                                        <img src="img/chat-author4.png" alt="#">
-                                                                        <span class="sherah-chatbox__author-online"></span>
-                                                                    </div>
-                                                                    <div class="sherah-chatbox__author-content">
-                                                                        <h4 class="sherah-chatbox__author-title">Rose Rovert</h4>
-                                                                        <p class="sherah-chatbox__author-desc">Of course I work the finaly done ....</p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <!-- End Single List -->
-                                                        <!-- Single List -->
-                                                        <li>
-                                                            <div class="sherah-chatbox__inner">
-                                                                <div class="sherah-chatbox__author">
-                                                                    <div class="sherah-chatbox__author-img">
-                                                                        <img src="img/chat-author5.png" alt="#">
-                                                                        <span class="sherah-chatbox__author-online author-is-busy"></span>
-                                                                    </div>
-                                                                    <div class="sherah-chatbox__author-content">
-                                                                        <h4 class="sherah-chatbox__author-title">Mahstai</h4>
-                                                                        <p class="sherah-chatbox__author-desc">Any plan for today?</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="sherah-chatbox__right">
-                                                                    <span class="sherah-chatbox__unread sherah-color1__bg">7</span>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <!-- End Single List -->
-                                                    </ul>
-                                                    <!-- sherah Balance Button -->
-                                                    <div class="sherah-dropdown-card__button"><a href="chat-messages.html" class="sherah-dropdown-card__sell-all">See all Notification</a></div>
-                                                </div>
-                                                <!-- End sherah Balance Hover -->
-                                            </div>
-                                            <!-- End Header Message -->
-
-                                            <!-- Header Alarm -->
-                                            <div class="sherah-header__dropmenu">
-                                                <svg class="sherah-offset__fill" id="Icon" xmlns="http://www.w3.org/2000/svg" width="22.875" height="25.355" viewBox="0 0 22.875 25.355">
-                                                    <g id="Group_7" data-name="Group 7" transform="translate(0 0)">
-                                                        <path id="Path_28" data-name="Path 28" d="M37.565,16.035V11.217a8.43,8.43,0,0,0-5.437-7.864,2.865,2.865,0,0,0,.057-.56,2.79,2.79,0,1,0-5.58,0,2.994,2.994,0,0,0,.053.544,8.17,8.17,0,0,0-5.433,7.7v4.993a.324.324,0,0,1-.323.323,2.932,2.932,0,0,0-2.933,2.585,2.862,2.862,0,0,0,2.847,3.141h4.926a3.674,3.674,0,0,0,7.3,0h4.926a2.869,2.869,0,0,0,2.116-.937,2.9,2.9,0,0,0,.731-2.2,2.935,2.935,0,0,0-2.933-2.585A.321.321,0,0,1,37.565,16.035ZM29.4,1.636a1.158,1.158,0,0,1,1.156,1.157,1,1,0,0,1-.016.155,7.23,7.23,0,0,0-.841-.078,8.407,8.407,0,0,0-1.438.082A1,1,0,0,1,28.24,2.8,1.159,1.159,0,0,1,29.4,1.636Zm0,22.083a2.05,2.05,0,0,1-2-1.636h4A2.05,2.05,0,0,1,29.4,23.719ZM39.2,19.1a1.222,1.222,0,0,1-1.221,1.349H20.818A1.228,1.228,0,0,1,19.6,19.1a1.284,1.284,0,0,1,1.307-1.1,1.961,1.961,0,0,0,1.957-1.959V11.042A6.542,6.542,0,0,1,29.4,4.5c.082,0,.159,0,.241,0a6.687,6.687,0,0,1,6.295,6.715v4.817a1.961,1.961,0,0,0,1.957,1.959A1.287,1.287,0,0,1,39.2,19.1Z" transform="translate(-17.958 0)"/>
-                                                    </g>
-                                                </svg>
-                                                <span class="sherah-header__count sherah-color1__bg">4</span>
-                                                <!-- sherah Alarm Hover -->
-                                                <div class="sherah-dropdown-card sherah-dropdown-card__alarm sherah-border">
-                                                    <svg class="sherah-dropdown-arrow" xmlns="http://www.w3.org/2000/svg" width="43.488" height="22.207" viewBox="0 0 43.488 22.207">
-                                                        <path id="Path_1271" data-name="Path 1271" d="M-15383,7197.438l20.555-20.992,20.555,20.992Z" transform="translate(15384.189 -7175.73)" stroke-width="1"/>
-                                                    </svg>
-                                                    <h3 class="sherah-dropdown-card__title sherah-border-btm">Recent Notification</h3>
-                                                    <!-- sherah Balance List -->
-                                                    <ul class="sherah-dropdown-card_list">
-                                                        <li>
-                                                            <div class="sherah-paymentm__name">
-                                                                <div class="sherah-paymentm__icon sherah-paymentm__icon--notify ntfmax__bgc--5">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
-                                                                        <g id="Icon" transform="translate(14.293 11.5)">
-                                                                            <circle id="Ellipse_34" data-name="Ellipse 34" cx="24" cy="24" r="24" transform="translate(-14.293 -11.5)" fill="#6176fe"></circle>
-                                                                            <g id="Group_55" data-name="Group 55" transform="translate(-0.611 1.038)">
-                                                                                <g id="Group_54" data-name="Group 54" transform="translate(0 0)">
-                                                                                    <path id="Path_188" data-name="Path 188" d="M31.225,11.945a.694.694,0,0,1,0-.6l.852-1.777a2.041,2.041,0,0,0-.856-2.685l-1.714-.927a.682.682,0,0,1-.348-.488l-.335-1.948a1.989,1.989,0,0,0-2.24-1.659l-1.921.277a.662.662,0,0,1-.563-.186L22.7.572a1.956,1.956,0,0,0-2.769,0L18.541,1.948a.662.662,0,0,1-.563.186l-1.921-.277a1.988,1.988,0,0,0-2.24,1.659l-.335,1.948a.682.682,0,0,1-.348.488L11.42,6.88a2.041,2.041,0,0,0-.856,2.685l.852,1.777a.694.694,0,0,1,0,.6l-.852,1.777a2.041,2.041,0,0,0,.856,2.685l1.714.927a.682.682,0,0,1,.348.488l.335,1.948a1.979,1.979,0,0,0,2.24,1.659l1.921-.277a.661.661,0,0,1,.563.186l1.395,1.375a1.956,1.956,0,0,0,2.769,0L24.1,21.338a.662.662,0,0,1,.563-.186l1.921.277a1.988,1.988,0,0,0,2.24-1.659l.335-1.948a.682.682,0,0,1,.348-.488l1.714-.927a2.041,2.041,0,0,0,.856-2.685ZM30.6,15.22l-1.714.927a2.015,2.015,0,0,0-1.028,1.443l-.335,1.948a.673.673,0,0,1-.758.561l-1.921-.277a1.955,1.955,0,0,0-1.664.551l-1.395,1.375a.662.662,0,0,1-.937,0l-1.395-1.375a1.957,1.957,0,0,0-1.38-.571,1.985,1.985,0,0,0-.284.02l-1.921.277a.673.673,0,0,1-.758-.561l-.335-1.948a2.015,2.015,0,0,0-1.028-1.442l-1.714-.927a.69.69,0,0,1-.29-.908l.852-1.777a2.052,2.052,0,0,0,0-1.783l-.852-1.777a.69.69,0,0,1,.29-.908l1.714-.927A2.015,2.015,0,0,0,14.779,5.7l.335-1.948a.673.673,0,0,1,.758-.561l1.921.277a1.955,1.955,0,0,0,1.664-.551l1.395-1.375a.662.662,0,0,1,.937,0l1.395,1.375a1.955,1.955,0,0,0,1.664.551l1.921-.277a.673.673,0,0,1,.758.561L27.861,5.7a2.015,2.015,0,0,0,1.028,1.442l1.714.927a.69.69,0,0,1,.29.908l-.852,1.777a2.052,2.052,0,0,0,0,1.783l.852,1.777A.691.691,0,0,1,30.6,15.22Z" transform="translate(-10.359 0.002)" fill="#fff" stroke="#fff" stroke-width="0.2"></path>
-                                                                                </g>
-                                                                            </g>
-                                                                            <g id="Group_57" data-name="Group 57" transform="translate(5.343 7.675)">
-                                                                                <g id="Group_56" data-name="Group 56">
-                                                                                    <path id="Path_189" data-name="Path 189" d="M153.613,143.984a.659.659,0,0,0-.932,0l-8.7,8.7a.659.659,0,1,0,.932.932l8.7-8.7A.659.659,0,0,0,153.613,143.984Z" transform="translate(-143.792 -143.792)" fill="#fff" stroke="#fff" stroke-width="0.2"></path>
-                                                                                </g>
-                                                                            </g>
-                                                                            <g id="Group_59" data-name="Group 59" transform="translate(5.299 6.666)">
-                                                                                <g id="Group_58" data-name="Group 58" transform="translate(0)">
-                                                                                    <path id="Path_190" data-name="Path 190" d="M145.218,123.116a2.416,2.416,0,1,0,2.416,2.416A2.419,2.419,0,0,0,145.218,123.116Zm0,3.514a1.1,1.1,0,1,1,1.1-1.1A1.1,1.1,0,0,1,145.218,126.63Z" transform="translate(-142.802 -123.116)" fill="#fff" stroke="#fff" stroke-width="0.2"></path>
-                                                                                </g>
-                                                                            </g>
-                                                                            <g id="Group_61" data-name="Group 61" transform="translate(10.569 13.867)">
-                                                                                <g id="Group_60" data-name="Group 60">
-                                                                                    <path id="Path_191" data-name="Path 191" d="M263.338,280.61a2.416,2.416,0,1,0,2.416,2.416A2.419,2.419,0,0,0,263.338,280.61Zm0,3.514a1.1,1.1,0,1,1,1.1-1.1A1.1,1.1,0,0,1,263.338,284.124Z" transform="translate(-260.922 -280.61)" fill="#fff" stroke="#fff" stroke-width="0.2"></path>
-                                                                                </g>
-                                                                            </g>
-                                                                        </g>
-                                                                    </svg>
-                                                                </div>
-                                                                <div class="sherah-paymentm__content">
-                                                                    <h4 class="sherah-notifications__title">You have an offer! <span>successfully done</span></h4>
-                                                                    <p class="sherah-paymentm__text sherah-paymentm__text--notify">20 minutes ago</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <li>
-                                                            <div class="sherah-paymentm__name">
-                                                                <div class="sherah-paymentm__icon sherah-paymentm__icon--notify ntfmax__bgc--2">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="17.272" height="17.272" viewBox="0 0 17.272 17.272">
-                                                                        <g id="jigsaw" transform="translate(0 0)">
-                                                                            <path id="Path_192" data-name="Path 192" d="M298.117,0h-5.612A.506.506,0,0,0,292,.506V2.832a.506.506,0,0,0,.843.377.691.691,0,1,1,0,1.03.506.506,0,0,0-.843.377v2.3a.506.506,0,0,0,.506.506h1.514a1.7,1.7,0,0,0,1.612,1.993h.067a1.7,1.7,0,0,0,1.7-1.7,1.711,1.711,0,0,0-.025-.292h1.54a.506.506,0,0,0,.506-.506V1.3a1.305,1.305,0,0,0-1.3-1.3Zm.292,6.41h-1.82a.506.506,0,0,0-.377.844.691.691,0,1,1-1.03,0,.506.506,0,0,0-.377-.844h-1.794V5.4a1.707,1.707,0,0,0,.292.025h0A1.7,1.7,0,0,0,295,3.659a1.7,1.7,0,0,0-1.993-1.612V1.012h5.106a.292.292,0,0,1,.292.292Z" transform="translate(-282.149)" fill="#fff"></path>
-                                                                            <path id="Path_193" data-name="Path 193" d="M13.325,108.41H11a.506.506,0,0,0-.377.844.691.691,0,1,1-1.03,0,.506.506,0,0,0-.377-.844H7.422V107.4a1.7,1.7,0,0,0,1.993-1.612,1.7,1.7,0,0,0-1.993-1.743v-1.54A.506.506,0,0,0,6.916,102H1.3A1.305,1.305,0,0,0,0,103.3v11.223a1.305,1.305,0,0,0,1.3,1.3H12.527a1.305,1.305,0,0,0,1.3-1.3v-5.612a.506.506,0,0,0-.506-.506ZM1.012,103.3a.292.292,0,0,1,.292-.292H6.41v1.82a.506.506,0,0,0,.844.377.691.691,0,1,1,0,1.03.506.506,0,0,0-.844.377v1.794H5.4a1.708,1.708,0,0,0,.025-.292,1.7,1.7,0,0,0-1.768-1.7,1.7,1.7,0,0,0-1.612,1.993H1.012Zm0,11.223v-5.106h1.82a.506.506,0,0,0,.377-.844.691.691,0,1,1,1.03,0,.506.506,0,0,0,.377.844H6.41v1.008a1.7,1.7,0,0,0-1.993,1.612,1.7,1.7,0,0,0,1.993,1.743v1.034H1.3a.292.292,0,0,1-.292-.292Zm11.807,0a.292.292,0,0,1-.292.292H7.422V113a.506.506,0,0,0-.844-.377.691.691,0,1,1,0-1.03.506.506,0,0,0,.844-.377v-1.794H8.429a1.7,1.7,0,0,0,1.612,1.993,1.7,1.7,0,0,0,1.743-1.993h1.034Z" transform="translate(0 -98.559)" fill="#fff"></path>
-                                                                        </g>
-                                                                    </svg>
-                                                                </div>
-                                                                <div class="sherah-paymentm__content">
-                                                                    <h4 class="sherah-notifications__title">You upload your fast product <span>successfully done</span></h4>
-                                                                    <p class="sherah-paymentm__text sherah-paymentm__text--notify">3 hours ago </p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <li>
-                                                            <div class="sherah-paymentm__name">
-                                                                <div class="sherah-paymentm__icon sherah-paymentm__icon--notify ntfmax__bgc--3">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="17.723" height="15.196" viewBox="0 0 17.723 15.196">
-                                                                        <path id="Path_194" data-name="Path 194" d="M19.36,10.483A1.9,1.9,0,0,0,17.79,9.7h-.2V8.432a1.9,1.9,0,0,0-1.937-1.9h-4.1a.7.7,0,0,1-.424-.146L8.591,4.411A1.982,1.982,0,0,0,7.382,4H3.937A1.9,1.9,0,0,0,2,5.9V17.3a1.811,1.811,0,0,0,.291.988,1.95,1.95,0,0,0,1.646.912H15.967a1.9,1.9,0,0,0,1.861-1.336l1.811-5.7A1.9,1.9,0,0,0,19.36,10.483ZM3.266,5.9a.633.633,0,0,1,.671-.633H7.382a.709.709,0,0,1,.431.146l2.532,1.975a1.963,1.963,0,0,0,1.2.412h4.1a.633.633,0,0,1,.671.633V9.7H6.191a1.9,1.9,0,0,0-1.842,1.336L3.266,14.472Zm15.195,5.882-1.811,5.7a.633.633,0,0,1-.633.45H3.988a.7.7,0,0,1-.4-.127l2.026-6.388a.633.633,0,0,1,.633-.45H17.79a.684.684,0,0,1,.551.272.633.633,0,0,1,.12.544Z" transform="translate(-2 -3.999)" fill="#fff"></path>
-                                                                    </svg>
-                                                                </div>
-                                                                <div class="sherah-paymentm__content">
-                                                                    <h4 class="sherah-notifications__title">Your Account has been created <span>successfully done</span></h4>
-                                                                    <p class="sherah-paymentm__text sherah-paymentm__text--notify">5 hours ago</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                        <li>
-                                                            <div class="sherah-paymentm__name">
-                                                                <div class="sherah-paymentm__icon sherah-paymentm__icon--notify ntfmax__bgc--4">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="15.964" height="21.016" viewBox="0 0 15.964 21.016">
-                                                                        <g id="Group_1033" data-name="Group 1033" transform="translate(-1018.595 85.089)">
-                                                                            <path id="Path_1039" data-name="Path 1039" d="M1023.331-77.979a1.928,1.928,0,0,1,.928-3l-1.234-2.163c-.095-.166-.2-.328-.285-.5a.611.611,0,0,1,.406-.954,11.6,11.6,0,0,1,4.418-.438,20.431,20.431,0,0,1,2.3.391c.685.149.832.537.488,1.142-.473.829-.949,1.656-1.449,2.528a2.013,2.013,0,0,1,1.25,1.268,1.879,1.879,0,0,1-.324,1.706c.392.285.79.529,1.136.833a9.768,9.768,0,0,1,3.591,7.928,4.577,4.577,0,0,1-3.519,4.586,15.392,15.392,0,0,1-5.843.515,14.574,14.574,0,0,1-2.822-.455,4.688,4.688,0,0,1-3.768-5.139,9.783,9.783,0,0,1,4.536-8.1C1023.2-77.883,1023.267-77.932,1023.331-77.979Zm3.234,12.665c.164,0,.328,0,.492,0a11.2,11.2,0,0,0,4.02-.65,3.324,3.324,0,0,0,2.234-3.1,8.444,8.444,0,0,0-3.082-7.1,5.247,5.247,0,0,0-7.3,0,8.583,8.583,0,0,0-3.1,6.491,3.589,3.589,0,0,0,2.92,3.941A13.666,13.666,0,0,0,1026.565-65.314Zm2.4-18.255a9.991,9.991,0,0,0-4.753.014c.415.725.822,1.449,1.248,2.163a.4.4,0,0,0,.3.128c.545.011,1.09.013,1.635-.006a.477.477,0,0,0,.346-.174C1028.151-82.133,1028.544-82.835,1028.965-83.569Zm-2.365,3.418c-.643.122-1.274.219-1.893.367a.6.6,0,0,0-.508.787c.1.35.364.467.818.349a6.153,6.153,0,0,1,3.15,0c.426.111.689,0,.8-.33a.6.6,0,0,0-.479-.8C1027.865-79.925,1027.235-80.026,1026.6-80.151Z" transform="translate(0 0)" fill="#fff"></path>
-                                                                            <path id="Path_1040" data-name="Path 1040" d="M1096.76,34.223a1.755,1.755,0,0,1-.952,1.551.447.447,0,0,0-.275.479,1.943,1.943,0,0,1-.022.489.557.557,0,0,1-.612.487.566.566,0,0,1-.574-.488,2.765,2.765,0,0,0-.75-1.247,3.03,3.03,0,0,1-.351-.343.613.613,0,1,1,.882-.852c.091.082.17.18.266.255.264.207.582.339.86.112a.853.853,0,0,0,.261-.622c-.02-.382-.347-.466-.684-.505a1.822,1.822,0,0,1-1.7-2.162,1.668,1.668,0,0,1,.89-1.258.488.488,0,0,0,.307-.545,1.588,1.588,0,0,1,.022-.448.553.553,0,0,1,.575-.484.568.568,0,0,1,.612.491,2.189,2.189,0,0,0,.753,1.243c.4.329.47.676.212.985-.24.287-.579.272-.978-.012a1.245,1.245,0,0,0-.51-.232.542.542,0,0,0-.66.463.578.578,0,0,0,.452.712,3.246,3.246,0,0,0,.365.05A1.843,1.843,0,0,1,1096.76,34.223Z" transform="translate(-68.335 -104.403)" fill="#fff"></path>
-                                                                        </g>
-                                                                    </svg>
-                                                                </div>
-                                                                <div class="sherah-paymentm__content">
-                                                                    <h4 class="sherah-notifications__title">Thank you !you made your fast sell <span>$120</span></h4>
-                                                                    <p class="sherah-paymentm__text sherah-paymentm__text--notify">6 hours ago</p>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    </ul>
-                                                    <!-- sherah Balance Button -->
-                                                    <div class="sherah-dropdown-card__button"><a href="notifications.html" class="sherah-dropdown-card__sell-all">See all Notification</a></div>
-                                                </div>
-                                                <!-- End sherah Balance Hover -->
-                                            </div>
-                                            <!-- End Header Alarm -->
-
                                             <!-- Header Author -->
                                             <div class="sherah-header__author sherah-flex__center--top">
                                                 <div class="sherah-header__author-img">
@@ -651,115 +488,141 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Manage Account</h2>
+                                        <h2 class="sherah-breadcrumb__title">Add Employee</h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="#">Home</a></li>
-                                            <li class="active"> <a href="#" id="addAccountBtn" >Add Account</a></li>
+                                            <li><a href="employee">Home</a></li>
                                         </ul>
                                     </div>
                                 </div>
                             </div>
-                            <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
-                                <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
-                                    <!-- sherah Table Head -->
-                                    <thead class="sherah-table__head">
-                                    <tr>
-                                        <th class="sherah-table__column-2 sherah-table__h2">AccountID</th>
-                                        <th class="sherah-table__column-3 sherah-table__h3">Email</th>
-                                        <th class="sherah-table__column-4 sherah-table__h4">Password</th>
-                                        <th class="sherah-table__column-4 sherah-table__h8" style="text-align: center;">Action</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody class="sherah-table__body">
-                                    <c:forEach items="${list}" var="account">
-                                        <tr>
-                                            <td class="sherah-table__column-2 sherah-table__data-2">
-                                                <div class="sherah-table__product-content">
-                                                    <p class="sherah-table__product-desc">${account.id}</p>
+                            <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
+                                <form class="sherah-wc__form-main" action="addemployee" method="post" enctype="multipart/form-data">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-12">
+                                            <!-- Basic Information -->
+                                            <div class="product-form-box sherah-border mg-top-30">
+                                                <h4 class="form-title m-0">Basic Information</h4>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Employee Name <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" type="text" name="name" required>
+                                                                <c:if test="${not empty errorMessages['name']}">
+                                                                    <span class="error-message">${errorMessages['name']}</span>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Employee Image <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                                                <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
+                                                                <img src="${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" required>
+                                                                <c:if test="${not empty errorMessages['email']}">
+                                                                    <span class="error-message">${errorMessages['email']}</span>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" required>
+                                                                <c:if test="${not empty errorMessages['phone']}">
+                                                                    <span class="error-message">${errorMessages['phone']}</span>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Address <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
+                                                            <select class="form-group__input" name="gender" aria-label="Default select example" required>
+                                                                <option value="1" selected>Nam</option>
+                                                                <option value="0">Nữ</option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input value="${dateOfBirth}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
+                                                                <c:if test="${not empty errorMessages['dob']}">
+                                                                    <span class="error-message">${errorMessages['dob']}</span>
+                                                                </c:if>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td class="sherah-table__column-2 sherah-table__data-2">
-                                                <div class="sherah-table__product-content">
-                                                    <p class="sherah-table__product-desc">${account.email}</p>
+                                            </div>
+                                            <!-- End Basic Information -->
+                                        </div>
+                                        <div class="col-lg-6 col-12">
+                                            <!-- Organization -->
+                                            <div class="product-form-box sherah-border mg-top-30">
+                                                <h4 class="form-title m-0">Organization</h4>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">AccountId:  <span class="required">*</span></label>
+                                                        <select class="form-group__input" name="account" aria-label="Default select example">
+                                                            <c:forEach items="${list}" var="account">
+                                                                <option value="${account.id}">${account.id}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td class="sherah-table__column-3 sherah-table__data-3">
-                                                <div class="sherah-table__product-content">
-                                                        ${account.password != null ? account.password.replaceAll(".", "*") : ""}
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
+                                                        <select class="form-group__input" name="warehouse" aria-label="Default select example" required>
+                                                            <c:forEach items="${listWarehouse}" var="ware">
+                                                                <option value="${ware.id}">${ware.warehouseName}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
                                                 </div>
-                                            </td>
-                                            <td class="sherah-table__column-4 sherah-table__data-7" style="text-align: center;">
-                                                <div class="sherah-table__status__group" style="display: inline-flex; gap: 10px;">
-                                                    <a href="editaccount?accountId=${account.id}" class="sherah-table__action sherah-color2 sherah-color3__bg--opactity">
-                                                        <svg class="sherah-color3__fill" xmlns="http://www.w3.org/2000/svg" width="18.29" height="18.252" viewBox="0 0 18.29 18.252">
-                                                            <g id="Group_132" data-name="Group 132" transform="translate(-234.958 -37.876)">
-                                                                <path id="Path_481" data-name="Path 481" d="M242.545,95.779h-5.319a2.219,2.219,0,0,1-2.262-2.252c-.009-1.809,0-3.617,0-5.426q0-2.552,0-5.1a2.3,2.3,0,0,1,2.419-2.419q2.909,0,5.818,0c.531,0,.87.274.9.715a.741.741,0,0,1-.693.8c-.3.026-.594.014-.892.014q-2.534,0-5.069,0c-.7,0-.964.266-.964.976q0,5.122,0,10.245c0,.687.266.955.946.955q5.158,0,10.316,0c.665,0,.926-.265.926-.934q0-2.909,0-5.818a.765.765,0,0,1,.791-.853.744.744,0,0,1,.724.808c.007,1.023,0,2.047,0,3.07s.012,2.023-.006,3.034A2.235,2.235,0,0,1,248.5,95.73a1.83,1.83,0,0,1-.458.048Q245.293,95.782,242.545,95.779Z" transform="translate(0 -39.652)" fill="#09ad95"/>
-                                                                <path id="Path_482" data-name="Path 482" d="M332.715,72.644l2.678,2.677c-.05.054-.119.133-.194.207q-2.814,2.815-5.634,5.625a1.113,1.113,0,0,1-.512.284c-.788.177-1.582.331-2.376.48-.5.093-.664-.092-.564-.589.157-.781.306-1.563.473-2.341a.911.911,0,0,1,.209-.437q2.918-2.938,5.853-5.86A.334.334,0,0,1,332.715,72.644Z" transform="translate(-84.622 -32.286)" fill="#09ad95"/>
-                                                                <path id="Path_483" data-name="Path 483" d="M433.709,42.165l-2.716-2.715a15.815,15.815,0,0,1,1.356-1.248,1.886,1.886,0,0,1,2.579,2.662A17.589,17.589,0,0,1,433.709,42.165Z" transform="translate(-182.038)" fill="#09ad95"/>
-                                                            </g>
-                                                        </svg>
-                                                    </a>
-                                                    <a href="javascript:void(0)" onclick="confirmDelete(${account.id})" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
-                                                        <svg class="sherah-color2__fill" xmlns="http://www.w3.org/2000/svg" width="16.247" height="18.252" viewBox="0 0 16.247 18.252">
-                                                            <g id="Icon" transform="translate(-160.007 -18.718)">
-                                                                <path id="Path_484" data-name="Path 484" d="M185.344,88.136c0,1.393,0,2.786,0,4.179-.006,1.909-1.523,3.244-3.694,3.248q-3.623.007-7.246,0c-2.15,0-3.682-1.338-3.687-3.216q-.01-4.349,0-8.7a.828.828,0,0,1,.822-.926.871.871,0,0,1,1,.737c.016.162.006.326.006.489q0,4.161,0,8.321c0,1.061.711,1.689,1.912,1.69q3.58,0,7.161,0c1.2,0,1.906-.631,1.906-1.695q0-4.311,0-8.622a.841.841,0,0,1,.708-.907.871.871,0,0,1,1.113.844C185.349,85.1,185.343,86.618,185.344,88.136Z" transform="translate(-9.898 -58.597)"/>
-                                                                <path id="Path_485" data-name="Path 485" d="M164.512,21.131c0-.517,0-.98,0-1.443.006-.675.327-.966,1.08-.967q2.537,0,5.074,0c.755,0,1.074.291,1.082.966.005.439.005.878.009,1.317a.615.615,0,0,0,.047.126h.428c1,0,2,0,3,0,.621,0,1.013.313,1.019.788s-.4.812-1.04.813q-7.083,0-14.165,0c-.635,0-1.046-.327-1.041-.811s.4-.786,1.018-.789C162.165,21.127,163.3,21.131,164.512,21.131Zm1.839-.021H169.9v-.764h-3.551Z" transform="translate(0 0)"/>
-                                                                <path id="Path_486" data-name="Path 486" d="M225.582,107.622c0,.9,0,1.806,0,2.709a.806.806,0,0,1-.787.908.818.818,0,0,1-.814-.924q0-2.69,0-5.38a.82.82,0,0,1,.81-.927.805.805,0,0,1,.79.9C225.585,105.816,225.582,106.719,225.582,107.622Z" transform="translate(-58.483 -78.508)"/>
-                                                                <path id="Path_487" data-name="Path 487" d="M266.724,107.63c0-.9,0-1.806,0-2.709a.806.806,0,0,1,.782-.912.818.818,0,0,1,.818.919q0,2.69,0,5.38a.822.822,0,0,1-.806.931c-.488,0-.792-.356-.794-.938C266.721,109.411,266.724,108.521,266.724,107.63Z" transform="translate(-97.561 -78.509)"/>
-                                                            </g>
-                                                        </svg>
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
-                                    </tbody>
-                                </table>
+                                            </div>
+                                            <!-- End Organization -->
 
+                                            <!-- Dịch 2 nút "Add" và "Cancel" lên ngay sau phần Organization -->
+                                            <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end">
+                                                <button type="submit" class="sherah-btn sherah-btn__primary">Add</button>
+                                                <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>
-    <!-- End sherah Dashboard -->
-    <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAccountLabel">Add New Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addAccountForm" action="addaccount" method="post">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email <span class="required">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password <span class="required">*</span></label>
-                            <input type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Role <span class="required">*</span></label>
-                            <select class="form-select" id="role" name="roleID" required>
-                                <c:forEach items="${roles}" var="role">
-                                    <option value="${role.id}">${role.roleName}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success">Add</button>
-                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
 
+    <!-- End sherah Dashboard -->
 
 </div>
 
@@ -778,42 +641,148 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-<script type="text/javascript">
-    function confirmDelete(accountId) {
-        if (confirm("Are you sure want to delete this account?")) {
-            window.location = "deleteaccount?accountId=" + accountId;
-        }
-    }
-</script>
-<script>
-    $('#sherah-table__vendor').DataTable({
-        searching: true,
-        info: false,
-        lengthChange: true,
-        scrollCollapse: true,
-        paging: true,
-        language: {
-            paginate: {
-                next: '<i class="fas fa-angle-right"></i>',
-                previous: '<i class="fas fa-angle-left"></i>'
-            },
-            lengthMenu: 'Showing _MENU_',
-            searchPlaceholder: 'Search...',
-            search: '<span class="sherah-data-table-label">Search</span>',
-        },
-        pageLength: 5,
-        lengthMenu: [5, 10, 20, 50],
-    });
-    $('#addAccountBtn').click(function() {
-        $('#addAccountModal').modal('show');
-    });
-</script>
+
+<%-- Kiểm tra nếu có message --%>
 <c:if test="${not empty message}">
     <script>
-        window.onload = function () {
+        window.onload = function() {
             alert("${message}");
         };
     </script>
 </c:if>
+
+
+<script type="text/javascript">
+    function chooseFile(fileInput) {
+        if (fileInput.files && fileInput.files[0]) {
+            var file = fileInput.files[0];
+            var fileType = file.type;
+            var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+
+            if (!validImageTypes.includes(fileType)) {
+                alert("Only image files (JPG, PNG, GIF) are allowed.");
+                fileInput.value = ""; // Clear the input
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file); // đọc nội dung tệp dưới dạng url
+        }
+    }
+</script>
+<script>
+    jQuery(document).ready(function($) {
+        $('[data-countdown]').each(function() {
+            var $this = $(this), finalDate = $(this).data('countdown');
+            $this.countdown(finalDate, function(event) {
+                $this.html(event.strftime(' %H : %M : %S'));
+            });
+        });
+    });
+</script>
+<script>
+    const ctx_side_two = document.getElementById('myChart_Side_One').getContext('2d');
+    const myChart_Side_One = new Chart(ctx_side_two, {
+        type: 'doughnut',
+
+        data: {
+            labels: [
+                'Total Sold',
+                'Total Cancel',
+                'Total Cancel',
+                'Total Planding'
+            ],
+            datasets: [{
+                label: 'My First Dataset',
+                data: [16, 16, 16, 30],
+                backgroundColor: [
+                    '#5356FB',
+                    '#F539F8',
+                    '#FFC210',
+                    '#E3E4FE'
+                ],
+                hoverOffset: 2,
+                borderWidth: 0,
+            }]
+        },
+
+        options: {
+
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    display: false,
+                },
+                title: {
+                    display: false,
+                    text: 'Sell History'
+                }
+            }
+        }
+
+    });
+
+    const ctx_side_three = document.getElementById('myChart_Side_Two').getContext('2d');
+    const myChart_Side_Two = new Chart(ctx_side_three, {
+        type: 'line',
+
+        data: {
+            labels: ['12:00 AM', '04:00 AM', '08:00 AM'],
+            datasets: [{
+                label: 'Visitor',
+                data: [40, 90, 10],
+                backgroundColor: '#D8D8FE',
+                borderColor:'#5356FB',
+                pointRadius: 3,
+                pointBackgroundColor: '#5356FB',
+                pointBorderColor: '#5356FB',
+                borderWidth:4,
+                tension: 0.9,
+                fill:true,
+                fillColor:'#fff',
+
+            }]
+        },
+
+        options: {
+            responsive: true,
+            scales: {
+                x:{
+                    grid:{
+                        display:false,
+                        drawBorder: false,
+                    },
+
+                },
+                y:{
+                    grid:{
+                        display:false,
+                        drawBorder: false,
+                    },
+                    ticks:{
+                        display:false
+                    }
+                },
+            },
+
+            plugins: {
+                legend: {
+                    position: 'top',
+                    display: false,
+                },
+                title: {
+                    display: false,
+                    text: 'Visitor: 2k'
+                }
+            }
+        }
+    });
+</script>
 </body>
 </html>
+
