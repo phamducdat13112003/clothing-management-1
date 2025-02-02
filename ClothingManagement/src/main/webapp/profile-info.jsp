@@ -105,7 +105,8 @@
 																					<h3 class="sherah-profile-info__heading mg-btm-30">Personal Information</h3>
 
 																					<input type="hidden" name="action" value="update">
-																					<input type="hidden" name="employeeID" value="${employee.employeeID}">
+
+																					<input type="text" name="employeeID" value="${employee.employeeID}">
 																					<input type="hidden" name="image" id="image" value="${employee.image}">
 
 																					<label for="employeeName" class="sherah-profile-info__title">Full Name:</label>
@@ -117,7 +118,7 @@
 
 																					<label for="email" class="sherah-profile-info__title">Email:</label>
 																					<input class="sherah-profile-info__text" type="email" name="email" id="email" value="${employee.email}" disabled title="Contact admin if you want to change this field" readonly><br>
-
+																					<input type="hidden" name="email" value="${employee.email}">
 																					<label for="phone" class="sherah-profile-info__title">Phone:</label>
 																					<input class="sherah-profile-info__text" type="text" name="phone" id="phone" value="${employee.phone}" required>
 																					<c:if test="${not empty phoneError}">
@@ -134,6 +135,8 @@
 
 																					<label for="gender" class="sherah-profile-info__title">Gender:</label>
 																					<input class="sherah-profile-info__text" type="text" name="gender" id="gender" value="${employee.gender}" disabled title="Contact admin if you want to change this field" readonly><br>
+																					<!-- Hidden field to send the gender value in the request -->
+																					<input type="hidden" name="gender" value="${employee.gender}">
 
 																					<label for="dateOfBirth" class="sherah-profile-info__title">Date of Birth:</label>
 																					<input class="sherah-profile-info__text" type="date" name="dateOfBirth" id="dateOfBirth" value="${employee.dateOfBirth}" required><br>
