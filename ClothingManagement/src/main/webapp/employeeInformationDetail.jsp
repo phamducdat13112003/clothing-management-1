@@ -518,12 +518,7 @@
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Email :</h4>
-                                                                                            <p class="sherah-profile-info__text">
-                                                                                                <c:choose>
-                                                                                                    <c:when test="${employee.gender == 1}">Male</c:when>
-                                                                                                    <c:otherwise>Female</c:otherwise>
-                                                                                                </c:choose>
-                                                                                            </p>
+                                                                                            <p class="sherah-profile-info__text">${employee.gender}</p>
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Date of Birth :</h4>
@@ -539,12 +534,10 @@
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Status :</h4>
-                                                                                            <p class="sherah-profile-info__text">${employee.status == 1 ? 'Active' : 'Inactive'}</p>
+                                                                                            <p class="sherah-profile-info__text">${employee.status}</p>
                                                                                         </li>
                                                                                     </ul>
                                                                                 </div>
-
-
                                                                             </div>
                                                                         </div>
                                                                     </div>

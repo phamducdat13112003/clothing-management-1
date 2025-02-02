@@ -121,7 +121,7 @@ public class EditEmployeeServlet extends HttpServlet {
             request.setAttribute("message", message.toString());
             request.getRequestDispatcher("./editEmployee.jsp").include(request, response);
         }else{
-            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, 1 ,Integer.parseInt(accountId), Integer.parseInt(warehouseID), "");
+            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, "Active" ,Integer.parseInt(accountId), Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();

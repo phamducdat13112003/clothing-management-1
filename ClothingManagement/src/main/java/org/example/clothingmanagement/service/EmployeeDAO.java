@@ -27,7 +27,7 @@ public class EmployeeDAO {
 
     public boolean createEmployee(Employee employee) {
         String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, Image) " +
-                "VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?,?)";
+                "VALUES (?, ?, ?, ?, ?, ?, 'Active', ?, ?,?)";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -98,15 +98,32 @@ public class EmployeeDAO {
         return false;
     }
 
-    public boolean isAccountIdExist(int accountId) {
-        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 1 ";
+    public boolean isAccountIdExist(int accountId, int employeeId) {
+        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND employeeId != ? AND status = 1 ";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setInt(1, accountId);
+            pt.setInt(2, employeeId);
+            ResultSet rs = pt.executeQuery();
+            if(rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isAccountIdExistAdd(int accountId) {
+        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 1 ";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setInt(1, accountId);
             ResultSet rs = pt.executeQuery();
             if(rs.next()) {
                 int count = rs.getInt(1);
-                return count > 1;
+                return count > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -148,9 +165,6 @@ public class EmployeeDAO {
             return false; // Return false if an error occurs
         }
     }
-
-
-
 
     public List<Employee> getAllEmployee() {
         List<Employee> employees = new ArrayList<>();
