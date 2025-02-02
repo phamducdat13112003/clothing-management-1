@@ -9,6 +9,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountDAO {
+    public static boolean isAccountExists(int accountId) {
+        String sql = "SELECT AccountID FROM Account WHERE AccountID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setInt(1, accountId);
+            ResultSet rs = pt.executeQuery();
+            return rs.next(); // Returns true if AccountID exists
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     public List<Account> getAllAccount() throws SQLException {
         List<Account> list = new ArrayList<>();
         String sql = "SELECT * FROM account";
