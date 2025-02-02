@@ -108,7 +108,7 @@ public class AddEmployeeServlet extends HttpServlet {
             errorMessages.put("dob", "Employees must be 18 years of age or older.");
         }
 
-        if (employeeDAO.isAccountIdExist(Integer.parseInt(accountId))) {
+        if (employeeDAO.isAccountIdExistAdd(Integer.parseInt(accountId))) {
             message.append("This account is used by another employee.\n");
             isAccountExisted =true;
         }
@@ -142,7 +142,7 @@ public class AddEmployeeServlet extends HttpServlet {
             if (!source.isEmpty()) {
                 String filename = employeeDAO.getEmployeeId() + ".png";
                 if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
-                    Files.createDirectory(Path.of(realPath));
+                    Files.createDirectories(Path.of(realPath));
                 }
                 part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
                 employee.setImage("/img/Employee/" + filename); //Set the path to the image file

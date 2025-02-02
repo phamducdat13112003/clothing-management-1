@@ -158,7 +158,7 @@
 									</span>
 									<span class="menu-bar__name">Account</span></span></a></span>
                         </li>
-                        <li><a href="employee" class="collapsed"><span class="menu-bar__text">
+                        <li><a href="manageemployee" class="collapsed"><span class="menu-bar__text">
 									<span class="sherah-menu-icon sherah-svg-icon__v1">
 										<svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.259" height="19.146" viewBox="0 0 22.259 19.146">
 											<path id="Path_229" data-name="Path 229" d="M601.866,379.059c.384-.409.661-.738.973-1.031a6.035,6.035,0,0,1,8.378.092,5.886,5.886,0,0,1,.126,8.307c-2.912,2.961-5.887,5.861-8.839,8.783a.788.788,0,0,1-1.258.011c-2.964-2.933-5.954-5.841-8.872-8.819a5.875,5.875,0,0,1,.169-8.3,6.037,6.037,0,0,1,8.343-.082C601.208,378.318,601.493,378.66,601.866,379.059Zm.008,14.528c.112-.1.187-.168.257-.237q3.966-3.931,7.928-7.866a4.341,4.341,0,0,0,.055-6.23,4.455,4.455,0,0,0-6.287.011c-.38.365-.749.741-1.124,1.112-.676.669-.985.672-1.648.017-.41-.405-.806-.826-1.233-1.213a4.4,4.4,0,0,0-6.158,6.284c2.629,2.636,5.283,5.246,7.927,7.867C601.67,393.412,601.758,393.484,601.874,393.588Z" transform="translate(-590.738 -376.383)"/>
@@ -485,7 +485,7 @@
                                                                                 <!--Profile Cover Info -->
                                                                                 <div class="sherah-profile-cover sherah-offset-bg sherah-dflex">
                                                                                     <div class="sherah-profile-cover__img">
-                                                                                        <img src="${employee.image}" alt="Image">
+                                                                                        <img src=".${employee.image}" alt="Image">
                                                                                     </div>
                                                                                     <div class="sherah-profile-cover__content">
                                                                                         <h3 class="sherah-profile-cover__title">${employee.employeeName}</h3>
@@ -518,12 +518,7 @@
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Email :</h4>
-                                                                                            <p class="sherah-profile-info__text">
-                                                                                                <c:choose>
-                                                                                                    <c:when test="${employee.gender == 1}">Male</c:when>
-                                                                                                    <c:otherwise>Female</c:otherwise>
-                                                                                                </c:choose>
-                                                                                            </p>
+                                                                                            <p class="sherah-profile-info__text">${employee.gender}</p>
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Date of Birth :</h4>
@@ -539,12 +534,10 @@
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Status :</h4>
-                                                                                            <p class="sherah-profile-info__text">${employee.status == 1 ? 'Active' : 'Inactive'}</p>
+                                                                                            <p class="sherah-profile-info__text">${employee.status}</p>
                                                                                         </li>
                                                                                     </ul>
                                                                                 </div>
-
-
                                                                             </div>
                                                                         </div>
                                                                     </div>
