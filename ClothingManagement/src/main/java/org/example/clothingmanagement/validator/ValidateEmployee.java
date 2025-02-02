@@ -41,7 +41,7 @@ public class ValidateEmployee {
         return Pattern.matches(regex, address);
     }
 
-    private boolean isAdult(String dob) {
+    private static boolean isAdult(String dob) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dateOfBirth = sdf.parse(dob);
@@ -62,7 +62,7 @@ public class ValidateEmployee {
         }
     }
 
-    private boolean isValidEmail(String email) {
+    private static boolean isValidEmail(String email) {
         String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
@@ -92,5 +92,20 @@ public class ValidateEmployee {
         System.out.println(isValidAddress("456/A Street, Hanoi")); // true
         System.out.println(isValidAddress("")); // false
         System.out.println(isValidAddress("Main St. @ Hanoi")); // false
+
+        // Test isAdult
+        System.out.println("isAdult Tests:");
+        System.out.println(isAdult("2000-01-01")); // true
+        System.out.println(isAdult("2010-01-01")); // false
+        System.out.println(isAdult("2005-02-01")); // true
+        System.out.println(isAdult("2020-12-31")); // false
+
+        // Test isValidEmail
+        System.out.println("Email Tests:");
+        System.out.println(isValidEmail("test@example.com")); // true
+        System.out.println(isValidEmail("user.name@domain.co")); // true
+        System.out.println(isValidEmail("invalid-email")); // false
+        System.out.println(isValidEmail("user@.com")); // false
+        System.out.println(isValidEmail("@missingusername.com")); // false
     }
 }

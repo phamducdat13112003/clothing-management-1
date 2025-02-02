@@ -32,7 +32,7 @@
 		<link rel="stylesheet" href="../css/slickslider.min.css">
 		<link rel="stylesheet" href="../css/jquery-ui.css">
 		<link rel="stylesheet" href="../css/reset.css">
-		<link rel="stylesheet" href="style.css">
+		<link rel="stylesheet" href="../css/style.css">
 		
 	</head>
 	<body id="sherah-dark-light">
