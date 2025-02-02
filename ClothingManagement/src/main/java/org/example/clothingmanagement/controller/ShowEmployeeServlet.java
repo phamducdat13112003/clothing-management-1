@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "ShowEmployeeServlet", value = "/employee")
+@WebServlet(name = "ShowEmployeeServlet", value = "/manageemployee")
 public class ShowEmployeeServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)

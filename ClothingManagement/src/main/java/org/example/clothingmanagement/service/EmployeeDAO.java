@@ -1,13 +1,28 @@
 package org.example.clothingmanagement.service;
 
+import com.mysql.cj.jdbc.MysqlDataSource;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.repository.DBContext;
 
+import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeeDAO {
+
+    private static final String URL = "jdbc:mysql://localhost:3306/warehousemanagement";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
+    private static final DataSource dataSource = createDataSource();
+
+    private static DataSource createDataSource() {
+        MysqlDataSource ds = new MysqlDataSource();
+        ds.setURL("jdbc:mysql://localhost:3306/warehousemanagement");
+        ds.setUser("root");
+        ds.setPassword("");
+        return ds;
+    }
 
     public boolean createEmployee(Employee employee) {
         String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, EmployeeImage) " +
@@ -99,7 +114,7 @@ public class EmployeeDAO {
     }
 
     // Update employee information
-    public boolean updateEmployee(Employee employee) {
+    public static boolean updateEmployee(Employee employee) {
         String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, EmployeeImage = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
@@ -204,6 +219,44 @@ public class EmployeeDAO {
             throw new RuntimeException(e);
         }
         return 0;
+    }
+
+    public static int getAccountIdByEmployeeId(int employeeID) {
+        String sql = "SELECT AccountID FROM Employee WHERE EmployeeID = ?";
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+
+            pt.setInt(1, employeeID);
+
+            try (ResultSet resultSet = pt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt("AccountID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -1; // Return -1 if no account is found or an error occurs
+    }
+
+    public static String getEmployeeNameByEmployeeId(int employeeID) {
+        String sql = "SELECT EmployeeName FROM Employee WHERE EmployeeID = ?";
+        try (Connection conn = dataSource.getConnection(); // Sử dụng DataSource để kết nối
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+
+            // Thiết lập giá trị cho tham số trong SQL
+            pt.setInt(1, employeeID);
+
+            // Thực thi truy vấn và xử lý kết quả
+            try (ResultSet resultSet = pt.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("EmployeeName"); // Lấy giá trị EmployeeName từ kết quả
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log lỗi nếu có vấn đề xảy ra với truy vấn SQL
+        }
+        return null; // Trả về null nếu không tìm thấy hoặc có lỗi
     }
 
     public static void main(String[] args) {
