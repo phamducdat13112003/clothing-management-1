@@ -10,7 +10,7 @@ import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.service.AccountDAO;
 import org.example.clothingmanagement.service.EmployeeDAO;
 import org.example.clothingmanagement.service.RoleDAO;
-import org.example.clothingmanagement.service.WareHouseDAO;
+import org.example.clothingmanagement.service.WarehouseDAO;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -64,10 +64,10 @@ public class EmployeeServlet extends HttpServlet {
 
         if (employee != null) {
             // Retrieve warehouse name
-           WareHouseDAO wareHouseDAO = new WareHouseDAO();
+           WarehouseDAO wareHouseDAO = new WarehouseDAO();
             String warehouseName = null;
             try {
-                warehouseName = WareHouseDAO.getWarehouseNameById(employee.getWarehouseID());
+                warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -132,7 +132,7 @@ public class EmployeeServlet extends HttpServlet {
             String warehouseName = null;
             String roleName = null;
             try {
-                warehouseName = WareHouseDAO.getWarehouseNameById(warehouseID);
+                warehouseName = WarehouseDAO.getWarehouseNameById(warehouseID);
                 int accountId = EmployeeDAO.getAccountIdByEmployeeId(employeeID);
                 int roleId = AccountDAO.getRoleIdByAccountId(accountId);
                 roleName = RoleDAO.getRoleNameById(roleId);
@@ -147,9 +147,9 @@ public class EmployeeServlet extends HttpServlet {
             employee.setPhone(phone);
             employee.setAddress(address);
             employee.setEmail(email);
-            employee.setGender(Integer.parseInt(gender));
+            employee.setGender(gender);
             employee.setDateOfBirth(LocalDate.parse(dateOfBirth));
-            employee.setStatus(Integer.parseInt(status));
+            employee.setStatus(status);
             employee.setWarehouseID(warehouseID);
             employee.setImage(image);
 
@@ -170,9 +170,9 @@ public class EmployeeServlet extends HttpServlet {
         employee.setPhone(phone);
         employee.setAddress(address);
         employee.setEmail(email);
-        employee.setGender(Integer.parseInt(gender));
+        employee.setGender(gender);
         employee.setDateOfBirth(LocalDate.parse(dateOfBirth));
-        employee.setStatus(Integer.parseInt(status));
+        employee.setStatus(status);
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
 

@@ -15,9 +15,9 @@ public class Employee {
     private String email;
     private String phone;
     private String address;
-    private int gender; // 1 for Male, 0 for Female
+    private String gender; // 1 for Male, 0 for Female
     private LocalDate dateOfBirth;
-    private int status; // 1 for Active, 0 for Inactive
+    private String status; // 1 for Active, 0 for Inactive
     private int accountID;
     private int warehouseID;
     private String image;
@@ -33,7 +33,7 @@ public class Employee {
         this.phone = phone;
     }
 
-    public Employee(String employeeName, String email, String phone, String address, int gender, LocalDate dateOfBirth, int accountID, int warehouseID, String image) {
+    public Employee(String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth, int accountID, int warehouseID, String image) {
         this.employeeName = employeeName;
         this.email = email;
         this.phone = phone;

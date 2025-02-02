@@ -25,7 +25,7 @@ public class EmployeeDAO {
     }
 
     public boolean createEmployee(Employee employee) {
-        String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, EmployeeImage) " +
+        String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, Image) " +
                 "VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?,?)";
 
         try (Connection conn = DBContext.getConnection();
@@ -34,7 +34,7 @@ public class EmployeeDAO {
             pt.setString(2, employee.getEmail());
             pt.setString(3, employee.getPhone());
             pt.setString(4, employee.getAddress());
-            pt.setInt(5, employee.getGender());
+            pt.setString(5, employee.getGender());
             pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
             pt.setInt(7, employee.getAccountID());
             pt.setInt(8, employee.getWarehouseID());
@@ -115,7 +115,7 @@ public class EmployeeDAO {
 
     // Update employee information
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, EmployeeImage = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -123,7 +123,7 @@ public class EmployeeDAO {
             pt.setString(2, employee.getEmail());
             pt.setString(3, employee.getPhone());
             pt.setString(4, employee.getAddress());
-            pt.setInt(5, employee.getGender());
+            pt.setString(5, employee.getGender());
             pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
             pt.setInt(7, employee.getAccountID());
             pt.setInt(8, employee.getWarehouseID());
@@ -151,12 +151,12 @@ public class EmployeeDAO {
                 employee.setEmail(rs.getString("Email"));
                 employee.setPhone(rs.getString("Phone"));
                 employee.setAddress(rs.getString("Address"));
-                employee.setGender(rs.getInt("Gender"));
+                employee.setGender(rs.getString("Gender"));
                 employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
-                employee.setStatus(rs.getInt("Status"));
+                employee.setStatus(rs.getString("Status"));
                 employee.setAccountID(rs.getInt("AccountID"));
                 employee.setWarehouseID(rs.getInt("WarehouseID"));
-                employee.setImage(rs.getString("EmployeeImage"));
+                employee.setImage(rs.getString("Image"));
                 employees.add(employee);
             }
         } catch (SQLException e) {
@@ -179,12 +179,12 @@ public class EmployeeDAO {
                     employee.setEmail(rs.getString("Email"));
                     employee.setPhone(rs.getString("Phone"));
                     employee.setAddress(rs.getString("Address"));
-                    employee.setGender(rs.getInt("Gender"));
+                    employee.setGender(rs.getString("Gender"));
                     employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
-                    employee.setStatus(rs.getInt("Status"));
+                    employee.setStatus(rs.getString("Status"));
                     employee.setAccountID(rs.getInt("AccountID"));
                     employee.setWarehouseID(rs.getInt("WarehouseID"));
-                    employee.setImage(rs.getString("EmployeeImage"));
+                    employee.setImage(rs.getString("Image"));
                 }
             }catch (SQLException e){
                 e.printStackTrace();

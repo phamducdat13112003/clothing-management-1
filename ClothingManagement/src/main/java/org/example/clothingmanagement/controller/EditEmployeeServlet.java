@@ -8,7 +8,7 @@ import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Warehouse;
 import org.example.clothingmanagement.service.AccountDAO;
 import org.example.clothingmanagement.service.EmployeeDAO;
-import org.example.clothingmanagement.service.WareHouseDAO;
+import org.example.clothingmanagement.service.WarehouseDAO;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -47,7 +47,7 @@ public class EditEmployeeServlet extends HttpServlet {
         String employeeId = request.getParameter("employeeId");
         EmployeeDAO employeeDAO= new EmployeeDAO();
         AccountDAO accountDAO= new AccountDAO();
-        WareHouseDAO wareHouseDAO= new WareHouseDAO();
+        WarehouseDAO wareHouseDAO= new WarehouseDAO();
         Employee employee = employeeDAO.getEmployeeByID(Integer.parseInt(employeeId));
         List<Account> list = null;
         List<Warehouse> listWarehouse = null;
@@ -67,7 +67,7 @@ public class EditEmployeeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeDAO employeeDAO = new EmployeeDAO();
         AccountDAO accountDAO = new AccountDAO();
-        WareHouseDAO warehouseDAO = new WareHouseDAO();
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
         Map<String, String> errorMessages = new HashMap<>();
         List<Account> list =null;
@@ -85,7 +85,7 @@ public class EditEmployeeServlet extends HttpServlet {
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
         address = capitalizeName(address);
-        int gender = Integer.parseInt(request.getParameter("gender"));
+        String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String accountId = request.getParameter("account");
         String warehouseID = request.getParameter("warehouse");

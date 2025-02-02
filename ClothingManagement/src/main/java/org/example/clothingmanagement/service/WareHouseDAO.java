@@ -7,7 +7,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WareHouseDAO {
+public class WarehouseDAO {
     public List<Warehouse> getAllWareHouse(){
         List<Warehouse> list = new ArrayList<>();
         String sql = "select * from warehouse";

@@ -8,7 +8,7 @@ import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Warehouse;
 import org.example.clothingmanagement.service.AccountDAO;
 import org.example.clothingmanagement.service.EmployeeDAO;
-import org.example.clothingmanagement.service.WareHouseDAO;
+import org.example.clothingmanagement.service.WarehouseDAO;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 public class AddEmployeeServlet extends HttpServlet {
 
     private AccountDAO accountDAO;
-    private WareHouseDAO warehouseDAO;
+    private WarehouseDAO warehouseDAO;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -48,7 +48,7 @@ public class AddEmployeeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AccountDAO accountDAO = new AccountDAO();
-        WareHouseDAO wareHouseDAO = new WareHouseDAO();
+        WarehouseDAO wareHouseDAO = new WarehouseDAO();
         List<Account> list = null;
         List<Warehouse> listWarehouse = null;
         try {
@@ -66,7 +66,7 @@ public class AddEmployeeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeDAO employeeDAO = new EmployeeDAO();
         AccountDAO accountDAO = new AccountDAO();
-        WareHouseDAO warehouseDAO = new WareHouseDAO();
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
 
         StringBuilder message = new StringBuilder();
 
@@ -91,7 +91,7 @@ public class AddEmployeeServlet extends HttpServlet {
         String address = request.getParameter("address").trim();
         address = capitalizeName(address);
         String accountId = request.getParameter("account");
-        int gender = Integer.parseInt(request.getParameter("gender"));
+        String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String warehouseID = request.getParameter("warehouse");
 

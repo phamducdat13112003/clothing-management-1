@@ -113,6 +113,7 @@
                                         </ul>
                                     </div>
                                 </li>
+
                                 <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item_products"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="21.136" height="17.873" viewBox="0 0 21.136 17.873">
@@ -123,7 +124,7 @@
                                     <!-- Dropdown Menu -->
                                     <div class="collapse sherah__dropdown" id="menu-item_products" data-bs-parent="#sherahMenu">
                                         <ul class="menu-bar__one-dropdown">
-                                            <li><a href="products.html"><span class="menu-bar__text"><span class="menu-bar__name">Products</span></span></a></li>
+                                            <li><a href="${pageContext.request.contextPath}/product-list"><span class="menu-bar__text"><span class="menu-bar__name">Products</span></span></a></li>
                                             <li><a href="product-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Product Details</span></span></a></li>
                                             <li><a href="upload-product.html"><span class="menu-bar__text"><span class="menu-bar__name">Upload Product</span></span></a></li>
                                         </ul>
