@@ -485,11 +485,10 @@
                                                                                 <!--Profile Cover Info -->
                                                                                 <div class="sherah-profile-cover sherah-offset-bg sherah-dflex">
                                                                                     <div class="sherah-profile-cover__img">
-                                                                                        <img src="img/profile-thumb.png" alt="#">
+                                                                                        <img src="${employee.image}" alt="Image">
                                                                                     </div>
                                                                                     <div class="sherah-profile-cover__content">
                                                                                         <h3 class="sherah-profile-cover__title">${employee.employeeName}</h3>
-                                                                                        <span class="sherah-profile-cover__text sherah-color1">I am Professional Graphic Designer</span>
                                                                                     </div>
                                                                                 </div>
                                                                                 <!-- End Profile Cover Info -->
