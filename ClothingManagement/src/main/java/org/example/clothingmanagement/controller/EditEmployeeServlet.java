@@ -102,7 +102,7 @@ public class EditEmployeeServlet extends HttpServlet {
             errorMessages.put("dob", "Employees must be 18 years of age or older.");
         }
 
-        if (employeeDAO.isAccountIdExist(Integer.parseInt(accountId))) {
+        if (employeeDAO.isAccountIdExist(Integer.parseInt(accountId), Integer.parseInt(employeeId))) {
             message.append("This account is used by another employee.\n");
         }
 
@@ -121,32 +121,32 @@ public class EditEmployeeServlet extends HttpServlet {
             request.setAttribute("message", message.toString());
             request.getRequestDispatcher("./editEmployee.jsp").include(request, response);
         }else{
-            Employee editEmployee = new Employee(name, email, phone, address, gender, dateOfBirth, Integer.parseInt(accountId), Integer.parseInt(warehouseID),"");
+            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, 1 ,Integer.parseInt(accountId), Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
-            if (part != null && part.getSize() > 0) { // Check if part is not null and has content
-                String contentType = part.getContentType();
-                if (!isImageFile(contentType)) {
-                    request.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
-                    request.getRequestDispatcher("editemployee").include(request, response);
-                    return;
-                }
-                String realPath = request.getServletContext().getRealPath("/img/Employee"); //where the photo is saved
-                String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
-                // convert it to a string, get just the filename without including the full path
+                if (part != null && part.getSize() > 0) { // Check if part is not null and has content
+                    String contentType = part.getContentType();
+                    if (!isImageFile(contentType)) {
+                        request.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
+                        request.getRequestDispatcher("editemployee").include(request, response);
+                        return;
+                    }
+                    String realPath = request.getServletContext().getRealPath("/img/Employee"); //where the photo is saved
+                    String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
+                    // convert it to a string, get just the filename without including the full path
 
                 if (!source.isEmpty()) {
                     String filename = employeeId + ".png";
-                    if (!Files.exists(Path.of(realPath))) { // check folder /images/Manager is existed
-                        Files.createDirectory(Path.of(realPath));
+                    if (!Files.exists(Path.of(realPath))) { // check folder /img/ Employee is existed
+                        Files.createDirectories(Path.of(realPath));
                     }
                     part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
-                    editEmployee.setImage("/img/Employee/" + filename+ "?"+System.currentTimeMillis()); //Set the path to the image file
+                    editEmployee.setImage("/img/Employee/" + filename+ "?" +System.currentTimeMillis()); //Set the path to the image file
                 }
             } else {
                 Employee existEmployee = employeeDAO.getEmployeeByID(Integer.parseInt(employeeId));
                 editEmployee.setImage(existEmployee.getImage());
             }
-            boolean success=employeeDAO.updateEmployee(editEmployee);
+            boolean success=EmployeeDAO.updateEmployee(editEmployee);
             if (success) {
                 request.setAttribute("message", "Employee updated successfully");
             } else {
@@ -156,7 +156,6 @@ public class EditEmployeeServlet extends HttpServlet {
             request.setAttribute("list", listEmployee);
             request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
         }
-
     }
 
     private String capitalizeName(String name) {

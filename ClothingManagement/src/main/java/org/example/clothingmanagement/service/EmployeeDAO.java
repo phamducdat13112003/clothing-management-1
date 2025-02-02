@@ -97,15 +97,32 @@ public class EmployeeDAO {
         return false;
     }
 
-    public boolean isAccountIdExist(int accountId) {
-        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 1 ";
+    public boolean isAccountIdExist(int accountId, int employeeId) {
+        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND employeeId != ? AND status = 1 ";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setInt(1, accountId);
+            pt.setInt(2, employeeId);
+            ResultSet rs = pt.executeQuery();
+            if(rs.next()) {
+                int count = rs.getInt(1);
+                return count > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isAccountIdExistAdd(int accountId) {
+        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 1 ";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setInt(1, accountId);
             ResultSet rs = pt.executeQuery();
             if(rs.next()) {
                 int count = rs.getInt(1);
-                return count > 1;
+                return count > 0;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -132,10 +149,9 @@ public class EmployeeDAO {
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // Nếu có lỗi, trả về false
         }
+        return false;
     }
-
 
 
     public List<Employee> getAllEmployee() {

@@ -79,10 +79,8 @@
         margin-right: auto;          /* Căn giữa ảnh */
     }
   </style>
-
 </head>
 <body id="sherah-dark-light">
-
 <div class="sherah-body-area">
   <!-- sherah Admin Menu -->
   <div class="sherah-smenu">
@@ -788,9 +786,12 @@
 </script>
 
 <c:if test="${not empty message}">
-    <div class="alert alert-danger">${message}</div>
+    <script>
+        window.onload = function () {
+            alert("${message}");
+        };
+    </script>
 </c:if>
-
 </body>
 </html>
 
