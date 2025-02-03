@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class ProductDetail {
-    private Integer id;
+    private Long id;
     private Integer quantity;
     private Double weight;
     private String color;
     private String size;
     private String image;
+    private Long productId;
 
 
 

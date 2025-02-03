@@ -1,7 +1,6 @@
-package org.example.clothingmanagement.service;
+package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Product;
-import org.example.clothingmanagement.repository.DBContext;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductDAO {
-    public static List<Product> getAllProducts() {
+    public List<Product> getAllProducts() {
        try(Connection conn = DBContext.getConnection()){
            StringBuilder sql = new StringBuilder();
            sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn FROM Product  ");
@@ -46,10 +45,7 @@ public class ProductDAO {
 
     }
 
-    public static void main(String[] args) {
-        List<Product> products = getAllProducts();
-        System.out.println(products.size());
-    }
+
 
 
 }

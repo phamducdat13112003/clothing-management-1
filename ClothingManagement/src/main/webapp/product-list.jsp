@@ -59,6 +59,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Name</th>
+                                        <th>...</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
                                     </tr>
@@ -69,7 +70,12 @@
                                             <tr>
                                                 <td>${product.id}</td>
                                                 <td>${product.name}</td>
+                                                <td>
+                                                    <img src="${product.urlImage}">
+                                                </td>
                                                 <td>${product.price}</td>
+                                                <td>${product.totalQuantity}</td>
+
                                             </tr>
                                         </c:forEach>
                                     </c:if>

@@ -6,27 +6,48 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.Product;
-import org.example.clothingmanagement.service.ProductDAO;
+import org.example.clothingmanagement.entity.ProductDetail;
+import org.example.clothingmanagement.service.ProductDetailService;
+import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @WebServlet(name="ProductList",urlPatterns = "/product-list")
 public class ProductListController extends HttpServlet {
-    private final ProductDAO productDAO = new ProductDAO();
+    private final ProductService productService = new ProductService();
+    private final ProductDetailService productDetailService = new ProductDetailService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         // Lấy danh sách sản phẩm từ ProductDAO
-        List<Product> products = productDAO.getAllProducts();
+//        List<Product> products = new ArrayList<>();
+        List<Product> products = productService.getAllProducts();
+
+
+
+        for(Product product : products){
+            List<ProductDetail> list = productDetailService.getProductDetailById(product.getId());
+            product.setTotalQuantity(list.size());
+            ProductDetail productDetail = list.get(0);
+            product.setUrlImage(productDetail.getImage());
+        }
+
+
+
 
         // Đặt sản phẩm vào trong request để chuyển đến JSP
         req.setAttribute("products", products);
+
 
         // Chuyển tiếp đến JSP để hiển thị
         req.getRequestDispatcher("/product-list.jsp").forward(req, resp);
     }
 
+   }
 
 
-}
+
+

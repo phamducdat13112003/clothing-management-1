@@ -27,5 +27,8 @@ public class Product {
     private Integer supplierId;
     private String madeIn;
 
+    private Integer totalQuantity;
+    private String urlImage;
+
 
 }
