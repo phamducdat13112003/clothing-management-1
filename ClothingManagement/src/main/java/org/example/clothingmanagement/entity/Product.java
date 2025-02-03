@@ -1,9 +1,15 @@
 package org.example.clothingmanagement.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+@NoArgsConstructor
+@Data
+@AllArgsConstructor
 @Builder
 public class Product {
     private Long id;

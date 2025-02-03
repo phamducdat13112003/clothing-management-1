@@ -20,19 +20,11 @@ public class ProductListController extends HttpServlet {
         // Lấy danh sách sản phẩm từ ProductDAO
         List<Product> products = productDAO.getAllProducts();
 
-        // In kích thước danh sách sản phẩm ra console
-        System.out.println("Products size: " + products.size());  // Đoạn này sẽ in ra số lượng sản phẩm trong danh sách
-
-        // Đảm bảo không có lỗi khi danh sách rỗng hoặc null
-        if (products == null || products.isEmpty()) {
-            System.out.println("No products found!");
-        }
-
         // Đặt sản phẩm vào trong request để chuyển đến JSP
         req.setAttribute("products", products);
 
         // Chuyển tiếp đến JSP để hiển thị
-        req.getRequestDispatcher("page/product-list.jsp").forward(req, resp);
+        req.getRequestDispatcher("/product-list.jsp").forward(req, resp);
     }
 
 
