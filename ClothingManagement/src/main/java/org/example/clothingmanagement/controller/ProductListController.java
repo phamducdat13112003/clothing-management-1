@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @WebServlet(name="ProductList",urlPatterns = "/product-list")
 public class ProductListController extends HttpServlet {
@@ -32,7 +34,24 @@ public class ProductListController extends HttpServlet {
             List<ProductDetail> list = productDetailService.getProductDetailById(product.getId());
             product.setTotalQuantity(list.size());
             ProductDetail productDetail = list.get(0);
-            product.setUrlImage(productDetail.getImage());
+
+            // Biểu thức chính quy để lấy ID file
+            String regex = "https://drive.google.com/file/d/([a-zA-Z0-9_-]+)/.*";
+
+            // Tạo Pattern từ biểu thức chính quy
+            Pattern pattern = Pattern.compile(regex);
+
+            // Tạo matcher từ chuỗi URL
+            Matcher matcher = pattern.matcher(productDetail.getImage());
+
+            if (matcher.find()) {
+                String img = matcher.group(1);
+                product.setUrlImage(img);
+            } else {
+                product.setUrlImage("");
+            }
+
+
         }
 
 
@@ -46,7 +65,7 @@ public class ProductListController extends HttpServlet {
         req.getRequestDispatcher("/product-list.jsp").forward(req, resp);
     }
 
-   }
+}
 
 
 

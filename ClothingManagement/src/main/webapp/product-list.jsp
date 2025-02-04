@@ -71,13 +71,13 @@
                                                 <td>${product.id}</td>
                                                 <td>${product.name}</td>
                                                 <td>
-                                                    <img src="${product.urlImage}">
+                                                    <img src="https://drive.google.com/uc?id=${product.urlImage}" alt="Product Image" width="100" height="100">
                                                 </td>
                                                 <td>${product.price}</td>
                                                 <td>${product.totalQuantity}</td>
-
                                             </tr>
                                         </c:forEach>
+
                                     </c:if>
                                     <c:if test="${empty products}">
                                         <tr>
