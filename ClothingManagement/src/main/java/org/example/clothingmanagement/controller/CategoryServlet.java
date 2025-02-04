@@ -26,12 +26,12 @@ public class CategoryServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("Category.jsp").forward(request, response);
+        request.getRequestDispatcher("category.jsp").forward(request, response);
 
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+           
     }
 
 
