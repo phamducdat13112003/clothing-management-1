@@ -64,6 +64,7 @@
                                         <th>...</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
+                                        <th>...</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -77,6 +78,19 @@
                                                 </td>
                                                 <td>${product.price}</td>
                                                 <td>${product.totalQuantity}</td>
+                                                <td>
+                                                    <!-- Delete product form with JSTL expression for productId -->
+                                                    <form action="delete-product" method="post">
+                                                        <input type="hidden" name="productId" id="productId" value="${product.id}">
+                                                        <button type="submit">Delete</button>
+                                                    </form>
+                                                <td>
+                                                    <button onclick="window.location.href='product-detail?id=${product.id}'">View Details</button>
+                                                </td>
+
+
+
+
                                             </tr>
                                         </c:forEach>
 
@@ -114,6 +128,19 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-
+<script>
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = parseInt(urlParams.get('message'));
+        switch (errorCode) {
+            case 1:
+                window.alert('Successful')
+                break;
+            case 2:
+                window.alert('Something went wrong');
+                break;
+        }
+    };
+</script>
 </body>
 </html>
