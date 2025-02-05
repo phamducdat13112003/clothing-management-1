@@ -1,4 +1,4 @@
-package org.example.clothingmanagement.service;
+package org.example.clothingmanagement.repository;
 
 
 import java.sql.*;
@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.example.clothingmanagement.entity.*;
-import org.example.clothingmanagement.repository.DBContext;
 
 public class CategoryDAO {
 

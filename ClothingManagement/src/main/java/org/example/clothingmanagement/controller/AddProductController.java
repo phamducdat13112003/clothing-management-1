@@ -8,12 +8,11 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.Category;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.Supplier;
-import org.example.clothingmanagement.service.CategoryDAO;
+import org.example.clothingmanagement.repository.CategoryDAO;
 import org.example.clothingmanagement.service.ProductService;
 import org.example.clothingmanagement.service.SupplierService;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name="AddProduct", urlPatterns = "/add-product")
