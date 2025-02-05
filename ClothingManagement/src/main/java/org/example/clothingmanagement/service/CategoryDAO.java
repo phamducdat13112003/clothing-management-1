@@ -4,6 +4,7 @@ package org.example.clothingmanagement.service;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.example.clothingmanagement.entity.*;
 import org.example.clothingmanagement.repository.DBContext;
 
@@ -11,117 +12,145 @@ public class CategoryDAO {
 
 
 
-     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
-     public static List<Category> selectAll() throws SQLException {
-    List<Category> categories = new ArrayList<>();
-    String sql = "SELECT * FROM category";
+    // Phương thức lấy tất cả Category từ cơ sở dữ liệu
+    public static List<Category> selectAll() throws SQLException {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT * FROM category";
 
-    // Thiết lập kết nối và thực thi truy vấn
-    try (Connection connection = DBContext.getConnection();  // Sử dụng Context.getConnection()
-         Statement stmt = connection.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
-        // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
-        while (rs.next()) {
-            categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
-                    rs.getDate("createdDate"),rs.getInt("createdBy")));
+        // Thiết lập kết nối và thực thi truy vấn
+        try (Connection connection = DBContext.getConnection();  // Sử dụng Context.getConnection()
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
+            while (rs.next()) {
+                categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
+                        rs.getDate("createdDate"),rs.getInt("createdBy")));
+            }
         }
-    }
-    return categories;
-}
-
-    // Phương thức lấy xóa Category theo id từ cơ sở dữ liệu
-    public static void deleteByIDCategories(int CategoryID) throws SQLException {
-
+        return categories;
     }
 
-    // Phương thức cập nhật Category theo ID
-    public static void updateByID(Category category) {
-        String sql = "UPDATE category SET categoryName = ?, createdDate = ?, createdBy = ? WHERE categoryID = ?";
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/warehousemanagement", "root", "");
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+    public void addCategory(Category category) throws SQLException {
+        String sql = "INSERT INTO category (categoryName, createdDate, createdBy) VALUES (?, ?, ?)";
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setString(1, category.getCategoryName());
             pstmt.setDate(2, new java.sql.Date(category.getCreatedDate().getTime()));
+            pstmt.setInt(3, category.getCreatedBy());
+
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void deleteCategory(int categoryID) throws SQLException {
+        String sql = "DELETE FROM category WHERE categoryID = ?";
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, categoryID);
+            pstmt.executeUpdate();
+        }
+    }
+
+    public void updateCategory(Category category) throws SQLException {
+        String sql = "UPDATE category SET categoryName = ?, createdDate = ?, createdBy = ? WHERE categoryID = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+
+            pstmt.setString(1, category.getCategoryName());
+            pstmt.setDate(2,new java.sql.Date(category.getCreatedDate().getTime()));
             pstmt.setInt(3, category.getCreatedBy());
             pstmt.setInt(4, category.getCategoryID());
             pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
-
-    // Phương thức lấy 1 Category từ cơ sở dữ liệu dựa trên ID
-    public static Category selectByID(int categoryID) {
+    public Category getCategoryByID(int categoryID) throws SQLException {
         String sql = "SELECT * FROM category WHERE categoryID = ?";
-        Category category = null;
-
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/warehousemanagement", "root", "");
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, categoryID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    category = new Category();
-                    category.setCategoryID(rs.getInt("categoryID"));
-                    category.setCategoryName(rs.getString("categoryName"));
-                    category.setCreatedDate(rs.getDate("createdDate"));
-                    category.setCreatedBy(rs.getInt("createdBy"));
+                    return new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
+                            rs.getDate("createdDate"), rs.getInt("createdBy"));
                 }
             }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
-        return category;
-    }
-
-
-    // Phương thức tạo mới một Category
-    public static void createCategory(Category category) {
-        String sql = "INSERT INTO category (categoryName, createdDate, createdBy) VALUES (?, ?, ?)";
-        try (Connection conn = DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/warehousemanagement", "root", "");
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-            pstmt.setString(1, category.getCategoryName());
-            pstmt.setDate(2, new java.sql.Date(category.getCreatedDate().getTime()));
-            pstmt.setInt(3, category.getCreatedBy());
-            pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-/*cần hoàn thành 4 chức năng:
-add, update, delete, view
-view: đẫ làm xong view cơ bản, tuy nhiên bây giờ phải lọc view theo từng loại:
-date, tên, id, người,tạo
-với create phải tạo category khi mà không cần sử dụng toiws createdDate, createBy
-với delete phải kiểm tra xem category nào có product thì không được phép xóa
-với create thì phải xem có vi phạm nguyeen tắc nào hay không
-nư vậy phải chú ý đến view( view theo field và product) và delete kiểm tra xem
-có dính gì đê product
-
-* */
-
-
-
-    // Phương thức main để in dữ liệu
-//    public static void main(String[] args) {
-//        // Gọi phương thức selectAll để lấy danh sách category
-//        List<Category> categories = selectAll();
-//
-//        // In thông tin của mỗi category
-//        for (Category category : categories) {
-//            System.out.println(category);
-//        }
-//    }
+        return null;
 }
+
+    public boolean checkProductCategory(int categoryID) throws SQLException {
+        String sql = "SELECT 1 FROM product WHERE categoryId = ? LIMIT 1";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, categoryID);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                return resultSet.next(); // Trả về true nếu có kết quả, false nếu không có
+            }
+        }
+    }
+    public boolean checkCategoryNameExist(String categoryName) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Category WHERE categoryName = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setString(1, categoryName);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getInt(1) > 0; // Nếu số lượng > 0, tức là đã tồn tại
+                }
+            }
+        }
+        return false;
+    }
+    public static List<Category> filterCategories(Integer categoryId, String categoryName, Date createDate, Integer createdBy) throws SQLException {
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT categoryID, categoryName, createdDate, createdBy FROM category WHERE 1=1";
+        List<Object> params = new ArrayList<>();
+        if (categoryId != null) {
+            sql += " AND categoryID = ?";
+            params.add(categoryId);
+        }
+        if (categoryName != null && !categoryName.trim().isEmpty()) {
+            sql += " AND categoryName LIKE ?";
+            params.add("%" + categoryName + "%");
+        }
+        if (createDate != null) {
+            sql += " AND createdDate = ?";
+            params.add(new java.sql.Date(createDate.getTime()));
+        }
+        if (createdBy != null) {
+            sql += " AND createdBy = ?";
+            params.add(createdBy);
+        }
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                pstmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    categories.add(new Category(
+                            rs.getInt("categoryID"),
+                            rs.getString("categoryName"),
+                            rs.getDate("createdDate"),
+                            rs.getInt("createdBy")
+                    ));
+                }
+            }
+        }
+        return categories;
+    }
+
+
+
+
+
+
+
+    }
 
