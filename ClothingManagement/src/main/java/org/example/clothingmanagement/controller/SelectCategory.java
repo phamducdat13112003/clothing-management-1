@@ -42,7 +42,7 @@ public class SelectCategory extends HttpServlet {
 
         // Gửi danh sách danh mục sang JSP
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("category.jsp").forward(request, response);
+        request.getRequestDispatcher("Category.jsp").forward(request, response);
 
     }
 
