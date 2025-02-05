@@ -5,19 +5,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.validator.ValidateEmployee;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.service.RoleDAO;
-import org.example.clothingmanagement.service.WarehouseDAO;
+import org.example.clothingmanagement.repository.RoleDAO;
+import org.example.clothingmanagement.repository.WarehouseDAO;
+import org.example.clothingmanagement.repository.EmployeeDAO;
+import org.example.clothingmanagement.repository.AccountDAO;
 
 import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
-@WebServlet(name = "EmployeeServlet", value = "/employee")
-public class EmployeeServlet extends HttpServlet {
+@WebServlet(name = "ViewProfileServlet", value = "/employee")
+public class ViewProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -46,14 +47,14 @@ public class EmployeeServlet extends HttpServlet {
         }
     }
 
-    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int employeeID = Integer.parseInt(request.getParameter("id"));
-        EmployeeService employeeService = new EmployeeService();
-        // Retrieve all employees
-        List<Employee> employees = employeeService.getAllEmployees();
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        // Lấy tất cả nhân viên
+        List<Employee> employees = employeeDAO.getAllEmployee();
         Employee employee = null;
 
-        // Search for the employee with the given ID
+        // Tìm nhân viên với ID đã cho
         for (Employee emp : employees) {
             if (emp.getEmployeeID() == employeeID) {
                 employee = emp;
@@ -62,8 +63,7 @@ public class EmployeeServlet extends HttpServlet {
         }
 
         if (employee != null) {
-            // Retrieve warehouse name
-           WarehouseDAO wareHouseDAO = new WarehouseDAO();
+            WarehouseDAO wareHouseDAO = new WarehouseDAO();
             String warehouseName = null;
             try {
                 warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
@@ -71,19 +71,18 @@ public class EmployeeServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-            int accountId = employee.getAccountID(); // Assuming Employee table has AccountID
+            int accountId = employee.getAccountID();
 
-            // Fetch RoleID using AccountID from AccountDAO
+            // Lấy RoleID sử dụng AccountID từ AccountDAO
             int roleId = AccountDAO.getRoleIdByAccountId(accountId);
 
-            // Fetch RoleName using RoleID from RoleDAO
+            // Lấy RoleName sử dụng RoleID từ RoleDAO
             String roleName = RoleDAO.getRoleNameById(roleId);
 
-            // Set attributes for the JSP
+
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
             request.setAttribute("roleName", roleName);
-            // Forward to the JSP page
             request.getRequestDispatcher("profile-info.jsp").forward(request, response);
         } else {
             response.getWriter().write("Employee not found.");
@@ -103,14 +102,19 @@ public class EmployeeServlet extends HttpServlet {
         int warehouseID = Integer.parseInt(request.getParameter("warehouseID"));
         String image = request.getParameter("image");
 
+        // Lấy AccountID từ cơ sở dữ liệu để tránh lỗi NULL
+        int accountID = EmployeeDAO.getAccountIdByEmployeeId(employeeID);
+        if (accountID == -1) {
+            System.out.println("Lỗi: Không tìm thấy AccountID cho EmployeeID " + employeeID);
+            response.getWriter().write("Lỗi: Không tìm thấy AccountID.");
+            return;
+        }
 
-        // Biến lỗi cho từng trường
+        // Kiểm tra lỗi dữ liệu nhập
         String employeeNameError = null;
         String phoneError = null;
         String addressError = null;
 
-
-        // Validation
         if (!ValidateEmployee.isValidFullName(employeeName)) {
             employeeNameError = "Tên không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt hoặc khoảng trắng liên tục.";
         }
@@ -121,25 +125,24 @@ public class EmployeeServlet extends HttpServlet {
             addressError = "Địa chỉ không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt ngoài , . - /.";
         }
 
-        // Nếu có lỗi, gửi lại toàn bộ dữ liệu và lỗi về JSP
+        // Nếu có lỗi, chuyển dữ liệu về JSP để hiển thị lỗi
         if (employeeNameError != null || phoneError != null || addressError != null) {
             request.setAttribute("employeeNameError", employeeNameError);
             request.setAttribute("phoneError", phoneError);
             request.setAttribute("addressError", addressError);
 
-            // Fetch lại thông tin role và warehouse để hiển thị đúng
+
             String warehouseName = null;
             String roleName = null;
             try {
                 warehouseName = WarehouseDAO.getWarehouseNameById(warehouseID);
-                int accountId = EmployeeDAO.getAccountIdByEmployeeId(employeeID);
-                int roleId = AccountDAO.getRoleIdByAccountId(accountId);
+                int roleId = AccountDAO.getRoleIdByAccountId(accountID);
                 roleName = RoleDAO.getRoleNameById(roleId);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
 
-            // Chuẩn bị lại thông tin employee để hiển thị
+            // dữ liệu nhân viên để hiển thị lại
             Employee employee = new Employee();
             employee.setEmployeeID(employeeID);
             employee.setEmployeeName(employeeName);
@@ -151,18 +154,17 @@ public class EmployeeServlet extends HttpServlet {
             employee.setStatus(status);
             employee.setWarehouseID(warehouseID);
             employee.setImage(image);
+            employee.setAccountID(accountID);
 
-            // Gửi lại thông tin về JSP
+            // Gửi dữ liệu về trang JSP
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
             request.setAttribute("roleName", roleName);
-
-            // Forward lại về profile-info.jsp
             request.getRequestDispatcher("profile-info.jsp").forward(request, response);
             return;
         }
 
-        // Nếu không có lỗi, thực hiện cập nhật
+        // Tạo đối tượng Employee với dữ liệu đã kiểm tra
         Employee employee = new Employee();
         employee.setEmployeeID(employeeID);
         employee.setEmployeeName(employeeName);
@@ -174,23 +176,18 @@ public class EmployeeServlet extends HttpServlet {
         employee.setStatus(status);
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
+        employee.setAccountID(accountID);
 
         boolean isUpdated = EmployeeDAO.updateEmployee(employee);
 
         if (isUpdated) {
-            // Nếu cập nhật thành công, cập nhật cả tên gốc và chuyển hướng
-            request.getSession().setAttribute("originalName", employeeName); // Tên mới khi cập nhật thành công
-            String successMessage = "Updated Successfully!";
+            request.getSession().setAttribute("originalName", employeeName);
+            String successMessage = "Cập nhật thành công!";
             request.getSession().setAttribute("successMessage", successMessage);
             response.sendRedirect("employee?action=view&id=" + employeeID);
         } else {
-            response.getWriter().write("Failed to update employee information.");
+            response.getWriter().write("Cập nhật thông tin nhân viên thất bại.");
         }
     }
-
-
-
-
-
 
 }
