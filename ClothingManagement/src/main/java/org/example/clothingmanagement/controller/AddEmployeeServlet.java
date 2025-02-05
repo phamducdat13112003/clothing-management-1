@@ -8,7 +8,7 @@ import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Warehouse;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
-import org.example.clothingmanagement.service.WarehouseDAO;
+import org.example.clothingmanagement.repository.WarehouseDAO;
 
 import java.io.IOException;
 import java.io.PrintWriter;

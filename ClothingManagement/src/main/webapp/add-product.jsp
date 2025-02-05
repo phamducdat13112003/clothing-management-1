@@ -79,9 +79,12 @@
                                                                                         <label for="productName">Product Name:</label>
                                                                                         <input type="text" id="productName" name="productName" required>
 
+<%--                                                                                        <label for="urlImage">Upload Image:</label>--%>
+<%--                                                                                        <input type="file" id="urlImage" name="image" accept="image/*" required>--%>
+
                                                                                         <!-- Price -->
                                                                                         <label for="price">Price:</label>
-                                                                                        <input type="number" id="price" name="price" step="10000" required>
+                                                                                        <input type="number" id="price" name="price" step="10000" min="1" required>
 
 <%--                                                                                        <!-- Bin ID -->--%>
 <%--                                                                                        <label for="binID">Bin ID:</label>--%>
@@ -118,7 +121,7 @@
 
                                                                                         <!-- Min Quantity -->
                                                                                         <label for="minQuantity">Minimum Quantity:</label>
-                                                                                        <input type="number" id="minQuantity" name="minQuantity" required>
+                                                                                        <input type="number" id="minQuantity" name="minQuantity"  min="1" required>
 
                                                                                         <!-- Description -->
                                                                                         <label for="description">Description:</label>

@@ -24,6 +24,7 @@ public class AddProductController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Category> categories = null;
         categories = CategoryDAO.selectAll();
+
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         req.setAttribute("categories", categories);
         req.setAttribute("suppliers", suppliers);
@@ -33,6 +34,7 @@ public class AddProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productName = req.getParameter("productName");
+
         double price = Double.parseDouble(req.getParameter("price"));
         int categoryID = Integer.parseInt(req.getParameter("categoryID"));
         String material = req.getParameter("material");

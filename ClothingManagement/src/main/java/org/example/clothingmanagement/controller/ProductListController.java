@@ -33,23 +33,7 @@ public class ProductListController extends HttpServlet {
         for(Product product : products){
             List<ProductDetail> list = productDetailService.getProductDetailById(product.getId());
             product.setTotalQuantity(list.size());
-            ProductDetail productDetail = list.get(0);
 
-            // Biểu thức chính quy để lấy ID file
-            String regex = "https://drive.google.com/file/d/([a-zA-Z0-9_-]+)/.*";
-
-            // Tạo Pattern từ biểu thức chính quy
-            Pattern pattern = Pattern.compile(regex);
-
-            // Tạo matcher từ chuỗi URL
-            Matcher matcher = pattern.matcher(productDetail.getImage());
-
-            if (matcher.find()) {
-                String img = matcher.group(1);
-                product.setUrlImage(img);
-            } else {
-                product.setUrlImage("");
-            }
 
 
         }
