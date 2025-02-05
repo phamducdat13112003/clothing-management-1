@@ -5,7 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.service.EmployeeService;
-import org.example.clothingmanagement.service.WarehouseDAO;
+import org.example.clothingmanagement.repository.WarehouseDAO;
 
 import java.io.IOException;
 import java.io.PrintWriter;
