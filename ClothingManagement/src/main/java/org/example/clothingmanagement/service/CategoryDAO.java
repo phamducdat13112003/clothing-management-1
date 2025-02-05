@@ -13,7 +13,7 @@ public class CategoryDAO {
 
 
     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
-    public static List<Category> selectAll() throws SQLException {
+    public static List<Category> selectAll()  {
         List<Category> categories = new ArrayList<>();
         String sql = "SELECT * FROM category";
 
@@ -26,6 +26,8 @@ public class CategoryDAO {
                 categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
                         rs.getDate("createdDate"),rs.getInt("createdBy")));
             }
+        }catch (Exception e){
+
         }
         return categories;
     }
