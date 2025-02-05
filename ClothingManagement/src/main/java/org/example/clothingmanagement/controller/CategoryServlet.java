@@ -20,13 +20,9 @@ public class CategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
         List<Category> categories = null;
-        try {
-            categories = CategoryDAO.selectAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        categories = CategoryDAO.selectAll();
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("category.jsp").forward(request, response);
+        request.getRequestDispatcher("Category.jsp").forward(request, response);
 
     }
 
