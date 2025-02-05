@@ -22,12 +22,12 @@ public class CategoryServlet extends HttpServlet {
         List<Category> categories = null;
         categories = CategoryDAO.selectAll();
         request.setAttribute("categories", categories);
-        request.getRequestDispatcher("Category.jsp").forward(request, response);
+        request.getRequestDispatcher("category.jsp").forward(request, response);
 
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
+           
     }
 
 
