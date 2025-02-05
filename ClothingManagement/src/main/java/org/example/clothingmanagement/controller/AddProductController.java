@@ -13,6 +13,7 @@ import org.example.clothingmanagement.service.ProductService;
 import org.example.clothingmanagement.service.SupplierService;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name="AddProduct", urlPatterns = "/add-product")
@@ -22,7 +23,12 @@ public class AddProductController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Category> categories = CategoryDAO.selectAll();
+        List<Category> categories = null;
+        try {
+            categories = CategoryDAO.selectAll();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         req.setAttribute("categories", categories);
         req.setAttribute("suppliers", suppliers);

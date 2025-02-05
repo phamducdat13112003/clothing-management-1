@@ -5,10 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.validator.ValidateEmployee;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.service.AccountDAO;
-import org.example.clothingmanagement.service.EmployeeDAO;
 import org.example.clothingmanagement.service.RoleDAO;
 import org.example.clothingmanagement.service.WarehouseDAO;
 
@@ -47,11 +46,11 @@ public class EmployeeServlet extends HttpServlet {
         }
     }
 
-    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         int employeeID = Integer.parseInt(request.getParameter("id"));
-        EmployeeDAO employeeDAO = new EmployeeDAO();
+        EmployeeService employeeService = new EmployeeService();
         // Retrieve all employees
-        List<Employee> employees = employeeDAO.getAllEmployee();
+        List<Employee> employees = employeeService.getAllEmployees();
         Employee employee = null;
 
         // Search for the employee with the given ID

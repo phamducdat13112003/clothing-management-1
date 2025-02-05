@@ -1,8 +1,7 @@
-package org.example.clothingmanagement.service;
+package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Role;
-import org.example.clothingmanagement.repository.DBContext;
 
 import java.sql.*;
 import java.util.ArrayList;

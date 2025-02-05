@@ -4,7 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.service.EmployeeDAO;
+import org.example.clothingmanagement.service.EmployeeService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,10 +32,10 @@ public class ShowEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EmployeeDAO employeeDAO = new EmployeeDAO();
+        EmployeeService employeeService = new EmployeeService();
         List<Employee> list = null;
         try {
-             list = employeeDAO.getAllEmployee();
+             list = employeeService.getAllEmployees();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
