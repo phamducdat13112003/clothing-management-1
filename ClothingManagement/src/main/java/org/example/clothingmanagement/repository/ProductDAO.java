@@ -16,7 +16,7 @@ public class ProductDAO {
            sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn FROM Product  ");
            PreparedStatement ps = conn.prepareStatement(sql.toString());
            ResultSet rs = ps.executeQuery();
-           List<Product> products = new ArrayList<Product>();
+           List<Product> products = new ArrayList<>();
            while(rs.next()){
                Product product = Product.builder()
                        .id(rs.getLong("ProductID"))
@@ -43,6 +43,33 @@ public class ProductDAO {
            throw new RuntimeException(e);
        }
 
+    }
+
+    public boolean addProduct(Product product) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" INSERT INTO Product (ProductName, Price, BinId, CategoryID, Material, Gender, Seasons, MinQuantity, Description, CreatedBy, SupplierID, MadeIn) ");
+            sql.append(" VALUES (?,?,?,?,?,?,?,?,?,?,?,?)");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setInt(3, product.getBinId());
+            ps.setInt(4, product.getCategoryId());
+            ps.setString(5, product.getMaterial());
+            ps.setString(6, product.getGender());
+            ps.setString(7, product.getSeasons());
+            ps.setInt(8, product.getMinQuantity());
+            ps.setString(9, product.getDescription());
+            ps.setInt(10, product.getCreatedBy());
+            ps.setInt(11, product.getSupplierId());
+            ps.setString(12, product.getMadeIn());
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        }
     }
 
 

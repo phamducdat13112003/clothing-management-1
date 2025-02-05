@@ -30,5 +30,18 @@ public class Product {
     private Integer totalQuantity;
     private String urlImage;
 
-
+    public Product(String name, Double price, String seasons, Integer supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,Integer BinId,Integer createdBy) {
+        this.name = name;
+        this.price = price;
+        this.seasons = seasons;
+        this.supplierId = supplierId;
+        this.material = material;
+        this.madeIn = madeIn;
+        this.gender = gender;
+        this.description = description;
+        this.categoryId = categoryId;
+        this.minQuantity = minQuantity;
+        this.binId = BinId;
+        this.createdBy = createdBy;
+    }
 }

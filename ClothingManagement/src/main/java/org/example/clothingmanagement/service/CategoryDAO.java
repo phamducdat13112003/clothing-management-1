@@ -4,35 +4,39 @@ package org.example.clothingmanagement.service;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.example.clothingmanagement.entity.*;
 import org.example.clothingmanagement.repository.DBContext;
 
 public class CategoryDAO {
 
 
+    // Phương thức lấy tất cả Category từ cơ sở dữ liệu
+    public static List<Category> selectAll(){
+        List<Category> categories = new ArrayList<>();
+        String sql = "SELECT * FROM category";
 
-     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
-     public static List<Category> selectAll() throws SQLException {
-    List<Category> categories = new ArrayList<>();
-    String sql = "SELECT * FROM category";
-
-    // Thiết lập kết nối và thực thi truy vấn
-    try (Connection connection = DBContext.getConnection();  // Sử dụng Context.getConnection()
-         Statement stmt = connection.createStatement();
-         ResultSet rs = stmt.executeQuery(sql)) {
-        // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
-        while (rs.next()) {
-            categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
-                    rs.getDate("createdDate"),rs.getInt("createdBy")));
+        // Thiết lập kết nối và thực thi truy vấn
+        try (Connection connection = DBContext.getConnection();  // Sử dụng Context.getConnection()
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
+            while (rs.next()) {
+                categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
+                        rs.getDate("createdDate"), rs.getInt("createdBy")));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
+        return categories;
     }
-    return categories;
-}
 
     // Phương thức lấy xóa Category theo id từ cơ sở dữ liệu
     public static void deleteByIDCategories(int CategoryID) throws SQLException {
 
     }
+
+
 
     // Phương thức cập nhật Category theo ID
     public static void updateByID(Category category) {
@@ -112,16 +116,15 @@ có dính gì đê product
 * */
 
 
-
     // Phương thức main để in dữ liệu
-//    public static void main(String[] args) {
-//        // Gọi phương thức selectAll để lấy danh sách category
-//        List<Category> categories = selectAll();
-//
-//        // In thông tin của mỗi category
-//        for (Category category : categories) {
-//            System.out.println(category);
-//        }
-//    }
+    public static void main(String[] args) {
+        // Gọi phương thức selectAll để lấy danh sách category
+        List<Category> categories = selectAll();
+
+        // In thông tin của mỗi category
+        for (Category category : categories) {
+            System.out.println(category);
+        }
+    }
 }
 

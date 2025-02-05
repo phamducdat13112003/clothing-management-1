@@ -12,4 +12,8 @@ public class ProductService {
         List<Product> products = productDAO.getAllProducts();
         return products;
     }
+
+    public boolean addProduct(Product product) {
+        return productDAO.addProduct(product);
+    }
 }

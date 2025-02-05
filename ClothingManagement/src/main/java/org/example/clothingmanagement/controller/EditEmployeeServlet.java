@@ -102,9 +102,9 @@ public class EditEmployeeServlet extends HttpServlet {
             errorMessages.put("dob", "Employees must be 18 years of age or older.");
         }
 
-        if (employeeDAO.isAccountIdExist(Integer.parseInt(accountId), Integer.parseInt(employeeId))) {
-            message.append("This account is used by another employee.\n");
-        }
+//        if (employeeDAO.isAccountIdExist(Integer.parseInt(accountId), Integer.parseInt(employeeId))) {
+//            message.append("This account is used by another employee.\n");
+//        }
 
         if (employeeDAO.isEmployeeExisted(Integer.parseInt(employeeId),email, phone)) {
             message.append("Employee already existed.\n");
