@@ -1,65 +1,28 @@
-<%-- 
-    Document   : sidebar
-    Created on : Feb 1, 2025, 3:44:52 PM
-    Author     : admin
---%>
 
-<!DOCTYPE html>
-<html class="no-js" lang="zxx">
-    <head>
-        <!-- Meta Tags -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="keywords" content="Site keywords here">
-        <meta name="description" content="#">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-        <!-- Site Title -->
-        <title>Sherah - HTML eCommerce Dashboard Template</title>
+<div class="sherah-body-area">
+    <!-- sherah Admin Menu -->
+    <div class="sherah-smenu">
+        <!-- Admin Menu -->
+        <div class="admin-menu">
 
-        <!-- Font -->
-        <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet"> 
-
-        <!-- Fav Icon -->
-        <link rel="icon" href="../img/favicon.png">
-
-        <!-- sherah Stylesheet -->
-        <link rel="stylesheet" href="../css/bootstrap.min.css">
-        <link rel="stylesheet" href="../css/font-awesome-all.min.css">
-        <link rel="stylesheet" href="../css/charts.min.css">
-        <link rel="stylesheet" href="../css/datatables.min.css">
-        <link rel="stylesheet" href="../css/jvector-map.css">
-        <link rel="stylesheet" href="../css/slickslider.min.css">
-        <link rel="stylesheet" href="../css/jquery-ui.css">
-        <link rel="stylesheet" href="../css/reset.css">
-        <link rel="stylesheet" href="style.css">
-
-    </head>
-    <body id="sherah-dark-light">
-
-        <div class="sherah-body-area">
-            <!-- sherah Admin Menu -->
-            <div class="sherah-smenu">
-                <!-- Admin Menu -->
-                <div class="admin-menu">
-
-                    <!-- Logo -->
-                    <div class="logo sherah-sidebar-padding">
-                        <a href="index.html">
-                            <img class="sherah-logo__main" src="../img/logo.png" alt="#">
-                        </a>
-                        <div class="sherah__sicon close-icon d-xl-none">
-                            <svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.19855 7.41927C4.22908 5.52503 2.34913 3.72698 0.487273 1.90989C0.274898 1.70227 0.0977597 1.40419 0.026333 1.11848C-0.0746168 0.717537 0.122521 0.36707 0.483464 0.154695C0.856788 -0.0643475 1.24249 -0.0519669 1.60248 0.199455C1.73105 0.289929 1.84438 0.404212 1.95771 0.514685C4.00528 2.48321 6.05189 4.45173 8.09755 6.4212C8.82896 7.12499 8.83372 7.6145 8.11565 8.30687C6.05856 10.2878 4.00052 12.2677 1.94152 14.2467C1.82724 14.3562 1.71391 14.4696 1.58439 14.5591C1.17773 14.841 0.615842 14.781 0.27966 14.4324C-0.056522 14.0829 -0.0946163 13.5191 0.202519 13.1248C0.296802 12.9991 0.415847 12.8915 0.530129 12.781C2.29104 11.0868 4.05194 9.39351 5.81571 7.70212C5.91761 7.60593 6.04332 7.53355 6.19855 7.41927Z"></path>
-                            </svg>		
-                        </div>
-                    </div>
-                    <!-- Main Menu -->
-                    <div class="admin-menu__one sherah-sidebar-padding">
-                        <!-- Nav Menu -->
-                        <div class="menu-bar">
-                            <ul class="menu-bar__one sherah-dashboard-menu" id="sherahMenu">
-                                <li><a  href="#!" data-bs-toggle="collapse" data-bs-target="#menu-item_home"><span class="menu-bar__text">
+            <!-- Logo -->
+            <div class="logo sherah-sidebar-padding">
+                <a href="index.html">
+                    <img class="sherah-logo__main" src="img/logo.png" alt="#">
+                </a>
+                <div class="sherah__sicon close-icon d-xl-none">
+                    <svg width="9" height="15" viewBox="0 0 9 15" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6.19855 7.41927C4.22908 5.52503 2.34913 3.72698 0.487273 1.90989C0.274898 1.70227 0.0977597 1.40419 0.026333 1.11848C-0.0746168 0.717537 0.122521 0.36707 0.483464 0.154695C0.856788 -0.0643475 1.24249 -0.0519669 1.60248 0.199455C1.73105 0.289929 1.84438 0.404212 1.95771 0.514685C4.00528 2.48321 6.05189 4.45173 8.09755 6.4212C8.82896 7.12499 8.83372 7.6145 8.11565 8.30687C6.05856 10.2878 4.00052 12.2677 1.94152 14.2467C1.82724 14.3562 1.71391 14.4696 1.58439 14.5591C1.17773 14.841 0.615842 14.781 0.27966 14.4324C-0.056522 14.0829 -0.0946163 13.5191 0.202519 13.1248C0.296802 12.9991 0.415847 12.8915 0.530129 12.781C2.29104 11.0868 4.05194 9.39351 5.81571 7.70212C5.91761 7.60593 6.04332 7.53355 6.19855 7.41927Z"></path>
+                    </svg>
+                </div>
+            </div>
+            <!-- Main Menu -->
+            <div class="admin-menu__one sherah-sidebar-padding">
+                <!-- Nav Menu -->
+                <div class="menu-bar">
+                    <ul class="menu-bar__one sherah-dashboard-menu" id="sherahMenu">
+                        <li><a  href="#!" data-bs-toggle="collapse" data-bs-target="#menu-item_home"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg  class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="18.075" height="18.075" viewBox="0 0 18.075 18.075">
                                                 <g id="Icon" transform="translate(0 0)">
@@ -72,8 +35,8 @@
                                             </span>
                                             <span class="menu-bar__name">Dashboard</span></span></a></span>
 
-                                </li>
-                                <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item_vendors"><span class="menu-bar__text">
+                        </li>
+                        <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item_vendors"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg  class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.038" height="17.943" viewBox="0 0 22.038 17.943">
                                                 <g id="Icon" transform="translate(-325.516 -274.72)">
@@ -81,19 +44,19 @@
                                                 <path id="Path_222" data-name="Path 222" d="M363.308,278.9a4.192,4.192,0,1,1,4.144,4.208A4.177,4.177,0,0,1,363.308,278.9Zm1.472-.009a2.721,2.721,0,1,0,2.718-2.7A2.717,2.717,0,0,0,364.779,278.892Z" transform="translate(-34.322)"/>
                                                 <path id="Path_223" data-name="Path 223" d="M474.686,302.114a3.121,3.121,0,1,1-3.123,3.119A3.121,3.121,0,0,1,474.686,302.114Zm1.649,3.123a1.651,1.651,0,1,0-1.665,1.648A1.652,1.652,0,0,0,476.335,305.237Z" transform="translate(-132.638 -24.879)"/>
                                                 </g>
-                                                </svg>										  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Vendors</span></span> <span class="sherah__toggle"></span></a></span>
-                                    <!-- Dropdown Menu -->
-                                    <div class="collapse sherah__dropdown" id="menu-item_vendors"  data-bs-parent="#sherahMenu">
-                                        <ul class="menu-bar__one-dropdown">
-                                            <li><a href="vendor.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor Grid</span></span></a></li>
-                                            <li><a href="vendor-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor List</span></span></a></li>
-                                            <li><a href="vendor-profile.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor Profile</span></span></a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__customers"><span class="menu-bar__text">
+                            <!-- Dropdown Menu -->
+                            <div class="collapse sherah__dropdown" id="menu-item_vendors"  data-bs-parent="#sherahMenu">
+                                <ul class="menu-bar__one-dropdown">
+                                    <li><a href="vendor.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor Grid</span></span></a></li>
+                                    <li><a href="vendor-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor List</span></span></a></li>
+                                    <li><a href="vendor-profile.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor Profile</span></span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__customers"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon"  xmlns="http://www.w3.org/2000/svg" width="21.732" height="18" viewBox="0 0 21.732 18">
                                                 <g id="Icon" transform="translate(-525.662 -352.927)">
@@ -105,58 +68,57 @@
                                                 </svg>
                                             </span>
                                             <span class="menu-bar__name">Customers</span></span> <span class="sherah__toggle"></span></a></span>
-                                    <!-- Dropdown Menu -->
-                                    <div class="collapse sherah__dropdown" id="menu-item__customers"  data-bs-parent="#sherahMenu">
-                                        <ul class="menu-bar__one-dropdown">
-                                            <li><a href="customer-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Customer List</span></span></a></li>
-                                            <li><a href="customers.html"><span class="menu-bar__text"><span class="menu-bar__name">Customers</span></span></a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-
-                                <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item_products"><span class="menu-bar__text">
+                            <!-- Dropdown Menu -->
+                            <div class="collapse sherah__dropdown" id="menu-item__customers"  data-bs-parent="#sherahMenu">
+                                <ul class="menu-bar__one-dropdown">
+                                    <li><a href="customer-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Customer List</span></span></a></li>
+                                    <li><a href="customers.html"><span class="menu-bar__text"><span class="menu-bar__name">Customers</span></span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item_products"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="21.136" height="17.873" viewBox="0 0 21.136 17.873">
                                                 <path id="Path_218" data-name="Path 218" d="M558.766,384.526c.177-.092.32-.164.46-.24l6.468-3.491a1.9,1.9,0,0,1,.368-.179.506.506,0,0,1,.632.248.487.487,0,0,1-.127.656,1.743,1.743,0,0,1-.315.191c-2.517,1.359-5.038,2.712-7.549,4.083a.98.98,0,0,1-1.036.012q-3.781-1.986-7.582-3.934a.811.811,0,0,1-.505-.831c.02-1.3,0-2.6.014-3.9a.486.486,0,0,0-.3-.508c-.45-.232-.889-.486-1.326-.742a.539.539,0,0,1-.221-.877c.62-.926,1.244-1.849,1.883-2.762a1.17,1.17,0,0,1,.442-.344c2.561-1.246,5.127-2.482,7.688-3.728a.879.879,0,0,1,.822-.01c2.568,1.2,5.143,2.387,7.709,3.591a1.24,1.24,0,0,1,.478.42c.61.916,1.2,1.844,1.794,2.771.3.463.23.71-.265.989q-3.631,2.046-7.265,4.086c-.454.255-.643.212-.981-.2-.412-.5-.823-1.011-1.292-1.587Zm-7.409-12.033c.133.076.214.126.3.17,2.065,1.073,4.133,2.141,6.191,3.225a.625.625,0,0,0,.674-.018c2.031-1.106,4.069-2.2,6.1-3.3.118-.064.232-.133.367-.21a1.6,1.6,0,0,0-.164-.106c-2.124-.986-4.246-1.977-6.378-2.945a.814.814,0,0,0-.6.038c-2.04.971-4.071,1.96-6.1,2.945C551.626,372.349,551.511,372.412,551.357,372.492Zm-.688,4.945c0,1.092.01,2.129-.007,3.165a.5.5,0,0,0,.321.528c2.093,1.074,4.179,2.162,6.267,3.245.1.054.216.1.344.152v-6.293l-1.263,1.551c-.386.473-.552.507-1.076.212q-2.074-1.166-4.147-2.334C550.982,377.593,550.85,377.53,550.668,377.438Zm10.08,1.529,6.694-3.769-1.4-2.171-7.033,3.792Zm-3.4-2.142-7.037-3.652-1.38,2.033,6.683,3.76Z" transform="translate(-547.61 -368.076)"/>
-                                                </svg>										  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Products</span></span> <span class="sherah__toggle"></span></a></span>
-                                    <!-- Dropdown Menu -->
-                                    <div class="collapse sherah__dropdown" id="menu-item_products" data-bs-parent="#sherahMenu">
-                                        <ul class="menu-bar__one-dropdown">
-                                            <li><a href="${pageContext.request.contextPath}/product-list"><span class="menu-bar__text"><span class="menu-bar__name">Products</span></span></a></li>
-                                            <li><a href="product-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Product Details</span></span></a></li>
-                                            <li><a href="${pageContext.request.contextPath}/add-product"><span class="menu-bar__text"><span class="menu-bar__name">Upload Product</span></span></a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><a href="wishlist.html" class="collapsed"><span class="menu-bar__text">
+                            <!-- Dropdown Menu -->
+                            <div class="collapse sherah__dropdown" id="menu-item_products" data-bs-parent="#sherahMenu">
+                                <ul class="menu-bar__one-dropdown">
+                                    <li><a href="products.html"><span class="menu-bar__text"><span class="menu-bar__name">Products</span></span></a></li>
+                                    <li><a href="product-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Product Details</span></span></a></li>
+                                    <li><a href="upload-product.html"><span class="menu-bar__text"><span class="menu-bar__name">Upload Product</span></span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="wishlist.html" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.259" height="19.146" viewBox="0 0 22.259 19.146">
                                                 <path id="Path_229" data-name="Path 229" d="M601.866,379.059c.384-.409.661-.738.973-1.031a6.035,6.035,0,0,1,8.378.092,5.886,5.886,0,0,1,.126,8.307c-2.912,2.961-5.887,5.861-8.839,8.783a.788.788,0,0,1-1.258.011c-2.964-2.933-5.954-5.841-8.872-8.819a5.875,5.875,0,0,1,.169-8.3,6.037,6.037,0,0,1,8.343-.082C601.208,378.318,601.493,378.66,601.866,379.059Zm.008,14.528c.112-.1.187-.168.257-.237q3.966-3.931,7.928-7.866a4.341,4.341,0,0,0,.055-6.23,4.455,4.455,0,0,0-6.287.011c-.38.365-.749.741-1.124,1.112-.676.669-.985.672-1.648.017-.41-.405-.806-.826-1.233-1.213a4.4,4.4,0,0,0-6.158,6.284c2.629,2.636,5.283,5.246,7.927,7.867C601.67,393.412,601.758,393.484,601.874,393.588Z" transform="translate(-590.738 -376.383)"/>
-                                                </svg>										  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Wishlist</span></span></a></span>
-                                </li>
-                                <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__orders"><span class="menu-bar__text">
+                        </li>
+                        <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__orders"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg  class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="17.092" height="17.873" viewBox="0 0 17.092 17.873">
                                                 <g id="Icon" transform="translate(-409.241 -375.497)">
                                                 <path id="Path_219" data-name="Path 219" d="M413.466,380.6a15.992,15.992,0,0,1,.123-1.943,4.18,4.18,0,0,1,4.549-3.151,4.054,4.054,0,0,1,3.919,3.741c.009.436,0,.872,0,1.354h2.872c.193,0,.386,0,.579,0,.589.012.879.286.813.811-.4,3.247-.8,6.495-1.227,9.739a2.674,2.674,0,0,1-2.769,2.2q-4.543.022-9.086,0a2.681,2.681,0,0,1-2.771-2.2c-.344-2.558-.649-5.12-.97-7.68-.078-.62-.147-1.242-.234-1.861-.108-.759.125-1.011.967-1.012Zm-2.723,1.3c.062.5.119.978.177,1.452.306,2.481.606,4.963.924,7.443.114.888.642,1.293,1.628,1.294q4.32,0,8.639,0a2.279,2.279,0,0,0,.57-.059,1.428,1.428,0,0,0,1.074-1.446c.213-1.836.452-3.669.679-5.5.13-1.052.257-2.1.387-3.174h-2.742v1.215c.038.015.076.032.115.046.437.159.649.424.563.746a.73.73,0,0,1-.826.524c-.43-.008-.861.008-1.291-.006a.668.668,0,0,1-.711-.588c-.021-.423.28-.612.676-.709v-1.218h-5.655v1.221c.434.1.724.3.683.722a.613.613,0,0,1-.636.565c-.518.026-1.039.024-1.558,0-.349-.016-.627-.224-.614-.526a1.458,1.458,0,0,1,.364-.659c.051-.071.2-.084.292-.118V381.9Zm4.154-1.321h5.727c0-.514.036-1-.007-1.491a2.723,2.723,0,0,0-2.627-2.306,2.77,2.77,0,0,0-2.967,1.982A12.7,12.7,0,0,0,414.9,380.578Z" transform="translate(0 0)"/>
                                                 <path id="Path_220" data-name="Path 220" d="M475.527,506.525c.71-.887,1.409-1.754,2.1-2.627a.66.66,0,0,1,.828-.285.609.609,0,0,1,.258.961c-.841,1.079-1.7,2.145-2.563,3.206a.6.6,0,0,1-.858.123c-.635-.412-1.267-.829-1.89-1.259a.635.635,0,1,1,.71-1.053C474.584,505.888,475.043,506.2,475.527,506.525Z" transform="translate(-57.815 -117.848)"/>
                                                 </g>
-                                                </svg>											  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Orders</span></span><span class="sherah__toggle"></span></a></span>
-                                    <!-- Dropdown Menu -->
-                                    <div class="collapse sherah__dropdown" id="menu-item__orders" data-bs-parent="#sherahMenu">
-                                        <ul class="menu-bar__one-dropdown">
-                                            <li><a href="order-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Order List</span></span></a></li>
-                                            <li><a href="order-details.html"><span class="menu-bar__text"><span class="menu-bar__name">Order Details</span></span></a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><a href="invoice.html" class="collapsed"><span class="menu-bar__text">
+                            <!-- Dropdown Menu -->
+                            <div class="collapse sherah__dropdown" id="menu-item__orders" data-bs-parent="#sherahMenu">
+                                <ul class="menu-bar__one-dropdown">
+                                    <li><a href="order-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Order List</span></span></a></li>
+                                    <li><a href="order-details.html"><span class="menu-bar__text"><span class="menu-bar__name">Order Details</span></span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a href="invoice.html" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg  class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="19.434" height="19.432" viewBox="0 0 19.434 19.432">
                                                 <g id="Icon" transform="translate(791.246 88.341)">
@@ -169,9 +131,9 @@
                                                 </svg>
                                             </span>
                                             <span class="menu-bar__name">Invoice</span></span></a></span>
-                                </li>
-                                <li><a href="history.html" class="collapsed"><span class="menu-bar__text">
-                                            <span class="sherah-menu-icon sherah-svg-icon__v1">	
+                        </li>
+                        <li><a href="history.html" class="collapsed"><span class="menu-bar__text">
+                                            <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg  class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="19.527" height="19.582" viewBox="0 0 19.527 19.582">
                                                 <g id="Icon" transform="translate(-115.401 35.25)">
                                                 <path id="Path_1026" data-name="Path 1026" d="M133.432-15.668h-13.28c-.137-.024-.274-.048-.412-.071a5.177,5.177,0,0,1-4.285-4.372,5.176,5.176,0,0,1,2.84-5.353,5.455,5.455,0,0,1,1.7-.5V-26.2q0-3.631,0-7.263a1.665,1.665,0,0,1,.776-1.489,4.105,4.105,0,0,1,.717-.295h9.185a5.733,5.733,0,0,1,.452.369c1.18,1.172,2.353,2.351,3.533,3.523a.846.846,0,0,1,.267.645q-.008,3.918,0,7.835c0,1.815,0,3.631,0,5.446a1.68,1.68,0,0,1-1.056,1.627A3.581,3.581,0,0,1,133.432-15.668ZM129.949-34.1h-8.134a.591.591,0,0,0-.669.669q0,3.633,0,7.265v.2a5.282,5.282,0,0,1,2.534,1.006.59.59,0,0,0,.326.107q3.75.009,7.5,0c.064,0,.128,0,.191,0a.579.579,0,0,1,.546.541.579.579,0,0,1-.484.6,1.439,1.439,0,0,1-.229.008h-6.663a5.29,5.29,0,0,1,.841,2.295h.32q2.784,0,5.567,0a.591.591,0,0,1,.6.353.574.574,0,0,1-.583.8q-2.841,0-5.682,0h-.223a5.257,5.257,0,0,1-1.884,3.442h9.254c.485,0,.7-.213.7-.7q0-6.271,0-12.542v-.22H130.6a.585.585,0,0,1-.654-.646c0-.452,0-.9,0-1.357Zm-5.358,13.269a4.023,4.023,0,0,0-4.016-4.013,4.023,4.023,0,0,0-4.021,4.008,4.024,4.024,0,0,0,4.025,4.023A4.024,4.024,0,0,0,124.591-20.834Zm8.268-10.6-1.747-1.748v1.748Z" transform="translate(0 0)"/>
@@ -181,9 +143,9 @@
                                                 </svg>
                                             </span>
                                             <span class="menu-bar__name">History</span></span></a></span>
-                                </li>
-                                <li><a class="collapsed" href="profile-info.html"><span class="menu-bar__text">
-                                            <span class="sherah-menu-icon sherah-svg-icon__v1">	
+                        </li>
+                        <li><a class="collapsed" href="profile-info.html"><span class="menu-bar__text">
+                                            <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.103" height="22.368" viewBox="0 0 22.103 22.368">
                                                 <g id="Icon" transform="translate(0.787 -1.038)">
                                                 <g id="setting" transform="translate(-0.787 1.038)">
@@ -191,11 +153,11 @@
                                                 <path id="Path_40" data-name="Path 40" d="M13.965,9a4.965,4.965,0,1,0,4.965,4.965A4.965,4.965,0,0,0,13.965,9Zm0,8.511a3.546,3.546,0,1,1,3.546-3.546,3.546,3.546,0,0,1-3.546,3.546Z" transform="translate(-2.913 -2.781)"/>
                                                 </g>
                                                 </g>
-                                                </svg>											  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Settings</span></span></a></span>
-                                </li>
-                                <li><a href="chat-messages.html" class="collapsed"><span class="menu-bar__text">
+                        </li>
+                        <li><a href="chat-messages.html" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.029" height="22.368" viewBox="0 0 22.029 22.368">
                                                 <g id="Icon" transform="translate(-336.061 -361.698)">
@@ -204,12 +166,12 @@
                                                 <path id="Path_232" data-name="Path 232" d="M388.91,411.084c-1.3,0-2.6,0-3.906,0-.546,0-.855-.252-.859-.682s.306-.693.847-.694q3.971,0,7.941,0c.534,0,.848.271.838.7-.009.416-.313.671-.826.672C391.6,411.086,390.255,411.084,388.91,411.084Z" transform="translate(-43.947 -43.807)"/>
                                                 <path id="Path_233" data-name="Path 233" d="M387.582,443.079c-.872,0-1.744,0-2.616,0-.511,0-.814-.259-.822-.675-.008-.432.3-.7.84-.7q2.595,0,5.19,0c.538,0,.849.264.844.7s-.315.677-.861.679C389.3,443.082,388.44,443.079,387.582,443.079Z" transform="translate(-43.946 -73.004)"/>
                                                 </g>
-                                                </svg>													  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Message</span></span></a></span>
-                                </li>
+                        </li>
 
-                                <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span class="menu-bar__text">
+                        <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.029" height="20.972" viewBox="0 0 22.029 20.972">
                                                 <g id="Icon" transform="translate(-451.809 -436.251)">
@@ -217,68 +179,50 @@
                                                 <path id="Path_235" data-name="Path 235" d="M640.677,446.844c0,2.765.005,5.531,0,8.3a2.052,2.052,0,0,1-1.852,2.175.733.733,0,1,1-.177-1.452.635.635,0,0,0,.6-.721q0-8.3,0-16.592a.632.632,0,0,0-.6-.721.734.734,0,1,1,.174-1.454,2.054,2.054,0,0,1,1.853,2.174C640.682,441.313,640.677,444.079,640.677,446.844Z" transform="translate(-170.125 -0.109)"/>
                                                 <path id="Path_236" data-name="Path 236" d="M678.986,446.8c0,2.78.005,5.56,0,8.339a2.04,2.04,0,0,1-1.845,2.13.725.725,0,0,1-.862-.655.736.736,0,0,1,.689-.8c.464-.088.595-.253.6-.81q.006-2.876,0-5.753,0-5.262,0-10.524c0-.722-.044-.777-.728-.953a.744.744,0,0,1-.558-.791.712.712,0,0,1,.735-.66,2.033,2.033,0,0,1,1.97,2.1c.013,2.021,0,4.043,0,6.065Q678.986,445.64,678.986,446.8Z" transform="translate(-205.15 -0.063)"/>
                                                 </g>
-                                                </svg>							  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Pages</span></span><span class="sherah__toggle"></span></a></span>
-                                    <!-- Dropdown Menu -->
-                                    <div class="collapse sherah__dropdown" id="menu-item__9" data-bs-parent="#sherahMenu">
-                                        <ul class="menu-bar__one-dropdown">
-                                            <li><a href="notifications.html"><span class="menu-bar__text"><span class="menu-bar__name">Notifications</span></span></a></li>
-                                            <li><a href="terms-conditions.html"><span class="menu-bar__text"><span class="menu-bar__name">Terms & Conditions</span></span></a></li>
-                                            <li><a href="faq.html"><span class="menu-bar__text"><span class="menu-bar__name">Faqs</span></span></a></li>
-                                        </ul>
-                                    </div>
-                                </li>
-                                <li><a class="collapsed" href="languages.html"><span class="menu-bar__text">
-                                            <span class="sherah-menu-icon sherah-svg-icon__v1">	
+                            <!-- Dropdown Menu -->
+                            <div class="collapse sherah__dropdown" id="menu-item__9" data-bs-parent="#sherahMenu">
+                                <ul class="menu-bar__one-dropdown">
+                                    <li><a href="notifications.html"><span class="menu-bar__text"><span class="menu-bar__name">Notifications</span></span></a></li>
+                                    <li><a href="terms-conditions.html"><span class="menu-bar__text"><span class="menu-bar__name">Terms & Conditions</span></span></a></li>
+                                    <li><a href="faq.html"><span class="menu-bar__text"><span class="menu-bar__name">Faqs</span></span></a></li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li><a class="collapsed" href="languages.html"><span class="menu-bar__text">
+                                            <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="20.929" height="20.929" viewBox="0 0 20.929 20.929">
                                                 <g id="Icon" transform="translate(-466.296 -331.887)">
                                                 <path id="Path_237" data-name="Path 237" d="M487.224,344.233q0,3.248,0,6.5a1.878,1.878,0,0,1-2.1,2.087q-4.739,0-9.477,0a1.868,1.868,0,0,1-2.1-1.806c-.075-.511-.157-1.024-.193-1.539-.021-.3-.131-.382-.424-.379-1.484.014-2.968.008-4.453.006a1.906,1.906,0,0,1-2.181-2.172q0-6.434,0-12.868a1.9,1.9,0,0,1,2.181-2.17q2.859,0,5.719,0a1.866,1.866,0,0,1,2.1,1.806,14.575,14.575,0,0,1,.182,1.457c.017.375.162.464.519.462q4.024-.021,8.048,0a3.22,3.22,0,0,1,1,.137,1.8,1.8,0,0,1,1.176,1.826C487.227,339.794,487.224,342.013,487.224,344.233Zm-11.569,7.355h9.506c.65,0,.835-.192.835-.863q0-6.514,0-13.028c0-.68-.182-.859-.88-.859q-3.982,0-7.964,0c-.144,0-.288.015-.425.023a.848.848,0,0,0-.011.127c.458,3.7.909,7.4,1.385,11.1a1.18,1.18,0,0,1-.306,1.037C477.09,349.907,476.409,350.715,475.655,351.587Zm1.163-3.721c-.012-.134-.016-.2-.024-.266q-.386-3.119-.772-6.237-.469-3.766-.945-7.532c-.072-.567-.261-.715-.835-.715q-2.9,0-5.8,0c-.75,0-.918.165-.918.9q0,6.453,0,12.906c0,.793.151.942.962.943h8.332Zm-.665,1.264h-1.607l.209,1.618Z"/>
                                                 <path id="Path_238" data-name="Path 238" d="M619.993,436.215c-.42.342-.828.68-1.241,1.009-.468.372-.808.391-1.068.07s-.159-.66.3-1.026c.381-.3.756-.617,1.09-.89-.411-.766-.816-1.484-1.184-2.22-.137-.274-.175-.555-.58-.611-.293-.041-.407-.342-.354-.647a.556.556,0,0,1,.563-.5c.462-.019.926-.008,1.389-.009h.449c.073-.5-.127-1.188.624-1.2.785-.014.59.687.652,1.2.561,0,1.1,0,1.646,0,.476,0,.749.19.769.549a.605.605,0,0,1-.6.684.369.369,0,0,0-.21.193c-.421.832-.833,1.669-1.284,2.579.322.263.738.608,1.16.945a.662.662,0,0,1,.308.738.605.605,0,0,1-.987.283C620.946,437,620.479,436.606,619.993,436.215Zm-.082-1.845h.17l.967-1.734h-2.1Z" transform="translate(-138.331 -90.271)"/>
                                                 <path id="Path_239" data-name="Path 239" d="M506.151,389.753c-.127.617-.247,1.215-.374,1.811-.1.47-.378.7-.743.628-.383-.076-.547-.407-.449-.9q.558-2.8,1.115-5.6c.148-.743.272-.837,1.04-.843,1.426-.012,1.361-.056,1.638,1.356.333,1.7.675,3.389,1.013,5.083.1.5-.058.825-.439.906s-.651-.156-.757-.659-.194-1.016-.318-1.517a.4.4,0,0,0-.272-.25C507.132,389.738,506.656,389.753,506.151,389.753Zm1.429-1.249c-.151-.77-.3-1.515-.449-2.258-.013-.062-.093-.109-.142-.163-.049.054-.129.1-.142.164-.154.743-.3,1.487-.448,2.257Z" transform="translate(-35.134 -48.626)"/>
                                                 </g>
-                                                </svg>														
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Language</span></span></a></span>
-                                </li>
-                                <li><a class="collapsed" href="login.html"><span class="menu-bar__text">
-                                            <span class="sherah-menu-icon sherah-svg-icon__v1">	
+                        </li>
+                        <li><a class="collapsed" href="login.html"><span class="menu-bar__text">
+                                            <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="19.103" height="23.047" viewBox="0 0 19.103 23.047">
                                                 <g id="Icon" transform="translate(-209.904 -251.466)">
                                                 <path id="Path_240" data-name="Path 240" d="M212.282,260.761c0-.958-.016-1.929,0-2.9a6.662,6.662,0,0,1,5.78-6.272c4.429-.777,8.475,2.182,8.562,6.273.021.97,0,1.94,0,2.925.264.049.49.077.708.134a2.1,2.1,0,0,1,1.656,1.995c.024,1.769.01,3.539.012,5.308,0,1.323.007,2.646,0,3.969-.009,1.47-.933,2.311-2.567,2.314q-6.98.011-13.96,0c-1.657,0-2.566-.847-2.568-2.362q-.007-4.448,0-8.9c0-1.438.616-2.115,2.185-2.421A1.584,1.584,0,0,0,212.282,260.761Zm7.156,12.3q3.436,0,6.871,0c.925,0,1.1-.163,1.1-1.014q0-4.4,0-8.8c0-.8-.2-.983-1.09-.984q-6.871,0-13.742,0c-.867,0-1.072.185-1.073.95q0,4.445,0,8.891c0,.776.2.95,1.063.951Q216,273.064,219.437,273.061Zm-5.62-12.274h11.215c0-1.014.034-2-.007-2.98a5.223,5.223,0,0,0-4.93-4.866c-2.992-.229-5.547,1.367-6.063,3.958A26.567,26.567,0,0,0,213.817,260.787Z" transform="translate(0)"/>
                                                 <path id="Path_241" data-name="Path 241" d="M279.688,386.981a2.131,2.131,0,0,1,2.059,1.549,2.1,2.1,0,0,1-1.038,2.476.523.523,0,0,0-.32.557c.013.4.017.8-.008,1.193a.715.715,0,0,1-1.429.007c-.01-.143-.011-.286-.008-.429.015-.641.059-1.2-.691-1.617a1.921,1.921,0,0,1-.6-2.359A2.113,2.113,0,0,1,279.688,386.981Zm.689,2.152a.709.709,0,1,0-1.417.041.658.658,0,0,0,.7.678A.666.666,0,0,0,280.376,389.133Z" transform="translate(-60.212 -122.554)"/>
                                                 <path id="Path_242" data-name="Path 242" d="M294.225,402.762a.666.666,0,0,1-.713.719.658.658,0,0,1-.7-.678.709.709,0,1,1,1.417-.041Z" transform="translate(-74.06 -136.182)"/>
                                                 </g>
-                                                </svg>			  
+                                                </svg>
                                             </span>
                                             <span class="menu-bar__name">Login</span></span></a></span>
-                                </li>
+                        </li>
 
-                            </ul>
-                        </div>
-                        <!-- End Nav Menu -->
-                    </div>
-
+                    </ul>
                 </div>
-                <!-- End Admin Menu -->
+                <!-- End Nav Menu -->
             </div>
 
+        </div>
+        <!-- End Admin Menu -->
+    </div>
 
-            <!-- sherah Scripts -->
-            <script src="../js/jquery.min.js"></script>
-            <script src="../js/jquery-migrate.js"></script>
-            <script src="../js/jquery-ui.min.js"></script>
-            <script src="../js/popper.min.js"></script>
-            <script src="../js/bootstrap.min.js"></script>
-            <script src="../js/charts.js"></script>
-            <script src="js/final-countdown.min.js"></script>
-            <script src="js/fancy-box.min.js"></script>
-            <script src="js/fullcalendar.min.js"></script>
-            <script src="../js/datatables.min.js"></script>
-            <script src="../js/circle-progress.min.js"></script>
-            <script src="../js/jquery-jvectormap.js"></script>
-            <script src="../js/jvector-map.js"></script>
-            <script src="../js/main.js"></script>
 
-    </body>
-</html>

@@ -1,8 +1,7 @@
-package org.example.clothingmanagement.service;
+package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Role;
-import org.example.clothingmanagement.repository.DBContext;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -172,6 +171,25 @@ public class AccountDAO {
         return -1; // Return -1 if AccountID is not found or an error occurs
     }
 
+    public Account findAccount(String email, String password) {
+        String sql = "SELECT * FROM account WHERE email='" + email + "' AND password='" + password + "'";
+        Account account = null;
+        try (Connection connection = DBContext.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            if (rs.next()) {
+                account = new Account();
+                account.setId(rs.getInt("accountId"));
+                account.setEmail(rs.getString("email"));
+                account.setPassword(rs.getString("password"));
+                account.setRoleId(rs.getInt("roleID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return account;
+    }
 
     public static void main(String[] args) throws SQLException {
         AccountDAO dao = new AccountDAO();

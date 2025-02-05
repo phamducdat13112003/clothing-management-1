@@ -5,7 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Role;
-import org.example.clothingmanagement.service.AccountDAO;
+import org.example.clothingmanagement.service.AccountService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,9 +34,9 @@ public class AddAccountServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AccountDAO accountDAO = new AccountDAO();
+        AccountService accountService = new AccountService();
         try {
-            List<Role> list = accountDAO.getAllRoles();
+            List<Role> list = accountService.getAllRoles();
             request.setAttribute("roles", list);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -50,10 +50,10 @@ public class AddAccountServlet extends HttpServlet {
         String password = request.getParameter("password");
         int roleID = Integer.parseInt(request.getParameter("roleID"));
         Account account = new Account(email,password,roleID);
-        AccountDAO dao = new AccountDAO();
+        AccountService accountService = new AccountService();
         try {
-            dao.createAccount(account);
-            List<Account> list = dao.getAllAccount();
+            accountService.createAccount(account);
+            List<Account> list = accountService.getAllAccounts();
             request.setAttribute("list", list);
         } catch (SQLException e) {
             throw new RuntimeException(e);

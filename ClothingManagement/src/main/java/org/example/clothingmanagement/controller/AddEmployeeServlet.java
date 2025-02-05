@@ -6,8 +6,8 @@ import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Warehouse;
-import org.example.clothingmanagement.service.AccountDAO;
-import org.example.clothingmanagement.service.EmployeeDAO;
+import org.example.clothingmanagement.service.AccountService;
+import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.service.WarehouseDAO;
 
 import java.io.IOException;
@@ -24,9 +24,6 @@ import java.util.regex.Pattern;
 @MultipartConfig
 @WebServlet(name = "AddEmployeeServlet", value = "/addemployee")
 public class AddEmployeeServlet extends HttpServlet {
-
-    private AccountDAO accountDAO;
-    private WarehouseDAO warehouseDAO;
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -47,12 +44,12 @@ public class AddEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AccountDAO accountDAO = new AccountDAO();
+        AccountService accountService = new AccountService();
         WarehouseDAO wareHouseDAO = new WarehouseDAO();
         List<Account> list = null;
         List<Warehouse> listWarehouse = null;
         try {
-            list = accountDAO.getAllAccountAvaiable();
+            list = accountService.getAllAccountAvaiable();
             listWarehouse = wareHouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -64,8 +61,8 @@ public class AddEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        AccountDAO accountDAO = new AccountDAO();
+        EmployeeService employeeService = new EmployeeService();
+        AccountService accountService = new AccountService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
 
         StringBuilder message = new StringBuilder();
@@ -76,7 +73,7 @@ public class AddEmployeeServlet extends HttpServlet {
         List<Account> list =null;
         List<Warehouse> listWarehouse = null;
         try {
-            list = accountDAO.getAllAccountAvaiable();
+            list = accountService.getAllAccountAvaiable();
             listWarehouse = warehouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -108,14 +105,22 @@ public class AddEmployeeServlet extends HttpServlet {
             errorMessages.put("dob", "Employees must be 18 years of age or older.");
         }
 
-        if (employeeDAO.isAccountIdExistAdd(Integer.parseInt(accountId))) {
-            message.append("This account is used by another employee.\n");
-            isAccountExisted =true;
+        try {
+            if (employeeService.isAccountIdExist(Integer.parseInt(accountId))) {
+                message.append("This account is used by another employee.\n");
+                isAccountExisted =true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
 
-        if (employeeDAO.isEmployeeExistedWhenAdd(email, phone)) {
-            message.append("Employee already existed.\n");
-            isEmployeeExisted =true;
+        try {
+            if (employeeService.isEmployeeExistedWhenAdd(email, phone)) {
+                message.append("Employee already existed.\n");
+                isEmployeeExisted =true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         if(!errorMessages.isEmpty() || isAccountExisted || isEmployeeExisted) {
             request.setAttribute("name", name);
@@ -140,20 +145,35 @@ public class AddEmployeeServlet extends HttpServlet {
             String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
             // convert it to a string, get just the filename without including the full path.
             if (!source.isEmpty()) {
-                String filename = employeeDAO.getEmployeeId() + ".png";
+                String filename = null;
+                try {
+                    filename = employeeService.getEmployeeId() + ".png";
+                } catch (SQLException e) {
+                    request.setAttribute("message", "Can't create filename.");
+                }
                 if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
                     Files.createDirectories(Path.of(realPath));
                 }
                 part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
                 employee.setImage("/img/Employee/" + filename); //Set the path to the image file
             }
-            boolean success = employeeDAO.createEmployee(employee);
-                if (success) {
+            boolean success = false;
+            try {
+                success = employeeService.createEmployee(employee);
+            } catch (SQLException e) {
+                request.setAttribute("message", "Appear mistake can't add to database.");
+            }
+            if (success) {
                     request.setAttribute("message", "Employee added successfully");
                 } else {
                     request.setAttribute("message", "Failed to add employee");
                 }
-            List<Employee> listEmployee = employeeDAO.getAllEmployee();
+            List<Employee> listEmployee = null;
+            try {
+                listEmployee = employeeService.getAllEmployees();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             request.setAttribute("list", listEmployee);
             request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
         }

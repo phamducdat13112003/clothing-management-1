@@ -4,7 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
-import org.example.clothingmanagement.service.AccountDAO;
+import org.example.clothingmanagement.service.AccountService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,9 +35,9 @@ public class EditAccountServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accountID = request.getParameter("accountId");
         Account account = new Account();
-        AccountDAO dao = new AccountDAO();
+        AccountService accountService = new AccountService();
         try {
-            account = dao.getAccountById(Integer.parseInt(accountID));
+            account = accountService.getAccountById(Integer.parseInt(accountID));
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -47,19 +47,19 @@ public class EditAccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AccountDAO dao = new AccountDAO();
+        AccountService accountService = new AccountService();
         String accountID = request.getParameter("accountID");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         Account account = new Account(Integer.parseInt(accountID), email, password);
         try {
-            if (dao.isAccountExist(email)) {
+            if (accountService.isAccountExist(email)) {
                 request.setAttribute("message", "Email is existed!");
-                List<Account> list = dao.getAllAccount();
+                List<Account> list = accountService.getAllAccounts();
                 request.setAttribute("list", list);
             } else {
-                dao.updateAccount(account);
-                List<Account> list = dao.getAllAccount();
+                accountService.updateAccount(account);
+                List<Account> list = accountService.getAllAccounts();
                 request.setAttribute("list", list);
             }
         } catch (SQLException e) {

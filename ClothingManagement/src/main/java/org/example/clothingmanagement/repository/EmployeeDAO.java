@@ -1,8 +1,7 @@
-package org.example.clothingmanagement.service;
+package org.example.clothingmanagement.repository;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.repository.DBContext;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -26,7 +25,7 @@ public class EmployeeDAO {
 
     public boolean createEmployee(Employee employee) {
         String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, Image) " +
-                "VALUES (?, ?, ?, ?, ?, ?, 1, ?, ?,?)";
+                "VALUES (?, ?, ?, ?, ?, ?, 'Active', ?, ?,?)";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -132,8 +131,8 @@ public class EmployeeDAO {
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            return false; // Nếu có lỗi, trả về false
         }
+        return false;
     }
 
 

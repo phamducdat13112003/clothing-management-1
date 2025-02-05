@@ -24,11 +24,8 @@ public class AddProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Category> categories = null;
-        try {
-            categories = CategoryDAO.selectAll();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        categories = CategoryDAO.selectAll();
+
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         req.setAttribute("categories", categories);
         req.setAttribute("suppliers", suppliers);

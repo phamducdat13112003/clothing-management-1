@@ -6,8 +6,8 @@ import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Warehouse;
-import org.example.clothingmanagement.service.AccountDAO;
-import org.example.clothingmanagement.service.EmployeeDAO;
+import org.example.clothingmanagement.service.AccountService;
+import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.service.WarehouseDAO;
 
 import java.io.IOException;
@@ -45,14 +45,19 @@ public class EditEmployeeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String employeeId = request.getParameter("employeeId");
-        EmployeeDAO employeeDAO= new EmployeeDAO();
-        AccountDAO accountDAO= new AccountDAO();
+        EmployeeService employeeService = new EmployeeService();
+        AccountService accountService = new AccountService();
         WarehouseDAO wareHouseDAO= new WarehouseDAO();
-        Employee employee = employeeDAO.getEmployeeByID(Integer.parseInt(employeeId));
+        Employee employee = null;
+        try {
+            employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+        } catch (SQLException e) {
+            request.setAttribute("message", "Can't find employee with ID " + employeeId);
+        }
         List<Account> list = null;
         List<Warehouse> listWarehouse = null;
         try {
-             list = accountDAO.getAllAccount();
+             list = accountService.getAllAccounts();
              listWarehouse= wareHouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -65,15 +70,15 @@ public class EditEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        AccountDAO accountDAO = new AccountDAO();
+        EmployeeService employeeService = new EmployeeService();
+        AccountService accountService = new AccountService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
         Map<String, String> errorMessages = new HashMap<>();
         List<Account> list =null;
         List<Warehouse> listWarehouse = null;
         try {
-            list = accountDAO.getAllAccount();
+            list = accountService.getAllAccountAvaiable();
             listWarehouse = warehouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -102,12 +107,12 @@ public class EditEmployeeServlet extends HttpServlet {
             errorMessages.put("dob", "Employees must be 18 years of age or older.");
         }
 
-//        if (employeeDAO.isAccountIdExist(Integer.parseInt(accountId), Integer.parseInt(employeeId))) {
-//            message.append("This account is used by another employee.\n");
-//        }
-
-        if (employeeDAO.isEmployeeExisted(Integer.parseInt(employeeId),email, phone)) {
-            message.append("Employee already existed.\n");
+        try {
+            if (employeeService.isEmployeeExisted(Integer.parseInt(employeeId),email, phone)) {
+                message.append("Employee already existed.\n");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         if(!errorMessages.isEmpty() || !message.isEmpty()) {
             request.setAttribute("name", name);
@@ -143,16 +148,32 @@ public class EditEmployeeServlet extends HttpServlet {
                     editEmployee.setImage("/img/Employee/" + filename+ "?" +System.currentTimeMillis()); //Set the path to the image file
                 }
             } else {
-                Employee existEmployee = employeeDAO.getEmployeeByID(Integer.parseInt(employeeId));
-                editEmployee.setImage(existEmployee.getImage());
+                    Employee existEmployee = null;
+                    try {
+                        existEmployee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                    editEmployee.setImage(existEmployee.getImage());
             }
-            boolean success=EmployeeDAO.updateEmployee(editEmployee);
+            boolean success = false;
+            try {
+                success = employeeService.updateEmployee(editEmployee);
+            } catch (SQLException e) {
+                request.setAttribute("message", "Cannot update Employee.");
+            }
+
             if (success) {
                 request.setAttribute("message", "Employee updated successfully");
             } else {
                 request.setAttribute("message", "Failed to update employee");
             }
-            List<Employee> listEmployee = employeeDAO.getAllEmployee();
+            List<Employee> listEmployee = null;
+            try {
+                listEmployee = employeeService.getAllEmployees();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
             request.setAttribute("list", listEmployee);
             request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
         }

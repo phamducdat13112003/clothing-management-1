@@ -4,13 +4,11 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.entity.Warehouse;
-import org.example.clothingmanagement.service.EmployeeDAO;
+import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.service.WarehouseDAO;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 @WebServlet(name = "EmployeeDetailServlet", value = "/employeedetail")
 public class EmployeeDetailServlet extends HttpServlet {
@@ -35,12 +33,12 @@ public class EmployeeDetailServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String employeeID = request.getParameter("employeeId");
-        EmployeeDAO employeeDAO = new EmployeeDAO();
+        EmployeeService employeeService = new EmployeeService();
         WarehouseDAO wareHouseDAO = new WarehouseDAO();
         if (employeeID != null) {
             int empID = Integer.parseInt(employeeID);
             try {
-                Employee employee= employeeDAO.getEmployeeByID(empID);
+                Employee employee= employeeService.getEmployeeByID(empID);
                 request.setAttribute("employee", employee);
                 request.getRequestDispatcher("./employeeInformationDetail.jsp").forward(request, response);
             }catch(Exception e) {

@@ -4,7 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
-import org.example.clothingmanagement.service.AccountDAO;
+import org.example.clothingmanagement.service.AccountService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,16 +34,16 @@ public class DeleteAccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accountID = request.getParameter("accountId");
-        AccountDAO dao = new AccountDAO();
+        AccountService accountService = new AccountService();
         if(accountID != null) {
             try {
-                boolean isDeleted=dao.deleteAccount(Integer.parseInt(accountID));
+                boolean isDeleted= accountService.deleteAccount(Integer.parseInt(accountID));
                 if (isDeleted) {
-                    List<Account> list= dao.getAllAccount();
+                    List<Account> list= accountService.getAllAccounts();
                     request.setAttribute("message", "Account deleted");
                     request.setAttribute("list", list);
                 } else {
-                    List<Account> list= dao.getAllAccount();
+                    List<Account> list= accountService.getAllAccounts();
                     request.setAttribute("message", "Failed to delete account");
                     request.setAttribute("list", list);
                 }

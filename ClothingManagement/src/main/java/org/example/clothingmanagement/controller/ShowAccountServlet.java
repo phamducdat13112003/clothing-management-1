@@ -5,7 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Role;
-import org.example.clothingmanagement.service.AccountDAO;
+import org.example.clothingmanagement.service.AccountService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,12 +34,12 @@ public class ShowAccountServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AccountDAO d= new AccountDAO();
+        AccountService accountService = new AccountService();
         List<Account> list = null;
         List<Role> roles = null;
         try {
-             list =d.getAllAccount();
-             roles = d.getAllRoles();
+             list =accountService.getAllAccounts();
+             roles = accountService.getAllRoles();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

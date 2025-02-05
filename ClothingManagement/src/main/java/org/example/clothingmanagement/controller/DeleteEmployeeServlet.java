@@ -3,13 +3,11 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.service.EmployeeDAO;
+import org.example.clothingmanagement.service.EmployeeService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 import java.util.List;
 
 @WebServlet(name = "DeleteEmployeeServlet", value = "/deleteemployee")
@@ -35,16 +33,16 @@ public class DeleteEmployeeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String employeeId= request.getParameter("employeeId");
-        EmployeeDAO employeeDAO = new EmployeeDAO();
+        EmployeeService employeeService = new EmployeeService();
         if(employeeId != null){
             try {
-                boolean isDeleted= employeeDAO.deleteEmployee(Integer.parseInt(employeeId));
+                boolean isDeleted= employeeService.deleteEmployee(Integer.parseInt(employeeId));
                 if((isDeleted)){
-                    List<Employee> list= employeeDAO.getAllEmployee();
+                    List<Employee> list= employeeService.getAllEmployees();
                     request.setAttribute("message", "Employee deleted");
                     request.setAttribute("list", list);
                 }else{
-                    List<Employee> list= employeeDAO.getAllEmployee();
+                    List<Employee> list= employeeService.getAllEmployees();
                     request.setAttribute("message", "Failed to delete employee");
                     request.setAttribute("list", list);
                 }
