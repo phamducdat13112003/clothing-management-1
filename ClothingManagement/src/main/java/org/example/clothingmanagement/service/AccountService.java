@@ -43,4 +43,12 @@ public class AccountService {
     public Account findAccount(String email, String password) throws SQLException{
         return accountDAO.findAccount(email, password);
     }
+    public String checkEmailExist(String email) throws SQLException{
+        return accountDAO.checkEmailExist(email);
+    }
+    public void updatePassByEmail(String password, String email)throws SQLException{
+        accountDAO.updatePassByEmail(password, email);
+    }
+
+
 }
