@@ -563,8 +563,8 @@
                             <div class="form-group">
                               <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
                               <select class="form-group__input" name="gender" aria-label="Default select example" required>
-                                <option value="1" selected>Nam</option>
-                                <option value="0">Nữ</option>
+                                <option value="Male" selected>Nam</option>
+                                <option value="Female">Nữ</option>
                               </select>
                             </div>
                           </div>
