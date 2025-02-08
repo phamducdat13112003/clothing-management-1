@@ -6,13 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.Category;
-import org.example.clothingmanagement.service.CategoryDAO;
+import org.example.clothingmanagement.service.CategoryService;
 
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,7 +27,7 @@ public class AddCategoryServlet extends HttpServlet {
 
         public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
             String name = request.getParameter("categoryName");
-            CategoryDAO dao = new CategoryDAO();
+            CategoryService dao = new CategoryService();
             Category category = new Category(1, name, new Date(), 1);
 
             List<String> errors = new ArrayList<>();

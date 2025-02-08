@@ -6,7 +6,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.Category;
-import org.example.clothingmanagement.service.CategoryDAO;
+import org.example.clothingmanagement.repository.CategoryDAO;
+import org.example.clothingmanagement.service.CategoryService;
 
 import java.io.IOException;
 
@@ -19,7 +20,7 @@ import java.util.List;
 public class SelectCategory extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        CategoryDAO dao = new CategoryDAO();
+        CategoryService dao = new CategoryService();
         List<Category> categories = new ArrayList<>();
 
         try {

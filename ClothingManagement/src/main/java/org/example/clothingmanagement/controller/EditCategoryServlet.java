@@ -7,7 +7,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.Category;
-import org.example.clothingmanagement.service.CategoryDAO;
+import org.example.clothingmanagement.repository.CategoryDAO;
+import org.example.clothingmanagement.service.CategoryService;
 
 import java.io.IOException;
 
@@ -36,7 +37,7 @@ public class EditCategoryServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int id = Integer.parseInt(request.getParameter("categoryId"));
         String name = request.getParameter("categoryName");
-        CategoryDAO dao = new CategoryDAO();
+        CategoryService dao = new CategoryService();
         Category category = new Category(id, name, new Date(), 1);
 
         List<String> errors = new ArrayList<>();

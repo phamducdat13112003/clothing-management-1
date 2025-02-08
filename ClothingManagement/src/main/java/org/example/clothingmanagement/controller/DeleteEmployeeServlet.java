@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Employee;
+import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
 
 import java.io.IOException;
@@ -34,10 +35,14 @@ public class DeleteEmployeeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String employeeId= request.getParameter("employeeId");
         EmployeeService employeeService = new EmployeeService();
+        AccountService accountService = new AccountService();
         if(employeeId != null){
             try {
+                Employee employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
                 boolean isDeleted= employeeService.deleteEmployee(Integer.parseInt(employeeId));
-                if((isDeleted)){
+                int accountId = employee.getAccountID();
+                boolean isAccountDeleted = accountService.deleteAccount(accountId);
+                if((isDeleted) && (isAccountDeleted)){
                     List<Employee> list= employeeService.getAllEmployees();
                     request.setAttribute("message", "Employee deleted");
                     request.setAttribute("list", list);

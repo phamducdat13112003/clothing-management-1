@@ -5,10 +5,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.clothingmanagement.service.CategoryDAO;
+import org.example.clothingmanagement.repository.CategoryDAO;
+import org.example.clothingmanagement.service.CategoryService;
+
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
 
 
 @WebServlet(name = "DeleteCategoryServlet", value = "/DeleteCategoryServlet")
@@ -16,7 +17,7 @@ public class DeleteCategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
        int id = Integer.parseInt(request.getParameter("categoryID"));
-        CategoryDAO dao = new CategoryDAO();
+        CategoryService dao = new CategoryService();
         try {
             if(!dao.checkProductCategory(id)) {
                 dao.deleteCategory(id);

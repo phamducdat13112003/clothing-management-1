@@ -29,8 +29,8 @@ public class LoginServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        Cookie cookie_email = new Cookie("email", email);
-        Cookie cookie_password = new Cookie("password", password);
+        Cookie cookie_email = new Cookie("cookie_email", email);
+        Cookie cookie_password = new Cookie("cookie_password", password);
         if (account == null) {
             session.setAttribute("error_login", "your information is incorrect!");
             response.addCookie(cookie_email);
