@@ -101,16 +101,7 @@
                                             </td>
                                             <td class="sherah-table__column-2 sherah-table__data-2">
                                                 <div class="sherah-table__product-content">
-                                                    <p class="sherah-table__product-desc">
-                                                        <c:choose>
-                                                            <c:when test="${employee.status == 1}">
-                                                                Active
-                                                            </c:when>
-                                                            <c:otherwise>
-                                                                Inactive
-                                                            </c:otherwise>
-                                                        </c:choose>
-                                                    </p>
+                                                    <p class="sherah-table__product-desc">${employee.status}</p>
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-4 sherah-table__data-7" style="text-align: center;">

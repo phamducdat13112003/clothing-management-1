@@ -229,7 +229,32 @@ public class AccountDAO {
         return password; // Return the fetched password, or null if not found
     }
 
+    public String checkEmailExist(String email) {
+        String sql = "SELECT * FROM Account WHERE email = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, email);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return email;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    public void updatePassByEmail(String password, String email) {
+        String sql = "UPDATE Account SET Password = ? WHERE Email = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement st = connection.prepareStatement(sql)) {
+            st.setString(1, password);
+            st.setString(2, email);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) throws SQLException {
         AccountDAO dao = new AccountDAO();

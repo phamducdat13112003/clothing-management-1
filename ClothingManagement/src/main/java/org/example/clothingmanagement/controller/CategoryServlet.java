@@ -6,12 +6,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.*;
-import org.example.clothingmanagement.service.*;
+import org.example.clothingmanagement.service.CategoryService;
 
 
 import java.io.IOException;
 
-import java.sql.SQLException;
 import java.util.List;
 
 
@@ -20,7 +19,7 @@ public class CategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
         List<Category> categories = null;
-        categories = CategoryDAO.selectAll();
+        categories = CategoryService.selectAll();
         request.setAttribute("categories", categories);
         request.getRequestDispatcher("Category.jsp").forward(request, response);
 

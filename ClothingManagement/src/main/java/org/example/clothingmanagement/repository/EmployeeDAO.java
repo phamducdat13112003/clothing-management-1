@@ -48,7 +48,7 @@ public class EmployeeDAO {
 
     public boolean isEmployeeExisted(int employeeId ,String email, String phone) {
         boolean exists = false;
-        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?) AND employeeId != ? AND status = 1";
+        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?) AND employeeId != ? AND status = 'Active'";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setString(1, email);
@@ -66,7 +66,7 @@ public class EmployeeDAO {
 
     public boolean isEmployeeExistedWhenAdd(String email, String phone) {
         boolean exists = false;
-        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?)  AND status = 1";
+        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?)  AND status = 'Active'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setString(1, email);
@@ -84,7 +84,7 @@ public class EmployeeDAO {
 
 
     public boolean updatePassword(int accountID, String newPassword) {
-        String sql = "UPDATE Account SET Password = ? WHERE AccountID = ?";
+        String sql = "UPDATE Account SET Password = ? WHERE AccountID = ? AND status = 'Active'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setString(1, newPassword);
@@ -97,7 +97,7 @@ public class EmployeeDAO {
     }
 
     public boolean isAccountIdExist(int accountId) {
-        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 1 ";
+        String sql = "SELECT COUNT(accountId) FROM employee WHERE accountId = ? AND status = 'Active' ";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setInt(1, accountId);
@@ -114,7 +114,7 @@ public class EmployeeDAO {
 
     // Update employee information
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ? AND Status = 'Active'";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -139,7 +139,7 @@ public class EmployeeDAO {
 
     public List<Employee> getAllEmployee() {
         List<Employee> employees = new ArrayList<>();
-        String sql = "SELECT * FROM Employee";
+        String sql = "SELECT * FROM Employee WHERE Status = 'Active'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql);
              ResultSet rs = pt.executeQuery()) {
@@ -166,7 +166,7 @@ public class EmployeeDAO {
 
     public Employee getEmployeeByID(int employeeID) {
         Employee employee = null;
-        String sql = "SELECT * FROM Employee WHERE EmployeeID = ?";
+        String sql = "SELECT * FROM Employee WHERE EmployeeID = ? AND Status = 'Active'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)){
             pt.setInt(1, employeeID);
@@ -195,7 +195,7 @@ public class EmployeeDAO {
     }
 
     public boolean deleteEmployee(int employeeID) {
-        String sql = "UPDATE Employee SET Status = 0 WHERE EmployeeID = ?";
+        String sql = "UPDATE Employee SET Status = 'Inactive' WHERE EmployeeID = ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setInt(1, employeeID);
@@ -207,7 +207,7 @@ public class EmployeeDAO {
     }
 
     public int getEmployeeId(){
-        String sql ="SELECT MAX(EmployeeID) FROM Employee";
+        String sql ="SELECT MAX(EmployeeID) FROM Employee WHERE status = 'Active'";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement pt = conn.prepareStatement(sql)) {
             ResultSet rs = pt.executeQuery();

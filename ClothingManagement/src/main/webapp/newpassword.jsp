@@ -1,3 +1,4 @@
+
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <!DOCTYPE html>
@@ -55,55 +56,35 @@
                     <div class="sherah-wc__form-inner">
                         <h3 class="sherah-wc__form-title sherah-wc__form-title__one">Login Your Account <span>Please enter your email and password to continue</span></h3>
                         <!-- Sign in Form -->
-                        <c:if test="${not empty successfully}">
-                            <div class="alert" style="color: green">${successfully}</div>
-                        </c:if>
-                        <form class="sherah-wc__form-main p-0" action="login" method="post" >
+                        <form class="sherah-wc__form-main p-0" action="confirmpass" method="post" >
+                            <input name="email" value="${requestScope.email}" type="hidden">
                             <div class="form-group">
-                                <label class="sherah-wc__form-label">Email Address</label>
+                                <label class="sherah-wc__form-label">New Password</label>
                                 <div class="form-group__input">
-                                    <input class="sherah-wc__form-input" type="email" name="email" placeholder="demo3243@gmail.com" required="required"  pattern="^\S+$" title="Email không được chứa khoảng trắng." value="${cookie.cookie_email != null ? cookie.cookie_email.value : ''}">
+                                    <input class="sherah-wc__form-input" type="password" name="password" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" required="required"  pattern="^\S+$">
                                 </div>
                             </div>
                             <!-- Form Group -->
                             <div class="form-group">
-                                <label class="sherah-wc__form-label">Password</label>
+                                <label class="sherah-wc__form-label">Confirm Password</label>
                                 <div class="form-group__input">
-                                    <input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="password-field" type="password" name="password" placeholder="" maxlength="50" required="required"  pattern="^\S+$" title="Mật khẩu không được chứa khoảng trắng."   value="${cookie.cookie_password != null ? cookie.cookie_password.value : ''}">
+                                    <input class="sherah-wc__form-input" type="password" name="cfpassword" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" required="required"  pattern="^\S+$">
                                 </div>
                             </div>
-                            <!-- Form Group -->
-                            <div class="form-group">
-                                <div class="sherah-wc__check-inline">
-                                    <div class="sherah-wc__checkbox">
-                                        <input class="sherah-wc__form-check" id="checkbox" name="remember" type="checkbox" value="1">
-                                        <label for="checkbox">Remember me later</label>
-                                    </div>
-                                    <div class="sherah-wc__forgot">
-                                        <a href="forgot.jsp" class="forgot-pass">Forget Password?</a>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Form Group -->
+
                             <div class="form-group form-mg-top25">
                                 <div class="sherah-wc__button sherah-wc__button--bottom">
-                                    <button class="ntfmax-wc__btn" type="submit">Login</button>
-<%--                                    <div class="sherah-wc__inside--group">--%>
-<%--                                        <button class="ntfmax-wc__btn ntfmax-wc__btn-social " type="submit"><div class="ntfmax-wc__btn-icon"><i class="fa-brands fa-google"></i></div>Sign In with Google</button>--%>
-<%--                                        <button class="ntfmax-wc__btn ntfmax-wc__btn-social " type="submit"><div class="ntfmax-wc__btn-icon"><i class="fa-brands fa-twitter"></i></div>Sign In with Google</button>--%>
-<%--                                    </div>--%>
-
+                                    <button class="ntfmax-wc__btn" type="submit">Update Password</button>
                                 </div>
-                                <p style="color:red; font-weight: bold">${error_login}</p>
                             </div>
-                            <!-- Form Group -->
-<%--                            <div class="form-group mg-top-20">--%>
-<%--                                <div class="sherah-wc__bottom">--%>
-<%--                                    <p class="sherah-wc__text">Dont’t have an account ? <a href="create-account.html">Sign up free</a></p>--%>
-<%--                                </div>--%>
-<%--                            </div>--%>
+                            <c:if test="${not empty sessionScope.successfully}">
+                                <div class="alert" style="color: green">${sessionScope.successfully}</div>
+                                <% session.removeAttribute("successfully"); %> <!-- Xóa sau khi hiển thị -->
+                            </c:if>
+                            <c:if test="${not empty error}">
+                                <div class="alert" style="color: red">${error}</div>
+                            </c:if>
                         </form>
-                        <!-- End Sign in Form -->
                     </div>
                 </div>
             </div>
