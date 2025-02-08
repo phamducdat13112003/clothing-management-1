@@ -86,9 +86,9 @@
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item_products" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
-                                    <li><a href="products.html"><span class="menu-bar__text"><span class="menu-bar__name">Products</span></span></a></li>
-                                    <li><a href="product-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Product Details</span></span></a></li>
-                                    <li><a href="upload-product.html"><span class="menu-bar__text"><span class="menu-bar__name">Upload Product</span></span></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/product-list"><span class="menu-bar__text"><span class="menu-bar__name">Products</span></span></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/product-list"><span class="menu-bar__text"><span class="menu-bar__name">Product Details</span></span></a></li>
+                                    <li><a href="${pageContext.request.contextPath}/add-product"><span class="menu-bar__text"><span class="menu-bar__name">Upload Product</span></span></a></li>
                                 </ul>
                             </div>
                         </li>
@@ -226,3 +226,4 @@
     </div>
 
 
+</div>
