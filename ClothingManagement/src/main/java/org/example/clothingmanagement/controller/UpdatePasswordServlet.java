@@ -12,7 +12,7 @@ import org.example.clothingmanagement.repository.EmployeeDAO;
 import java.io.IOException;
 import java.sql.SQLException;
 
-@WebServlet("updatePassword")
+@WebServlet("/updatePassword")
 public class UpdatePasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
