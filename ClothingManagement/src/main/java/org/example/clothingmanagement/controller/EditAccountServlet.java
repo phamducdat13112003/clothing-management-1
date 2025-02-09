@@ -57,6 +57,13 @@ public class EditAccountServlet extends HttpServlet {
         String password = request.getParameter("password").trim();
         String confirmPassword = request.getParameter("confirmPassword").trim();
         String roleID = request.getParameter("roleID");
+
+        if (!isValidPassword(password)) {
+            // Thông báo lỗi nếu mật khẩu không hợp lệ
+            request.setAttribute("message", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ in hoa, số và ký tự đặc biệt.");
+            request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
+            return;
+        }
         Account account;
         if (confirmPassword.isEmpty()) {
             // Nếu confirmPassword trống, không thay đổi mật khẩu
@@ -91,5 +98,13 @@ public class EditAccountServlet extends HttpServlet {
         }
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
 
+    }
+
+    private boolean isValidPassword(String password) {
+        // Biểu thức chính quy kiểm tra mật khẩu
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$";
+
+        // Kiểm tra mật khẩu bằng biểu thức chính quy
+        return password.matches(regex);
     }
 }
