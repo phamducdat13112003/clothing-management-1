@@ -38,6 +38,8 @@ public class LoginServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
         } else {
             session.removeAttribute("error_login");
+            response.addCookie(cookie_email);
+            response.addCookie(cookie_password);
             session.setAttribute("account", account);
             session.setAttribute("role", account.getRoleId());
             session.setAttribute("account_id", account.getId());

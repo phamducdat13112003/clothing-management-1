@@ -19,6 +19,11 @@ public class ConfirmpassServlet extends HttpServlet {
         String newpass = request.getParameter("password");
         String confirmpass = request.getParameter("cfpassword");
         String email = request.getParameter("email");
+        if (!isValidPassword(newpass)) {
+            request.setAttribute("error", "Password must have at least 8 characters, including one uppercase letter, one number, and one special character.");
+            request.getRequestDispatcher("newpassword.jsp").forward(request, response);
+            return;
+        }
         if (!confirmpass.equals(newpass)) {
             request.setAttribute("error", "Passwords do not match, please try again");
             request.getRequestDispatcher("newpassword.jsp").forward(request, response);
@@ -32,5 +37,9 @@ public class ConfirmpassServlet extends HttpServlet {
             request.getSession().setAttribute("successfully", "Password changed successfully! Please log in again.");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
+    }
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$";
+        return password.matches(regex);
     }
 }
