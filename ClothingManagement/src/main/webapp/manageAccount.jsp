@@ -53,7 +53,7 @@
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Account</h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="#">Home</a></li>
+                                            <li><a href="account">Home</a></li>
                                             <li class="active"> <a href="#" id="addAccountBtn" >Add Account</a></li>
                                         </ul>
                                     </div>

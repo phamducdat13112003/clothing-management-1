@@ -464,8 +464,8 @@
                             <div class="sherah-breadcrumb mg-top-30">
                                 <h2 class="sherah-breadcrumb__title">Setting</h2>
                                 <ul class="sherah-breadcrumb__list">
-                                    <li><a href="#">Home</a></li>
-                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>
+                                    <li><a href="manageemployee">Home</a></li>
+                                    <li class="active"><a href="##">Personal Information</a></li>
                                 </ul>
                             </div>
                             <!-- End Sherah Breadcrumb -->
