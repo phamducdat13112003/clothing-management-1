@@ -57,6 +57,7 @@
                         <!-- Sign in Form -->
                         <c:if test="${not empty successfully}">
                             <div class="alert" style="color: green">${successfully}</div>
+                            <% session.removeAttribute("successfully"); %> <!-- Xóa sau khi hiển thị -->
                         </c:if>
                         <form class="sherah-wc__form-main p-0" action="login" method="post" >
                             <div class="form-group">

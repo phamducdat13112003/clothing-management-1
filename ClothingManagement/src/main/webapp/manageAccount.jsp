@@ -53,7 +53,7 @@
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Account</h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="#">Home</a></li>
+                                            <li><a href="account">Home</a></li>
                                             <li class="active"> <a href="#" id="addAccountBtn" >Add Account</a></li>
                                         </ul>
                                     </div>
@@ -67,6 +67,7 @@
                                         <th class="sherah-table__column-2 sherah-table__h2">AccountID</th>
                                         <th class="sherah-table__column-3 sherah-table__h3">Email</th>
                                         <th class="sherah-table__column-4 sherah-table__h4">Password</th>
+                                        <th class="sherah-table__column-4 sherah-table__h4">Role</th>
                                         <th class="sherah-table__column-4 sherah-table__h8" style="text-align: center;">Action</th>
                                     </tr>
                                     </thead>
@@ -85,7 +86,12 @@
                                             </td>
                                             <td class="sherah-table__column-3 sherah-table__data-3">
                                                 <div class="sherah-table__product-content">
-                                                        ${account.password != null ? account.password.replaceAll(".", "*") : ""}
+                                                        ${account.password}
+                                                </div>
+                                            </td>
+                                            <td class="sherah-table__column-3 sherah-table__data-3">
+                                                <div class="sherah-table__product-content">
+                                                        ${account.roleId}
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-4 sherah-table__data-7" style="text-align: center;">
@@ -115,14 +121,11 @@
                                     </c:forEach>
                                     </tbody>
                                 </table>
-
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>
@@ -142,7 +145,7 @@
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password <span class="required">*</span></label>
-                            <input type="password" class="form-control" id="password" name="password" required>
+                            <input minlength="8" type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Role <span class="required">*</span></label>

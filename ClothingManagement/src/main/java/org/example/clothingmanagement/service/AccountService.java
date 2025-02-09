@@ -29,8 +29,8 @@ public class AccountService {
         return accountDAO.getAllRoles();
     }
 
-    public boolean isAccountExist(String email) throws SQLException{
-        return accountDAO.isAccountExist(email);
+    public boolean isAccountExist(String email, int accountId) throws SQLException{
+        return accountDAO.isAccountExist(email, accountId);
     }
 
     public List<Account> getAllAccountAvaiable() throws SQLException{

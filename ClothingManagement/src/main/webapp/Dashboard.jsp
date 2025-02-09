@@ -40,9 +40,8 @@
 
 </head>
 <body id="sherah-dark-light">
-
-<jsp:include page="include/sidebar.jsp"></jsp:include>
 <jsp:include page="include/header.jsp"></jsp:include>
+<jsp:include page="include/sidebar.jsp"></jsp:include>
     <!-- sherah Dashboard -->
     <section class="sherah-adashboard sherah-show">
         <div class="container">

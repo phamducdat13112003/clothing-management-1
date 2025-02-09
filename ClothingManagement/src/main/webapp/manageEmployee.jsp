@@ -43,7 +43,6 @@
 <body id="sherah-dark-light">
     <jsp:include page="include/sidebar.jsp"></jsp:include>
     <jsp:include page="include/header.jsp"></jsp:include>
-
     <!-- sherah Dashboard -->
     <section class="sherah-adashboard sherah-show">
         <div class="container">
@@ -57,7 +56,7 @@
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Account</h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="#">Home</a></li>
+                                            <li><a href="manageemployee">Home</a></li>
                                             <li class="active"> <a href="addemployee" >Add Employee</a></li>
                                         </ul>
                                     </div>

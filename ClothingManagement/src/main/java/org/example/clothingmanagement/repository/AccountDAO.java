@@ -85,20 +85,21 @@ public class AccountDAO {
         return account;
     }
     public void updateAccount(Account account) throws SQLException {
-        String sql = "UPDATE account SET email = ?, password = ? WHERE accountId = ?";
+        String sql = "UPDATE account SET email = ?, password = ? , roleID = ? WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
-            stmt.setInt(3, account.getId());
+            stmt.setInt(3, account.getRoleId());
+            stmt.setInt(4, account.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isAccountExist(String email) throws SQLException {
-        String sql = "SELECT * FROM account WHERE email = ?";
+    public boolean isAccountExist(String email, int accountId) throws SQLException {
+        String sql = "SELECT * FROM account WHERE email = ? AND accountId != ? ";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -191,6 +192,44 @@ public class AccountDAO {
         return account;
     }
 
+    public boolean updatePassword(int accountId, String newPassword) throws SQLException {
+        String sql = "UPDATE account SET password = ? WHERE accountId = ?";
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setString(1, newPassword);
+            stmt.setInt(2, accountId);
+
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public String getPasswordByAccountId(int accountId) {
+        String password = null; // To store the fetched password
+        String sql = "SELECT password FROM account WHERE accountId = ?"; // SQL query to get the password
+
+        try (Connection connection = DBContext.getConnection(); // Get database connection
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+
+            stmt.setInt(1, accountId); // Set the accountId in the query
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    password = rs.getString("password"); // Fetch the password from the result set
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log any SQL exceptions
+        }
+
+        return password; // Return the fetched password, or null if not found
+    }
+
     public String checkEmailExist(String email) {
         String sql = "SELECT * FROM Account WHERE email = ?";
         try (Connection connection = DBContext.getConnection();
@@ -220,9 +259,9 @@ public class AccountDAO {
 
     public static void main(String[] args) throws SQLException {
         AccountDAO dao = new AccountDAO();
-        List<Role > list= dao.getAllRoles();
-        for(Role account:list){
-            System.out.println(account.getRoleName());
+        List<Account > list= dao.getAllAccount();
+        for(Account account:list){
+            System.out.println(account.getId());
         }
     }
 

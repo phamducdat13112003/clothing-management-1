@@ -1,4 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,8 +18,7 @@
 <body>
 <form action="editaccount" method="post" class="edit-form">
     <h2>Edit Account</h2>
-    <label for="accountID">Account ID <span class="required">*</span></label>
-    <input style="width: 95%" type="text" id="accountID" name="accountID" value="${account.id}" readonly>
+    <input style="width: 95%" type="hidden" id="accountID" name="accountID" value="${account.id}" readonly>
 
     <label for="email">Email <span class="required">*</span></label>
     <input style="width: 95%" type="email" id="email" name="email" value="${account.email}" required>
@@ -27,6 +28,19 @@
         <input type="password" id="password" name="password" value="${account.password}" required>
         <span id="togglePassword">👁️</span>
     </div>
+
+    <label for="password">Confirm password <span class="required"></span></label>
+    <div class="password-toggle">
+        <input type="password" id="confirmPassword" name="confirmPassword">
+    </div>
+
+    <!-- Thêm trường Role -->
+    <label for="role">Role <span class="required"></span></label>
+    <select class="form-select" id="role" name="roleID" required>
+        <c:forEach items="${roles}" var="role">
+            <option value="${role.id}" ${role.id == account.roleId ? 'selected' : ''}>${role.roleName}</option>
+        </c:forEach>
+    </select>
 
     <div style="display: flex; justify-content: space-between;">
         <button type="submit">Save</button>
@@ -45,5 +59,12 @@
         togglePassword.textContent = type === 'password' ? '👁️' : '🙈';
     });
 </script>
+<c:if test="${not empty message}">
+    <script>
+        window.onload = function () {
+            alert("${message}");
+        };
+    </script>
+</c:if>
 </body>
 </html>
