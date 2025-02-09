@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryService {
-    private final CategoryDAO categoryDAO = new CategoryDAO();
+    private static final CategoryDAO categoryDAO = new CategoryDAO();
 
     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
     public static List<Category> selectAll()  {
@@ -38,9 +38,17 @@ public class CategoryService {
     public boolean checkCategoryNameExist(String categoryName) throws SQLException {
         return categoryDAO.checkCategoryNameExist(categoryName);
     }
-    public static List<Category> filterCategories(Integer categoryId, String categoryName, Date createDate, Integer createdBy) throws SQLException {
-        return CategoryDAO.filterCategories(categoryId, categoryName, createDate, createdBy);
+    public static List<Category> filterCategories(String categoryName, Date startDate, Date endDate, Integer createdBy) throws SQLException {
+        return CategoryDAO.filterCategories( categoryName, startDate, endDate, createdBy);
     }
-
+    public static String getEmployeeNameByCreatedBy(int createdBy){
+        return categoryDAO.getEmployeeNameByCreatedBy(createdBy);
+    }
+    public  Integer getEmployeeIDByAccountID(int accountID) {
+        return categoryDAO.getEmployeeIDByAccountID(accountID);
+    }
+    public Integer getEmployeeIDByName(String categoryName) throws SQLException {
+        return CategoryDAO.getEmployeeIDByName( categoryName);
+    }
 
 }

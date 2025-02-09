@@ -11,16 +11,27 @@ import org.example.clothingmanagement.service.CategoryService;
 
 import java.io.IOException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @WebServlet(name = "CategoryServlet", value = "/CategoryServlet")
 public class CategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
-        List<Category> categories = null;
-        categories = CategoryService.selectAll();
+        List<Category> categories = CategoryService.selectAll();
+        Map<Integer, String> createdByNames = new HashMap<>();
+
+        for (Category category : categories) {
+            int createdBy = category.getCreatedBy();
+            if (!createdByNames.containsKey(createdBy)) {
+                createdByNames.put(createdBy, CategoryService.getEmployeeNameByCreatedBy(createdBy));
+            }
+        }
+
         request.setAttribute("categories", categories);
+        request.setAttribute("createdByNames", createdByNames);
         request.getRequestDispatcher("Category.jsp").forward(request, response);
 
     }

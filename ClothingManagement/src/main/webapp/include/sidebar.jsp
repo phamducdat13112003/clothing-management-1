@@ -68,12 +68,12 @@
                                                 </g>
                                                 </svg>
                                             </span>
-                                            <span class="menu-bar__name">Customers</span></span> <span class="sherah__toggle"></span></a></span>
+                                            <span class="menu-bar__name">Category</span></span> <span class="sherah__toggle"></span></a></span>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item__customers"  data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
-                                    <li><a href="customer-list.html"><span class="menu-bar__text"><span class="menu-bar__name">Customer List</span></span></a></li>
-                                    <li><a href="customers.html"><span class="menu-bar__text"><span class="menu-bar__name">Customers</span></span></a></li>
+                                    <li><a href="CategoryServlet"><span class="menu-bar__text"><span class="menu-bar__name">Category List</span></span></a></li>
+                                    <li><a href="addCategory.jsp"><span class="menu-bar__text"><span class="menu-bar__name">Add Category</span></span></a></li>
                                 </ul>
                             </div>
                         </li>

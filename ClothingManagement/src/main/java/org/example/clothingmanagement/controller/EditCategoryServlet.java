@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.example.clothingmanagement.entity.Category;
 import org.example.clothingmanagement.repository.CategoryDAO;
 import org.example.clothingmanagement.service.CategoryService;
@@ -38,7 +39,13 @@ public class EditCategoryServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("categoryId"));
         String name = request.getParameter("categoryName");
         CategoryService dao = new CategoryService();
-        Category category = new Category(id, name, new Date(), 1);
+        HttpSession session = request.getSession();
+        int accountId = (int) session.getAttribute("account_id");
+// Lấy EmployeeID từ AccountID
+        Integer employeeId = dao.getEmployeeIDByAccountID(accountId);
+// Tạo đối tượng Category và tiếp tục xử lý
+
+        Category category = new Category(id, name, new Date(), employeeId);
 
         List<String> errors = new ArrayList<>();
 
