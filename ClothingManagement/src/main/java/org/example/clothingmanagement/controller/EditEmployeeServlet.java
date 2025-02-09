@@ -75,7 +75,6 @@ public class EditEmployeeServlet extends HttpServlet {
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
         Map<String, String> errorMessages = new HashMap<>();
-        List<Account> list =null;
         List<Warehouse> listWarehouse = null;
         String employeeId= request.getParameter("employeeId");
         String name = request.getParameter("name").trim();
@@ -89,15 +88,8 @@ public class EditEmployeeServlet extends HttpServlet {
         address = capitalizeName(address);
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
-        String accountId = request.getParameter("account");
         String warehouseID = request.getParameter("warehouse");
-
-        try {
-            list = accountService.getAllAccountAvaiable();
-            listWarehouse = warehouseDAO.getAllWareHouse();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        listWarehouse = warehouseDAO.getAllWareHouse();
         if (!isValidEmail(email)) {
             errorMessages.put("email", "Invalid Email.");
         }
@@ -124,12 +116,11 @@ public class EditEmployeeServlet extends HttpServlet {
             request.setAttribute("address", address);
             request.setAttribute("gender", gender);
             request.setAttribute("dateOfBirth", dateOfBirth);
-            request.setAttribute("list", list);
             request.setAttribute("listWarehouse", listWarehouse);
             request.setAttribute("message", message.toString());
             request.getRequestDispatcher("./editEmployee.jsp").include(request, response);
         }else{
-            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, "Active" ,Integer.parseInt(accountId), Integer.parseInt(warehouseID), "");
+            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();

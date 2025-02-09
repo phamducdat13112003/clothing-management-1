@@ -33,18 +33,16 @@ public class Employee {
         this.phone = phone;
     }
 
-    public Employee(String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth, int accountID, int warehouseID, String image) {
+    public Employee(int employeeID, String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth,String status, int warehouseID, String image) {
+        this.employeeID = employeeID;
         this.employeeName = employeeName;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
-        this.accountID = accountID;
+        this.status = status;
         this.warehouseID = warehouseID;
         this.image = image;
     }
-
-
-
 }

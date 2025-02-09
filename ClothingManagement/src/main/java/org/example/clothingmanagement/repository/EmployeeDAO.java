@@ -114,7 +114,7 @@ public class EmployeeDAO {
 
     // Update employee information
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status= 'Active' , AccountID = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status= 'Active' , WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -124,10 +124,9 @@ public class EmployeeDAO {
             pt.setString(4, employee.getAddress());
             pt.setString(5, employee.getGender());
             pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
-            pt.setInt(7, employee.getAccountID());
-            pt.setInt(8, employee.getWarehouseID());
-            pt.setString(9, employee.getImage());
-            pt.setInt(10, employee.getEmployeeID());
+            pt.setInt(7, employee.getWarehouseID());
+            pt.setString(8, employee.getImage());
+            pt.setInt(9, employee.getEmployeeID());
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
