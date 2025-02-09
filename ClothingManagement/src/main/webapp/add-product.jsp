@@ -84,7 +84,7 @@
 
                                                                                         <!-- Price -->
                                                                                         <label for="price">Price:</label>
-                                                                                        <input type="number" id="price" name="price" step="10000" min="1" required>
+                                                                                        <input type="number" id="price" name="price" step="10000" min="10000" required>
 
 <%--                                                                                        <!-- Bin ID -->--%>
 <%--                                                                                        <label for="binID">Bin ID:</label>--%>

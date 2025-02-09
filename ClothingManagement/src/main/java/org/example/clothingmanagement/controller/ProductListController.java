@@ -17,28 +17,21 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@WebServlet(name="ProductList",urlPatterns = "/product-list")
+@WebServlet(name = "ProductList", urlPatterns = "/product-list")
 public class ProductListController extends HttpServlet {
     private final ProductService productService = new ProductService();
     private final ProductDetailService productDetailService = new ProductDetailService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Lấy danh sách sản phẩm từ ProductDAO
-//        List<Product> products = new ArrayList<>();
         List<Product> products = productService.getAllProducts();
 
 
-
-        for(Product product : products){
+        for (Product product : products) {
             List<ProductDetail> list = productDetailService.getProductDetailById(product.getId());
             product.setTotalQuantity(list.size());
 
-
-
         }
-
-
 
 
         // Đặt sản phẩm vào trong request để chuyển đến JSP
