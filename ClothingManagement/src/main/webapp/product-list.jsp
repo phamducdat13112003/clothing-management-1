@@ -45,6 +45,13 @@
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
                             <!-- Sherah Breadcrumb -->
+<%--                            <form action="search-product" method="get">--%>
+<%--                                <div class="input-group mb-3">--%>
+<%--                                    <input type="text" class="form-control" placeholder="Search for a product..." name="searchQuery" id="searchQuery">--%>
+<%--                                    <button class="btn btn-primary" type="submit">Search</button>--%>
+<%--                                </div>--%>
+<%--                            </form>--%>
+
                             <div class="sherah-breadcrumb mg-top-30">
                                 <h2 class="sherah-breadcrumb__title">Product</h2>
                                 <%--                                <ul class="sherah-breadcrumb__list">--%>
@@ -54,41 +61,72 @@
                             </div>
                             <!-- End Sherah Breadcrumb -->
                             <!-- Product List -->
-                            <div class="container">
-                                <table class="table table-bordered">
-                                    <thead class="table-light">
+                            <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
+                                <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
+                                    <thead class="sherah-table__head">
                                     <tr>
-                                        <th>ID</th>
-                                        <th>Name</th>
-                                        <th>...</th>
-                                        <th>Price</th>
-                                        <th>Quantity</th>
-                                        <th>...</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Serial No</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Name</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Image</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Price</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Action</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody class="sherah-table__body">
                                     <c:if test="${not empty products}">
                                         <c:forEach var="product" items="${products}">
                                             <tr>
-                                                <td>${product.id}</td>
-                                                <td>${product.name}</td>
-                                                <td>
-                                                    <img src="https://drive.google.com/uc?id=${product.urlImage}" alt="Product Image" width="100" height="100">
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${product.id}</p>
+                                                    </div>
                                                 </td>
-                                                <td>${product.price}</td>
-                                                <td>${product.totalQuantity}</td>
-                                                <td>
-                                                    <!-- Delete product form with JSTL expression for productId -->
-                                                    <form action="delete-product" method="post">
-                                                        <input type="hidden" name="productId" id="productId" value="${product.id}">
-                                                        <button type="submit">Delete</button>
-                                                    </form>
-                                                <td>
-                                                    <button onclick="window.location.href='product-detail?id=${product.id}'">View Details</button>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${product.name}</p>
+                                                    </div>
                                                 </td>
-
-
-
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">
+                                                            <img src="https://drive.google.com/uc?id=${product.urlImage}" alt="Product Image" width="100" height="100">
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${product.price}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${product.totalQuantity}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${product.totalQuantity}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">
+                                                            <a href="#" onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product?id=${product.id}');">
+                                                                Delete
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">
+                                                            <a href="${pageContext.request.contextPath}/update-product?id=${product.id}">
+                                                                Detail
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </td>
 
                                             </tr>
                                         </c:forEach>
@@ -127,19 +165,32 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    window.onload = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const errorCode = parseInt(urlParams.get('message'));
-        switch (errorCode) {
-            case 1:
-                window.alert('Successful')
-                break;
-            case 2:
-                window.alert('Something went wrong');
-                break;
+    window.onload = function () {
+        const alertMessage = '<%= session.getAttribute("alertMessage") != null ? session.getAttribute("alertMessage") : "" %>';
+        const alertType = '<%= session.getAttribute("alertType") != null ? session.getAttribute("alertType") : "" %>';
+        if (alertMessage.trim() !== "" && alertType.trim() !== "") {
+            Swal.fire({
+                icon: alertType,
+                title: alertMessage,
+                showConfirmButton: false,
+                timer: 2000
+            });
         }
+        <%
+            session.removeAttribute("alertMessage");
+            session.removeAttribute("alertType");
+        %>
     };
+
+    function confirmDelete(url) {
+        if (confirm("Are you sure you want to delete this product?")) {
+            window.location.href = url;
+        }
+        return false;
+    }
 </script>
+
 </body>
 </html>

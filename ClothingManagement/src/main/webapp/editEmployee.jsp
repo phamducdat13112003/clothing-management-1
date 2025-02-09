@@ -525,7 +525,7 @@
                                     <div class="form-group__input">
                                         <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
                                         <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
-                                        <img src="${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
+                                        <img src=".${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
                                     </div>
                                 </div>
                             </div>
@@ -587,19 +587,6 @@
                       <!-- Organization -->
                       <div class="product-form-box sherah-border mg-top-30">
                         <h4 class="form-title m-0">Organization</h4>
-                        <div class="col-lg-6 col-md-6 col-12">
-                          <div class="form-group">
-                            <label class="sherah-wc__form-label">AccountId:  <span class="required">*</span></label>
-                            <select class="form-group__input" name="account" aria-label="Default select example">
-                                <c:forEach items="${list}" var="account">
-                                    <option value="${account.id}"
-                                            <c:if test="${account.id == employee.accountID}">selected="selected"</c:if>>
-                                            ${account.id}
-                                    </option>
-                                </c:forEach>
-                            </select>
-                          </div>
-                        </div>
                         <div class="col-lg-6 col-md-6 col-12">
                           <div class="form-group">
                             <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
