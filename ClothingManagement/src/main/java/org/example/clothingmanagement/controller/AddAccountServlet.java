@@ -46,8 +46,8 @@ public class AddAccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
+        String email = request.getParameter("email").trim();
+        String password = request.getParameter("password").trim();
         int roleID = Integer.parseInt(request.getParameter("roleID"));
         Account account = new Account(email,password,roleID);
         AccountService accountService = new AccountService();

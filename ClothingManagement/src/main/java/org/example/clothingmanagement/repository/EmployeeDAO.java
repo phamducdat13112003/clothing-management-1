@@ -114,7 +114,7 @@ public class EmployeeDAO {
 
     // Update employee information
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, AccountID = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ? AND Status = 'Active'";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status= 'Active' , AccountID = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -134,8 +134,6 @@ public class EmployeeDAO {
         }
         return false;
     }
-
-
 
     public List<Employee> getAllEmployee() {
         List<Employee> employees = new ArrayList<>();

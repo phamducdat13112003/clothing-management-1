@@ -525,7 +525,7 @@
                                     <div class="form-group__input">
                                         <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
                                         <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
-                                        <img src="${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
+                                        <img src=".${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
                                     </div>
                                 </div>
                             </div>

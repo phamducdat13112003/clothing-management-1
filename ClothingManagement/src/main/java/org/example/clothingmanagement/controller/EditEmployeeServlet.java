@@ -77,24 +77,27 @@ public class EditEmployeeServlet extends HttpServlet {
         Map<String, String> errorMessages = new HashMap<>();
         List<Account> list =null;
         List<Warehouse> listWarehouse = null;
-        try {
-            list = accountService.getAllAccountAvaiable();
-            listWarehouse = warehouseDAO.getAllWareHouse();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
         String employeeId= request.getParameter("employeeId");
-        String name = request.getParameter("name");
+        String name = request.getParameter("name").trim();
+        if (!name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$")) {
+            errorMessages.put("name", "Invalid name");
+        }
         name = capitalizeName(name);
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String address = request.getParameter("address");
+        String email = request.getParameter("email").trim();
+        String phone = request.getParameter("phone").trim();
+        String address = request.getParameter("address").trim();
         address = capitalizeName(address);
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String accountId = request.getParameter("account");
         String warehouseID = request.getParameter("warehouse");
 
+        try {
+            list = accountService.getAllAccountAvaiable();
+            listWarehouse = warehouseDAO.getAllWareHouse();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         if (!isValidEmail(email)) {
             errorMessages.put("email", "Invalid Email.");
         }

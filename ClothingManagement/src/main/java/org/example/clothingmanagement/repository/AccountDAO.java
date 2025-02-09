@@ -85,20 +85,21 @@ public class AccountDAO {
         return account;
     }
     public void updateAccount(Account account) throws SQLException {
-        String sql = "UPDATE account SET email = ?, password = ? WHERE accountId = ?";
+        String sql = "UPDATE account SET email = ?, password = ? , roleID = ? WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
-            stmt.setInt(3, account.getId());
+            stmt.setInt(3, account.getRoleId());
+            stmt.setInt(4, account.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isAccountExist(String email) throws SQLException {
-        String sql = "SELECT * FROM account WHERE email = ?";
+    public boolean isAccountExist(String email, int accountId) throws SQLException {
+        String sql = "SELECT * FROM account WHERE email = ? AND accountId != ? ";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
@@ -258,9 +259,9 @@ public class AccountDAO {
 
     public static void main(String[] args) throws SQLException {
         AccountDAO dao = new AccountDAO();
-        List<Role > list= dao.getAllRoles();
-        for(Role account:list){
-            System.out.println(account.getRoleName());
+        List<Account > list= dao.getAllAccount();
+        for(Account account:list){
+            System.out.println(account.getId());
         }
     }
 
