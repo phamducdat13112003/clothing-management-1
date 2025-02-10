@@ -18,20 +18,20 @@
 <body>
 <form action="editaccount" method="post" class="edit-form">
     <h2>Edit Account</h2>
-    <input style="width: 95%" type="hidden" id="accountID" name="accountID" value="${account.id}" readonly>
+    <input style="width: 95%" type="hidden" id="accountID" name="accountID" value="${account.id}"  readonly>
 
     <label for="email">Email <span class="required">*</span></label>
-    <input style="width: 95%" type="email" id="email" name="email" value="${account.email}" required>
+    <input style="width: 95%" type="email" id="email" name="email" value="${account.email}" pattern="^\S+$" required>
 
     <label for="password">Password <span class="required">*</span></label>
     <div class="password-toggle">
-        <input type="password" id="password" name="password" value="${account.password}" required>
+        <input type="password" id="password" name="password" value="${account.password}" pattern="^\S+$" required>
         <span id="togglePassword">👁️</span>
     </div>
 
     <label for="password">Confirm password <span class="required"></span></label>
     <div class="password-toggle">
-        <input type="password" id="confirmPassword" name="confirmPassword">
+        <input type="password" id="confirmPassword" name="confirmPassword" pattern="^\S+$">
     </div>
 
     <!-- Thêm trường Role -->

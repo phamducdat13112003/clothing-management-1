@@ -507,7 +507,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Employee Name <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" type="text" name="name" required>
+                                                                <input class="sherah-wc__form-input" type="text" name="name" pattern="^\S+$" required>
                                                                 <c:if test="${not empty errorMessages['name']}">
                                                                     <span class="error-message">${errorMessages['name']}</span>
                                                                 </c:if>
@@ -528,7 +528,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" required>
+                                                                <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" pattern="^\S+$" required>
                                                                 <c:if test="${not empty errorMessages['email']}">
                                                                     <span class="error-message">${errorMessages['email']}</span>
                                                                 </c:if>
@@ -539,7 +539,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" required>
+                                                                <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" pattern="^\S+$" required>
                                                                 <c:if test="${not empty errorMessages['phone']}">
                                                                     <span class="error-message">${errorMessages['phone']}</span>
                                                                 </c:if>
@@ -550,7 +550,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Address <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" required>
+                                                                <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" pattern="^\S+$" required>
                                                             </div>
                                                         </div>
                                                     </div>
