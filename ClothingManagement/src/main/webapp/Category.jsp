@@ -135,13 +135,13 @@
 <!-- Form Tìm Kiếm -->
 <div class="container">
     <!-- Form tìm kiếm -->
-    <form action="SelectCategory" method="get" class="search-form">
-        <input type="text" name="categoryName" placeholder="Please Enter Name...">
-        <input type="date" name="startDate" placeholder="Please Enter Start Date...">
-        <input type="date" name="endDate" placeholder="Please Enter End Date...">
-        <input type="text" name="createBy" placeholder="Please Enter Created By...">
-        <button type="submit">Search</button>
-    </form>
+<%--    <form action="SelectCategory" method="get" class="search-form">--%>
+<%--        <input type="text" name="categoryName" placeholder="Please Enter Name...">--%>
+<%--        <input type="date" name="startDate" placeholder="Please Enter Start Date...">--%>
+<%--        <input type="date" name="endDate" placeholder="Please Enter End Date...">--%>
+<%--        <input type="text" name="createBy" placeholder="Please Enter Created By...">--%>
+<%--        <button type="submit">Search</button>--%>
+<%--    </form>--%>
 
 
     <!-- Form tạo Category mới -->
