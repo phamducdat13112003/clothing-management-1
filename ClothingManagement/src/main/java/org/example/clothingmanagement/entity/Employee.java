@@ -45,4 +45,16 @@ public class Employee {
         this.warehouseID = warehouseID;
         this.image = image;
     }
+
+    public Employee(String name, String email, String phone, String address, String gender, LocalDate dateOfBirth, int accountID, int warehouseID, String image) {
+        this.employeeName = employeeName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.accountID = accountID;
+        this.warehouseID = warehouseID;
+        this.image=image;
+    }
 }
