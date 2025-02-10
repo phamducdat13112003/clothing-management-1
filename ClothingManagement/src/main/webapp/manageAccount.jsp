@@ -141,11 +141,11 @@
                     <form id="addAccountForm" action="addaccount" method="post">
                         <div class="mb-3">
                             <label for="email" class="form-label">Email <span class="required">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" pattern="^\S+$" required>
+                            <input type="email" class="form-control" id="email" name="email" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password <span class="required">*</span></label>
-                            <input minlength="8" type="password" class="form-control" id="password" name="password" pattern="^\S+$" required>
+                            <input minlength="8" type="password" class="form-control" id="password" name="password" required>
                         </div>
                         <div class="mb-3">
                             <label for="role" class="form-label">Role <span class="required">*</span></label>
