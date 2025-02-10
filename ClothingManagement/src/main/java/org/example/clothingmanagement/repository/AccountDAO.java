@@ -103,6 +103,7 @@ public class AccountDAO {
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
+            stmt.setInt(2, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return true;
