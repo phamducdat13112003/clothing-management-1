@@ -51,6 +51,7 @@ public class EditAccountServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Role> roles = null;
         AccountService accountService = new AccountService();
         String accountID = request.getParameter("accountID");
         String email = request.getParameter("email").trim();
@@ -61,9 +62,16 @@ public class EditAccountServlet extends HttpServlet {
         if (!isValidPassword(password)) {
             // Thông báo lỗi nếu mật khẩu không hợp lệ
             request.setAttribute("message", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ in hoa, số và ký tự đặc biệt.");
+            try {
+                roles= accountService.getAllRoles();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+            request.setAttribute("roles", roles);
             request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
             return;
         }
+        System.out.println(confirmPassword);
         Account account;
         if (confirmPassword.isEmpty()) {
             // Nếu confirmPassword trống, không thay đổi mật khẩu
@@ -80,8 +88,9 @@ public class EditAccountServlet extends HttpServlet {
                 return;
             }
             // Nếu mật khẩu và confirmPassword khớp, cập nhật mật khẩu mới
-            account = new Account(Integer.parseInt(accountID), email, password);
+            account = new Account(Integer.parseInt(accountID), email, password, Integer.parseInt(roleID));
         }
+
         try {
             if (accountService.isAccountExist(email, Integer.parseInt(accountID))){
                 request.setAttribute("message", "Email is existed!");
