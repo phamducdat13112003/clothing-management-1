@@ -74,12 +74,12 @@ public class EditEmployeeServlet extends HttpServlet {
         AccountService accountService = new AccountService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
-        Map<String, String> errorMessages = new HashMap<>();
         List<Warehouse> listWarehouse = null;
+        Employee employee = null;
         String employeeId= request.getParameter("employeeId");
         String name = request.getParameter("name").trim();
         if (!name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$")) {
-            errorMessages.put("name", "Invalid name");
+            request.setAttribute("errorName", "Name must contain only letters and numbers");
         }
         name = capitalizeName(name);
         String email = request.getParameter("email").trim();
@@ -91,15 +91,15 @@ public class EditEmployeeServlet extends HttpServlet {
         String warehouseID = request.getParameter("warehouse");
         listWarehouse = warehouseDAO.getAllWareHouse();
         if (!isValidEmail(email)) {
-            errorMessages.put("email", "Invalid Email.");
+            request.setAttribute("errorEmail", "Invalid email");
         }
 
         if (!isValidPhone(phone)) {
-            errorMessages.put("phone", "Invalid phone number! Must be 10 digits.");
+            request.setAttribute("errorPhone", "Invalid phone number");
         }
 
         if (!isAdult(String.valueOf(dateOfBirth))) {
-            errorMessages.put("dob", "Employees must be 18 years of age or older.");
+            request.setAttribute("errorDateofBirth", "Invalid date of birth, employee must equal or greater than 18 age");
         }
 
         try {
@@ -109,17 +109,19 @@ public class EditEmployeeServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if(!errorMessages.isEmpty() || !message.isEmpty()) {
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("phone", phone);
-            request.setAttribute("address", address);
-            request.setAttribute("gender", gender);
-            request.setAttribute("dateOfBirth", dateOfBirth);
-            request.setAttribute("listWarehouse", listWarehouse);
+        try {
+            employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+        } catch (SQLException e) {
+            request.setAttribute("message", "Can't find employee with ID " + employeeId);
+        }
+        if(!message.isEmpty() || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
             request.setAttribute("message", message.toString());
-            request.getRequestDispatcher("./editEmployee.jsp").include(request, response);
+            request.setAttribute("employee", employee);
+            request.setAttribute("listWarehouse", listWarehouse);
+            request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
+            System.out.println(warehouseID);
+            System.out.println(employeeId);
             Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content

@@ -141,10 +141,9 @@
             </div>
         </div>
     </section>
-</div>
 
-<!-- sherah Scripts -->
-<script src="js/jquery.min.js"></script>
+
+    <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>
 <script src="js/jquery-ui.min.js"></script>
 <script src="js/popper.min.js"></script>
