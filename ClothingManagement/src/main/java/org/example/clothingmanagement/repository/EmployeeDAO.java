@@ -257,8 +257,7 @@ public class EmployeeDAO {
 
     public static void main(String[] args) {
         EmployeeDAO employeeDAO = new EmployeeDAO();
-        Employee employee = employeeDAO.getEmployeeByID(1);
-        List<Employee> list= employeeDAO.getAllEmployee();
+        List<Employee> list = employeeDAO.getAllEmployee();
         for (Employee e : list) {
             System.out.println(e);
         }

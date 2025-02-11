@@ -121,9 +121,9 @@
                               <label class="sherah-wc__form-label">Employee Name <span class="required">*</span></label>
                               <div class="form-group__input">
                                 <input class="sherah-wc__form-input" placeholder="Employee Name" type="text" name="name" value="${employee.employeeName}" required>
-                                  <c:if test="${not empty errorMessages['name']}">
-                                      <span class="error-message">${errorMessages['name']}</span>
-                                  </c:if>
+                                <c:if test="${not empty errorName}">
+                                  <span class="error-message">${errorName}</span>
+                                </c:if>
                               </div>
                             </div>
                           </div>
@@ -142,9 +142,9 @@
                               <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
                               <div class="form-group__input">
                                 <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${employee.email}" required>
-                                  <c:if test="${not empty errorMessages['email']}">
-                                      <span class="error-message">${errorMessages['email']}</span>
-                                  </c:if>
+                                <c:if test="${not empty errorEmail}">
+                                  <span class="error-message">${errorEmail}</span>
+                                </c:if>
                               </div>
                             </div>
                           </div>
@@ -153,9 +153,9 @@
                               <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
                               <div class="form-group__input">
                                 <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${employee.phone}" required>
-                                  <c:if test="${not empty errorMessages['phone']}">
-                                      <span class="error-message">${errorMessages['phone']}</span>
-                                  </c:if>
+                                <c:if test="${not empty errorPhone}">
+                                  <span class="error-message">${errorPhone}</span>
+                                </c:if>
                               </div>
                             </div>
                           </div>
@@ -181,9 +181,9 @@
                               <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>
                               <div class="form-group__input">
                                 <input value="${employee.dateOfBirth}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
-                                  <c:if test="${not empty errorMessages['dob']}">
-                                      <span class="error-message">${errorMessages['dob']}</span>
-                                  </c:if>
+                                <c:if test="${not empty errorDateofBirth}">
+                                  <span class="error-message">${errorDateofBirth}</span>
+                                </c:if>
                               </div>
                             </div>
                           </div>
