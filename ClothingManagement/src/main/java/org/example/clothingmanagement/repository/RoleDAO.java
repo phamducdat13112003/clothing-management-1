@@ -1,12 +1,13 @@
 package org.example.clothingmanagement.repository;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.example.clothingmanagement.entity.Account;
+import org.example.clothingmanagement.entity.Role;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class RoleDAO {
     private static final DataSource dataSource = createDataSource();
@@ -36,6 +37,23 @@ public class RoleDAO {
             e.printStackTrace();
         }
         return null; // Return null if role ID not found or an error occurs
+    }
+    public List<Role> getAllRoles() {
+        List<Role> list = new ArrayList<>();
+        String sql = "SELECT * FROM Role";
+        try (Connection connection = dataSource.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Role role = new Role();
+                role.setId(rs.getInt("RoleID"));
+                role.setRoleName(rs.getString("RoleName"));
+                list.add(role);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
     public static void main(String[] args) {

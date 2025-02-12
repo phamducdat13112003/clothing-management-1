@@ -115,9 +115,9 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Employee Name <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" type="text" name="name" pattern="^\S+$" required>
-                                                                <c:if test="${not empty errorMessages['name']}">
-                                                                    <span class="error-message">${errorMessages['name']}</span>
+                                                                <input value="${name}" class="sherah-wc__form-input" type="text" name="name" required>
+                                                                <c:if test="${not empty errorName}">
+                                                                    <span class="error-message">${errorName}</span>
                                                                 </c:if>
                                                             </div>
                                                         </div>
@@ -136,9 +136,9 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" pattern="^\S+$" required>
-                                                                <c:if test="${not empty errorMessages['email']}">
-                                                                    <span class="error-message">${errorMessages['email']}</span>
+                                                                <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" required>
+                                                                <c:if test="${not empty errorEmail}">
+                                                                    <span class="error-message">${errorEmail}</span>
                                                                 </c:if>
                                                             </div>
                                                         </div>
@@ -147,9 +147,9 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" pattern="^\S+$" required>
-                                                                <c:if test="${not empty errorMessages['phone']}">
-                                                                    <span class="error-message">${errorMessages['phone']}</span>
+                                                                <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" required>
+                                                                <c:if test="${not empty errorPhone}">
+                                                                    <span class="error-message">${errorPhone}</span>
                                                                 </c:if>
                                                             </div>
                                                         </div>
@@ -158,7 +158,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Address <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" pattern="^\S+$" required>
+                                                                <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" required>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -176,8 +176,8 @@
                                                             <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <input value="${dateOfBirth}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
-                                                                <c:if test="${not empty errorMessages['dob']}">
-                                                                    <span class="error-message">${errorMessages['dob']}</span>
+                                                                <c:if test="${not empty errorDateofBirth}">
+                                                                    <span class="error-message">${errorDateofBirth}</span>
                                                                 </c:if>
                                                             </div>
                                                         </div>
@@ -192,10 +192,10 @@
                                                 <h4 class="form-title m-0">Organization</h4>
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">AccountId:  <span class="required">*</span></label>
-                                                        <select class="form-group__input" name="account" aria-label="Default select example">
-                                                            <c:forEach items="${list}" var="account">
-                                                                <option value="${account.id}">${account.id}</option>
+                                                        <label class="sherah-wc__form-label">Role: <span class="required">*</span></label>
+                                                        <select class="form-group__input" name="role" aria-label="Default select example">
+                                                            <c:forEach items="${list}" var="role">
+                                                                <option value="${role.id}">${role.roleName}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>

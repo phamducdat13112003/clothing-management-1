@@ -38,10 +38,8 @@ public class DeleteEmployeeServlet extends HttpServlet {
         AccountService accountService = new AccountService();
         if(employeeId != null){
             try {
-                Employee employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
-                boolean isDeleted= employeeService.deleteEmployee(Integer.parseInt(employeeId));
-                int accountId = employee.getAccountID();
-                boolean isAccountDeleted = accountService.deleteAccount(accountId);
+                boolean isDeleted= employeeService.deleteEmployee(employeeId);
+                boolean isAccountDeleted = accountService.deleteAccount(employeeId);
                 if((isDeleted) && (isAccountDeleted)){
                     List<Employee> list= employeeService.getAllEmployees();
                     request.setAttribute("message", "Employee deleted");

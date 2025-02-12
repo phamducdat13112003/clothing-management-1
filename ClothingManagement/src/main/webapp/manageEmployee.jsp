@@ -114,7 +114,7 @@
                                                             </g>
                                                         </svg>
                                                     </a>
-                                                    <a href="javascript:void(0)" onclick="confirmDelete(${employee.employeeID})" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
+                                                    <a href="javascript:void(0);" onclick="confirmDelete('${employee.employeeID}')" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
                                                         <svg class="sherah-color2__fill" xmlns="http://www.w3.org/2000/svg" width="16.247" height="18.252" viewBox="0 0 16.247 18.252">
                                                             <g id="Icon" transform="translate(-160.007 -18.718)">
                                                                 <path id="Path_484" data-name="Path 484" d="M185.344,88.136c0,1.393,0,2.786,0,4.179-.006,1.909-1.523,3.244-3.694,3.248q-3.623.007-7.246,0c-2.15,0-3.682-1.338-3.687-3.216q-.01-4.349,0-8.7a.828.828,0,0,1,.822-.926.871.871,0,0,1,1,.737c.016.162.006.326.006.489q0,4.161,0,8.321c0,1.061.711,1.689,1.912,1.69q3.58,0,7.161,0c1.2,0,1.906-.631,1.906-1.695q0-4.311,0-8.622a.841.841,0,0,1,.708-.907.871.871,0,0,1,1.113.844C185.349,85.1,185.343,86.618,185.344,88.136Z" transform="translate(-9.898 -58.597)"/>
@@ -142,28 +142,29 @@
         </div>
     </section>
 
+<script src="js/jquery.min.js"></script>
+    <script src="js/jquery-migrate.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/final-countdown.min.js"></script>
+    <script src="js/fancy-box.min.js"></script>
+    <script src="js/fullcalendar.min.js"></script>
+    <script src="js/datatables.min.js"></script>
+    <script src="js/circle-progress.min.js"></script>
+    <script src="js/jquery-jvectormap.js"></script>
+    <script src="js/jvector-map.js"></script>
+    <script src="js/main.js"></script>
 
-    <script src="js/jquery.min.js"></script>
-<script src="js/jquery-migrate.js"></script>
-<script src="js/jquery-ui.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/charts.js"></script>
-<script src="js/final-countdown.min.js"></script>
-<script src="js/fancy-box.min.js"></script>
-<script src="js/fullcalendar.min.js"></script>
-<script src="js/datatables.min.js"></script>
-<script src="js/circle-progress.min.js"></script>
-<script src="js/jquery-jvectormap.js"></script>
-<script src="js/jvector-map.js"></script>
-<script src="js/main.js"></script>
-<script type="text/javascript">
-    function confirmDelete(employeeID) {
-        if (confirm("Are you sure want to delete this employee?")) {
-            window.location = "deleteemployee?employeeId=" + employeeID;
+    <script type="text/javascript">
+        function confirmDelete(employeeID) {
+            if (confirm("Are you sure want to delete this account?")) {
+                window.location = "deleteemployee?employeeId=" + employeeID;
+            }
         }
-    }
-</script>
+    </script>
+
 <script>
     $('#sherah-table__vendor').DataTable({
         searching: true,

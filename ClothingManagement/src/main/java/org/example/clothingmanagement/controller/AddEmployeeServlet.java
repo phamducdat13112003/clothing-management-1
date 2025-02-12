@@ -5,10 +5,12 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
+import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.entity.Warehouse;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.repository.WarehouseDAO;
+import org.example.clothingmanagement.service.RoleService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -44,12 +46,12 @@ public class AddEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        AccountService accountService = new AccountService();
+        RoleService roleService = new RoleService();
         WarehouseDAO wareHouseDAO = new WarehouseDAO();
-        List<Account> list = null;
+        List<Role> list = null;
         List<Warehouse> listWarehouse = null;
         try {
-            list = accountService.getAllAccountAvaiable();
+            list =  roleService.getAllRoles();
             listWarehouse = wareHouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -62,80 +64,63 @@ public class AddEmployeeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeService employeeService = new EmployeeService();
-        AccountService accountService = new AccountService();
+        RoleService roleService = new RoleService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
 
         StringBuilder message = new StringBuilder();
-
-        boolean isAccountExisted= false;
-        boolean isEmployeeExisted= false;
-        Map<String, String> errorMessages = new HashMap<>();
-        List<Account> list =null;
+        List<Role> list =null;
         List<Warehouse> listWarehouse = null;
         try {
-            list = accountService.getAllAccountAvaiable();
+            list = roleService.getAllRoles();
             listWarehouse = warehouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         String name = request.getParameter("name").trim();
-        if (!name.matches("^[a-zA-Z\\s]+$")) {
-            errorMessages.put("name", "Invalid name");
+        if (!isValidName(name)) {
+            request.setAttribute("errorName", "Name must contain only letters.");
         }
         name = capitalizeName(name);
         String email = request.getParameter("email").trim();
         String phone = request.getParameter("phone").trim();
         String address = request.getParameter("address").trim();
         address = capitalizeName(address);
-        String accountId = request.getParameter("account");
+        String roleId = request.getParameter("role");
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String warehouseID = request.getParameter("warehouse");
 
         // Kiểm tra lỗi cho từng trường
         if (!isValidEmail(email)) {
-            errorMessages.put("email", "Invalid Email.");
+            request.setAttribute("errorEmail", "Invalid email");
         }
 
         if (!isValidPhone(phone)) {
-            errorMessages.put("phone", "Invalid phone number! Must be 10 digits.");
+            request.setAttribute("errorPhone", "Invalid phone number. The telephone number have 10 digits");
         }
 
         if (!isAdult(String.valueOf(dateOfBirth))) {
-            errorMessages.put("dob", "Employees must be 18 years of age or older.");
+            request.setAttribute("errorDateofBirth", "Invalid date of birth, employee must equal or greater than 18 age");
         }
-
-        try {
-            if (employeeService.isAccountIdExist(Integer.parseInt(accountId))) {
-                message.append("This account is used by another employee.\n");
-                isAccountExisted =true;
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
         try {
             if (employeeService.isEmployeeExistedWhenAdd(email, phone)) {
                 message.append("Employee already existed.\n");
-                isEmployeeExisted =true;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if(!errorMessages.isEmpty() || isAccountExisted || isEmployeeExisted) {
+        if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
+            request.setAttribute("message", message.toString());
             request.setAttribute("name", name);
             request.setAttribute("email", email);
             request.setAttribute("phone", phone);
             request.setAttribute("address", address);
-            request.setAttribute("gender", gender);
             request.setAttribute("dateOfBirth", dateOfBirth);
             request.setAttribute("list", list);
             request.setAttribute("listWarehouse", listWarehouse);
-            request.setAttribute("errorMessages", errorMessages);
-            request.setAttribute("message", message.toString());
             request.getRequestDispatcher("./addEmployee.jsp").forward(request, response);
         }else{
-            Employee employee = new Employee(name, email, phone, address, gender, dateOfBirth, Integer.parseInt(accountId), Integer.parseInt(warehouseID),"");
+            Employee employee = new Employee(name, email, phone, address, gender, dateOfBirth, Integer.parseInt(roleId), Integer.parseInt(warehouseID),"");
             Part part = request.getPart("img");
             String contentType = part.getContentType();
             if (!isImageFile(contentType)) {
@@ -239,5 +224,10 @@ public class AddEmployeeServlet extends HttpServlet {
         }
         return false;
     }
+
+    private boolean isValidName(String name) {
+        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$");
+    }
+
 
 }

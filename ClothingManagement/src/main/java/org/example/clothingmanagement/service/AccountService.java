@@ -13,8 +13,8 @@ public class AccountService {
     public List<Account> getAllAccounts() throws SQLException {
         return accountDAO.getAllAccount();
     }
-    public Account getAccountById(int id) throws SQLException {
-        return accountDAO.getAccountById(id);
+    public Account getAccountById(String accountId) throws SQLException {
+        return accountDAO.getAccountById(accountId);
     }
     public void createAccount(Account account) throws SQLException {
         accountDAO.createAccount(account);
@@ -22,8 +22,8 @@ public class AccountService {
     public void updateAccount(Account account) throws SQLException {
          accountDAO.updateAccount(account);
     }
-    public boolean deleteAccount(int id) throws SQLException {
-        return accountDAO.deleteAccount(id);
+    public boolean deleteAccount(String employeeId) throws SQLException {
+        return accountDAO.deleteAccount(employeeId);
     }
     public List<Role> getAllRoles() throws SQLException{
         return accountDAO.getAllRoles();
@@ -31,10 +31,6 @@ public class AccountService {
 
     public boolean isAccountExist(String email, int accountId) throws SQLException{
         return accountDAO.isAccountExist(email, accountId);
-    }
-
-    public List<Account> getAllAccountAvaiable() throws SQLException{
-        return accountDAO.getAllAccountAvaiable();
     }
 
     public boolean isAccountExists(int accountId) throws SQLException {

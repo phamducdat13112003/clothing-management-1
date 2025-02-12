@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
+import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.entity.Warehouse;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
@@ -50,14 +51,14 @@ public class EditEmployeeServlet extends HttpServlet {
         WarehouseDAO wareHouseDAO= new WarehouseDAO();
         Employee employee = null;
         try {
-            employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+            employee = employeeService.getEmployeeByID(employeeId);
         } catch (SQLException e) {
             request.setAttribute("message", "Can't find employee with ID " + employeeId);
         }
-        List<Account> list = null;
+        List<Role> list = null;
         List<Warehouse> listWarehouse = null;
         try {
-             list = accountService.getAllAccounts();
+             list = accountService.getAllRoles();
              listWarehouse= wareHouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -71,15 +72,14 @@ public class EditEmployeeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeService employeeService = new EmployeeService();
-        AccountService accountService = new AccountService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
         List<Warehouse> listWarehouse = null;
         Employee employee = null;
         String employeeId= request.getParameter("employeeId");
         String name = request.getParameter("name").trim();
-        if (!name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$")) {
-            request.setAttribute("errorName", "Name must contain only letters and numbers");
+        if (!isValidName(name)) {
+            request.setAttribute("errorName", "Name must contain only letters.");
         }
         name = capitalizeName(name);
         String email = request.getParameter("email").trim();
@@ -88,8 +88,11 @@ public class EditEmployeeServlet extends HttpServlet {
         address = capitalizeName(address);
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
+        String roleID = request.getParameter("role");
         String warehouseID = request.getParameter("warehouse");
         listWarehouse = warehouseDAO.getAllWareHouse();
+        System.out.println(roleID);
+        System.out.println(warehouseID);
         if (!isValidEmail(email)) {
             request.setAttribute("errorEmail", "Invalid email");
         }
@@ -103,26 +106,29 @@ public class EditEmployeeServlet extends HttpServlet {
         }
 
         try {
-            if (employeeService.isEmployeeExisted(Integer.parseInt(employeeId),email, phone)) {
+            if (employeeService.isEmployeeExisted(employeeId,email, phone)) {
                 message.append("Employee already existed.\n");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
         try {
-            employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+            employee = employeeService.getEmployeeByID(employeeId);
         } catch (SQLException e) {
             request.setAttribute("message", "Can't find employee with ID " + employeeId);
         }
-        if(!message.isEmpty() || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
+        if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
             request.setAttribute("message", message.toString());
             request.setAttribute("employee", employee);
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("phone", phone);
+            request.setAttribute("address", address);
+            request.setAttribute("dateOfBirth", dateOfBirth);
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
-            System.out.println(warehouseID);
-            System.out.println(employeeId);
-            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(warehouseID), "");
+            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(roleID), Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();
@@ -146,7 +152,7 @@ public class EditEmployeeServlet extends HttpServlet {
             } else {
                     Employee existEmployee = null;
                     try {
-                        existEmployee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+                        existEmployee = employeeService.getEmployeeByID(employeeId);
                     } catch (SQLException e) {
                         throw new RuntimeException(e);
                     }
@@ -234,5 +240,8 @@ public class EditEmployeeServlet extends HttpServlet {
             }
         }
         return false;
+    }
+    private boolean isValidName(String name) {
+        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$");
     }
 }
