@@ -37,7 +37,7 @@ public class DeleteAccountServlet extends HttpServlet {
         AccountService accountService = new AccountService();
         if(accountID != null) {
             try {
-                boolean isDeleted= accountService.deleteAccount(Integer.parseInt(accountID));
+                boolean isDeleted= accountService.deleteAccount(accountID);
                 if (isDeleted) {
                     List<Account> list= accountService.getAllAccounts();
                     request.setAttribute("message", "Account deleted");

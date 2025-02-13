@@ -25,6 +25,10 @@ public class AccountService {
     public boolean deleteAccount(String employeeId) throws SQLException {
         return accountDAO.deleteAccount(employeeId);
     }
+
+    public boolean deleteAccountWhenDeleteEmployee (String employeeId) throws SQLException {
+        return accountDAO.deleteAccountWhenDeleteEmployee(employeeId);
+    }
     public List<Role> getAllRoles() throws SQLException{
         return accountDAO.getAllRoles();
     }
@@ -36,6 +40,7 @@ public class AccountService {
     public boolean isAccountExists(int accountId) throws SQLException {
         return AccountDAO.isAccountExists(accountId);
     }
+
     public Account findAccount(String email, String password) throws SQLException{
         return accountDAO.findAccount(email, password);
     }

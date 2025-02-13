@@ -39,7 +39,7 @@ public class DeleteEmployeeServlet extends HttpServlet {
         if(employeeId != null){
             try {
                 boolean isDeleted= employeeService.deleteEmployee(employeeId);
-                boolean isAccountDeleted = accountService.deleteAccount(employeeId);
+                boolean isAccountDeleted = accountService.deleteAccountWhenDeleteEmployee(employeeId);
                 if((isDeleted) && (isAccountDeleted)){
                     List<Employee> list= employeeService.getAllEmployees();
                     request.setAttribute("message", "Employee deleted");

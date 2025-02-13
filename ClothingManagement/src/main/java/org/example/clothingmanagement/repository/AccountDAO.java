@@ -24,40 +24,21 @@ public class AccountDAO {
 
     public List<Account> getAllAccount() throws SQLException {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT * FROM account";
-
-        try (Connection connection = DBContext.getConnection();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Account account = new Account();
-                account.setId(rs.getInt("accountId"));
-                account.setEmail(rs.getString("email"));
-                account.setPassword(rs.getString("password"));
-                account.setRoleId(rs.getInt("roleID"));
-                list.add(account);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public List<Account> getAllAccountAvaiable() throws SQLException {
-        List<Account> list = new ArrayList<>();
-        String sql = "SELECT a.AccountID\n" +
+        String sql = "SELECT a.*, r.RoleName\n" +
                 "FROM Account a\n" +
-                "LEFT JOIN Employee e ON a.AccountID = e.AccountID\n" +
-                "WHERE e.AccountID IS NULL;";
+                "JOIN Role r ON a.RoleID = r.RoleID\n" +
+                "WHERE a.status = 'Active'";
         try (Connection connection = DBContext.getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Account account = new Account();
-                account.setId(rs.getInt("accountId"));
+                account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
+                account.setStatus(rs.getString("status"));
                 account.setRoleId(rs.getInt("roleID"));
+                account.setRoleName(rs.getString("roleName"));
                 list.add(account);
             }
         } catch (SQLException e) {
@@ -66,18 +47,20 @@ public class AccountDAO {
         return list;
     }
 
-    public Account getAccountById(int accountId) throws SQLException {
+    public Account getAccountById(String accountId) throws SQLException {
         Account account = new Account();
         String sql = "SELECT * FROM account WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountId);
+            stmt.setString(1, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                account.setId(rs.getInt("accountId"));
+                account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
+                account.setStatus(rs.getString("status"));
                 account.setRoleId(rs.getInt("roleID"));
+                account.setEmployeeId(rs.getString("employeeId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,13 +68,14 @@ public class AccountDAO {
         return account;
     }
     public void updateAccount(Account account) throws SQLException {
-        String sql = "UPDATE account SET email = ?, password = ? , roleID = ? WHERE accountId = ?";
+        String sql = "UPDATE account SET email = ?, password = ? , roleID = ?, status = ? WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
             stmt.setInt(3, account.getRoleId());
-            stmt.setInt(4, account.getId());
+            stmt.setString(4, account.getStatus());
+            stmt.setString(5, account.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -114,11 +98,11 @@ public class AccountDAO {
         return false;
     }
 
-    public boolean deleteAccount(int accountId) throws SQLException {
-        String sql = "DELETE FROM account WHERE accountId = ?";
+    public boolean deleteAccount(String accountId) throws SQLException {
+        String sql = "UPDATE account SET status = 'Inactive' WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountId);
+            stmt.setString(1, accountId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -126,13 +110,28 @@ public class AccountDAO {
         return false;
     }
 
+    public boolean deleteAccountWhenDeleteEmployee(String employeeId) throws SQLException {
+        String sql = "UPDATE Account SET status = 'Inactive' WHERE employeeId = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, employeeId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;  // Return false if there is any exception
+        }
+    }
+
+
     public void createAccount(Account account) throws SQLException {
-        String sql = "INSERT INTO account(email, password, roleID) VALUES(?,?,?)";
+        String sql = "INSERT INTO account (Email, Password, RoleID, Status, EmployeeID) VALUES (?, ?, ?, 'Active', ?)";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
             stmt.setInt(3, account.getRoleId());
+            stmt.setString(4, account.getEmployeeId());
             stmt.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
@@ -182,7 +181,7 @@ public class AccountDAO {
 
             if (rs.next()) {
                 account = new Account();
-                account.setId(rs.getInt("accountId"));
+                account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
                 account.setRoleId(rs.getInt("roleID"));

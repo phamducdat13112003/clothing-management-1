@@ -216,14 +216,17 @@ public class EmployeeDAO {
 
     public List<String> getEmployeeIDsWithoutAccount() {
         List<String> employeeIds = new ArrayList<>();
-        String sql = "SELECT e.EmployeeID FROM Employee e LEFT JOIN Account a ON e.EmployeeID = a.EmployeeID WHERE a.EmployeeID IS NULL AND e.Status = 'Active'";
-
+        String sql = "SELECT e.EmployeeID \n" +
+                "FROM Employee e \n" +
+                "LEFT JOIN Account a \n" +
+                "ON e.EmployeeID = a.EmployeeID \n" +
+                "WHERE a.EmployeeID IS NULL \n" +
+                "AND e.Status = 'Active'\n";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
 
             try (ResultSet rs = pt.executeQuery()) {
                 while (rs.next()) {
-                    // Lấy EmployeeID và thêm vào danh sách
                     employeeIds.add(rs.getString("EmployeeID"));
                 }
             } catch (SQLException e) {
@@ -235,6 +238,42 @@ public class EmployeeDAO {
 
         return employeeIds;
     }
+
+    public boolean isEmailExistForEmployee(String email, String employeeId) throws SQLException {
+        String sql = "SELECT * FROM Employee WHERE Email = ? AND EmployeeID = ? AND Status = 'Active'";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            stmt.setString(2, employeeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                return rs.next();
+            }
+        }
+    }
+
+    public int getRoleIdByEmployeeId(String employeeId) throws SQLException {
+        String sql = "SELECT RoleID FROM Employee WHERE EmployeeID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            // Set parameter
+            stmt.setString(1, employeeId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    // Return RoleID of the employee
+                    return rs.getInt("RoleID");
+                } else {
+                    throw new SQLException("Employee not found with EmployeeID: " + employeeId);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;  // Rethrow exception after logging
+        }
+    }
+
 
 
     public static int getAccountIdByEmployeeId(int employeeID) {

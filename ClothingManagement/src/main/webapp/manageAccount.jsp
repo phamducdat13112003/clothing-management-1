@@ -54,7 +54,7 @@
                                         <h2 class="sherah-breadcrumb__title">Manage Account</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="account">Home</a></li>
-                                            <li class="active"> <a href="#" id="addAccountBtn" >Add Account</a></li>
+                                            <li class="active"> <a href="addaccount" >Add Account</a></li>
                                         </ul>
                                     </div>
                                 </div>
@@ -91,7 +91,7 @@
                                             </td>
                                             <td class="sherah-table__column-3 sherah-table__data-3">
                                                 <div class="sherah-table__product-content">
-                                                        ${account.roleId}
+                                                        ${account.roleName}
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-4 sherah-table__data-7" style="text-align: center;">
@@ -105,7 +105,7 @@
                                                             </g>
                                                         </svg>
                                                     </a>
-                                                    <a href="javascript:void(0)" onclick="confirmDelete(${account.id})" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
+                                                    <a href="javascript:void(0);" onclick="confirmDelete('${account.id}')" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
                                                         <svg class="sherah-color2__fill" xmlns="http://www.w3.org/2000/svg" width="16.247" height="18.252" viewBox="0 0 16.247 18.252">
                                                             <g id="Icon" transform="translate(-160.007 -18.718)">
                                                                 <path id="Path_484" data-name="Path 484" d="M185.344,88.136c0,1.393,0,2.786,0,4.179-.006,1.909-1.523,3.244-3.694,3.248q-3.623.007-7.246,0c-2.15,0-3.682-1.338-3.687-3.216q-.01-4.349,0-8.7a.828.828,0,0,1,.822-.926.871.871,0,0,1,1,.737c.016.162.006.326.006.489q0,4.161,0,8.321c0,1.061.711,1.689,1.912,1.69q3.58,0,7.161,0c1.2,0,1.906-.631,1.906-1.695q0-4.311,0-8.622a.841.841,0,0,1,.708-.907.871.871,0,0,1,1.113.844C185.349,85.1,185.343,86.618,185.344,88.136Z" transform="translate(-9.898 -58.597)"/>
@@ -130,46 +130,10 @@
         </div>
     </section>
     <!-- End sherah Dashboard -->
-    <div class="modal fade" id="addAccountModal" tabindex="-1" aria-labelledby="addAccountLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addAccountLabel">Add New Account</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="addAccountForm" action="addaccount" method="post">
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Email <span class="required">*</span></label>
-                            <input type="email" class="form-control" id="email" name="email" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Password <span class="required">*</span></label>
-                            <input minlength="8" type="password" class="form-control" id="password" name="password" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label">Role <span class="required">*</span></label>
-                            <select class="form-select" id="role" name="roleID" required>
-                                <c:forEach items="${roles}" var="role">
-                                    <option value="${role.id}">${role.roleName}</option>
-                                </c:forEach>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-success">Add</button>
-                        <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">Cancel</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-
-</div>
-
-<!-- sherah Scripts -->
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>
 <script src="js/jquery-ui.min.js"></script>
+<script src="js/jquery-jvectormap.js"></script>
 <script src="js/popper.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/charts.js"></script>
@@ -178,7 +142,6 @@
 <script src="js/fullcalendar.min.js"></script>
 <script src="js/datatables.min.js"></script>
 <script src="js/circle-progress.min.js"></script>
-<script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
 <script type="text/javascript">
@@ -206,9 +169,6 @@
         },
         pageLength: 5,
         lengthMenu: [5, 10, 20, 50],
-    });
-    $('#addAccountBtn').click(function() {
-        $('#addAccountModal').modal('show');
     });
 </script>
 <c:if test="${not empty message}">

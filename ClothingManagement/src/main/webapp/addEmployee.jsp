@@ -216,7 +216,7 @@
                                             <!-- Dịch 2 nút "Add" và "Cancel" lên ngay sau phần Organization -->
                                             <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end">
                                                 <button type="submit" class="sherah-btn sherah-btn__primary">Add</button>
-                                                <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
+                                                <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
                                             </div>
                                         </div>
                                     </div>

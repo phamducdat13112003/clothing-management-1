@@ -43,6 +43,13 @@ public class EmployeeService {
         return employeeDAO.getEmployeeIDsWithoutAccount();
     }
 
+    public boolean isEmailExistForEmployee (String email, String employeeId) throws SQLException{
+        return employeeDAO.isEmailExistForEmployee(email, employeeId);
+    }
+    public int getRoleIdByEmployeeId(String employeeId) throws SQLException{
+        return employeeDAO.getRoleIdByEmployeeId(employeeId);
+    }
+
     public boolean isEmployeeExisted(String employeeId ,String email, String phone) throws SQLException{
         return employeeDAO.isEmployeeExisted(employeeId, email, phone);
     }

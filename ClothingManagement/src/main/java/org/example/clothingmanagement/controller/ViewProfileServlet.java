@@ -29,7 +29,7 @@ public class ViewProfileServlet extends HttpServlet {
 
         switch (action) {
             case "view":
-                viewEmployee(request, response);
+                //viewEmployee(request, response);
                 break;
             default:
                 response.getWriter().write("Invalid action.");
@@ -47,47 +47,47 @@ public class ViewProfileServlet extends HttpServlet {
         }
     }
 
-    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int employeeID = Integer.parseInt(request.getParameter("id"));
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        // Lấy tất cả nhân viên
-        List<Employee> employees = employeeDAO.getAllEmployee();
-        Employee employee = null;
-
-        // Tìm nhân viên với ID đã cho
-        for (Employee emp : employees) {
-            if (emp.getEmployeeID() == employeeID) {
-                employee = emp;
-                break;
-            }
-        }
-
-        if (employee != null) {
-            WarehouseDAO wareHouseDAO = new WarehouseDAO();
-            String warehouseName = null;
-            try {
-                warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            int accountId = employee.getAccountID();
-
-            // Lấy RoleID sử dụng AccountID từ AccountDAO
-            int roleId = AccountDAO.getRoleIdByAccountId(accountId);
-
-            // Lấy RoleName sử dụng RoleID từ RoleDAO
-            String roleName = RoleDAO.getRoleNameById(roleId);
-
-
-            request.setAttribute("employee", employee);
-            request.setAttribute("warehouseName", warehouseName);
-            request.setAttribute("roleName", roleName);
-            request.getRequestDispatcher("profile-info.jsp").forward(request, response);
-        } else {
-            response.getWriter().write("Employee not found.");
-        }
-    }
+//    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+//        int employeeID = Integer.parseInt(request.getParameter("id"));
+//        EmployeeDAO employeeDAO = new EmployeeDAO();
+//        // Lấy tất cả nhân viên
+//        List<Employee> employees = employeeDAO.getAllEmployee();
+//        Employee employee = null;
+//
+//        // Tìm nhân viên với ID đã cho
+//        for (Employee emp : employees) {
+//            if (emp.getEmployeeID() == employeeID) {
+//                employee = emp;
+//                break;
+//            }
+//        }
+//
+//        if (employee != null) {
+//            WarehouseDAO wareHouseDAO = new WarehouseDAO();
+//            String warehouseName = null;
+//            try {
+//                warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//            }
+//
+//            //int accountId = employee.getAccountID();
+//
+//            // Lấy RoleID sử dụng AccountID từ AccountDAO
+//            //int roleId = AccountDAO.getRoleIdByAccountId(accountId);
+//
+//            // Lấy RoleName sử dụng RoleID từ RoleDAO
+//            //String roleName = RoleDAO.getRoleNameById(roleId);
+//
+//
+//            request.setAttribute("employee", employee);
+//            request.setAttribute("warehouseName", warehouseName);
+//            //request.setAttribute("roleName", roleName);
+//            request.getRequestDispatcher("profile-info.jsp").forward(request, response);
+//        } else {
+//            response.getWriter().write("Employee not found.");
+//        }
+//    }
 
 
     private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -144,7 +144,7 @@ public class ViewProfileServlet extends HttpServlet {
 
             // dữ liệu nhân viên để hiển thị lại
             Employee employee = new Employee();
-            employee.setEmployeeID(employeeID);
+            //employee.setEmployeeID(employeeID);
             employee.setEmployeeName(employeeName);
             employee.setPhone(phone);
             employee.setAddress(address);
@@ -154,7 +154,7 @@ public class ViewProfileServlet extends HttpServlet {
             employee.setStatus(status);
             employee.setWarehouseID(warehouseID);
             employee.setImage(image);
-            employee.setAccountID(accountID);
+            //employee.setAccountID(accountID);
 
             // Gửi dữ liệu về trang JSP
             request.setAttribute("employee", employee);
@@ -166,7 +166,7 @@ public class ViewProfileServlet extends HttpServlet {
 
         // Tạo đối tượng Employee với dữ liệu đã kiểm tra
         Employee employee = new Employee();
-        employee.setEmployeeID(employeeID);
+        //employee.setEmployeeID(employeeID);
         employee.setEmployeeName(employeeName);
         employee.setPhone(phone);
         employee.setAddress(address);
@@ -176,7 +176,7 @@ public class ViewProfileServlet extends HttpServlet {
         employee.setStatus(status);
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
-        employee.setAccountID(accountID);
+        //employee.setAccountID(accountID);
 
         boolean isUpdated = EmployeeDAO.updateEmployee(employee);
 
