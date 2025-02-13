@@ -72,9 +72,11 @@ public class EditEmployeeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeService employeeService = new EmployeeService();
+        AccountService accountService = new AccountService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
         List<Warehouse> listWarehouse = null;
+        List<Role> list = null;
         Employee employee = null;
         String employeeId= request.getParameter("employeeId");
         String name = request.getParameter("name").trim();
@@ -91,8 +93,6 @@ public class EditEmployeeServlet extends HttpServlet {
         String roleID = request.getParameter("role");
         String warehouseID = request.getParameter("warehouse");
         listWarehouse = warehouseDAO.getAllWareHouse();
-        System.out.println(roleID);
-        System.out.println(warehouseID);
         if (!isValidEmail(email)) {
             request.setAttribute("errorEmail", "Invalid email");
         }
@@ -114,17 +114,15 @@ public class EditEmployeeServlet extends HttpServlet {
         }
         try {
             employee = employeeService.getEmployeeByID(employeeId);
+            list = accountService.getAllRoles();
         } catch (SQLException e) {
             request.setAttribute("message", "Can't find employee with ID " + employeeId);
         }
         if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
             request.setAttribute("message", message.toString());
+            System.out.println(message);
             request.setAttribute("employee", employee);
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("phone", phone);
-            request.setAttribute("address", address);
-            request.setAttribute("dateOfBirth", dateOfBirth);
+            request.setAttribute("list", list);
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
@@ -141,31 +139,33 @@ public class EditEmployeeServlet extends HttpServlet {
                     String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
                     // convert it to a string, get just the filename without including the full path
 
-                if (!source.isEmpty()) {
-                    String filename = employeeId + ".png";
-                    if (!Files.exists(Path.of(realPath))) { // check folder /img/ Employee is existed
-                        Files.createDirectories(Path.of(realPath));
-                    }
+                    if (!source.isEmpty()) {
+                        String filename = employeeId + ".png";
+                        if (!Files.exists(Path.of(realPath))) { // check folder /img/ Employee is existed
+                            Files.createDirectories(Path.of(realPath));
+                        }
                     part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
                     editEmployee.setImage("/img/Employee/" + filename+ "?" +System.currentTimeMillis()); //Set the path to the image file
-                }
-            } else {
-                    Employee existEmployee = null;
-                    try {
-                        existEmployee = employeeService.getEmployeeByID(employeeId);
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
                     }
-                    editEmployee.setImage(existEmployee.getImage());
-            }
+                } else {
+                    Employee existEmployee = null;
+                        try {
+                            existEmployee = employeeService.getEmployeeByID(employeeId);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                        editEmployee.setImage(existEmployee.getImage());
+                }
             boolean success = false;
+            boolean emailUpdated = false;
             try {
                 success = employeeService.updateEmployee(editEmployee);
+                emailUpdated = employeeService.updateAccountEmail(employeeId, email);
             } catch (SQLException e) {
                 request.setAttribute("message", "Cannot update Employee.");
             }
 
-            if (success) {
+            if (success && emailUpdated) {
                 request.setAttribute("message", "Employee updated successfully");
             } else {
                 request.setAttribute("message", "Failed to update employee");

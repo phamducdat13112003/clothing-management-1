@@ -98,6 +98,9 @@
                     <ul class="sherah-breadcrumb__list">
                       <li><a href="manageemployee">Home</a></li>
                     </ul>
+                    <c:if test="${not empty message}">
+                      <span class="error-message">${message}</span>
+                    </c:if>
                   </div>
                 </div>
               </div>
@@ -251,7 +254,6 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-
 <script type="text/javascript">
     function chooseFile(fileInput) {
         if (fileInput.files && fileInput.files[0]) {
@@ -274,124 +276,14 @@
         }
     }
 </script>
-
-<script>
-  jQuery(document).ready(function($) {
-    $('[data-countdown]').each(function() {
-      var $this = $(this), finalDate = $(this).data('countdown');
-      $this.countdown(finalDate, function(event) {
-        $this.html(event.strftime(' %H : %M : %S'));
-      });
-    });
-  });
-</script>
-<script>
-  const ctx_side_two = document.getElementById('myChart_Side_One').getContext('2d');
-  const myChart_Side_One = new Chart(ctx_side_two, {
-    type: 'doughnut',
-
-    data: {
-      labels: [
-        'Total Sold',
-        'Total Cancel',
-        'Total Cancel',
-        'Total Planding'
-      ],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [16, 16, 16, 30],
-        backgroundColor: [
-          '#5356FB',
-          '#F539F8',
-          '#FFC210',
-          '#E3E4FE'
-        ],
-        hoverOffset: 2,
-        borderWidth: 0,
-      }]
-    },
-
-    options: {
-
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-          display: false,
-        },
-        title: {
-          display: false,
-          text: 'Sell History'
-        }
-      }
-    }
-
-  });
-
-  const ctx_side_three = document.getElementById('myChart_Side_Two').getContext('2d');
-  const myChart_Side_Two = new Chart(ctx_side_three, {
-    type: 'line',
-
-    data: {
-      labels: ['12:00 AM', '04:00 AM', '08:00 AM'],
-      datasets: [{
-        label: 'Visitor',
-        data: [40, 90, 10],
-        backgroundColor: '#D8D8FE',
-        borderColor:'#5356FB',
-        pointRadius: 3,
-        pointBackgroundColor: '#5356FB',
-        pointBorderColor: '#5356FB',
-        borderWidth:4,
-        tension: 0.9,
-        fill:true,
-        fillColor:'#fff',
-
-      }]
-    },
-
-    options: {
-      responsive: true,
-      scales: {
-        x:{
-          grid:{
-            display:false,
-            drawBorder: false,
-          },
-
-        },
-        y:{
-          grid:{
-            display:false,
-            drawBorder: false,
-          },
-          ticks:{
-            display:false
-          }
-        },
-      },
-
-      plugins: {
-        legend: {
-          position: 'top',
-          display: false,
-        },
-        title: {
-          display: false,
-          text: 'Visitor: 2k'
-        }
-      }
-    }
-  });
-</script>
-
 <c:if test="${not empty message}">
-    <script>
-        window.onload = function () {
-            alert("${message}");
-        };
-    </script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      alert("${message}");
+    });
+  </script>
 </c:if>
+
 </body>
 </html>
 

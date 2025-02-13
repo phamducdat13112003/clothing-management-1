@@ -95,7 +95,6 @@ public class EditAccountServlet extends HttpServlet {
         String encryptedPassword = MD5.getMd5(password);
 
         Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId),status);
-        System.out.println(updatedAccount);
         List<Account> listAccount= null;
         try {
             accountService.updateAccount(updatedAccount);
@@ -106,7 +105,6 @@ public class EditAccountServlet extends HttpServlet {
         request.setAttribute("list", listAccount);
         request.setAttribute("message", "Update successful");
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
-
     }
 
     private boolean isValidPassword(String password) {

@@ -18,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>Sherah - HTML eCommerce Dashboard Template</title>
+    <title>Manage Employee</title>
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -36,8 +36,6 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-
-
 
 </head>
 <body id="sherah-dark-light">
@@ -59,6 +57,9 @@
                                             <li><a href="manageemployee">Home</a></li>
                                             <li class="active"> <a href="addemployee" >Add Employee</a></li>
                                         </ul>
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -185,13 +186,6 @@
         lengthMenu: [5, 10, 20, 50],
     });
 </script>
-<c:if test="${not empty message}">
-    <script>
-        window.onload = function () {
-            alert("${message}");
-        };
-    </script>
-</c:if>
 </body>
 </html>
 

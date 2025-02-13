@@ -119,6 +119,20 @@ public class EmployeeDAO {
         return false;
     }
 
+    public static boolean updateAccountEmail(String employeeId, String newEmail) {
+        String sql = "UPDATE account SET email = ? WHERE employeeId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, newEmail);
+            pt.setString(2, employeeId);
+            return pt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
     public List<Employee> getAllEmployee() {
         List<Employee> employees = new ArrayList<>();
         String sql = "SELECT e.*, r.RoleName, w.WarehouseName " +
