@@ -3,6 +3,7 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
@@ -99,7 +100,10 @@ public class AddAccountServlet extends HttpServlet {
             return;
         }
 
-        Account account = new Account(email,password, Integer.parseInt(roleId),"True", employeeId);
+        // Mã hóa mật khẩu
+        String encryptedPassword = MD5.getMd5(password);
+
+        Account account = new Account(email,encryptedPassword, Integer.parseInt(roleId),"True", employeeId);
         try {
             accountService.createAccount(account);
             List<Account> listAccount = accountService.getAllAccounts();

@@ -3,6 +3,7 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
@@ -90,7 +91,11 @@ public class EditAccountServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        Account updatedAccount = new Account(accountID ,email, password, Integer.parseInt(roleId),status);
+        // Mã hóa mật khẩu
+        String encryptedPassword = MD5.getMd5(password);
+
+        Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId),status);
+        System.out.println(updatedAccount);
         List<Account> listAccount= null;
         try {
             accountService.updateAccount(updatedAccount);
