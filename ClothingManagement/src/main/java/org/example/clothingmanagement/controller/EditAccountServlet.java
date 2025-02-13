@@ -5,10 +5,12 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
+import org.example.clothingmanagement.entity.EmailSender;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.RoleService;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -99,8 +101,11 @@ public class EditAccountServlet extends HttpServlet {
         try {
             accountService.updateAccount(updatedAccount);
             listAccount = accountService.getAllAccounts();
+            EmailSender.sendPasswordChangedEmail(email, password);
         } catch (SQLException e) {
             request.setAttribute("message", "Can't update account");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
         request.setAttribute("list", listAccount);
         request.setAttribute("message", "Update successful");

@@ -5,10 +5,12 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
+import org.example.clothingmanagement.entity.EmailSender;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -106,11 +108,15 @@ public class AddAccountServlet extends HttpServlet {
         Account account = new Account(email,encryptedPassword, Integer.parseInt(roleId),"True", employeeId);
         try {
             accountService.createAccount(account);
+            String subject = "Account Created Successfully!";
+            EmailSender.sendEmail(email, subject, password, employeeId);
             List<Account> listAccount = accountService.getAllAccounts();
             request.setAttribute("list", listAccount);
             request.setAttribute("message", "Account successfully added!");
         } catch (SQLException e) {
             request.setAttribute("message", "Failed to add account!");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
         }
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
