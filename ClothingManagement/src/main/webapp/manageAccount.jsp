@@ -56,6 +56,9 @@
                                             <li><a href="account">Home</a></li>
                                             <li class="active"> <a href="addaccount" >Add Account</a></li>
                                         </ul>
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -171,12 +174,5 @@
         lengthMenu: [5, 10, 20, 50],
     });
 </script>
-<c:if test="${not empty message}">
-    <script>
-        window.onload = function () {
-            alert("${message}");
-        };
-    </script>
-</c:if>
 </body>
 </html>

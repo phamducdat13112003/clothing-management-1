@@ -100,6 +100,9 @@
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="employee">Home</a></li>
                                         </ul>
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
                                     </div>
                                 </div>
                             </div>
@@ -247,17 +250,6 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-
-<%-- Kiểm tra nếu có message --%>
-<c:if test="${not empty message}">
-    <script>
-        window.onload = function() {
-            alert("${message}");
-        };
-    </script>
-</c:if>
-
-
 <script type="text/javascript">
     function chooseFile(fileInput) {
         if (fileInput.files && fileInput.files[0]) {

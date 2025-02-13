@@ -19,6 +19,9 @@
     <h2>Edit Account</h2>
     <div class="back-home">
         <a href="account">← Back to Home</a>
+        <c:if test="${not empty message}">
+            <span class="error-message">${message}</span>
+        </c:if>
     </div>
     <form id="addAccountForm" action="editaccount" method="post">
         <div class="mb-3">
@@ -84,12 +87,5 @@
         eyeIcon.classList.toggle("bi-eye-slash"); // Đổi thành mắt đóng
     });
 </script>
-<c:if test="${not empty message}">
-    <script>
-        window.onload = function () {
-            alert("${message}");
-        };
-    </script>
-</c:if>
 </body>
 </html>
