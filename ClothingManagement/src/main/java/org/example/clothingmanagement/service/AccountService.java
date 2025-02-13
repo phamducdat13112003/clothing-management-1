@@ -33,7 +33,7 @@ public class AccountService {
         return accountDAO.getAllRoles();
     }
 
-    public boolean isAccountExist(String email, int accountId) throws SQLException{
+    public boolean isAccountExist(String email, String accountId) throws SQLException{
         return accountDAO.isAccountExist(email, accountId);
     }
 

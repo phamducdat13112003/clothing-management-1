@@ -82,12 +82,12 @@ public class AccountDAO {
         }
     }
 
-    public boolean isAccountExist(String email, int accountId) throws SQLException {
+    public boolean isAccountExist(String email, String accountId) throws SQLException {
         String sql = "SELECT * FROM account WHERE email = ? AND accountId != ? ";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
-            stmt.setInt(2, accountId);
+            stmt.setString(2, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return true;
