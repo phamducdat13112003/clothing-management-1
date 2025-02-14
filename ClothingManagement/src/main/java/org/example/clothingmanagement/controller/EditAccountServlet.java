@@ -95,7 +95,7 @@ public class EditAccountServlet extends HttpServlet {
         // Mã hóa mật khẩu
         String encryptedPassword = MD5.getMd5(password);
 
-        Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId),status);
+        Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId), status);
         List<Account> listAccount= null;
         try {
             accountService.updateAccount(updatedAccount);
@@ -108,7 +108,7 @@ public class EditAccountServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
         request.setAttribute("list", listAccount);
-        request.setAttribute("message", "Update successful");
+        request.setAttribute("messageSuccess", "Update successful");
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 

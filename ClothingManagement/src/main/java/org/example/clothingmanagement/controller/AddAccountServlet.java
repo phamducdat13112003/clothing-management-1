@@ -113,7 +113,7 @@ public class AddAccountServlet extends HttpServlet {
             emailSender.sendEmail(email, subject, password, employeeId);
             List<Account> listAccount = accountService.getAllAccounts();
             request.setAttribute("list", listAccount);
-            request.setAttribute("message", "Account successfully added!");
+            request.setAttribute("messageSuccess", "Account successfully added!");
         } catch (SQLException e) {
             request.setAttribute("message", "Failed to add account!");
         } catch (MessagingException e) {

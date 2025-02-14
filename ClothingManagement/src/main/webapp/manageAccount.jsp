@@ -34,6 +34,10 @@
             color: red;
             font-size: 12px;
         }
+        .message{
+            color: green;
+            font-size: 12px;
+        }
     </style>
 
 </head>
@@ -58,6 +62,9 @@
                                         </ul>
                                         <c:if test="${not empty message}">
                                             <span class="error-message">${message}</span>
+                                        </c:if>
+                                        <c:if test="${not empty messageSuccess}">
+                                            <span class="message">${messageSuccess}</span>
                                         </c:if>
                                     </div>
                                 </div>

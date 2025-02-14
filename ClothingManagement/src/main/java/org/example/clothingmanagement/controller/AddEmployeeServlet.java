@@ -149,7 +149,7 @@ public class AddEmployeeServlet extends HttpServlet {
                 request.setAttribute("message", "Appear mistake can't add to database.");
             }
             if (success) {
-                    request.setAttribute("message", "Employee added successfully");
+                    request.setAttribute("messageSuccess", "Employee added successfully");
                 } else {
                     request.setAttribute("message", "Failed to add employee");
                 }
