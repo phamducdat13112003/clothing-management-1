@@ -202,7 +202,7 @@ public class AddEmployeeServlet extends HttpServlet {
     }
 
     private boolean isValidEmail(String email) {
-        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$";
         Pattern pattern = Pattern.compile(emailRegex);
         Matcher matcher = pattern.matcher(email);
         return matcher.matches();
@@ -226,7 +226,7 @@ public class AddEmployeeServlet extends HttpServlet {
     }
 
     private boolean isValidName(String name) {
-        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$");
+        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩúùụủũýỳỵỷỹĐđ]+$");
     }
 
 

@@ -30,9 +30,9 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-        .required {
+        .error-message {
             color: red;
-            font-weight: bold;
+            font-size: 12px;
         }
     </style>
 

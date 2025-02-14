@@ -36,7 +36,12 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
-
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body id="sherah-dark-light">
     <jsp:include page="include/sidebar.jsp"></jsp:include>

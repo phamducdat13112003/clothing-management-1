@@ -161,6 +161,7 @@ public class EditEmployeeServlet extends HttpServlet {
             try {
                 success = employeeService.updateEmployee(editEmployee);
                 emailUpdated = employeeService.updateAccountEmail(employeeId, email);
+                System.out.println(emailUpdated);
             } catch (SQLException e) {
                 request.setAttribute("message", "Cannot update Employee.");
             }

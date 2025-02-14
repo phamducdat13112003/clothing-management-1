@@ -13,6 +13,16 @@
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/Account.css">
+    <style>
+        .required {
+            color: red;
+            font-weight: bold;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
 <div class="container mt-5">

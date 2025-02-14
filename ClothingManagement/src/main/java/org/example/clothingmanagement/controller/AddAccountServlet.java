@@ -5,7 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
-import org.example.clothingmanagement.entity.EmailSender;
+import org.example.clothingmanagement.entity.Email;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
@@ -109,7 +109,8 @@ public class AddAccountServlet extends HttpServlet {
         try {
             accountService.createAccount(account);
             String subject = "Account Created Successfully!";
-            EmailSender.sendEmail(email, subject, password, employeeId);
+            Email emailSender = new Email();
+            emailSender.sendEmail(email, subject, password, employeeId);
             List<Account> listAccount = accountService.getAllAccounts();
             request.setAttribute("list", listAccount);
             request.setAttribute("message", "Account successfully added!");

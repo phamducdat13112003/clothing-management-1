@@ -40,8 +40,8 @@ public class RoleDAO {
     }
     public List<Role> getAllRoles() {
         List<Role> list = new ArrayList<>();
-        String sql = "SELECT * FROM Role";
-        try (Connection connection = dataSource.getConnection();
+        String sql = "SELECT * FROM Role WHERE RoleName != 'Manager'";
+        try (Connection connection = DBContext.getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
