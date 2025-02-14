@@ -65,7 +65,49 @@ public class AccountDAO {
         return 0;
     }
 
+    public List<Account> searchAccount(String keyword, int page, int pageSize) {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT * FROM account WHERE (email LIKE ? OR employeeID LIKE ?) AND status = 'Active'" +
+                     "LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + keyword + "%");
+            stmt.setString(2, "%" + keyword + "%");
+            stmt.setInt(3, pageSize);
+            stmt.setInt(4, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setId(rs.getString("accountId"));
+                account.setEmail(rs.getString("email"));
+                account.setPassword(rs.getString("password"));
+                account.setStatus(rs.getString("status"));
+                account.setRoleId(rs.getInt("roleID"));
+                account.setEmployeeId(rs.getString("employeeID"));
+                accounts.add(account);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accounts;
+    }
 
+    public int getTotalAccounts(String keyword) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Account WHERE status = 'Active' AND (email LIKE ? OR employeeID LIKE ?)";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + keyword + "%");
+            stmt.setString(2, "%" + keyword + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     public Account getAccountById(String accountId) throws SQLException {
         Account account = new Account();

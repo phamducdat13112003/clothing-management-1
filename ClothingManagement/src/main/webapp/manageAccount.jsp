@@ -58,6 +58,32 @@
         .pagination a:hover {
             background-color: #ddd;
         }
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            width: 250px;
+        }
+
+        .search-button {
+            padding: 5px 15px;
+            background-color: #09ad95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #078c76;
+        }
     </style>
 
 </head>
@@ -72,13 +98,13 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <div class="row">
-                                <div class="col-12">
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-6">
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Account</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="account">Home</a></li>
-                                            <li class="active"> <a href="addaccount" >Add Account</a></li>
+                                            <li class="active"><a href="addaccount">Add Account</a></li>
                                         </ul>
                                         <c:if test="${not empty message}">
                                             <span class="error-message">${message}</span>
@@ -88,7 +114,14 @@
                                         </c:if>
                                     </div>
                                 </div>
+                                <div class="col-6">
+                                    <form action="searchaccount" method="post" class="search-form">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
+                                </div>
                             </div>
+
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <!-- sherah Table Head -->
@@ -98,6 +131,7 @@
                                         <th class="sherah-table__column-3 sherah-table__h3">Email</th>
                                         <th class="sherah-table__column-4 sherah-table__h4">Password</th>
                                         <th class="sherah-table__column-4 sherah-table__h4">Role</th>
+                                        <th class="sherah-table__column-4 sherah-table__h4">EmployeeId</th>
                                         <th class="sherah-table__column-4 sherah-table__h8" style="text-align: center;">Action</th>
                                     </tr>
                                     </thead>
@@ -116,12 +150,17 @@
                                             </td>
                                             <td class="sherah-table__column-3 sherah-table__data-3">
                                                 <div class="sherah-table__product-content">
-                                                        ${account.password}
+                                                    **********
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-3 sherah-table__data-3">
                                                 <div class="sherah-table__product-content">
                                                         ${account.roleName}
+                                                </div>
+                                            </td>
+                                            <td class="sherah-table__column-3 sherah-table__data-3">
+                                                <div class="sherah-table__product-content">
+                                                        ${account.employeeId}
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-4 sherah-table__data-7" style="text-align: center;">
@@ -153,15 +192,15 @@
                                 </table>
                                 <div class="pagination">
                                     <c:if test="${currentPage > 1}">
-                                        <a href="account?page=${currentPage - 1}">Previous</a>
+                                        <a href="account?page=${currentPage - 1}&search=${search}">Previous</a>
                                     </c:if>
 
                                     <c:forEach var="i" begin="1" end="${totalPages}">
-                                        <a href="account?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                        <a href="account?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                                     </c:forEach>
 
                                     <c:if test="${currentPage < totalPages}">
-                                        <a href="account?page=${currentPage + 1}">Next</a>
+                                        <a href="account?page=${currentPage + 1}&search=${search}">Next</a>
                                     </c:if>
                                 </div>
 

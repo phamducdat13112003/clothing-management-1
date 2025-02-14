@@ -17,6 +17,14 @@ public class AccountService {
     public int getTotalAccounts() throws SQLException {
         return accountDAO.getTotalAccounts();
     }
+
+    public int getTotalAccounts(String keyword) throws SQLException {
+        return accountDAO.getTotalAccounts(keyword);
+    }
+
+    public List<Account> searchAccount(String keyword, int page, int pageSize) throws SQLException {
+        return accountDAO.searchAccount(keyword, page, pageSize);
+    }
     public Account getAccountById(String accountId) throws SQLException {
         return accountDAO.getAccountById(accountId);
     }
