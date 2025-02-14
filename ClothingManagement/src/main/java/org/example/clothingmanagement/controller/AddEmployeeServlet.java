@@ -70,6 +70,9 @@ public class AddEmployeeServlet extends HttpServlet {
         StringBuilder message = new StringBuilder();
         List<Role> list =null;
         List<Warehouse> listWarehouse = null;
+        int page = 1;
+        int pageSize = 5;
+        int totalEmployees = 0;
         try {
             list = roleService.getAllRoles();
             listWarehouse = warehouseDAO.getAllWareHouse();
@@ -155,10 +158,14 @@ public class AddEmployeeServlet extends HttpServlet {
                 }
             List<Employee> listEmployee = null;
             try {
-                listEmployee = employeeService.getAllEmployees();
+                listEmployee = employeeService.getEmployeesWithPagination(page, pageSize);
+                totalEmployees = employeeService.getTotalEmployeeCount();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
             request.setAttribute("list", listEmployee);
             request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
         }

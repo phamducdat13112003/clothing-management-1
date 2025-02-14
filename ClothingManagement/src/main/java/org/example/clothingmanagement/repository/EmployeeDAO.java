@@ -96,6 +96,20 @@ public class EmployeeDAO {
         return false;
     }
 
+    public int getTotalEmployeeCount() {
+        String sql = "SELECT COUNT(*) AS total FROM Employee WHERE Status = 'Active'";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql);
+             ResultSet rs = pt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     // Update employee information
     public static boolean updateEmployee(Employee employee) {
         String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status= 'Active' , WarehouseID = ?, RoleID=? ,Image = ? WHERE EmployeeID = ?";
@@ -133,7 +147,7 @@ public class EmployeeDAO {
     }
 
 
-    public List<Employee> getAllEmployee() {
+    public List<Employee> getAllEmployees() {
         List<Employee> employees = new ArrayList<>();
         String sql = "SELECT e.*, r.RoleName, w.WarehouseName " +
                 "FROM Employee e " +
@@ -157,6 +171,42 @@ public class EmployeeDAO {
                 employee.setRoleName(rs.getString("RoleName")); // Lấy tên vai trò
                 employee.setWarehouseID(rs.getInt("WarehouseID"));
                 employee.setWarehouseName(rs.getString("WarehouseName")); // Lấy tên kho
+                employee.setImage(rs.getString("Image"));
+                employees.add(employee);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employees;
+    }
+
+    public List<Employee> getEmployeesWithPagination(int page, int pageSize) {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT e.*, r.RoleName, w.WarehouseName " +
+                "FROM Employee e " +
+                "JOIN Role r ON e.RoleID = r.RoleID " +
+                "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
+                "WHERE e.Status = 'Active' " +
+                "LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setInt(1, pageSize);
+            pt.setInt(2, (page-1) * pageSize);
+            ResultSet rs = pt.executeQuery();
+            while (rs.next()) {
+                Employee employee = new Employee();
+                employee.setEmployeeID(rs.getString("EmployeeID"));
+                employee.setEmployeeName(rs.getString("EmployeeName"));
+                employee.setEmail(rs.getString("Email"));
+                employee.setPhone(rs.getString("Phone"));
+                employee.setAddress(rs.getString("Address"));
+                employee.setGender(rs.getString("Gender"));
+                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setStatus(rs.getString("Status"));
+                employee.setRoleId(rs.getInt("RoleID"));
+                employee.setRoleName(rs.getString("RoleName"));
+                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setWarehouseName(rs.getString("WarehouseName"));
                 employee.setImage(rs.getString("Image"));
                 employees.add(employee);
             }
@@ -329,11 +379,9 @@ public class EmployeeDAO {
     }
 
     public static void main(String[] args) {
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        List<Employee> list = employeeDAO.getAllEmployee();
-        for (Employee e : list) {
-            System.out.println(e);
-        }
+         EmployeeDAO employeeDAO = new EmployeeDAO();
+         int a = employeeDAO.getTotalEmployeeCount();
+         System.out.print(a);
     }
 
 }

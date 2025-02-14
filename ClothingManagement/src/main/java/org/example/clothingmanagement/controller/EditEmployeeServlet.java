@@ -78,6 +78,9 @@ public class EditEmployeeServlet extends HttpServlet {
         List<Warehouse> listWarehouse = null;
         List<Role> list = null;
         Employee employee = null;
+        int page = 1;
+        int pageSize = 5;
+        int totalEmployees = 0;
         String employeeId= request.getParameter("employeeId");
         String name = request.getParameter("name").trim();
         if (!isValidName(name)) {
@@ -172,11 +175,15 @@ public class EditEmployeeServlet extends HttpServlet {
             }
             List<Employee> listEmployee = null;
             try {
-                listEmployee = employeeService.getAllEmployees();
+                listEmployee = employeeService.getEmployeesWithPagination(page, pageSize);
+                totalEmployees = employeeService.getTotalEmployeeCount();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
             request.setAttribute("list", listEmployee);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
             request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
         }
     }

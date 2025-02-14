@@ -10,7 +10,15 @@ public class EmployeeService {
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public List<Employee> getAllEmployees() throws SQLException {
-        return employeeDAO.getAllEmployee();
+        return employeeDAO.getAllEmployees();
+    }
+
+    public List<Employee> getEmployeesWithPagination(int page, int pageSize) throws SQLException {
+        return employeeDAO.getEmployeesWithPagination(page, pageSize);
+    }
+
+    public int getTotalEmployeeCount() throws SQLException {
+        return employeeDAO.getTotalEmployeeCount();
     }
 
     public boolean createEmployee(Employee employee)throws SQLException{

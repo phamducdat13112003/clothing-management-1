@@ -34,13 +34,29 @@ public class ShowEmployeeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeService employeeService = new EmployeeService();
+
+        int page = 1;
+        int pageSize = 5; // Số dòng trên mỗi trang
+
+        // Lấy tham số trang từ request
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        int totalEmployees = 0;
+
         List<Employee> list = null;
         try {
-             list = employeeService.getAllEmployees();
+             list = employeeService.getEmployeesWithPagination(page, pageSize);
+             totalEmployees = employeeService.getTotalEmployeeCount();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
         request.setAttribute("list", list);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
     }
 
