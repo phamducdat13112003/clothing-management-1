@@ -35,16 +35,34 @@ public class ShowAccountServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         AccountService accountService = new AccountService();
+
+        int page = 1;
+        int pageSize = 5; // Số dòng trên mỗi trang
+
+        // Lấy tham số trang từ request
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+
         List<Account> list = null;
         List<Role> roles = null;
+        int totalAccounts = 0;
+
         try {
-             list =accountService.getAllAccounts();
-             roles = accountService.getAllRoles();
+            list = accountService.getAccountsByPage(page, pageSize);
+            roles = accountService.getAllRoles();
+            totalAccounts = accountService.getTotalAccounts();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);
+
         request.setAttribute("list", list);
         request.setAttribute("roles", roles);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 

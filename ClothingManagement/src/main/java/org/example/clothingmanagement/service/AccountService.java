@@ -10,8 +10,12 @@ import java.util.List;
 public class AccountService {
     private final AccountDAO accountDAO = new AccountDAO();
 
-    public List<Account> getAllAccounts() throws SQLException {
-        return accountDAO.getAllAccount();
+    public List<Account> getAccountsByPage(int page, int pageSize) throws SQLException {
+        return accountDAO.getAccountsByPage(page, pageSize);
+    }
+
+    public int getTotalAccounts() throws SQLException {
+        return accountDAO.getTotalAccounts();
     }
     public Account getAccountById(String accountId) throws SQLException {
         return accountDAO.getAccountById(accountId);

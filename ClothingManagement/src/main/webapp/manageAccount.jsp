@@ -38,6 +38,26 @@
             color: green;
             font-size: 12px;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a:active {
+            background-color: #09ad95;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
     </style>
 
 </head>
@@ -131,6 +151,20 @@
                                     </c:forEach>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <c:if test="${currentPage > 1}">
+                                        <a href="account?page=${currentPage - 1}">Previous</a>
+                                    </c:if>
+
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <a href="account?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    </c:forEach>
+
+                                    <c:if test="${currentPage < totalPages}">
+                                        <a href="account?page=${currentPage + 1}">Next</a>
+                                    </c:if>
+                                </div>
+
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->
@@ -161,25 +195,39 @@
         }
     }
 </script>
-<script>
-    $('#sherah-table__vendor').DataTable({
-        searching: true,
-        info: false,
-        lengthChange: true,
-        scrollCollapse: true,
-        paging: true,
-        language: {
-            paginate: {
-                next: '<i class="fas fa-angle-right"></i>',
-                previous: '<i class="fas fa-angle-left"></i>'
-            },
-            lengthMenu: 'Showing _MENU_',
-            searchPlaceholder: 'Search...',
-            search: '<span class="sherah-data-table-label">Search</span>',
-        },
-        pageLength: 5,
-        lengthMenu: [5, 10, 20, 50],
-    });
-</script>
+<%--<script>--%>
+<%--    $(document).ready(function () {--%>
+<%--        $('#sherah-table__vendor').DataTable({--%>
+<%--            processing: true,--%>
+<%--            serverSide: true,--%>
+<%--            ajax: {--%>
+<%--                url: 'account', // Gửi request đến Servlet--%>
+<%--                type: 'GET',--%>
+<%--                data: function (d) {--%>
+<%--                    d.page = (d.start / d.length) + 1; // Tính số trang từ DataTables--%>
+<%--                }--%>
+<%--            },--%>
+<%--            columns: [--%>
+<%--                { data: 'id' },--%>
+<%--                { data: 'email' },--%>
+<%--                { data: 'password' },--%>
+<%--                { data: 'roleName' },--%>
+<%--                { data: 'action', orderable: false, searchable: false }--%>
+<%--            ],--%>
+<%--            language: {--%>
+<%--                paginate: {--%>
+<%--                    next: '<i class="fas fa-angle-right"></i>',--%>
+<%--                    previous: '<i class="fas fa-angle-left"></i>'--%>
+<%--                },--%>
+<%--                lengthMenu: 'Showing _MENU_',--%>
+<%--                searchPlaceholder: 'Search...',--%>
+<%--                search: '<span class="sherah-data-table-label">Search</span>',--%>
+<%--            },--%>
+<%--            pageLength: 5,--%>
+<%--            lengthMenu: [5, 10, 20, 50],--%>
+<%--        });--%>
+<%--    });--%>
+
+<%--</script>--%>
 </body>
 </html>

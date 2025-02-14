@@ -22,15 +22,18 @@ public class AccountDAO {
     }
 
 
-    public List<Account> getAllAccount() throws SQLException {
+    public List<Account> getAccountsByPage(int page, int pageSize) throws SQLException {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT a.*, r.RoleName\n" +
-                "FROM Account a\n" +
-                "JOIN Role r ON a.RoleID = r.RoleID\n" +
-                "WHERE a.status = 'Active'";
+        String sql = "SELECT a.*, r.RoleName " +
+                "FROM Account a " +
+                "JOIN Role r ON a.RoleID = r.RoleID " +
+                "WHERE a.status = 'Active' " +
+                "LIMIT ? OFFSET ?";
         try (Connection connection = DBContext.getConnection();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Account account = new Account();
                 account.setId(rs.getString("accountId"));
@@ -39,6 +42,7 @@ public class AccountDAO {
                 account.setStatus(rs.getString("status"));
                 account.setRoleId(rs.getInt("roleID"));
                 account.setRoleName(rs.getString("roleName"));
+                account.setEmployeeId(rs.getString("employeeID"));
                 list.add(account);
             }
         } catch (SQLException e) {
@@ -46,6 +50,22 @@ public class AccountDAO {
         }
         return list;
     }
+
+    public int getTotalAccounts() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Account WHERE status = 'Active'";
+        try (Connection connection = DBContext.getConnection();
+             Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
 
     public Account getAccountById(String accountId) throws SQLException {
         Account account = new Account();
@@ -258,11 +278,11 @@ public class AccountDAO {
     }
 
     public static void main(String[] args) throws SQLException {
-        AccountDAO dao = new AccountDAO();
-        List<Account > list= dao.getAllAccount();
-        for(Account account:list){
-            System.out.println(account.getId());
-        }
+        // AccountDAO dao = new AccountDAO();
+        // List<Account > list= dao.getAllAccount();
+        // for(Account account:list){
+            // System.out.println(account.getId());
+        //}
     }
 
 }

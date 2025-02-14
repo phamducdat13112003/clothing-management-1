@@ -35,15 +35,17 @@ public class DeleteAccountServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String accountID = request.getParameter("accountId");
         AccountService accountService = new AccountService();
+        int page = 1;
+        int pageSize = 5;
         if(accountID != null) {
             try {
                 boolean isDeleted= accountService.deleteAccount(accountID);
                 if (isDeleted) {
-                    List<Account> list= accountService.getAllAccounts();
+                    List<Account> list= accountService.getAccountsByPage(page, pageSize);
                     request.setAttribute("message", "Account deleted");
                     request.setAttribute("list", list);
                 } else {
-                    List<Account> list= accountService.getAllAccounts();
+                    List<Account> list= accountService.getAccountsByPage(page, pageSize);
                     request.setAttribute("message", "Failed to delete account");
                     request.setAttribute("list", list);
                 }

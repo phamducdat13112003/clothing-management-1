@@ -62,6 +62,8 @@ public class AddAccountServlet extends HttpServlet {
         List<Role> list = null;
         List<String> employeeIds =null;
         boolean hasError = false;
+        int page = 1;
+        int pageSize = 5;
         try {
             list = accountService.getAllRoles();
             employeeIds = employeeService.getEmployeeIDsWithoutAccount();
@@ -111,7 +113,7 @@ public class AddAccountServlet extends HttpServlet {
             String subject = "Account Created Successfully!";
             Email emailSender = new Email();
             emailSender.sendEmail(email, subject, password, employeeId);
-            List<Account> listAccount = accountService.getAllAccounts();
+            List<Account> listAccount = accountService.getAccountsByPage(page, pageSize);
             request.setAttribute("list", listAccount);
             request.setAttribute("messageSuccess", "Account successfully added!");
         } catch (SQLException e) {

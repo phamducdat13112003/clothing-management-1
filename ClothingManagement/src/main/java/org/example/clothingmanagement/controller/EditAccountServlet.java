@@ -65,6 +65,9 @@ public class EditAccountServlet extends HttpServlet {
         String password = request.getParameter("password").trim();
         String roleId = request.getParameter("roleId");
         String status = request.getParameter("status");
+
+        int page = 1;
+        int pageSize = 5; // Số dòng trên mỗi trang
         try {
             list = roleService.getAllRoles();
             account = accountService.getAccountById(accountID);
@@ -99,7 +102,7 @@ public class EditAccountServlet extends HttpServlet {
         List<Account> listAccount= null;
         try {
             accountService.updateAccount(updatedAccount);
-            listAccount = accountService.getAllAccounts();
+            listAccount = accountService.getAccountsByPage(page, pageSize);
             Email emailSender = new Email();
             emailSender.sendPasswordChangedEmail(email, password);
         } catch (SQLException e) {
