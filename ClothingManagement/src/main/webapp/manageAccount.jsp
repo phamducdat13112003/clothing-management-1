@@ -195,39 +195,5 @@
         }
     }
 </script>
-<%--<script>--%>
-<%--    $(document).ready(function () {--%>
-<%--        $('#sherah-table__vendor').DataTable({--%>
-<%--            processing: true,--%>
-<%--            serverSide: true,--%>
-<%--            ajax: {--%>
-<%--                url: 'account', // Gửi request đến Servlet--%>
-<%--                type: 'GET',--%>
-<%--                data: function (d) {--%>
-<%--                    d.page = (d.start / d.length) + 1; // Tính số trang từ DataTables--%>
-<%--                }--%>
-<%--            },--%>
-<%--            columns: [--%>
-<%--                { data: 'id' },--%>
-<%--                { data: 'email' },--%>
-<%--                { data: 'password' },--%>
-<%--                { data: 'roleName' },--%>
-<%--                { data: 'action', orderable: false, searchable: false }--%>
-<%--            ],--%>
-<%--            language: {--%>
-<%--                paginate: {--%>
-<%--                    next: '<i class="fas fa-angle-right"></i>',--%>
-<%--                    previous: '<i class="fas fa-angle-left"></i>'--%>
-<%--                },--%>
-<%--                lengthMenu: 'Showing _MENU_',--%>
-<%--                searchPlaceholder: 'Search...',--%>
-<%--                search: '<span class="sherah-data-table-label">Search</span>',--%>
-<%--            },--%>
-<%--            pageLength: 5,--%>
-<%--            lengthMenu: [5, 10, 20, 50],--%>
-<%--        });--%>
-<%--    });--%>
-
-<%--</script>--%>
 </body>
 </html>

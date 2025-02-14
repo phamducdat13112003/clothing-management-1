@@ -100,9 +100,11 @@ public class EditAccountServlet extends HttpServlet {
 
         Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId), status);
         List<Account> listAccount= null;
+        int totalAccounts = 0;
         try {
             accountService.updateAccount(updatedAccount);
             listAccount = accountService.getAccountsByPage(page, pageSize);
+            totalAccounts = accountService.getTotalAccounts();
             Email emailSender = new Email();
             emailSender.sendPasswordChangedEmail(email, password);
         } catch (SQLException e) {
@@ -110,8 +112,13 @@ public class EditAccountServlet extends HttpServlet {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+
+        int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);
+
         request.setAttribute("list", listAccount);
         request.setAttribute("messageSuccess", "Update successful");
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 

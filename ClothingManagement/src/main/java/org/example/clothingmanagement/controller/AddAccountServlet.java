@@ -64,6 +64,7 @@ public class AddAccountServlet extends HttpServlet {
         boolean hasError = false;
         int page = 1;
         int pageSize = 5;
+        int totalAccounts = 0;
         try {
             list = accountService.getAllRoles();
             employeeIds = employeeService.getEmployeeIDsWithoutAccount();
@@ -110,6 +111,7 @@ public class AddAccountServlet extends HttpServlet {
         Account account = new Account(email,encryptedPassword, Integer.parseInt(roleId),"True", employeeId);
         try {
             accountService.createAccount(account);
+            totalAccounts = accountService.getTotalAccounts();
             String subject = "Account Created Successfully!";
             Email emailSender = new Email();
             emailSender.sendEmail(email, subject, password, employeeId);
@@ -121,6 +123,9 @@ public class AddAccountServlet extends HttpServlet {
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
+        int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 

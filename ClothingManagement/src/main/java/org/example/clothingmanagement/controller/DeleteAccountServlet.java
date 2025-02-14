@@ -37,12 +37,14 @@ public class DeleteAccountServlet extends HttpServlet {
         AccountService accountService = new AccountService();
         int page = 1;
         int pageSize = 5;
+        int totalAccounts = 0;
         if(accountID != null) {
             try {
                 boolean isDeleted= accountService.deleteAccount(accountID);
+                totalAccounts = accountService.getTotalAccounts();
                 if (isDeleted) {
                     List<Account> list= accountService.getAccountsByPage(page, pageSize);
-                    request.setAttribute("message", "Account deleted");
+                    request.setAttribute("messageSuccess", "Account deleted");
                     request.setAttribute("list", list);
                 } else {
                     List<Account> list= accountService.getAccountsByPage(page, pageSize);
@@ -53,6 +55,9 @@ public class DeleteAccountServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 

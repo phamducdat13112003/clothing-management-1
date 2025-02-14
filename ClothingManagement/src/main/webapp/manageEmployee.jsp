@@ -45,6 +45,26 @@
             color: green;
             font-size: 12px;
         }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a:active {
+            background-color: #09ad95;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
     </style>
 </head>
 <body id="sherah-dark-light">
@@ -61,7 +81,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Manage Account</h2>
+                                        <h2 class="sherah-breadcrumb__title">Manage Employee</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="manageemployee">Home</a></li>
                                             <li class="active"> <a href="addemployee" >Add Employee</a></li>
@@ -143,7 +163,19 @@
                                     </c:forEach>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <c:if test="${currentPage > 1}">
+                                        <a href="manageemployee?page=${currentPage - 1}">Previous</a>
+                                    </c:if>
 
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <a href="manageemployee?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    </c:forEach>
+
+                                    <c:if test="${currentPage < totalPages}">
+                                        <a href="manageemployee?page=${currentPage + 1}">Next</a>
+                                    </c:if>
+                                </div>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->
@@ -177,27 +209,6 @@
             }
         }
     </script>
-
-<script>
-    $('#sherah-table__vendor').DataTable({
-        searching: true,
-        info: false,
-        lengthChange: true,
-        scrollCollapse: true,
-        paging: true,
-        language: {
-            paginate: {
-                next: '<i class="fas fa-angle-right"></i>',
-                previous: '<i class="fas fa-angle-left"></i>'
-            },
-            lengthMenu: 'Showing _MENU_',
-            searchPlaceholder: 'Search...',
-            search: '<span class="sherah-data-table-label">Search</span>',
-        },
-        pageLength: 5,
-        lengthMenu: [5, 10, 20, 50],
-    });
-</script>
 </body>
 </html>
 
