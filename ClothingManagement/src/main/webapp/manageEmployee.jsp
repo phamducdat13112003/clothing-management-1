@@ -65,6 +65,32 @@
         .pagination a:hover {
             background-color: #ddd;
         }
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            width: 250px;
+        }
+
+        .search-button {
+            padding: 5px 15px;
+            background-color: #09ad95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #078c76;
+        }
     </style>
 </head>
 <body id="sherah-dark-light">
@@ -78,13 +104,13 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <div class="row">
-                                <div class="col-12">
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-6">
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Employee</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="manageemployee">Home</a></li>
-                                            <li class="active"> <a href="addemployee" >Add Employee</a></li>
+                                            <li class="active"><a href="addemployee">Add Employee</a></li>
                                         </ul>
                                         <c:if test="${not empty message}">
                                             <span class="error-message">${message}</span>
@@ -93,6 +119,12 @@
                                             <span class="message">${messageSuccess}</span>
                                         </c:if>
                                     </div>
+                                </div>
+                                <div class="col-6">
+                                    <form action="searchemployee" method="post" class="search-form">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
                                 </div>
                             </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
@@ -165,15 +197,15 @@
                                 </table>
                                 <div class="pagination">
                                     <c:if test="${currentPage > 1}">
-                                        <a href="manageemployee?page=${currentPage - 1}">Previous</a>
+                                        <a href="manageemployee?page=${currentPage - 1}&search=${search}">Previous</a>
                                     </c:if>
 
                                     <c:forEach var="i" begin="1" end="${totalPages}">
-                                        <a href="manageemployee?page=${i}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                        <a href="manageemployee?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                                     </c:forEach>
 
                                     <c:if test="${currentPage < totalPages}">
-                                        <a href="manageemployee?page=${currentPage + 1}">Next</a>
+                                        <a href="manageemployee?page=${currentPage + 1}&search=${search}">Next</a>
                                     </c:if>
                                 </div>
                             </div>
@@ -181,8 +213,6 @@
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>

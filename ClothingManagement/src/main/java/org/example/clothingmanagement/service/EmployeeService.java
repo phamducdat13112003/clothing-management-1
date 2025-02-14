@@ -21,6 +21,14 @@ public class EmployeeService {
         return employeeDAO.getTotalEmployeeCount();
     }
 
+    public List<Employee> searchEmployee(String keyword, int page, int pageSize) throws SQLException {
+        return employeeDAO.searchEmployee(keyword, page, pageSize);
+    }
+
+    public int getTotalEmployeeCount(String keyword) throws SQLException {
+        return employeeDAO.getTotalEmployeeCount(keyword);
+    }
+
     public boolean createEmployee(Employee employee)throws SQLException{
         return employeeDAO.createEmployee(employee);
     }

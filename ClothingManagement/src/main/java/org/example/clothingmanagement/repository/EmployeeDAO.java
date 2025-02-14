@@ -81,8 +81,6 @@ public class EmployeeDAO {
         return exists;
     }
 
-
-
     public boolean updatePassword(int accountID, String newPassword) {
         String sql = "UPDATE Account SET Password = ? WHERE AccountID = ? AND status = 'Active'";
         try (Connection conn = DBContext.getConnection();
@@ -179,6 +177,73 @@ public class EmployeeDAO {
         }
         return employees;
     }
+
+    public List<Employee> searchEmployee(String keyword, int page, int pageSize) {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT e.*, r.RoleName, w.WarehouseName " +
+                "FROM Employee e " +
+                "JOIN Role r ON e.RoleID = r.RoleID " +
+                "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
+                "WHERE e.Status = 'Active' " +
+                "AND (e.EmployeeName LIKE ? OR e.Email LIKE ? OR e.Phone LIKE ? OR e.EmployeeID LIKE ?) " +
+                "LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchKeyword = "%" + keyword + "%";
+            stmt.setString(1, searchKeyword);
+            stmt.setString(2, searchKeyword);
+            stmt.setString(3, searchKeyword);
+            stmt.setString(4, searchKeyword);
+            stmt.setInt(5, pageSize);
+            stmt.setInt(6, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Employee employee = new Employee();
+                employee.setEmployeeID(rs.getString("EmployeeID"));
+                employee.setEmployeeName(rs.getString("EmployeeName"));
+                employee.setEmail(rs.getString("Email"));
+                employee.setPhone(rs.getString("Phone"));
+                employee.setAddress(rs.getString("Address"));
+                employee.setGender(rs.getString("Gender"));
+                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setStatus(rs.getString("Status"));
+                employee.setRoleId(rs.getInt("RoleID"));
+                employee.setRoleName(rs.getString("RoleName"));
+                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setWarehouseName(rs.getString("WarehouseName"));
+                employee.setImage(rs.getString("Image"));
+                employees.add(employee);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employees;
+    }
+
+    public int getTotalEmployeeCount(String keyword) {
+        String sql = "SELECT COUNT(*) AS total FROM Employee " +
+                "WHERE Status = 'Active' " +
+                "AND (EmployeeName LIKE ? OR Email LIKE ? OR Phone LIKE ? OR EmployeeID LIKE ?)";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchKeyword = "%" + keyword + "%";
+            stmt.setString(1, searchKeyword);
+            stmt.setString(2, searchKeyword);
+            stmt.setString(3, searchKeyword);
+            stmt.setString(4, searchKeyword);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
 
     public List<Employee> getEmployeesWithPagination(int page, int pageSize) {
         List<Employee> employees = new ArrayList<>();
