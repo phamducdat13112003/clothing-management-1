@@ -27,7 +27,7 @@ public class EmployeeProfileServlet extends HttpServlet {
 
         switch (action) {
             case "view":
-                viewEmployee(request, response);
+                //viewEmployee(request, response);
                 break;
             default:
                 response.getWriter().write("Invalid action.");
@@ -156,7 +156,7 @@ public class EmployeeProfileServlet extends HttpServlet {
 
             // Prepare employee data for display in JSP
             Employee employee = new Employee();
-            employee.setEmployeeID(employeeID);
+            //employee.setEmployeeID(employeeID);
             employee.setEmployeeName(employeeName);
             employee.setPhone(phone);
             employee.setAddress(address);
@@ -166,7 +166,7 @@ public class EmployeeProfileServlet extends HttpServlet {
             employee.setStatus(status);
             employee.setWarehouseID(warehouseID);
             employee.setImage(image);
-            employee.setAccountID(accountID);
+            //employee.setAccountID(accountID);
 
             // Lưu lại roleName và warehouseName vào session
             if (roleName != null && !roleName.isEmpty()) {
@@ -186,7 +186,7 @@ public class EmployeeProfileServlet extends HttpServlet {
 
         // Create an Employee object with the validated data
         Employee employee = new Employee();
-        employee.setEmployeeID(employeeID);
+        //employee.setEmployeeID(employeeID);
         employee.setEmployeeName(employeeName);
         employee.setPhone(phone);
         employee.setAddress(address);
@@ -196,7 +196,7 @@ public class EmployeeProfileServlet extends HttpServlet {
         employee.setStatus(status);
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
-        employee.setAccountID(accountID);
+        //employee.setAccountID(accountID);
 
         // Update the employee in the database
         boolean isUpdated = EmployeeDAO.updateEmployee(employee);

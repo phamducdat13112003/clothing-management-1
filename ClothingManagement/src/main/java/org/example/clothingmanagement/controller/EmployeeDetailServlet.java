@@ -36,13 +36,12 @@ public class EmployeeDetailServlet extends HttpServlet {
         EmployeeService employeeService = new EmployeeService();
         WarehouseDAO wareHouseDAO = new WarehouseDAO();
         if (employeeID != null) {
-            int empID = Integer.parseInt(employeeID);
             try {
-                Employee employee= employeeService.getEmployeeByID(empID);
+                Employee employee= employeeService.getEmployeeByID(employeeID);
                 request.setAttribute("employee", employee);
                 request.getRequestDispatcher("./employeeInformationDetail.jsp").forward(request, response);
             }catch(Exception e) {
-                throw new RuntimeException("No find employee with ID: " + empID, e);
+                throw new RuntimeException("No find employee with ID: " + employeeID, e);
             }
         }else{
             response.sendRedirect("./manageEmployee.jsp");

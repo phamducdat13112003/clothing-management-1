@@ -5,7 +5,31 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="Site keywords here">
+    <meta name="description" content="#">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
     <title>Category</title>
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Fav Icon -->
+    <link rel="icon" href="img/favicon.png">
+
+    <!-- sherah Stylesheet -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome-all.min.css">
+    <link rel="stylesheet" href="css/charts.min.css">
+    <link rel="stylesheet" href="css/datatables.min.css">
+    <link rel="stylesheet" href="css/jvector-map.css">
+    <link rel="stylesheet" href="css/slickslider.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
 
 
     <style>
@@ -104,19 +128,21 @@
     </style>
 
 </head>
-<body>
-<h1><a href="homepage.jsp">Category</a></h1>
+<body id="sherah-dark-light">
 
+<jsp:include page="include/sidebar.jsp"></jsp:include>
+<jsp:include page="include/header.jsp"></jsp:include>
 <!-- Form Tìm Kiếm -->
 <div class="container">
     <!-- Form tìm kiếm -->
     <form action="SelectCategory" method="get" class="search-form">
-        <input type="number" name="categoryId" placeholder="Please Enter ID...">
-        <input type="text" name="categoryName" placeholder="Please Enter CategoryName...">
-        <input type="date" name="createDate" placeholder="Please Enter Create Date...">
-        <input type="number" name="createBy" placeholder="Please Enter Create By...">
+        <input type="text" name="categoryName" placeholder="Please Enter Name...">
+        <input type="date" name="startDate" placeholder="Please Enter Start Date...">
+        <input type="date" name="endDate" placeholder="Please Enter End Date...">
+        <input type="text" name="createBy" placeholder="Please Enter Created By...">
         <button type="submit">Search</button>
     </form>
+
 
     <!-- Form tạo Category mới -->
     <form action="addCategory.jsp" method="get" class="add-category-form">
@@ -125,21 +151,21 @@
 </div>
 
 <!-- Bảng hiển thị Category -->
-<table>
+<table border="1">
     <tr>
-        <th>Category ID</th>
+        <th>STT</th> <!-- Số thứ tự -->
         <th>Category Name</th>
-        <th>CreateDate</th>
-        <th>CreateBy</th>
+        <th>Create Date</th>
+        <th>Create By</th>
         <th>Action</th>
     </tr>
 
-    <c:forEach var="category" items="${categories}">
+    <c:forEach var="category" items="${categories}" varStatus="loop">
         <tr>
-            <td>${category.categoryID}</td>
+            <td>${loop.index + 1}</td> <!-- Hiển thị số thứ tự -->
             <td>${category.categoryName}</td>
             <td>${category.createdDate}</td>
-            <td>${category.createdBy}</td>
+            <td>${createdByNames[category.createdBy]}</td>
             <td>
                 <form action="DeleteCategoryServlet" method="get" class="delete-form" style="display:inline;">
                     <input type="hidden" name="categoryID" value="${category.categoryID}">
@@ -153,6 +179,19 @@
         </tr>
     </c:forEach>
 </table>
+
+
+<script src="js/jquery.min.js"></script>
+<script src="js/jquery-migrate.js"></script>
+<script src="js/jquery-ui.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/charts.js"></script>
+<script src="js/datatables.min.js"></script>
+<script src="js/circle-progress.min.js"></script>
+<script src="js/jquery-jvectormap.js"></script>
+<script src="js/jvector-map.js"></script>
+<script src="js/main.js"></script>
 
 
 </body>

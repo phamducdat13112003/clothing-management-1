@@ -10,19 +10,21 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Employee {
-    private int employeeID;
+    private String employeeID;
     private String employeeName;
     private String email;
     private String phone;
     private String address;
-    private String gender; // 1 for Male, 0 for Female
+    private String gender;
     private LocalDate dateOfBirth;
-    private String status; // 1 for Active, 0 for Inactive
-    private int accountID;
+    private String status; //  Active, Inactive
+    private int roleId;
     private int warehouseID;
     private String image;
+    private String roleName;
+    private String warehouseName;
 
-    public Employee(int employeeID,String email, String phone) {
+    public Employee(String employeeID,String email, String phone) {
         this.employeeID = employeeID;
         this.email = email;
         this.phone = phone;
@@ -33,18 +35,30 @@ public class Employee {
         this.phone = phone;
     }
 
-    public Employee(String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth, int accountID, int warehouseID, String image) {
+    public Employee(String employeeID, String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth,String status, int roleId ,int warehouseID ,  String image) {
+        this.employeeID = employeeID;
         this.employeeName = employeeName;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.gender = gender;
         this.dateOfBirth = dateOfBirth;
-        this.accountID = accountID;
+        this.status = status;
+        this.roleId = roleId;
         this.warehouseID = warehouseID;
         this.image = image;
     }
 
-
+    public Employee(String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth, int roleId, int warehouseID, String image) {
+        this.employeeName = employeeName;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+        this.gender = gender;
+        this.dateOfBirth = dateOfBirth;
+        this.roleId = roleId;
+        this.warehouseID = warehouseID;
+        this.image=image;
+    }
 
 }

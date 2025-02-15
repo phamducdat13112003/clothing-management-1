@@ -22,19 +22,27 @@ public class AccountDAO {
     }
 
 
-    public List<Account> getAllAccount() throws SQLException {
+    public List<Account> getAccountsByPage(int page, int pageSize) throws SQLException {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT * FROM account";
-
+        String sql = "SELECT a.*, r.RoleName " +
+                "FROM Account a " +
+                "JOIN Role r ON a.RoleID = r.RoleID " +
+                "WHERE a.status = 'Active' " +
+                "LIMIT ? OFFSET ?";
         try (Connection connection = DBContext.getConnection();
-             Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Account account = new Account();
-                account.setId(rs.getInt("accountId"));
+                account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
+                account.setStatus(rs.getString("status"));
                 account.setRoleId(rs.getInt("roleID"));
+                account.setRoleName(rs.getString("roleName"));
+                account.setEmployeeId(rs.getString("employeeID"));
                 list.add(account);
             }
         } catch (SQLException e) {
@@ -43,41 +51,87 @@ public class AccountDAO {
         return list;
     }
 
-    public List<Account> getAllAccountAvaiable() throws SQLException {
-        List<Account> list = new ArrayList<>();
-        String sql = "SELECT a.AccountID\n" +
-                "FROM Account a\n" +
-                "LEFT JOIN Employee e ON a.AccountID = e.AccountID\n" +
-                "WHERE e.AccountID IS NULL;";
+    public int getTotalAccounts() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Account WHERE status = 'Active'";
         try (Connection connection = DBContext.getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Account account = new Account();
-                account.setId(rs.getInt("accountId"));
-                account.setEmail(rs.getString("email"));
-                account.setPassword(rs.getString("password"));
-                account.setRoleId(rs.getInt("roleID"));
-                list.add(account);
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return list;
+        return 0;
     }
 
-    public Account getAccountById(int accountId) throws SQLException {
+    public List<Account> searchAccount(String keyword, int page, int pageSize) {
+        List<Account> accounts = new ArrayList<>();
+        String sql = "SELECT a.*, r.RoleName " +
+                "FROM Account a " +
+                "JOIN Role r ON a.RoleID = r.RoleID " +
+                "WHERE (a.email LIKE ? OR a.employeeID LIKE ?) " +
+                "AND a.status = 'Active' " +
+                "LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchKeyword = "%" + keyword + "%";
+            stmt.setString(1, searchKeyword);
+            stmt.setString(2, searchKeyword);
+            stmt.setInt(3, pageSize);
+            stmt.setInt(4, (page - 1) * pageSize);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Account account = new Account();
+                account.setId(rs.getString("accountId"));
+                account.setEmail(rs.getString("email"));
+                account.setPassword(rs.getString("password"));
+                account.setStatus(rs.getString("status"));
+                account.setRoleId(rs.getInt("roleID"));
+                account.setEmployeeId(rs.getString("employeeID"));
+                account.setRoleName(rs.getString("RoleName")); 
+                accounts.add(account);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return accounts;
+    }
+
+
+    public int getTotalAccounts(String keyword) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Account WHERE status = 'Active' AND (email LIKE ? OR employeeID LIKE ?)";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, "%" + keyword + "%");
+            stmt.setString(2, "%" + keyword + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public Account getAccountById(String accountId) throws SQLException {
         Account account = new Account();
         String sql = "SELECT * FROM account WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountId);
+            stmt.setString(1, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                account.setId(rs.getInt("accountId"));
+                account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
+                account.setStatus(rs.getString("status"));
                 account.setRoleId(rs.getInt("roleID"));
+                account.setEmployeeId(rs.getString("employeeId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -85,23 +139,26 @@ public class AccountDAO {
         return account;
     }
     public void updateAccount(Account account) throws SQLException {
-        String sql = "UPDATE account SET email = ?, password = ? WHERE accountId = ?";
+        String sql = "UPDATE account SET email = ?, password = ? , roleID = ?, status = ? WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
-            stmt.setInt(3, account.getId());
+            stmt.setInt(3, account.getRoleId());
+            stmt.setString(4, account.getStatus());
+            stmt.setString(5, account.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    public boolean isAccountExist(String email) throws SQLException {
-        String sql = "SELECT * FROM account WHERE email = ?";
+    public boolean isAccountExist(String email, String accountId) throws SQLException {
+        String sql = "SELECT * FROM account WHERE email = ? AND accountId != ? ";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, email);
+            stmt.setString(2, accountId);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
                 return true;
@@ -112,11 +169,11 @@ public class AccountDAO {
         return false;
     }
 
-    public boolean deleteAccount(int accountId) throws SQLException {
-        String sql = "DELETE FROM account WHERE accountId = ?";
+    public boolean deleteAccount(String accountId) throws SQLException {
+        String sql = "UPDATE account SET status = 'Inactive' WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setInt(1, accountId);
+            stmt.setString(1, accountId);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -124,13 +181,28 @@ public class AccountDAO {
         return false;
     }
 
+    public boolean deleteAccountWhenDeleteEmployee(String employeeId) throws SQLException {
+        String sql = "UPDATE Account SET status = 'Inactive' WHERE employeeId = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, employeeId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;  // Return false if there is any exception
+        }
+    }
+
+
     public void createAccount(Account account) throws SQLException {
-        String sql = "INSERT INTO account(email, password, roleID) VALUES(?,?,?)";
+        String sql = "INSERT INTO account (Email, Password, RoleID, Status, EmployeeID) VALUES (?, ?, ?, 'Active', ?)";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
             stmt.setInt(3, account.getRoleId());
+            stmt.setString(4, account.getEmployeeId());
             stmt.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
@@ -180,7 +252,7 @@ public class AccountDAO {
 
             if (rs.next()) {
                 account = new Account();
-                account.setId(rs.getInt("accountId"));
+                account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
                 account.setPassword(rs.getString("password"));
                 account.setRoleId(rs.getInt("roleID"));
@@ -257,11 +329,11 @@ public class AccountDAO {
     }
 
     public static void main(String[] args) throws SQLException {
-        AccountDAO dao = new AccountDAO();
-        List<Role > list= dao.getAllRoles();
-        for(Role account:list){
-            System.out.println(account.getRoleName());
-        }
+        // AccountDAO dao = new AccountDAO();
+        // List<Account > list= dao.getAllAccount();
+        // for(Account account:list){
+            // System.out.println(account.getId());
+        //}
     }
 
 }

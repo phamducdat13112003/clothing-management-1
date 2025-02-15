@@ -10,7 +10,23 @@ public class EmployeeService {
     private final EmployeeDAO employeeDAO = new EmployeeDAO();
 
     public List<Employee> getAllEmployees() throws SQLException {
-        return employeeDAO.getAllEmployee();
+        return employeeDAO.getAllEmployees();
+    }
+
+    public List<Employee> getEmployeesWithPagination(int page, int pageSize) throws SQLException {
+        return employeeDAO.getEmployeesWithPagination(page, pageSize);
+    }
+
+    public int getTotalEmployeeCount() throws SQLException {
+        return employeeDAO.getTotalEmployeeCount();
+    }
+
+    public List<Employee> searchEmployee(String keyword, int page, int pageSize) throws SQLException {
+        return employeeDAO.searchEmployee(keyword, page, pageSize);
+    }
+
+    public int getTotalEmployeeCount(String keyword) throws SQLException {
+        return employeeDAO.getTotalEmployeeCount(keyword);
     }
 
     public boolean createEmployee(Employee employee)throws SQLException{
@@ -19,11 +35,15 @@ public class EmployeeService {
     public boolean updateEmployee(Employee employee)throws SQLException{
         return EmployeeDAO.updateEmployee(employee);
     }
-    public boolean deleteEmployee(int employeeID)throws SQLException{
+    public boolean updateAccountEmail(String employeeId, String newEmail) throws SQLException{
+        return EmployeeDAO.updateAccountEmail(employeeId, newEmail);
+    }
+
+    public boolean deleteEmployee(String employeeID)throws SQLException{
         return employeeDAO.deleteEmployee(employeeID);
     }
 
-    public int getEmployeeId() throws SQLException{
+    public String getEmployeeId() throws SQLException{
         return employeeDAO.getEmployeeId();
     }
 
@@ -34,18 +54,27 @@ public class EmployeeService {
     public static int getAccountIdByEmployeeId(int employeeID) throws SQLException{
         return EmployeeDAO.getAccountIdByEmployeeId(employeeID);
     }
-    public boolean isAccountIdExist(int accountId) throws SQLException{
-        return employeeDAO.isAccountIdExist(accountId);
-    }
+
     public boolean isEmployeeExistedWhenAdd(String email, String phone) throws SQLException{
         return employeeDAO.isEmployeeExistedWhenAdd(email, phone);
     }
 
-    public boolean isEmployeeExisted(int employeeId ,String email, String phone) throws SQLException{
+    public List<String> getEmployeeIDsWithoutAccount() throws SQLException{
+        return employeeDAO.getEmployeeIDsWithoutAccount();
+    }
+
+    public boolean isEmailExistForEmployee (String email, String employeeId) throws SQLException{
+        return employeeDAO.isEmailExistForEmployee(email, employeeId);
+    }
+    public int getRoleIdByEmployeeId(String employeeId) throws SQLException{
+        return employeeDAO.getRoleIdByEmployeeId(employeeId);
+    }
+
+    public boolean isEmployeeExisted(String employeeId ,String email, String phone) throws SQLException{
         return employeeDAO.isEmployeeExisted(employeeId, email, phone);
     }
 
-    public Employee getEmployeeByID(int employeeID) throws SQLException{
+    public Employee getEmployeeByID(String employeeID) throws SQLException{
         return employeeDAO.getEmployeeByID(employeeID);
     }
 

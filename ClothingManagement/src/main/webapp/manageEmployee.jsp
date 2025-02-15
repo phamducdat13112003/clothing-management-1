@@ -18,7 +18,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>Sherah - HTML eCommerce Dashboard Template</title>
+    <title>Manage Employee</title>
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -36,14 +36,66 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .message{
+            color: green;
+            font-size: 12px;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a:active {
+            background-color: #09ad95;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
 
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            width: 250px;
+        }
 
+        .search-button {
+            padding: 5px 15px;
+            background-color: #09ad95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
+        .search-button:hover {
+            background-color: #078c76;
+        }
+    </style>
 </head>
 <body id="sherah-dark-light">
     <jsp:include page="include/sidebar.jsp"></jsp:include>
     <jsp:include page="include/header.jsp"></jsp:include>
-
     <!-- sherah Dashboard -->
     <section class="sherah-adashboard sherah-show">
         <div class="container">
@@ -52,15 +104,27 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <div class="row">
-                                <div class="col-12">
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-6">
                                     <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Manage Account</h2>
+                                        <h2 class="sherah-breadcrumb__title">Manage Employee</h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="#">Home</a></li>
-                                            <li class="active"> <a href="addemployee" >Add Employee</a></li>
+                                            <li><a href="manageemployee">Home</a></li>
+                                            <li class="active"><a href="addemployee">Add Employee</a></li>
                                         </ul>
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
+                                        <c:if test="${not empty messageSuccess}">
+                                            <span class="message">${messageSuccess}</span>
+                                        </c:if>
                                     </div>
+                                </div>
+                                <div class="col-6">
+                                    <form action="searchemployee" method="post" class="search-form">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
                                 </div>
                             </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
@@ -115,7 +179,7 @@
                                                             </g>
                                                         </svg>
                                                     </a>
-                                                    <a href="javascript:void(0)" onclick="confirmDelete(${employee.employeeID})" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
+                                                    <a href="javascript:void(0);" onclick="confirmDelete('${employee.employeeID}')" class="sherah-table__action sherah-color2 sherah-color2__bg--offset">
                                                         <svg class="sherah-color2__fill" xmlns="http://www.w3.org/2000/svg" width="16.247" height="18.252" viewBox="0 0 16.247 18.252">
                                                             <g id="Icon" transform="translate(-160.007 -18.718)">
                                                                 <path id="Path_484" data-name="Path 484" d="M185.344,88.136c0,1.393,0,2.786,0,4.179-.006,1.909-1.523,3.244-3.694,3.248q-3.623.007-7.246,0c-2.15,0-3.682-1.338-3.687-3.216q-.01-4.349,0-8.7a.828.828,0,0,1,.822-.926.871.871,0,0,1,1,.737c.016.162.006.326.006.489q0,4.161,0,8.321c0,1.061.711,1.689,1.912,1.69q3.58,0,7.161,0c1.2,0,1.906-.631,1.906-1.695q0-4.311,0-8.622a.841.841,0,0,1,.708-.907.871.871,0,0,1,1.113.844C185.349,85.1,185.343,86.618,185.344,88.136Z" transform="translate(-9.898 -58.597)"/>
@@ -131,68 +195,50 @@
                                     </c:forEach>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <c:if test="${currentPage > 1}">
+                                        <a href="manageemployee?page=${currentPage - 1}&search=${search}">Previous</a>
+                                    </c:if>
 
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <a href="manageemployee?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    </c:forEach>
+
+                                    <c:if test="${currentPage < totalPages}">
+                                        <a href="manageemployee?page=${currentPage + 1}&search=${search}">Next</a>
+                                    </c:if>
+                                </div>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>
-</div>
 
-<!-- sherah Scripts -->
 <script src="js/jquery.min.js"></script>
-<script src="js/jquery-migrate.js"></script>
-<script src="js/jquery-ui.min.js"></script>
-<script src="js/popper.min.js"></script>
-<script src="js/bootstrap.min.js"></script>
-<script src="js/charts.js"></script>
-<script src="js/final-countdown.min.js"></script>
-<script src="js/fancy-box.min.js"></script>
-<script src="js/fullcalendar.min.js"></script>
-<script src="js/datatables.min.js"></script>
-<script src="js/circle-progress.min.js"></script>
-<script src="js/jquery-jvectormap.js"></script>
-<script src="js/jvector-map.js"></script>
-<script src="js/main.js"></script>
-<script type="text/javascript">
-    function confirmDelete(employeeID) {
-        if (confirm("Are you sure want to delete this employee?")) {
-            window.location = "deleteemployee?employeeId=" + employeeID;
+    <script src="js/jquery-migrate.js"></script>
+    <script src="js/jquery-ui.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/final-countdown.min.js"></script>
+    <script src="js/fancy-box.min.js"></script>
+    <script src="js/fullcalendar.min.js"></script>
+    <script src="js/datatables.min.js"></script>
+    <script src="js/circle-progress.min.js"></script>
+    <script src="js/jquery-jvectormap.js"></script>
+    <script src="js/jvector-map.js"></script>
+    <script src="js/main.js"></script>
+
+    <script type="text/javascript">
+        function confirmDelete(employeeID) {
+            if (confirm("Are you sure want to delete this account?")) {
+                window.location = "deleteemployee?employeeId=" + employeeID;
+            }
         }
-    }
-</script>
-<script>
-    $('#sherah-table__vendor').DataTable({
-        searching: true,
-        info: false,
-        lengthChange: true,
-        scrollCollapse: true,
-        paging: true,
-        language: {
-            paginate: {
-                next: '<i class="fas fa-angle-right"></i>',
-                previous: '<i class="fas fa-angle-left"></i>'
-            },
-            lengthMenu: 'Showing _MENU_',
-            searchPlaceholder: 'Search...',
-            search: '<span class="sherah-data-table-label">Search</span>',
-        },
-        pageLength: 5,
-        lengthMenu: [5, 10, 20, 50],
-    });
-</script>
-<c:if test="${not empty message}">
-    <script>
-        window.onload = function () {
-            alert("${message}");
-        };
     </script>
-</c:if>
 </body>
 </html>
 

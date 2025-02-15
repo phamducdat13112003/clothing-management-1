@@ -4,15 +4,15 @@ package org.example.clothingmanagement.repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.example.clothingmanagement.entity.*;
 
 public class CategoryDAO {
 
 
-
     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
-    public static List<Category> selectAll()  {
+    public static List<Category> selectAll() {
         List<Category> categories = new ArrayList<>();
         String sql = "SELECT * FROM category";
 
@@ -23,9 +23,9 @@ public class CategoryDAO {
             // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
             while (rs.next()) {
                 categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
-                        rs.getDate("createdDate"),rs.getInt("createdBy")));
+                        rs.getDate("createdDate"), rs.getInt("createdBy")));
             }
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return categories;
@@ -42,6 +42,8 @@ public class CategoryDAO {
             pstmt.setInt(3, category.getCreatedBy());
 
             pstmt.executeUpdate();
+        }catch(Exception e){
+
         }
     }
 
@@ -61,7 +63,7 @@ public class CategoryDAO {
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
 
             pstmt.setString(1, category.getCategoryName());
-            pstmt.setDate(2,new java.sql.Date(category.getCreatedDate().getTime()));
+            pstmt.setDate(2, new java.sql.Date(category.getCreatedDate().getTime()));
             pstmt.setInt(3, category.getCreatedBy());
             pstmt.setInt(4, category.getCategoryID());
             pstmt.executeUpdate();
@@ -82,7 +84,7 @@ public class CategoryDAO {
         }
 
         return null;
-}
+    }
 
     public boolean checkProductCategory(int categoryID) throws SQLException {
         String sql = "SELECT 1 FROM product WHERE categoryId = ? LIMIT 1";
@@ -94,6 +96,7 @@ public class CategoryDAO {
             }
         }
     }
+
     public boolean checkCategoryNameExist(String categoryName) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Category WHERE categoryName = ?";
         try (Connection connection = DBContext.getConnection();
@@ -107,26 +110,49 @@ public class CategoryDAO {
         }
         return false;
     }
-    public static List<Category> filterCategories(Integer categoryId, String categoryName, Date createDate, Integer createdBy) throws SQLException {
+
+    public static Integer getEmployeeIDByName(String name) throws SQLException {
+        String sql = "SELECT employeeID FROM Employee WHERE employeeName = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("employeeID");
+                }
+            }
+        }
+        return null; // Trả về null nếu không tìm thấy
+    }
+
+
+    public static List<Category> filterCategories(String categoryName, Date startDate, Date endDate, Integer createdBy) throws SQLException {
         List<Category> categories = new ArrayList<>();
         String sql = "SELECT categoryID, categoryName, createdDate, createdBy FROM category WHERE 1=1";
         List<Object> params = new ArrayList<>();
-        if (categoryId != null) {
-            sql += " AND categoryID = ?";
-            params.add(categoryId);
-        }
+
         if (categoryName != null && !categoryName.trim().isEmpty()) {
             sql += " AND categoryName LIKE ?";
             params.add("%" + categoryName + "%");
         }
-        if (createDate != null) {
-            sql += " AND createdDate = ?";
-            params.add(new java.sql.Date(createDate.getTime()));
+        if (startDate != null) {
+            sql += " AND createdDate >= ?";
+            params.add(new java.sql.Date(startDate.getTime()));
+        }
+        if (endDate != null) {
+            sql += " AND createdDate <= ?";
+            params.add(new java.sql.Date(endDate.getTime()));
         }
         if (createdBy != null) {
             sql += " AND createdBy = ?";
             params.add(createdBy);
         }
+
+        // Nếu không có tham số nào, lấy tất cả danh mục
+        if (params.isEmpty()) {
+            sql = "SELECT categoryID, categoryName, createdDate, createdBy FROM category";
+        }
+
         try (Connection connection = DBContext.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.size(); i++) {
@@ -148,10 +174,88 @@ public class CategoryDAO {
     }
 
 
-
-
-
-
-
+    public String getEmployeeNameByCreatedBy(int createdBy) {
+        String query = "SELECT EmployeeName FROM employee WHERE EmployeeID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, createdBy);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("EmployeeName");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy
     }
+
+    public Integer getEmployeeIDByAccountID(int accountID) {
+        String query = "SELECT e.EmployeeID FROM employee e WHERE e.AccountID = ? LIMIT 1";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, accountID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("EmployeeID"); // Trả về EmployeeID đầu tiên tìm thấy
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy EmployeeID
+    }
+
+
+    public List<String> validateCategoryName(String name) throws SQLException {
+        List<String> errors = new ArrayList<>();
+
+        if (name == null || name.trim().isEmpty()) {
+            errors.add("Tên danh mục không được để trống.");
+            return errors;
+        }
+
+        // Chuẩn hóa khoảng trắng: loại bỏ khoảng trắng dư thừa
+        name = name.replaceAll("\\s+", " ").trim();
+
+        // Tự động viết hoa chữ cái đầu
+        if (!name.isEmpty()) {
+            name = Character.toUpperCase(name.charAt(0)) + name.substring(1).replace(" ", "").replace("-", "");
+        }
+
+        // Kiểm tra độ dài không quá 20 ký tự (không tính khoảng trắng và dấu '-')
+        String nameWithoutSpaces = name.replace(" ", "").replace("-", "");
+        if (nameWithoutSpaces.length() > 20) {
+            errors.add("Tên danh mục không được dài quá 20 ký tự (không tính khoảng trắng và dấu '-').");
+        }
+
+        // Kiểm tra chỉ chứa chữ cái, số, khoảng trắng và dấu '-'
+        if (!name.matches("^[a-zA-Z0-9À-ỹ\s-]+$")) {
+            errors.add("Tên danh mục chỉ được chứa chữ cái, số, khoảng trắng và dấu '-'.");
+        }
+
+        if (checkCategoryNameExist(name)) {
+            errors.add("Tên danh mục này đã tồn tại.");
+        }
+
+        return errors;
+    }
+    public static void main(String[] args) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter thẻ name: ");
+        String testName = scanner.nextLine();
+        CategoryDAO dao = new CategoryDAO();
+        List<String> errors =dao.validateCategoryName(testName);
+
+        if (errors.isEmpty()) {
+            System.out.println("Tên danh mục hợp lệ: " + testName);
+        } else {
+            errors.forEach(System.out::println);
+        }
+    }
+
+
+
+}
 

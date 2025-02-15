@@ -5,6 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
+import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.entity.Warehouse;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
@@ -50,14 +51,14 @@ public class EditEmployeeServlet extends HttpServlet {
         WarehouseDAO wareHouseDAO= new WarehouseDAO();
         Employee employee = null;
         try {
-            employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
+            employee = employeeService.getEmployeeByID(employeeId);
         } catch (SQLException e) {
             request.setAttribute("message", "Can't find employee with ID " + employeeId);
         }
-        List<Account> list = null;
+        List<Role> list = null;
         List<Warehouse> listWarehouse = null;
         try {
-             list = accountService.getAllAccounts();
+             list = accountService.getAllRoles();
              listWarehouse= wareHouseDAO.getAllWareHouse();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -74,59 +75,61 @@ public class EditEmployeeServlet extends HttpServlet {
         AccountService accountService = new AccountService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
-        Map<String, String> errorMessages = new HashMap<>();
-        List<Account> list =null;
         List<Warehouse> listWarehouse = null;
-        try {
-            list = accountService.getAllAccountAvaiable();
-            listWarehouse = warehouseDAO.getAllWareHouse();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        List<Role> list = null;
+        Employee employee = null;
+        int page = 1;
+        int pageSize = 5;
+        int totalEmployees = 0;
         String employeeId= request.getParameter("employeeId");
-        String name = request.getParameter("name");
+        String name = request.getParameter("name").trim();
+        if (!isValidName(name)) {
+            request.setAttribute("errorName", "Name must contain only letters.");
+        }
         name = capitalizeName(name);
-        String email = request.getParameter("email");
-        String phone = request.getParameter("phone");
-        String address = request.getParameter("address");
+        String email = request.getParameter("email").trim();
+        String phone = request.getParameter("phone").trim();
+        String address = request.getParameter("address").trim();
         address = capitalizeName(address);
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
-        String accountId = request.getParameter("account");
+        String roleID = request.getParameter("role");
         String warehouseID = request.getParameter("warehouse");
-
+        listWarehouse = warehouseDAO.getAllWareHouse();
         if (!isValidEmail(email)) {
-            errorMessages.put("email", "Invalid Email.");
+            request.setAttribute("errorEmail", "Invalid email");
         }
 
         if (!isValidPhone(phone)) {
-            errorMessages.put("phone", "Invalid phone number! Must be 10 digits.");
+            request.setAttribute("errorPhone", "Invalid phone number");
         }
 
         if (!isAdult(String.valueOf(dateOfBirth))) {
-            errorMessages.put("dob", "Employees must be 18 years of age or older.");
+            request.setAttribute("errorDateofBirth", "Invalid date of birth, employee must equal or greater than 18 age");
         }
 
         try {
-            if (employeeService.isEmployeeExisted(Integer.parseInt(employeeId),email, phone)) {
+            if (employeeService.isEmployeeExisted(employeeId,email, phone)) {
                 message.append("Employee already existed.\n");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if(!errorMessages.isEmpty() || !message.isEmpty()) {
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("phone", phone);
-            request.setAttribute("address", address);
-            request.setAttribute("gender", gender);
-            request.setAttribute("dateOfBirth", dateOfBirth);
+        try {
+            employee = employeeService.getEmployeeByID(employeeId);
+            list = accountService.getAllRoles();
+        } catch (SQLException e) {
+            request.setAttribute("message", "Can't find employee with ID " + employeeId);
+        }
+        if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
+            request.setAttribute("message", message.toString());
+            System.out.println(message);
+            request.setAttribute("employee", employee);
             request.setAttribute("list", list);
             request.setAttribute("listWarehouse", listWarehouse);
-            request.setAttribute("message", message.toString());
-            request.getRequestDispatcher("./editEmployee.jsp").include(request, response);
+            request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
-            Employee editEmployee = new Employee( Integer.parseInt(employeeId),name, email , phone, address, gender, dateOfBirth, "Active" ,Integer.parseInt(accountId), Integer.parseInt(warehouseID), "");
+            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(roleID), Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();
@@ -139,42 +142,48 @@ public class EditEmployeeServlet extends HttpServlet {
                     String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
                     // convert it to a string, get just the filename without including the full path
 
-                if (!source.isEmpty()) {
-                    String filename = employeeId + ".png";
-                    if (!Files.exists(Path.of(realPath))) { // check folder /img/ Employee is existed
-                        Files.createDirectories(Path.of(realPath));
-                    }
+                    if (!source.isEmpty()) {
+                        String filename = employeeId + ".png";
+                        if (!Files.exists(Path.of(realPath))) { // check folder /img/ Employee is existed
+                            Files.createDirectories(Path.of(realPath));
+                        }
                     part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
                     editEmployee.setImage("/img/Employee/" + filename+ "?" +System.currentTimeMillis()); //Set the path to the image file
-                }
-            } else {
-                    Employee existEmployee = null;
-                    try {
-                        existEmployee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
-                    } catch (SQLException e) {
-                        throw new RuntimeException(e);
                     }
-                    editEmployee.setImage(existEmployee.getImage());
-            }
+                } else {
+                    Employee existEmployee = null;
+                        try {
+                            existEmployee = employeeService.getEmployeeByID(employeeId);
+                        } catch (SQLException e) {
+                            throw new RuntimeException(e);
+                        }
+                        editEmployee.setImage(existEmployee.getImage());
+                }
             boolean success = false;
+            boolean emailUpdated = false;
             try {
                 success = employeeService.updateEmployee(editEmployee);
+                emailUpdated = employeeService.updateAccountEmail(employeeId, email);
             } catch (SQLException e) {
                 request.setAttribute("message", "Cannot update Employee.");
             }
 
-            if (success) {
-                request.setAttribute("message", "Employee updated successfully");
+            if (success && emailUpdated) {
+                request.setAttribute("messageSuccess", "Employee updated successfully");
             } else {
                 request.setAttribute("message", "Failed to update employee");
             }
             List<Employee> listEmployee = null;
             try {
-                listEmployee = employeeService.getAllEmployees();
+                listEmployee = employeeService.getEmployeesWithPagination(page, pageSize);
+                totalEmployees = employeeService.getTotalEmployeeCount();
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
+            int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
             request.setAttribute("list", listEmployee);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
             request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
         }
     }
@@ -238,5 +247,8 @@ public class EditEmployeeServlet extends HttpServlet {
             }
         }
         return false;
+    }
+    private boolean isValidName(String name) {
+        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$");
     }
 }

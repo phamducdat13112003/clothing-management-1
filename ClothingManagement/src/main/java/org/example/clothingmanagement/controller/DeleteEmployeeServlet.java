@@ -36,18 +36,19 @@ public class DeleteEmployeeServlet extends HttpServlet {
         String employeeId= request.getParameter("employeeId");
         EmployeeService employeeService = new EmployeeService();
         AccountService accountService = new AccountService();
+        int page = 1;
+        int pageSize = 5;
+        int totalEmployees = 0;
         if(employeeId != null){
             try {
-                Employee employee = employeeService.getEmployeeByID(Integer.parseInt(employeeId));
-                boolean isDeleted= employeeService.deleteEmployee(Integer.parseInt(employeeId));
-                int accountId = employee.getAccountID();
-                boolean isAccountDeleted = accountService.deleteAccount(accountId);
+                boolean isDeleted= employeeService.deleteEmployee(employeeId);
+                boolean isAccountDeleted = accountService.deleteAccountWhenDeleteEmployee(employeeId);
                 if((isDeleted) && (isAccountDeleted)){
-                    List<Employee> list= employeeService.getAllEmployees();
+                    List<Employee> list= employeeService.getEmployeesWithPagination(page, pageSize);
                     request.setAttribute("message", "Employee deleted");
                     request.setAttribute("list", list);
                 }else{
-                    List<Employee> list= employeeService.getAllEmployees();
+                    List<Employee> list= employeeService.getEmployeesWithPagination(page, pageSize);
                     request.setAttribute("message", "Failed to delete employee");
                     request.setAttribute("list", list);
                 }
@@ -55,6 +56,9 @@ public class DeleteEmployeeServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
+        int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
     }
 
