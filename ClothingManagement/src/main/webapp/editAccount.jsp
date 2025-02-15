@@ -66,10 +66,11 @@
         </div>
         <div class="mb-3">
             <label for="status" class="form-label">Status: <span class="required">*</span></label>
-            <select id="status" name="status" class="form-select" required>
+            <select id="status" name="status" class="form-select" disabled>
                 <option value="Active" ${account.status eq 'Active' ? 'selected' : ''}>Active</option>
                 <option value="Inactive" ${account.status eq 'Inactive' ? 'selected' : ''}>Inactive</option>
             </select>
+            <input type="hidden" name="status" value="${account.status}">
         </div>
         <div class="form-buttons">
             <button style="margin-top: 10px" type="submit" class="btn btn-success">Save</button>
