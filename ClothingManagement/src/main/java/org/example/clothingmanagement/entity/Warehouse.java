@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Warehouse {
-    private int id;
+    private int warehouseId;
     private String warehouseName;
     private String address;
     private int branchId;

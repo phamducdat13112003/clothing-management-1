@@ -34,6 +34,8 @@ public class ShowAccountServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+
+
         AccountService accountService = new AccountService();
         List<Account> list = null;
         List<Role> roles = null;

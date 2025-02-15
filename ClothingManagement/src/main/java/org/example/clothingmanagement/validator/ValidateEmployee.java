@@ -37,7 +37,7 @@ public class ValidateEmployee {
         return Pattern.matches(regex, address);
     }
 
-    private static boolean isAdult(String dob) {
+    public static boolean isAdult(String dob) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date dateOfBirth = sdf.parse(dob);

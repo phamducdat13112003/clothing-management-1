@@ -2052,7 +2052,11 @@
                                                                     </svg>
 
                                                                 </div>
-                                                                <h4 class="sherah-dropdown-card-name"><a href="profile-info.html">My Profile</a></h4>
+                                                                <%
+                                                                    Integer userId = (Integer) session.getAttribute("account_id");
+                                                                    String profileLink = "/employee?action=view&id=" + userId;
+                                                                %>
+                                                                <h4 class="sherah-dropdown-card-name"><a href="<%= profileLink %>">My Profile</a></h4>
                                                             </div>
                                                         </li>
                                                         <li>

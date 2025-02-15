@@ -23,6 +23,8 @@ public class EmployeeDAO {
         return ds;
     }
 
+
+
     public boolean createEmployee(Employee employee) {
         String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, AccountID, WarehouseID, Image) " +
                 "VALUES (?, ?, ?, ?, ?, ?, 'Active', ?, ?,?)";
@@ -193,6 +195,39 @@ public class EmployeeDAO {
         }
         return employee;
     }
+
+    public static Employee getEmployeeByAccountId(Integer accountID) {
+        Employee employee = null;
+        String sql = "SELECT * FROM Employee WHERE AccountID = ? AND Status = 'Active'";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+
+            pt.setInt(1, accountID);
+            try (ResultSet rs = pt.executeQuery()) {
+                while (rs.next()) {
+                    employee = new Employee();
+                    employee.setEmployeeID(rs.getInt("EmployeeID"));
+                    employee.setEmployeeName(rs.getString("EmployeeName"));
+                    employee.setEmail(rs.getString("Email"));
+                    employee.setPhone(rs.getString("Phone"));
+                    employee.setAddress(rs.getString("Address"));
+                    employee.setGender(rs.getString("Gender"));
+                    employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                    employee.setStatus(rs.getString("Status"));
+                    employee.setAccountID(rs.getInt("AccountID"));
+                    employee.setWarehouseID(rs.getInt("WarehouseID"));
+                    employee.setImage(rs.getString("Image"));
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return employee;
+    }
+
 
     public boolean deleteEmployee(int employeeID) {
         String sql = "UPDATE Employee SET Status = 'Inactive' WHERE EmployeeID = ?";

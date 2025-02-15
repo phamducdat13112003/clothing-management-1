@@ -2,9 +2,7 @@ package org.example.clothingmanagement.controller;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 import org.example.clothingmanagement.validator.ValidateEmployee;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.repository.RoleDAO;
@@ -18,7 +16,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet(name = "ViewProfileServlet", value = "/employee")
-public class ViewProfileServlet extends HttpServlet {
+public class EmployeeProfileServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -50,7 +48,6 @@ public class ViewProfileServlet extends HttpServlet {
     private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int employeeID = Integer.parseInt(request.getParameter("id"));
         EmployeeDAO employeeDAO = new EmployeeDAO();
-        // Lấy tất cả nhân viên
         List<Employee> employees = employeeDAO.getAllEmployee();
         Employee employee = null;
 
@@ -79,6 +76,10 @@ public class ViewProfileServlet extends HttpServlet {
             // Lấy RoleName sử dụng RoleID từ RoleDAO
             String roleName = RoleDAO.getRoleNameById(roleId);
 
+            //Luu rolename vao session
+            request.getSession().setAttribute("employee", employee);
+            request.getSession().setAttribute("roleName", roleName);
+            request.getSession().setAttribute("warehouseName", warehouseName);
 
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
@@ -91,6 +92,23 @@ public class ViewProfileServlet extends HttpServlet {
 
 
     private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        //Get accountID from session
+        HttpSession session = request.getSession();
+        Integer accountID = (Integer) session.getAttribute("account_id");
+
+        // If accountID is not found in the session, handle the error
+        if (accountID == null) {
+            // If accountID is not in session, show error and return
+            response.getWriter().write("Lỗi: Không tìm thấy AccountID trong phiên làm việc.");
+            return;
+        }
+
+        // Retrieve the roleName from the session
+        String roleName = (String) session.getAttribute("roleName");
+        String warehouseName = (String) session.getAttribute("warehouseName");
+
+
+        // Get other employee details from request
         int employeeID = Integer.parseInt(request.getParameter("employeeID"));
         String employeeName = request.getParameter("employeeName");
         String phone = request.getParameter("phone");
@@ -102,18 +120,18 @@ public class ViewProfileServlet extends HttpServlet {
         int warehouseID = Integer.parseInt(request.getParameter("warehouseID"));
         String image = request.getParameter("image");
 
-        // Lấy AccountID từ cơ sở dữ liệu để tránh lỗi NULL
-        int accountID = EmployeeDAO.getAccountIdByEmployeeId(employeeID);
+        // Check if accountID is valid
         if (accountID == -1) {
             System.out.println("Lỗi: Không tìm thấy AccountID cho EmployeeID " + employeeID);
             response.getWriter().write("Lỗi: Không tìm thấy AccountID.");
             return;
         }
 
-        // Kiểm tra lỗi dữ liệu nhập
+        // Check for input validation errors
         String employeeNameError = null;
         String phoneError = null;
         String addressError = null;
+        String dobError = null;
 
         if (!ValidateEmployee.isValidFullName(employeeName)) {
             employeeNameError = "Tên không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt hoặc khoảng trắng liên tục.";
@@ -125,24 +143,18 @@ public class ViewProfileServlet extends HttpServlet {
             addressError = "Địa chỉ không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt ngoài , . - /.";
         }
 
-        // Nếu có lỗi, chuyển dữ liệu về JSP để hiển thị lỗi
-        if (employeeNameError != null || phoneError != null || addressError != null) {
+        if(!ValidateEmployee.isAdult(dateOfBirth)){
+            dobError = "Người dùng phải trên 18 tuổi.";
+        }
+
+        // If there are validation errors, forward data back to JSP
+        if (employeeNameError != null || phoneError != null || addressError != null || dobError != null) {
             request.setAttribute("employeeNameError", employeeNameError);
             request.setAttribute("phoneError", phoneError);
             request.setAttribute("addressError", addressError);
+            request.setAttribute("dobError", dobError);
 
-
-            String warehouseName = null;
-            String roleName = null;
-            try {
-                warehouseName = WarehouseDAO.getWarehouseNameById(warehouseID);
-                int roleId = AccountDAO.getRoleIdByAccountId(accountID);
-                roleName = RoleDAO.getRoleNameById(roleId);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-
-            // dữ liệu nhân viên để hiển thị lại
+            // Prepare employee data for display in JSP
             Employee employee = new Employee();
             employee.setEmployeeID(employeeID);
             employee.setEmployeeName(employeeName);
@@ -156,7 +168,15 @@ public class ViewProfileServlet extends HttpServlet {
             employee.setImage(image);
             employee.setAccountID(accountID);
 
-            // Gửi dữ liệu về trang JSP
+            // Lưu lại roleName và warehouseName vào session
+            if (roleName != null && !roleName.isEmpty()) {
+                session.setAttribute("roleName", roleName); // Đảm bảo roleName không null và không rỗng
+            }
+            if (warehouseName != null && !warehouseName.isEmpty()) {
+                session.setAttribute("warehouseName", warehouseName); // Đảm bảo warehouseName không null và không rỗng
+            }
+
+            // Send employee data and other info to the JSP
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
             request.setAttribute("roleName", roleName);
@@ -164,7 +184,7 @@ public class ViewProfileServlet extends HttpServlet {
             return;
         }
 
-        // Tạo đối tượng Employee với dữ liệu đã kiểm tra
+        // Create an Employee object with the validated data
         Employee employee = new Employee();
         employee.setEmployeeID(employeeID);
         employee.setEmployeeName(employeeName);
@@ -178,8 +198,10 @@ public class ViewProfileServlet extends HttpServlet {
         employee.setImage(image);
         employee.setAccountID(accountID);
 
+        // Update the employee in the database
         boolean isUpdated = EmployeeDAO.updateEmployee(employee);
 
+        // Check if the update was successful
         if (isUpdated) {
             request.getSession().setAttribute("originalName", employeeName);
             String successMessage = "Cập nhật thành công!";
@@ -189,5 +211,6 @@ public class ViewProfileServlet extends HttpServlet {
             response.getWriter().write("Cập nhật thông tin nhân viên thất bại.");
         }
     }
+
 
 }

@@ -302,7 +302,7 @@
                                                                 </svg>
 
                                                             </div>
-                                                            <h4 class="sherah-dropdown-card-name"><a href="profile-info.html">My Profile</a></h4>
+                                                            <h4 class="sherah-dropdown-card-name"><a href="${pageContext.request.contextPath}/employee?action=view&id=${sessionScope.account_id}">My Profile</a></h4>
                                                         </div>
                                                     </li>
                                                     <li>

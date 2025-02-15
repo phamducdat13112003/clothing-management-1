@@ -140,6 +140,10 @@
 
 																					<label for="dateOfBirth" class="sherah-profile-info__title">Date of Birth:</label>
 																					<input class="sherah-profile-info__text" type="date" name="dateOfBirth" id="dateOfBirth" value="${employee.dateOfBirth}" required><br>
+																					<c:if test="${not empty dobError}">
+																						<span class="error-message" style="color: red;">${dobError}</span>
+																					</c:if>
+																					<br>
 
 																					<label for="status" class="sherah-profile-info__title">Status:</label>
 																					<input class="sherah-profile-info__text" type="text" name="status" id="status" value="${employee.status}" readonly><br>
@@ -199,6 +203,9 @@
 																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="text" name="reenterPassword" required="required">
 																				<c:if test="${not empty mismatchError}">
 																					<span class="error-message" style="color: red;">${mismatchError}</span>
+																				</c:if>
+																				<c:if test="${not empty lengthError}">
+																					<span class="error-message" style="color: red;">${lengthError}</span>
 																				</c:if>
 																			</div>
 																		</div>
