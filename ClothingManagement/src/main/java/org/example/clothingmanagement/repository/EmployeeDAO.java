@@ -111,11 +111,10 @@ public class EmployeeDAO {
     }
 
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, RoleID = ?, Image = ?, RoleName = ?, WarehouseName = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, RoleID = ?, Image = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
-
             pt.setString(1, employee.getEmployeeName());
             pt.setString(2, employee.getEmail());
             pt.setString(3, employee.getPhone());
@@ -126,10 +125,7 @@ public class EmployeeDAO {
             pt.setInt(8, employee.getWarehouseID());
             pt.setInt(9, employee.getRoleId());
             pt.setString(10, employee.getImage());
-            pt.setString(11, employee.getRoleName());
-            pt.setString(12, employee.getWarehouseName());
-            pt.setString(13, employee.getEmployeeID());
-
+            pt.setString(11, employee.getEmployeeID());
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -150,6 +146,22 @@ public class EmployeeDAO {
         }
         return false;
     }
+
+    public boolean hasAccount(String employeeId) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM account WHERE EmployeeID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, employeeId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Nếu có tài khoản, trả về true
+                }
+            }
+        }
+        return false; // Không có tài khoản
+    }
+
 
 
     public List<Employee> getAllEmployees() {
@@ -357,7 +369,7 @@ public class EmployeeDAO {
                 "LEFT JOIN Account a \n" +
                 "ON e.EmployeeID = a.EmployeeID \n" +
                 "WHERE a.EmployeeID IS NULL \n" +
-                "AND e.Status = 'Active'\n";
+                "AND e.Status = 'Active'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
 

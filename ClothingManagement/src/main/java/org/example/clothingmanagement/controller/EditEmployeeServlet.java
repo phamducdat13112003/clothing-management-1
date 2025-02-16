@@ -160,12 +160,17 @@ public class EditEmployeeServlet extends HttpServlet {
                         editEmployee.setImage(existEmployee.getImage());
                 }
             boolean success = false;
-            boolean emailUpdated = false;
+            boolean emailUpdated = true;
             try {
                 success = employeeService.updateEmployee(editEmployee);
-                emailUpdated = employeeService.updateAccountEmail(employeeId, email);
+
+                // Kiểm tra nếu có tài khoản, thì mới cập nhật email
+                if (employeeService.hasAccount(employeeId)) {
+                    emailUpdated = employeeService.updateAccountEmail(employeeId, email);
+                }
             } catch (SQLException e) {
-                request.setAttribute("message", "Cannot update Employee.");
+                e.printStackTrace();
+                request.setAttribute("message", "Cannot update Employee due to a database error.");
             }
 
             if (success && emailUpdated) {

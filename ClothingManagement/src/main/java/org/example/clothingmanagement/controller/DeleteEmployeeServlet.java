@@ -39,24 +39,29 @@ public class DeleteEmployeeServlet extends HttpServlet {
         int page = 1;
         int pageSize = 5;
         int totalEmployees = 0;
+        List<Employee> list =null;
         if(employeeId != null){
             try {
                 boolean isDeleted= employeeService.deleteEmployee(employeeId);
-                boolean isAccountDeleted = accountService.deleteAccountWhenDeleteEmployee(employeeId);
+                boolean isAccountDeleted = true;
+
+                if (employeeService.hasAccount(employeeId)) {
+                    isAccountDeleted = accountService.deleteAccountWhenDeleteEmployee(employeeId);
+                }
+
                 if((isDeleted) && (isAccountDeleted)){
-                    List<Employee> list= employeeService.getEmployeesWithPagination(page, pageSize);
+                     list= employeeService.getEmployeesWithPagination(page, pageSize);
                     request.setAttribute("message", "Employee deleted");
-                    request.setAttribute("list", list);
                 }else{
-                    List<Employee> list= employeeService.getEmployeesWithPagination(page, pageSize);
+                     list= employeeService.getEmployeesWithPagination(page, pageSize);
                     request.setAttribute("message", "Failed to delete employee");
-                    request.setAttribute("list", list);
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
         int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
+        request.setAttribute("list", list);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);

@@ -39,6 +39,10 @@ public class EmployeeService {
         return EmployeeDAO.updateAccountEmail(employeeId, newEmail);
     }
 
+    public boolean hasAccount(String employeeId) throws SQLException {
+        return employeeDAO.hasAccount(employeeId);
+    }
+
     public boolean deleteEmployee(String employeeID)throws SQLException{
         return employeeDAO.deleteEmployee(employeeID);
     }

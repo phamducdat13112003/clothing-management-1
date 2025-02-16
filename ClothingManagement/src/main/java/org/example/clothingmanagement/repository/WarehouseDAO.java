@@ -121,6 +121,11 @@ public class WarehouseDAO {
     }
 
 
-
+    public static void main(String[] args) {
+        WarehouseDAO warehouseDAO = new WarehouseDAO();
+        for(Warehouse warehouse : warehouseDAO.getAllWareHouse()){
+            System.out.println(warehouse.getWarehouseName());
+        }
+    }
 }
 

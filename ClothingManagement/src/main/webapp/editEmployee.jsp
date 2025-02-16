@@ -213,8 +213,8 @@
                             <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
                               <select class="form-group__input" name="warehouse" aria-label="Default select example">
                                   <c:forEach items="${listWarehouse}" var="ware">
-                                      <option value="${ware.id}"
-                                              <c:if test="${ware.id == employee.warehouseID}">selected="selected"</c:if>>
+                                      <option value="${ware.warehouseId}"
+                                              <c:if test="${ware.warehouseId == employee.warehouseID}">selected="selected"</c:if>>
                                               ${ware.warehouseName}
                                       </option>
                                   </c:forEach>
@@ -223,7 +223,6 @@
                         </div>
                       </div>
                       <!-- End Organization -->
-
                       <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end" >
                         <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
                         <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
