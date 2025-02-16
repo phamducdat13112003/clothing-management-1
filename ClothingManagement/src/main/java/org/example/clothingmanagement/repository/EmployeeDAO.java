@@ -110,28 +110,33 @@ public class EmployeeDAO {
         return 0;
     }
 
-    // Update employee information
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status= 'Active' , WarehouseID = ?, RoleID=? ,Image = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, RoleID = ?, Image = ?, RoleName = ?, WarehouseName = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
+
             pt.setString(1, employee.getEmployeeName());
             pt.setString(2, employee.getEmail());
             pt.setString(3, employee.getPhone());
             pt.setString(4, employee.getAddress());
             pt.setString(5, employee.getGender());
             pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
-            pt.setInt(7, employee.getWarehouseID());
-            pt.setInt(8, employee.getRoleId());
-            pt.setString(9, employee.getImage());
-            pt.setString(10, employee.getEmployeeID());
+            pt.setString(7, employee.getStatus());
+            pt.setInt(8, employee.getWarehouseID());
+            pt.setInt(9, employee.getRoleId());
+            pt.setString(10, employee.getImage());
+            pt.setString(11, employee.getRoleName());
+            pt.setString(12, employee.getWarehouseName());
+            pt.setString(13, employee.getEmployeeID());
+
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
+
 
     public static boolean updateAccountEmail(String employeeId, String newEmail) {
         String sql = "UPDATE account SET email = ? WHERE employeeId = ?";
@@ -443,6 +448,43 @@ public class EmployeeDAO {
             e.printStackTrace(); // Log lỗi nếu có vấn đề xảy ra với truy vấn SQL
         }
         return null; // Trả về null nếu không tìm thấy hoặc có lỗi
+    }
+
+    public static Employee getEmployeeByAccountId(String accountId) {
+        Employee employee = null;
+        String sql = "SELECT e.*, r.RoleName, w.WarehouseName " +
+                "FROM Employee e " +
+                "JOIN Role r ON e.RoleID = r.RoleID " +
+                "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
+                "JOIN Account a ON e.EmployeeID = a.EmployeeID " +
+                "WHERE a.AccountID = ? AND e.Status = 'Active'";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, accountId);
+
+            try (ResultSet rs = pt.executeQuery()) {
+                if (rs.next()) {
+                    employee = new Employee();
+                    employee.setEmployeeID(rs.getString("EmployeeID"));
+                    employee.setEmployeeName(rs.getString("EmployeeName"));
+                    employee.setEmail(rs.getString("Email"));
+                    employee.setPhone(rs.getString("Phone"));
+                    employee.setAddress(rs.getString("Address"));
+                    employee.setGender(rs.getString("Gender"));
+                    employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                    employee.setStatus(rs.getString("Status"));
+                    employee.setRoleId(rs.getInt("RoleID"));
+                    employee.setRoleName(rs.getString("RoleName"));
+                    employee.setWarehouseID(rs.getInt("WarehouseID"));
+                    employee.setWarehouseName(rs.getString("WarehouseName"));
+                    employee.setImage(rs.getString("Image"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employee;
     }
 
     public static void main(String[] args) {
