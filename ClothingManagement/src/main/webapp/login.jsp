@@ -95,7 +95,10 @@
 <%--                                    </div>--%>
 
                                 </div>
-                                <p style="color:red; font-weight: bold">${error_login}</p>
+                                <c:if test="${not empty error_login}">
+                                    <div class="alert" style="color:red; font-weight: bold">${error_login}</div>
+                                    <% session.removeAttribute("error_login"); %> <!-- Xóa sau khi hiển thị -->
+                                </c:if>
                             </div>
                             <!-- Form Group -->
 <%--                            <div class="form-group mg-top-20">--%>

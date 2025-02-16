@@ -2,6 +2,7 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.AccountService;
@@ -22,10 +23,11 @@ public class LoginServlet extends HttpServlet {
         AccountService accountDAO = new AccountService();
         String email = request.getParameter("email");
         String password = request.getParameter("password");
+        String hashedPassword = MD5.getMd5(password); // Mã hóa mật khẩu trước khi kiểm tra
         String remember = request.getParameter("remember");
         Account account = null;
         try {
-            account = accountDAO.findAccount(email,password);
+            account = accountDAO.findAccount(email, hashedPassword); // Kiểm tra với mật khẩu đã mã hóa
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

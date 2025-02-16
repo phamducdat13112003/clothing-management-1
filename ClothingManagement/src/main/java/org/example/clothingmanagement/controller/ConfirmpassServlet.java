@@ -1,6 +1,7 @@
 package org.example.clothingmanagement.controller;import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.service.AccountService;
 
@@ -28,9 +29,12 @@ public class ConfirmpassServlet extends HttpServlet {
             request.setAttribute("error", "Passwords do not match, please try again");
             request.getRequestDispatcher("newpassword.jsp").forward(request, response);
         }else {
+            MD5.getMd5(newpass);
             AccountService accountService = new AccountService();
             try {
-                accountService.updatePassByEmail(newpass,email);
+                String MD5newpassword = MD5.getMd5(newpass);
+                accountService.updatePassByEmail(MD5newpassword,email);
+                System.out.println(newpass);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
