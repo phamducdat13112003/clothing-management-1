@@ -3,9 +3,10 @@ package org.example.clothingmanagement.entity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.time.LocalDate;
-
+@ToString
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

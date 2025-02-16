@@ -27,10 +27,10 @@ public class EmployeeProfileServlet extends HttpServlet {
 
         switch (action) {
             case "view":
-                //viewEmployee(request, response);
+                viewEmployee(request, response);
                 break;
             default:
-                response.getWriter().write("Invalid action.");
+                response.getWriter().write("Invalid action1.");
         }
     }
 
@@ -41,23 +41,29 @@ public class EmployeeProfileServlet extends HttpServlet {
         if ("update".equals(action)) {
             updateEmployee(request, response);
         } else {
-            response.getWriter().write("Invalid action.");
+            response.getWriter().write("Invalid action2.");
         }
     }
 
     private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int employeeID = Integer.parseInt(request.getParameter("id"));
+        String employeeID = request.getParameter("employeeID");
         EmployeeDAO employeeDAO = new EmployeeDAO();
-        List<Employee> employees = employeeDAO.getAllEmployee();
-        Employee employee = null;
+        List<Employee> employees = employeeDAO.getAllEmployees();
 
+        System.out.println("Employees in DB:");
+        for (Employee emp : employees) {
+            System.out.println(emp.getEmployeeID()); // Debugging
+        }
+
+        Employee employee = null;
         // Tìm nhân viên với ID đã cho
         for (Employee emp : employees) {
-            if (emp.getEmployeeID() == employeeID) {
+            if (emp.getEmployeeID().equals(employeeID)) {
                 employee = emp;
                 break;
             }
         }
+
 
         if (employee != null) {
             WarehouseDAO wareHouseDAO = new WarehouseDAO();
@@ -68,22 +74,13 @@ public class EmployeeProfileServlet extends HttpServlet {
                 e.printStackTrace();
             }
 
-            int accountId = employee.getAccountID();
-
-            // Lấy RoleID sử dụng AccountID từ AccountDAO
-            int roleId = AccountDAO.getRoleIdByAccountId(accountId);
-
-            // Lấy RoleName sử dụng RoleID từ RoleDAO
-            String roleName = RoleDAO.getRoleNameById(roleId);
 
             //Luu rolename vao session
             request.getSession().setAttribute("employee", employee);
-            request.getSession().setAttribute("roleName", roleName);
             request.getSession().setAttribute("warehouseName", warehouseName);
 
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
-            request.setAttribute("roleName", roleName);
             request.getRequestDispatcher("profile-info.jsp").forward(request, response);
         } else {
             response.getWriter().write("Employee not found.");
@@ -94,7 +91,7 @@ public class EmployeeProfileServlet extends HttpServlet {
     private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         //Get accountID from session
         HttpSession session = request.getSession();
-        Integer accountID = (Integer) session.getAttribute("account_id");
+        String accountID = String.valueOf(session.getAttribute("account_id"));
 
         // If accountID is not found in the session, handle the error
         if (accountID == null) {
@@ -108,8 +105,13 @@ public class EmployeeProfileServlet extends HttpServlet {
         String warehouseName = (String) session.getAttribute("warehouseName");
 
 
+
         // Get other employee details from request
-        int employeeID = Integer.parseInt(request.getParameter("employeeID"));
+        String employeeID = request.getParameter("employeeID");
+
+        System.out.println("Employee ID: " + employeeID);
+
+
         String employeeName = request.getParameter("employeeName");
         String phone = request.getParameter("phone");
         String address = request.getParameter("address");
@@ -120,12 +122,6 @@ public class EmployeeProfileServlet extends HttpServlet {
         int warehouseID = Integer.parseInt(request.getParameter("warehouseID"));
         String image = request.getParameter("image");
 
-        // Check if accountID is valid
-        if (accountID == -1) {
-            System.out.println("Lỗi: Không tìm thấy AccountID cho EmployeeID " + employeeID);
-            response.getWriter().write("Lỗi: Không tìm thấy AccountID.");
-            return;
-        }
 
         // Check for input validation errors
         String employeeNameError = null;
@@ -156,7 +152,7 @@ public class EmployeeProfileServlet extends HttpServlet {
 
             // Prepare employee data for display in JSP
             Employee employee = new Employee();
-            //employee.setEmployeeID(employeeID);
+            employee.setEmployeeID(employeeID);
             employee.setEmployeeName(employeeName);
             employee.setPhone(phone);
             employee.setAddress(address);
@@ -186,7 +182,7 @@ public class EmployeeProfileServlet extends HttpServlet {
 
         // Create an Employee object with the validated data
         Employee employee = new Employee();
-        //employee.setEmployeeID(employeeID);
+        employee.setEmployeeID(employeeID);
         employee.setEmployeeName(employeeName);
         employee.setPhone(phone);
         employee.setAddress(address);
@@ -197,6 +193,9 @@ public class EmployeeProfileServlet extends HttpServlet {
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
         //employee.setAccountID(accountID);
+
+        System.out.println("Updating employee: " + employee.toString());
+
 
         // Update the employee in the database
         boolean isUpdated = EmployeeDAO.updateEmployee(employee);
