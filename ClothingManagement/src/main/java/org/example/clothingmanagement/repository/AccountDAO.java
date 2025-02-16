@@ -263,14 +263,14 @@ public class AccountDAO {
         return account;
     }
 
-    public boolean updatePassword(int accountId, String newPassword) throws SQLException {
+    public boolean updatePassword(String accountId, String newPassword) throws SQLException {
         String sql = "UPDATE account SET password = ? WHERE accountId = ?";
 
         try (Connection connection = DBContext.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
             stmt.setString(1, newPassword);
-            stmt.setInt(2, accountId);
+            stmt.setString(2, accountId);
 
             int rowsUpdated = stmt.executeUpdate();
             return rowsUpdated > 0;
@@ -280,14 +280,14 @@ public class AccountDAO {
         return false;
     }
 
-    public String getPasswordByAccountId(int accountId) {
+    public String getPasswordByAccountId(String accountId) {
         String password = null; // To store the fetched password
         String sql = "SELECT password FROM account WHERE accountId = ?"; // SQL query to get the password
 
         try (Connection connection = DBContext.getConnection(); // Get database connection
              PreparedStatement stmt = connection.prepareStatement(sql)) {
 
-            stmt.setInt(1, accountId); // Set the accountId in the query
+            stmt.setString(1, accountId); // Set the accountId in the query
 
             try (ResultSet rs = stmt.executeQuery()) {
                 if (rs.next()) {

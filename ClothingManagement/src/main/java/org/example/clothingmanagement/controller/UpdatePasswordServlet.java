@@ -19,7 +19,7 @@ public class UpdatePasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
-        Integer accountID = (Integer) session.getAttribute("account_id");
+        String accountID = (String) session.getAttribute("account_id");
 
         if (accountID == null) {
             request.setAttribute("message", "Lỗi: Không tìm thấy AccountID trong phiên làm việc.");
