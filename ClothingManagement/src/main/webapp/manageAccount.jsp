@@ -143,6 +143,11 @@
                                                     <p class="sherah-table__product-desc">${account.id}</p>
                                                 </div>
                                             </td>
+                                            <td class="sherah-table__column-3 sherah-table__data-3">
+                                                <div class="sherah-table__product-content">
+                                                        ${account.employeeId}
+                                                </div>
+                                            </td>
                                             <td class="sherah-table__column-2 sherah-table__data-2">
                                                 <div class="sherah-table__product-content">
                                                     <p class="sherah-table__product-desc">${account.email}</p>
@@ -156,11 +161,6 @@
                                             <td class="sherah-table__column-3 sherah-table__data-3">
                                                 <div class="sherah-table__product-content">
                                                         ${account.roleName}
-                                                </div>
-                                            </td>
-                                            <td class="sherah-table__column-3 sherah-table__data-3">
-                                                <div class="sherah-table__product-content">
-                                                        ${account.employeeId}
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-4 sherah-table__data-7" style="text-align: center;">
