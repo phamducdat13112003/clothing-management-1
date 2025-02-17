@@ -98,6 +98,9 @@
                     <ul class="sherah-breadcrumb__list">
                       <li><a href="manageemployee">Home</a></li>
                     </ul>
+                    <c:if test="${not empty message}">
+                      <span class="error-message">${message}</span>
+                    </c:if>
                   </div>
                 </div>
               </div>
@@ -197,11 +200,21 @@
                         <h4 class="form-title m-0">Organization</h4>
                         <div class="col-lg-6 col-md-6 col-12">
                           <div class="form-group">
+                            <label class="sherah-wc__form-label">Role: <span class="required">*</span></label>
+                            <select class="form-group__input" name="role" aria-label="Default select example">
+                              <c:forEach items="${list}" var="role">
+                                <option value="${role.id}">${role.roleName}</option>
+                              </c:forEach>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-12">
+                          <div class="form-group">
                             <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
                               <select class="form-group__input" name="warehouse" aria-label="Default select example">
                                   <c:forEach items="${listWarehouse}" var="ware">
-                                      <option value="${ware.id}"
-                                              <c:if test="${ware.id == employee.warehouseID}">selected="selected"</c:if>>
+                                      <option value="${ware.warehouseId}"
+                                              <c:if test="${ware.warehouseId == employee.warehouseID}">selected="selected"</c:if>>
                                               ${ware.warehouseName}
                                       </option>
                                   </c:forEach>
@@ -210,7 +223,6 @@
                         </div>
                       </div>
                       <!-- End Organization -->
-
                       <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end" >
                         <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
                         <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
@@ -241,7 +253,6 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-
 <script type="text/javascript">
     function chooseFile(fileInput) {
         if (fileInput.files && fileInput.files[0]) {
@@ -264,124 +275,6 @@
         }
     }
 </script>
-
-<script>
-  jQuery(document).ready(function($) {
-    $('[data-countdown]').each(function() {
-      var $this = $(this), finalDate = $(this).data('countdown');
-      $this.countdown(finalDate, function(event) {
-        $this.html(event.strftime(' %H : %M : %S'));
-      });
-    });
-  });
-</script>
-<script>
-  const ctx_side_two = document.getElementById('myChart_Side_One').getContext('2d');
-  const myChart_Side_One = new Chart(ctx_side_two, {
-    type: 'doughnut',
-
-    data: {
-      labels: [
-        'Total Sold',
-        'Total Cancel',
-        'Total Cancel',
-        'Total Planding'
-      ],
-      datasets: [{
-        label: 'My First Dataset',
-        data: [16, 16, 16, 30],
-        backgroundColor: [
-          '#5356FB',
-          '#F539F8',
-          '#FFC210',
-          '#E3E4FE'
-        ],
-        hoverOffset: 2,
-        borderWidth: 0,
-      }]
-    },
-
-    options: {
-
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-          display: false,
-        },
-        title: {
-          display: false,
-          text: 'Sell History'
-        }
-      }
-    }
-
-  });
-
-  const ctx_side_three = document.getElementById('myChart_Side_Two').getContext('2d');
-  const myChart_Side_Two = new Chart(ctx_side_three, {
-    type: 'line',
-
-    data: {
-      labels: ['12:00 AM', '04:00 AM', '08:00 AM'],
-      datasets: [{
-        label: 'Visitor',
-        data: [40, 90, 10],
-        backgroundColor: '#D8D8FE',
-        borderColor:'#5356FB',
-        pointRadius: 3,
-        pointBackgroundColor: '#5356FB',
-        pointBorderColor: '#5356FB',
-        borderWidth:4,
-        tension: 0.9,
-        fill:true,
-        fillColor:'#fff',
-
-      }]
-    },
-
-    options: {
-      responsive: true,
-      scales: {
-        x:{
-          grid:{
-            display:false,
-            drawBorder: false,
-          },
-
-        },
-        y:{
-          grid:{
-            display:false,
-            drawBorder: false,
-          },
-          ticks:{
-            display:false
-          }
-        },
-      },
-
-      plugins: {
-        legend: {
-          position: 'top',
-          display: false,
-        },
-        title: {
-          display: false,
-          text: 'Visitor: 2k'
-        }
-      }
-    }
-  });
-</script>
-
-<c:if test="${not empty message}">
-    <script>
-        window.onload = function () {
-            alert("${message}");
-        };
-    </script>
-</c:if>
 </body>
 </html>
 

@@ -3,10 +3,14 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
+import org.example.clothingmanagement.entity.Email;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
+import org.example.clothingmanagement.service.RoleService;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
@@ -37,76 +41,85 @@ public class EditAccountServlet extends HttpServlet {
         String accountID = request.getParameter("accountId");
         Account account = new Account();
         AccountService accountService = new AccountService();
-        List<Role> roles = null;
+        List<Role> list = null;
+        RoleService roleService = new RoleService();
         try {
-            account = accountService.getAccountById(Integer.parseInt(accountID));
-            roles= accountService.getAllRoles();
+            list=roleService.getAllRoles();
+            account = accountService.getAccountById(accountID);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        request.setAttribute("roles", list);
         request.setAttribute("account", account);
-        request.setAttribute("roles", roles);
         request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Role> roles = null;
         AccountService accountService = new AccountService();
+        List<Role> list= null;
+        RoleService roleService = new RoleService();
+        Account account = new Account();
         String accountID = request.getParameter("accountID");
         String email = request.getParameter("email").trim();
         String password = request.getParameter("password").trim();
-        String confirmPassword = request.getParameter("confirmPassword").trim();
-        String roleID = request.getParameter("roleID");
+        String roleId = request.getParameter("roleId");
+        String status = request.getParameter("status");
 
+        int page = 1;
+        int pageSize = 5; // Số dòng trên mỗi trang
+        try {
+            list = roleService.getAllRoles();
+            account = accountService.getAccountById(accountID);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
         if (!isValidPassword(password)) {
             // Thông báo lỗi nếu mật khẩu không hợp lệ
-            request.setAttribute("message", "Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ in hoa, số và ký tự đặc biệt.");
-            try {
-                roles= accountService.getAllRoles();
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-            request.setAttribute("roles", roles);
+            request.setAttribute("roles", list);
+            request.setAttribute("account", account);
+            request.setAttribute("errorPassword", "Password must be at least 8 characters, including uppercase letters, numbers, and special characters.");
             request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
             return;
         }
-        System.out.println(confirmPassword);
-        Account account;
-        if (confirmPassword.isEmpty()) {
-            // Nếu confirmPassword trống, không thay đổi mật khẩu
-            try {
-                account = new Account(Integer.parseInt(accountID), email, accountService.getAccountById(Integer.parseInt(accountID)).getPassword(), Integer.parseInt(roleID));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            // Nếu confirmPassword không trống, kiểm tra xem mật khẩu và confirmPassword có trùng khớp không
-            if (!password.equals(confirmPassword)) {
-                request.setAttribute("message", "Passwords do not match");
-                request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
-                return;
-            }
-            // Nếu mật khẩu và confirmPassword khớp, cập nhật mật khẩu mới
-            account = new Account(Integer.parseInt(accountID), email, password, Integer.parseInt(roleID));
-        }
-
+        Account existingAccount;
         try {
-            if (accountService.isAccountExist(email, Integer.parseInt(accountID))){
-                request.setAttribute("message", "Email is existed!");
-                List<Account> list = accountService.getAllAccounts();
-                request.setAttribute("list", list);
-            } else {
-                accountService.updateAccount(account);
-                List<Account> list = accountService.getAllAccounts();
-                request.setAttribute("list", list);
-                request.setAttribute("message", "Update successful");
+             existingAccount = accountService.getAccountById(accountID);
+            if (existingAccount == null) {
+                request.setAttribute("roles", list);
+                request.setAttribute("account", account);
+                request.setAttribute("message", "Account not found");
+                request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
+                return;
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
+        // Mã hóa mật khẩu
+        String encryptedPassword = MD5.getMd5(password);
 
+        Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId), status);
+        List<Account> listAccount= null;
+        int totalAccounts = 0;
+        try {
+            accountService.updateAccount(updatedAccount);
+            listAccount = accountService.getAccountsByPage(page, pageSize);
+            totalAccounts = accountService.getTotalAccounts();
+            Email emailSender = new Email();
+            emailSender.sendPasswordChangedEmail(email, password);
+        } catch (SQLException e) {
+            request.setAttribute("message", "Can't update account");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
+
+        int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);
+
+        request.setAttribute("list", listAccount);
+        request.setAttribute("messageSuccess", "Update successful");
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 
     private boolean isValidPassword(String password) {

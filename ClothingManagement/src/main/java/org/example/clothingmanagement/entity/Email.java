@@ -108,4 +108,72 @@ public class Email {
                 + "</body>\n"
                 + "</html>";
     }
+
+    public  void sendEmail(String toEmail, String subject, String password, String employeeId) throws MessagingException {
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com"); // SMTP Server của Gmail
+        properties.put("mail.smtp.port", "587"); // Port cho TLS
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        // Tạo session gửi email
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(eFrom, ePass);
+            }
+        });
+
+        // Soạn nội dung email
+        String content = "Dear Employee,\n\n" +
+                "Your account has been successfully created.\n" +
+                "Employee ID: " + employeeId + "\n" +
+                "Email: " + toEmail + "\n" +
+                "Password: " + password + "\n\n" +
+                "Please log in to your account.\n\n" +
+                "Best regards,\nSherah Warehouse System";
+
+        // Tạo đối tượng email
+        Message msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress(eFrom));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+        msg.setSubject(subject);
+        msg.setText(content);
+
+        // Gửi email
+        Transport.send(msg);
+    }
+
+    public void sendPasswordChangedEmail(String toEmail, String newPassword) throws MessagingException {
+        // Cấu hình gửi email
+        Properties properties = new Properties();
+        properties.put("mail.smtp.host", "smtp.gmail.com"); // SMTP Server của Gmail
+        properties.put("mail.smtp.port", "587"); // Port cho TLS
+        properties.put("mail.smtp.auth", "true");
+        properties.put("mail.smtp.starttls.enable", "true");
+
+        Session session = Session.getInstance(properties, new Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(eFrom, ePass);
+            }
+        });
+
+        // Tạo nội dung email
+        String subject = "Your Password has been Updated";
+        String message = "Dear Staff,\n\n" +
+                "Your password has been successfully updated. Below are your new login details:\n\n" +
+                "Email: " + toEmail + "\n" +
+                "New Password: " + newPassword + "\n\n" +
+                "For your security, please change your password again after logging in.\n\n" +
+                "Best regards,\nSherah Warehouse System";
+
+        // Tạo đối tượng email
+        Message msg = new MimeMessage(session);
+        msg.setFrom(new InternetAddress(eFrom));
+        msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+        msg.setSubject(subject);
+        msg.setText(message);
+
+        // Gửi email
+        Transport.send(msg);
+    }
 }

@@ -50,5 +50,8 @@ public class CategoryService {
     public Integer getEmployeeIDByName(String categoryName) throws SQLException {
         return CategoryDAO.getEmployeeIDByName( categoryName);
     }
+    public List<String> validateCategoryName(String name) throws SQLException {
+        return categoryDAO.validateCategoryName(name);
+    }
 
 }

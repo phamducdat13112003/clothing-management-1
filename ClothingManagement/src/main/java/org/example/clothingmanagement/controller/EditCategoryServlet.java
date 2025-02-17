@@ -47,24 +47,14 @@ public class EditCategoryServlet extends HttpServlet {
 
         Category category = new Category(id, name, new Date(), employeeId);
 
-        List<String> errors = new ArrayList<>();
-
-        // Kiểm tra độ dài không quá 20 ký tự
-        if (name.length() > 15) {
-            errors.add("Tên danh mục không được dài quá 15 ký tự.");
-        }
-
-        // Kiểm tra không chứa ký tự đặc biệt ngoại trừ "-"
-        if (!name.matches("^[A-Z][a-zA-Z\\s-]*$")) {
-            errors.add("Tên danh mục chỉ được chứa chữ cái, khoảng trắng, dấu '-' và chữ cái đầu phải viết hoa.");
+        List<String> errors = null;
+        try {
+            errors = dao.validateCategoryName(name);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         try {
-            // Kiểm tra xem tên danh mục đã tồn tại chưa
-            if (dao.checkCategoryNameExist(name)) {
-                errors.add("Tên danh mục này đã tồn tại.");
-            }
-
             if (!errors.isEmpty()) {
                 // Nếu có lỗi, hiển thị tất cả bằng alert
                 response.setContentType("text/html;charset=UTF-8");

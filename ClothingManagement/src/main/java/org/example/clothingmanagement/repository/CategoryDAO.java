@@ -4,6 +4,7 @@ package org.example.clothingmanagement.repository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.example.clothingmanagement.entity.*;
 
@@ -41,6 +42,8 @@ public class CategoryDAO {
             pstmt.setInt(3, category.getCreatedBy());
 
             pstmt.executeUpdate();
+        }catch(Exception e){
+
         }
     }
 
@@ -205,6 +208,52 @@ public class CategoryDAO {
     }
 
 
+    public List<String> validateCategoryName(String name) throws SQLException {
+        List<String> errors = new ArrayList<>();
+
+        if (name == null || name.trim().isEmpty()) {
+            errors.add("Tên danh mục không được để trống.");
+            return errors;
+        }
+
+        // Chuẩn hóa khoảng trắng: loại bỏ khoảng trắng dư thừa
+        name = name.replaceAll("\\s+", " ").trim();
+
+        // Tự động viết hoa chữ cái đầu
+        if (!name.isEmpty()) {
+            name = Character.toUpperCase(name.charAt(0)) + name.substring(1).replace(" ", "").replace("-", "");
+        }
+
+        // Kiểm tra độ dài không quá 20 ký tự (không tính khoảng trắng và dấu '-')
+        String nameWithoutSpaces = name.replace(" ", "").replace("-", "");
+        if (nameWithoutSpaces.length() > 20) {
+            errors.add("Tên danh mục không được dài quá 20 ký tự (không tính khoảng trắng và dấu '-').");
+        }
+
+        // Kiểm tra chỉ chứa chữ cái, số, khoảng trắng và dấu '-'
+        if (!name.matches("^[a-zA-Z0-9À-ỹ\s-]+$")) {
+            errors.add("Tên danh mục chỉ được chứa chữ cái, số, khoảng trắng và dấu '-'.");
+        }
+
+        if (checkCategoryNameExist(name)) {
+            errors.add("Tên danh mục này đã tồn tại.");
+        }
+
+        return errors;
+    }
+    public static void main(String[] args) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter thẻ name: ");
+        String testName = scanner.nextLine();
+        CategoryDAO dao = new CategoryDAO();
+        List<String> errors =dao.validateCategoryName(testName);
+
+        if (errors.isEmpty()) {
+            System.out.println("Tên danh mục hợp lệ: " + testName);
+        } else {
+            errors.forEach(System.out::println);
+        }
+    }
 
 
 

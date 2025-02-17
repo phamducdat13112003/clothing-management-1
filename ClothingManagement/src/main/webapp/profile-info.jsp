@@ -28,6 +28,7 @@
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/style.css">
 
+
 </head>
 <body id="sherah-dark-light">
 
@@ -83,7 +84,7 @@
 												<div class="tab-content" id="nav-tabContent">
 													<!--  Features Single Tab -->
 													<div class="tab-pane fade show active" id="id1" role="tabpanel">
-														<form action="employee?action=update" method="post" onsubmit="return validateForm();">
+														<form action="employee?action=update" method="post" enctype="multipart/form-data" onsubmit="return validateForm();">
 															<div class="row">
 																<div class="col-12">
 																	<div class="sherah-ptabs__separate">
@@ -92,7 +93,8 @@
 																				<!--Profile Cover Info -->
 																				<div class="sherah-profile-cover sherah-offset-bg sherah-dflex">
 																					<div class="sherah-profile-cover__img">
-																						<img src="${employee.image}" alt="#">
+																						<img src="${pageContext.request.contextPath}${employee.image}" alt="Employee Image">
+																						<input type="hidden" name="image" id="image" value="${employee.image}">
 																					</div>
 																					<div class="sherah-profile-cover__content">
 																						<h3 class="sherah-profile-cover__title">${employee.employeeName}</h3>
@@ -107,10 +109,9 @@
 																					<input type="hidden" name="action" value="update">
 
 																					<input type="hidden" name="employeeID" value="${employee.employeeID}">
-																					<input type="hidden" name="image" id="image" value="${employee.image}">
 
 																					<label for="employeeName" class="sherah-profile-info__title">Full Name:</label>
-																					<input class="sherah-profile-info__text" type="text" name="employeeName" id="employeeName" value="${employee.employeeName}" required>
+																					<input class="sherah-profile-info__text" type="text" name="employeeName" id="employeeName" value="${employee.employeeName}" readonly>
 																					<c:if test="${not empty employeeNameError}">
 																						<span class="error-message" style="color: red;">${employeeNameError}</span>
 																					</c:if>
@@ -120,14 +121,14 @@
 																					<input class="sherah-profile-info__text" type="email" name="email" id="email" value="${employee.email}" disabled title="Contact admin if you want to change this field" readonly><br>
 																					<input type="hidden" name="email" value="${employee.email}">
 																					<label for="phone" class="sherah-profile-info__title">Phone:</label>
-																					<input class="sherah-profile-info__text" type="text" name="phone" id="phone" value="${employee.phone}" required>
+																					<input class="sherah-profile-info__text" type="text" name="phone" id="phone" value="${employee.phone}" readonly>
 																					<c:if test="${not empty phoneError}">
 																						<span class="error-message" style="color: red;">${phoneError}</span>
 																					</c:if>
 																					<br>
 
 																					<label for="address" class="sherah-profile-info__title">Address:</label>
-																					<input class="sherah-profile-info__text" type="text" name="address" id="address" value="${employee.address}" required>
+																					<input class="sherah-profile-info__text" type="text" name="address" id="address" value="${employee.address}" readonly>
 																					<c:if test="${not empty addressError}">
 																						<span class="error-message" style="color: red;">${addressError}</span>
 																					</c:if>
@@ -139,7 +140,11 @@
 																					<input type="hidden" name="gender" value="${employee.gender}">
 
 																					<label for="dateOfBirth" class="sherah-profile-info__title">Date of Birth:</label>
-																					<input class="sherah-profile-info__text" type="date" name="dateOfBirth" id="dateOfBirth" value="${employee.dateOfBirth}" required><br>
+																					<input class="sherah-profile-info__text" type="date" name="dateOfBirth" id="dateOfBirth" value="${employee.dateOfBirth}" readonly><br>
+																					<c:if test="${not empty dobError}">
+																						<span class="error-message" style="color: red;">${dobError}</span>
+																					</c:if>
+																					<br>
 
 																					<label for="status" class="sherah-profile-info__title">Status:</label>
 																					<input class="sherah-profile-info__text" type="text" name="status" id="status" value="${employee.status}" readonly><br>
@@ -148,6 +153,7 @@
 																					<input  type="hidden" name="warehouseID" id="warehouseID" value="${employee.warehouseID}" readonly><br>
 
 																					<input class="sherah-profile-info__text" type="text" name="warehouse" id="warehouse" value="${warehouseName}" readonly><br>
+																					<input type="hidden" name="roleID" id="roleID" value="${employee.roleId}" readonly><br>
 
 																					<button type="submit">Save</button>
 																					<c:if test="${not empty sessionScope.successMessage}">
@@ -179,7 +185,7 @@
 																		<div class="form-group">
 																			<label class="sherah-wc__form-label">Old Password *</label>
 																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="oldPassword" type="text" name="oldPassword" required="required">
+																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="oldPassword" type="password" name="oldPassword" required="required">
 																				<c:if test="${not empty incorrectOldPassError}">
 																					<span class="error-message" style="color: red;">${incorrectOldPassError}</span>
 																				</c:if>
@@ -189,17 +195,24 @@
 																		<div class="form-group">
 																			<label class="sherah-wc__form-label">New Password *</label>
 																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="newPassword" type="text" name="newPassword" required="required">
+																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="newPassword" type="password" name="newPassword" required="required">
 																			</div>
 																		</div>
 
 																		<div class="form-group">
 																			<label class="sherah-wc__form-label">Re-enter Password *</label>
 																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="text" name="reenterPassword" required="required">
+																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="password" name="reenterPassword" required="required">
 																				<c:if test="${not empty mismatchError}">
 																					<span class="error-message" style="color: red;">${mismatchError}</span>
 																				</c:if>
+																				<c:if test="${not empty lengthError}">
+																					<span class="error-message" style="color: red;">${lengthError}</span>
+																				</c:if>
+																				<c:if test="${not empty validError}">
+																					<span class="error-message" style="color: red;">${validError}</span>
+																				</c:if>
+
 																			</div>
 																		</div>
 
@@ -292,6 +305,7 @@
 
 
 </script>
+
 
 </body>
 </html>

@@ -10,11 +10,23 @@ import java.util.List;
 public class AccountService {
     private final AccountDAO accountDAO = new AccountDAO();
 
-    public List<Account> getAllAccounts() throws SQLException {
-        return accountDAO.getAllAccount();
+    public List<Account> getAccountsByPage(int page, int pageSize) throws SQLException {
+        return accountDAO.getAccountsByPage(page, pageSize);
     }
-    public Account getAccountById(int id) throws SQLException {
-        return accountDAO.getAccountById(id);
+
+    public int getTotalAccounts() throws SQLException {
+        return accountDAO.getTotalAccounts();
+    }
+
+    public int getTotalAccounts(String keyword) throws SQLException {
+        return accountDAO.getTotalAccounts(keyword);
+    }
+
+    public List<Account> searchAccount(String keyword, int page, int pageSize) throws SQLException {
+        return accountDAO.searchAccount(keyword, page, pageSize);
+    }
+    public Account getAccountById(String accountId) throws SQLException {
+        return accountDAO.getAccountById(accountId);
     }
     public void createAccount(Account account) throws SQLException {
         accountDAO.createAccount(account);
@@ -22,24 +34,25 @@ public class AccountService {
     public void updateAccount(Account account) throws SQLException {
          accountDAO.updateAccount(account);
     }
-    public boolean deleteAccount(int id) throws SQLException {
-        return accountDAO.deleteAccount(id);
+    public boolean deleteAccount(String employeeId) throws SQLException {
+        return accountDAO.deleteAccount(employeeId);
+    }
+
+    public boolean deleteAccountWhenDeleteEmployee (String employeeId) throws SQLException {
+        return accountDAO.deleteAccountWhenDeleteEmployee(employeeId);
     }
     public List<Role> getAllRoles() throws SQLException{
         return accountDAO.getAllRoles();
     }
 
-    public boolean isAccountExist(String email, int accountId) throws SQLException{
+    public boolean isAccountExist(String email, String accountId) throws SQLException{
         return accountDAO.isAccountExist(email, accountId);
-    }
-
-    public List<Account> getAllAccountAvaiable() throws SQLException{
-        return accountDAO.getAllAccountAvaiable();
     }
 
     public boolean isAccountExists(int accountId) throws SQLException {
         return AccountDAO.isAccountExists(accountId);
     }
+
     public Account findAccount(String email, String password) throws SQLException{
         return accountDAO.findAccount(email, password);
     }
