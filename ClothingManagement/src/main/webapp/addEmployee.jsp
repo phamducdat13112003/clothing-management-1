@@ -129,7 +129,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Employee Image <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload" required>
                                                                 <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
                                                                 <img src="${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
                                                             </div>
@@ -208,7 +208,7 @@
                                                         <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
                                                         <select class="form-group__input" name="warehouse" aria-label="Default select example" required>
                                                             <c:forEach items="${listWarehouse}" var="ware">
-                                                                <option value="${ware.id}">${ware.warehouseName}</option>
+                                                                <option value="${ware.warehouseId}">${ware.warehouseName}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>

@@ -3,11 +3,9 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.entity.Warehouse;
-import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
 import org.example.clothingmanagement.repository.WarehouseDAO;
 import org.example.clothingmanagement.service.RoleService;
@@ -233,7 +231,7 @@ public class AddEmployeeServlet extends HttpServlet {
     }
 
     private boolean isValidName(String name) {
-        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩúùụủũýỳỵỷỹĐđ]+$");
+        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặèéẹẻẽêếềểễệìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựýỳỵỷỹđĐ]+$");
     }
 
 
