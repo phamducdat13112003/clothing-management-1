@@ -111,7 +111,7 @@ public class EmployeeDAO {
     }
 
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, RoleID = ?, Image = ?, RoleName = ?, WarehouseName = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, RoleID = ?, Image = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -126,9 +126,7 @@ public class EmployeeDAO {
             pt.setInt(8, employee.getWarehouseID());
             pt.setInt(9, employee.getRoleId());
             pt.setString(10, employee.getImage());
-            pt.setString(11, employee.getRoleName());
-            pt.setString(12, employee.getWarehouseName());
-            pt.setString(13, employee.getEmployeeID());
+            pt.setString(11, employee.getEmployeeID());
 
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -136,6 +134,7 @@ public class EmployeeDAO {
         }
         return false;
     }
+
 
 
     public static boolean updateAccountEmail(String employeeId, String newEmail) {
@@ -486,6 +485,26 @@ public class EmployeeDAO {
         }
         return employee;
     }
+
+    public static String getEmployeeIdByAccountId(String accountId) {
+        String sql = "SELECT EmployeeID FROM Account WHERE AccountID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+
+            pt.setString(1, accountId); // Set AccountID as a String
+
+            try (ResultSet rs = pt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("EmployeeID"); // Return EmployeeID
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Return null if no matching EmployeeID is found
+    }
+
 
     public static void main(String[] args) {
          EmployeeDAO employeeDAO = new EmployeeDAO();

@@ -10,6 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.repository.AccountDAO;
 import org.example.clothingmanagement.repository.EmployeeDAO;
+import org.example.clothingmanagement.Encryption.MD5;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -30,8 +31,8 @@ public class UpdatePasswordServlet extends HttpServlet {
         // Get employee data using account_id
         Employee employee = EmployeeDAO.getEmployeeByAccountId(accountID); // Assuming this method exists
 
-        // Update password
-        int employeeID = Integer.parseInt(request.getParameter("employeeID"));
+        // Get input data
+        String employeeID = request.getParameter("employeeID");
         String oldPassword = request.getParameter("oldPassword");
         String newPassword = request.getParameter("newPassword");
         String reenterPassword = request.getParameter("reenterPassword");
@@ -44,7 +45,7 @@ public class UpdatePasswordServlet extends HttpServlet {
             return;
         }
 
-        // Validate passwords
+        // Validate passwords match
         if (!newPassword.equals(reenterPassword)) {
             request.setAttribute("mismatchError", "The passwords do not match.");
             request.setAttribute("employee", employee); // Send employee data back to JSP
@@ -52,23 +53,27 @@ public class UpdatePasswordServlet extends HttpServlet {
             return;
         }
 
-        // Check if the old password is correct
+        // Check if the old password is correct (compare MD5 hashes)
         AccountDAO accountDAO = new AccountDAO();
-        String currentPassword = accountDAO.getPasswordByAccountId(accountID);
-        if (!oldPassword.equals(currentPassword)) {
+        String currentPasswordHash = accountDAO.getPasswordByAccountId(accountID); // Get hashed password from DB
+        String oldPasswordHash = MD5.getMd5(oldPassword); // Hash the entered old password
+
+        if (!oldPasswordHash.equals(currentPasswordHash)) {
             request.setAttribute("incorrectOldPassError", "Old password is incorrect.");
             request.setAttribute("employee", employee); // Send employee data back to JSP
             request.getRequestDispatcher("profile-info.jsp").forward(request, response);
             return;
         }
 
-        // Update password
+        // Update password (update with hashed new password)
+        String newPasswordHash = MD5.getMd5(newPassword); // Hash the new password
         boolean isUpdated = false;
         try {
-            isUpdated = accountDAO.updatePassword(accountID, newPassword);
+            isUpdated = accountDAO.updatePassword(accountID, newPasswordHash);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
         if (isUpdated) {
             request.setAttribute("message", "Password updated successfully.");
         } else {
@@ -79,5 +84,4 @@ public class UpdatePasswordServlet extends HttpServlet {
         request.setAttribute("employee", employee);
         request.getRequestDispatcher("profile-info.jsp").forward(request, response);
     }
-
 }

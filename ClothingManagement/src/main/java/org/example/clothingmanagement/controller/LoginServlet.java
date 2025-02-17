@@ -4,6 +4,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
+import org.example.clothingmanagement.repository.EmployeeDAO;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.AccountService;
 
@@ -25,6 +26,7 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String hashedPassword = MD5.getMd5(password); // Mã hóa mật khẩu trước khi kiểm tra
         String remember = request.getParameter("remember");
+
         Account account = null;
         try {
             account = accountDAO.findAccount(email, hashedPassword); // Kiểm tra với mật khẩu đã mã hóa
@@ -45,6 +47,12 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("account", account);
             session.setAttribute("role", account.getRoleId());
             session.setAttribute("account_id", account.getId());
+            String employeeID = EmployeeDAO.getEmployeeIdByAccountId(account.getId());
+            session.setAttribute("employeeID", employeeID);
+
+            // Debugging: Account info in session
+            System.out.println("Account ID set in session: " + account.getId());
+            System.out.println("Employee ID set in session: " + employeeID);
             session.setMaxInactiveInterval(60 * 60 * 24);
             if (remember != null && remember.equalsIgnoreCase("1")) {
                 cookie_email.setMaxAge(60 * 60);

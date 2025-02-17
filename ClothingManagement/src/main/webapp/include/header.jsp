@@ -273,7 +273,7 @@
                                         <!-- Header Author -->
                                         <div class="sherah-header__author sherah-flex__center--top">
                                             <div class="sherah-header__author-img">
-                                                <img src="img/profile-pic.png" alt="#">
+                                                <img src="../img/vendor-1.png" alt="#">
                                             </div>
                                             <div class="sherah-header__author--info sherah-dflex sherah-dflex__base">
                                                 <h4 class="sherah-header__author--title  sherah-dflex sherah-dflex__column">${sessionScope.account.email} <span class="sherah-header__author--text">USA</span></h4>
@@ -302,7 +302,7 @@
                                                                 </svg>
 
                                                             </div>
-                                                            <h4 class="sherah-dropdown-card-name"><a href="${pageContext.request.contextPath}/employee?action=view&id=${sessionScope.account_id}">My Profile</a></h4>
+                                                            <h4 class="sherah-dropdown-card-name"><a href="${pageContext.request.contextPath}/employee?action=view&employeeID=${sessionScope.employeeID}">My Profile</a></h4>
                                                         </div>
                                                     </li>
                                                     <li>

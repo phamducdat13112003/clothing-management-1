@@ -1,6 +1,7 @@
 package org.example.clothingmanagement.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import org.example.clothingmanagement.validator.ValidateEmployee;
@@ -15,6 +16,7 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
 
+@MultipartConfig
 @WebServlet(name = "ViewProfileServlet", value = "/employee")
 public class EmployeeProfileServlet extends HttpServlet {
 
@@ -66,18 +68,36 @@ public class EmployeeProfileServlet extends HttpServlet {
 
 
         if (employee != null) {
-            WarehouseDAO wareHouseDAO = new WarehouseDAO();
+            String roleName = null;
             String warehouseName = null;
             try {
                 warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
+                roleName = RoleDAO.getRoleNameById(employee.getRoleId());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
+
+            System.out.println("---- Employee Information ----");
+            System.out.println("Employee ID: " + employee.getEmployeeID());
+            System.out.println("Name: " + employee.getEmployeeName());
+            System.out.println("Email: " + employee.getEmail());
+            System.out.println("Phone: " + employee.getPhone());
+            System.out.println("Address: " + employee.getAddress());
+            System.out.println("Gender: " + employee.getGender());
+            System.out.println("Date of Birth: " + employee.getDateOfBirth());
+            System.out.println("Status: " + employee.getStatus());
+            System.out.println("Role ID: " + employee.getRoleId());
+            System.out.println("Warehouse ID: " + employee.getWarehouseID());
+            System.out.println("Image URL: " + employee.getImage());
+            System.out.println("Role Name: " + roleName);
+            System.out.println("Warehouse Name: " + warehouseName);
+            System.out.println("------------------------------");
 
 
             //Luu rolename vao session
             request.getSession().setAttribute("employee", employee);
             request.getSession().setAttribute("warehouseName", warehouseName);
+            request.getSession().setAttribute("roleName", roleName);
 
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
@@ -89,28 +109,22 @@ public class EmployeeProfileServlet extends HttpServlet {
 
 
     private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        //Get accountID from session
         HttpSession session = request.getSession();
-        String accountID = String.valueOf(session.getAttribute("account_id"));
+        String accountID = (String) session.getAttribute("account_id");
 
-        // If accountID is not found in the session, handle the error
-        if (accountID == null) {
-            // If accountID is not in session, show error and return
+        // If accountID is null, return error
+        if (accountID == null || accountID.equals("null")) {
             response.getWriter().write("Lỗi: Không tìm thấy AccountID trong phiên làm việc.");
             return;
         }
 
-        // Retrieve the roleName from the session
+        // Retrieve roleName and warehouseName from session
         String roleName = (String) session.getAttribute("roleName");
         String warehouseName = (String) session.getAttribute("warehouseName");
 
-
-
         // Get other employee details from request
         String employeeID = request.getParameter("employeeID");
-
         System.out.println("Employee ID: " + employeeID);
-
 
         String employeeName = request.getParameter("employeeName");
         String phone = request.getParameter("phone");
@@ -119,11 +133,42 @@ public class EmployeeProfileServlet extends HttpServlet {
         String gender = request.getParameter("gender");
         String dateOfBirth = request.getParameter("dateOfBirth");
         String status = request.getParameter("status");
-        int warehouseID = Integer.parseInt(request.getParameter("warehouseID"));
         String image = request.getParameter("image");
 
 
-        // Check for input validation errors
+
+
+        int warehouseID = -1; // Default invalid value
+        String warehouseIdStr = request.getParameter("warehouseID");
+        if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
+            try {
+                warehouseID = Integer.parseInt(warehouseIdStr);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid warehouseID: " + warehouseIdStr);
+                response.getWriter().write("Error: Invalid warehouseID.");
+                return;
+            }
+        }
+
+        int roleID = -1; // Default invalid value
+        String roleIdStr = request.getParameter("roleID");
+        if (roleIdStr != null && !roleIdStr.trim().isEmpty()) {
+            try {
+                roleID = Integer.parseInt(roleIdStr);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid roleID: " + roleIdStr);
+                response.getWriter().write("Error: Invalid roleID.");
+                return;
+            }
+        }
+
+        // Validate roleID and warehouseID before proceeding
+        if (roleID == -1 || warehouseID == -1) {
+            response.getWriter().write("Error: RoleID or WarehouseID is missing or invalid.");
+            return;
+        }
+
+
         String employeeNameError = null;
         String phoneError = null;
         String addressError = null;
@@ -138,19 +183,18 @@ public class EmployeeProfileServlet extends HttpServlet {
         if (!ValidateEmployee.isValidAddress(address)) {
             addressError = "Địa chỉ không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt ngoài , . - /.";
         }
-
-        if(!ValidateEmployee.isAdult(dateOfBirth)){
+        if (!ValidateEmployee.isAdult(dateOfBirth)) {
             dobError = "Người dùng phải trên 18 tuổi.";
         }
 
-        // If there are validation errors, forward data back to JSP
+        // If validation errors, send back to JSP
         if (employeeNameError != null || phoneError != null || addressError != null || dobError != null) {
             request.setAttribute("employeeNameError", employeeNameError);
             request.setAttribute("phoneError", phoneError);
             request.setAttribute("addressError", addressError);
             request.setAttribute("dobError", dobError);
 
-            // Prepare employee data for display in JSP
+            // Prepare employee object
             Employee employee = new Employee();
             employee.setEmployeeID(employeeID);
             employee.setEmployeeName(employeeName);
@@ -162,17 +206,12 @@ public class EmployeeProfileServlet extends HttpServlet {
             employee.setStatus(status);
             employee.setWarehouseID(warehouseID);
             employee.setImage(image);
-            //employee.setAccountID(accountID);
+            employee.setRoleId(roleID);
 
-            // Lưu lại roleName và warehouseName vào session
-            if (roleName != null && !roleName.isEmpty()) {
-                session.setAttribute("roleName", roleName); // Đảm bảo roleName không null và không rỗng
-            }
-            if (warehouseName != null && !warehouseName.isEmpty()) {
-                session.setAttribute("warehouseName", warehouseName); // Đảm bảo warehouseName không null và không rỗng
-            }
+            // Store values in session
+            session.setAttribute("roleName", roleName);
+            session.setAttribute("warehouseName", warehouseName);
 
-            // Send employee data and other info to the JSP
             request.setAttribute("employee", employee);
             request.setAttribute("warehouseName", warehouseName);
             request.setAttribute("roleName", roleName);
@@ -180,7 +219,7 @@ public class EmployeeProfileServlet extends HttpServlet {
             return;
         }
 
-        // Create an Employee object with the validated data
+        // Create Employee Object for Update
         Employee employee = new Employee();
         employee.setEmployeeID(employeeID);
         employee.setEmployeeName(employeeName);
@@ -192,10 +231,9 @@ public class EmployeeProfileServlet extends HttpServlet {
         employee.setStatus(status);
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
-        //employee.setAccountID(accountID);
+        employee.setRoleId(roleID);
 
         System.out.println("Updating employee: " + employee.toString());
-
 
         // Update the employee in the database
         boolean isUpdated = EmployeeDAO.updateEmployee(employee);
@@ -203,13 +241,13 @@ public class EmployeeProfileServlet extends HttpServlet {
         // Check if the update was successful
         if (isUpdated) {
             request.getSession().setAttribute("originalName", employeeName);
-            String successMessage = "Cập nhật thành công!";
-            request.getSession().setAttribute("successMessage", successMessage);
-            response.sendRedirect("employee?action=view&id=" + employeeID);
+            request.getSession().setAttribute("successMessage", "Cập nhật thành công!");
+            response.sendRedirect("employee?action=view&employeeID=" + employeeID);
         } else {
             response.getWriter().write("Cập nhật thông tin nhân viên thất bại.");
         }
     }
+
 
 
 }
