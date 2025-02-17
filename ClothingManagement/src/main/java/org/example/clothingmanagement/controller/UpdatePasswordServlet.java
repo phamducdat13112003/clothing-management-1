@@ -37,9 +37,9 @@ public class UpdatePasswordServlet extends HttpServlet {
         String newPassword = request.getParameter("newPassword");
         String reenterPassword = request.getParameter("reenterPassword");
 
-        // Validate password length (at least 8 characters)
-        if (newPassword.length() < 8) {
-            request.setAttribute("lengthError", "Password must be at least 8 characters long.");
+        // Validate password length and complexity
+        if (!isValidPassword(newPassword)) {
+            request.setAttribute("validError", "Password must have at least 8 characters, including one uppercase letter, one number, and one special character.");
             request.setAttribute("employee", employee); // Send employee data back to JSP
             request.getRequestDispatcher("profile-info.jsp").forward(request, response);
             return;
@@ -84,4 +84,11 @@ public class UpdatePasswordServlet extends HttpServlet {
         request.setAttribute("employee", employee);
         request.getRequestDispatcher("profile-info.jsp").forward(request, response);
     }
+
+    // Password validation function: checks length, uppercase, number, and special character
+    private boolean isValidPassword(String password) {
+        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$";
+        return password.matches(regex);
+    }
 }
+

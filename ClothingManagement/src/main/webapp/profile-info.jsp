@@ -185,7 +185,7 @@
 																		<div class="form-group">
 																			<label class="sherah-wc__form-label">Old Password *</label>
 																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="oldPassword" type="text" name="oldPassword" required="required">
+																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="oldPassword" type="password" name="oldPassword" required="required">
 																				<c:if test="${not empty incorrectOldPassError}">
 																					<span class="error-message" style="color: red;">${incorrectOldPassError}</span>
 																				</c:if>
@@ -195,20 +195,24 @@
 																		<div class="form-group">
 																			<label class="sherah-wc__form-label">New Password *</label>
 																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="newPassword" type="text" name="newPassword" required="required">
+																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="newPassword" type="password" name="newPassword" required="required">
 																			</div>
 																		</div>
 
 																		<div class="form-group">
 																			<label class="sherah-wc__form-label">Re-enter Password *</label>
 																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="text" name="reenterPassword" required="required">
+																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="password" name="reenterPassword" required="required">
 																				<c:if test="${not empty mismatchError}">
 																					<span class="error-message" style="color: red;">${mismatchError}</span>
 																				</c:if>
 																				<c:if test="${not empty lengthError}">
 																					<span class="error-message" style="color: red;">${lengthError}</span>
 																				</c:if>
+																				<c:if test="${not empty validError}">
+																					<span class="error-message" style="color: red;">${validError}</span>
+																				</c:if>
+
 																			</div>
 																		</div>
 
