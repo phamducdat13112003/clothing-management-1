@@ -13,7 +13,7 @@ public class Category {
     private int categoryID;
     private String categoryName;
     private Date createdDate;
-    private int createdBy;
+    private String createdBy;
 
 
 }

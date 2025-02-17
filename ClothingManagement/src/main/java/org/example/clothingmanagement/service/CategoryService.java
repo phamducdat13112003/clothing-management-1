@@ -38,16 +38,16 @@ public class CategoryService {
     public boolean checkCategoryNameExist(String categoryName) throws SQLException {
         return categoryDAO.checkCategoryNameExist(categoryName);
     }
-    public static List<Category> filterCategories(String categoryName, Date startDate, Date endDate, Integer createdBy) throws SQLException {
+    public static List<Category> filterCategories(String categoryName, Date startDate, Date endDate, String createdBy) throws SQLException {
         return CategoryDAO.filterCategories( categoryName, startDate, endDate, createdBy);
     }
-    public static String getEmployeeNameByCreatedBy(int createdBy){
+    public static String getEmployeeNameByCreatedBy(String createdBy){
         return categoryDAO.getEmployeeNameByCreatedBy(createdBy);
     }
-    public  Integer getEmployeeIDByAccountID(int accountID) {
+    public String getEmployeeIDByAccountID(String accountID) {
         return categoryDAO.getEmployeeIDByAccountID(accountID);
     }
-    public Integer getEmployeeIDByName(String categoryName) throws SQLException {
+    public String getEmployeeIDByName(String categoryName) throws SQLException {
         return CategoryDAO.getEmployeeIDByName( categoryName);
     }
     public List<String> validateCategoryName(String name) throws SQLException {

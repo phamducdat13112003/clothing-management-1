@@ -31,17 +31,19 @@ public class AddCategoryServlet extends HttpServlet {
             String name = request.getParameter("categoryName");
             CategoryService dao = new CategoryService();
             HttpSession session = request.getSession();
-            int accountId = (int) session.getAttribute("account_id");
+            String accountId = (String) session.getAttribute("account_id");
 // Lấy EmployeeID từ AccountID
-            Integer employeeId = dao.getEmployeeIDByAccountID(accountId);
+            String employeeId = dao.getEmployeeIDByAccountID(accountId);
 // Tạo đối tượng Category và tiếp tục xử lý
             Category category = new Category(1, name, new Date(), employeeId);
+
             List<String> errors = null;
             try {
                 errors = dao.validateCategoryName(name);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
             try {
                 if (!errors.isEmpty()) {
                     // Nếu có lỗi, hiển thị tất cả bằng alert

@@ -23,7 +23,7 @@ public class CategoryDAO {
             // Duyệt qua kết quả truy vấn và thêm vào danh sách categories
             while (rs.next()) {
                 categories.add(new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
-                        rs.getDate("createdDate"), rs.getInt("createdBy")));
+                        rs.getDate("createdDate"), rs.getString("createdBy")));
             }
         } catch (Exception e) {
 
@@ -39,7 +39,7 @@ public class CategoryDAO {
 
             pstmt.setString(1, category.getCategoryName());
             pstmt.setDate(2, new java.sql.Date(category.getCreatedDate().getTime()));
-            pstmt.setInt(3, category.getCreatedBy());
+            pstmt.setString(3, category.getCreatedBy());
 
             pstmt.executeUpdate();
         }catch(Exception e){
@@ -64,7 +64,7 @@ public class CategoryDAO {
 
             pstmt.setString(1, category.getCategoryName());
             pstmt.setDate(2, new java.sql.Date(category.getCreatedDate().getTime()));
-            pstmt.setInt(3, category.getCreatedBy());
+            pstmt.setString(3, category.getCreatedBy());
             pstmt.setInt(4, category.getCategoryID());
             pstmt.executeUpdate();
         }
@@ -78,7 +78,7 @@ public class CategoryDAO {
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     return new Category(rs.getInt("categoryID"), rs.getString("categoryName"),
-                            rs.getDate("createdDate"), rs.getInt("createdBy"));
+                            rs.getDate("createdDate"), rs.getString("createdBy"));
                 }
             }
         }
@@ -111,14 +111,14 @@ public class CategoryDAO {
         return false;
     }
 
-    public static Integer getEmployeeIDByName(String name) throws SQLException {
+    public static String getEmployeeIDByName(String name) throws SQLException {
         String sql = "SELECT employeeID FROM Employee WHERE employeeName = ?";
         try (Connection connection = DBContext.getConnection();
              PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setString(1, name);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("employeeID");
+                    return rs.getString("employeeID");
                 }
             }
         }
@@ -126,7 +126,7 @@ public class CategoryDAO {
     }
 
 
-    public static List<Category> filterCategories(String categoryName, Date startDate, Date endDate, Integer createdBy) throws SQLException {
+    public static List<Category> filterCategories(String categoryName, Date startDate, Date endDate, String createdBy) throws SQLException {
         List<Category> categories = new ArrayList<>();
         String sql = "SELECT categoryID, categoryName, createdDate, createdBy FROM category WHERE 1=1";
         List<Object> params = new ArrayList<>();
@@ -165,7 +165,7 @@ public class CategoryDAO {
                             rs.getInt("categoryID"),
                             rs.getString("categoryName"),
                             rs.getDate("createdDate"),
-                            rs.getInt("createdBy")
+                            rs.getString("createdBy")
                     ));
                 }
             }
@@ -174,11 +174,11 @@ public class CategoryDAO {
     }
 
 
-    public String getEmployeeNameByCreatedBy(int createdBy) {
+    public String getEmployeeNameByCreatedBy(String createdBy) {
         String query = "SELECT EmployeeName FROM employee WHERE EmployeeID = ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, createdBy);
+            ps.setString(1, createdBy);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("EmployeeName");
@@ -190,15 +190,15 @@ public class CategoryDAO {
         return null; // Trả về null nếu không tìm thấy
     }
 
-    public Integer getEmployeeIDByAccountID(int accountID) {
-        String query = "SELECT e.EmployeeID FROM employee e WHERE e.AccountID = ? LIMIT 1";
+    public String getEmployeeIDByAccountID(String accountID) {
+        String query = "SELECT e.EmployeeID FROM account e WHERE e.AccountID = ? LIMIT 1";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, accountID);
+            ps.setString(1, accountID);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    return rs.getInt("EmployeeID"); // Trả về EmployeeID đầu tiên tìm thấy
+                    return rs.getString("EmployeeID"); // Trả về EmployeeID đầu tiên tìm thấy
                 }
             }
         } catch (SQLException e) {
@@ -210,7 +210,7 @@ public class CategoryDAO {
 
     public List<String> validateCategoryName(String name) throws SQLException {
         List<String> errors = new ArrayList<>();
-
+        try{
         if (name == null || name.trim().isEmpty()) {
             errors.add("Tên danh mục không được để trống.");
             return errors;
@@ -236,10 +236,13 @@ public class CategoryDAO {
         }
 
         if (checkCategoryNameExist(name)) {
-            errors.add("Tên danh mục này đã tồn tại.");
+            errors.add("Tên danh mục này đã tồn tại hihi.");
         }
-
-        return errors;
+           return errors;
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+        return null;
     }
     public static void main(String[] args) throws SQLException {
         Scanner scanner = new Scanner(System.in);

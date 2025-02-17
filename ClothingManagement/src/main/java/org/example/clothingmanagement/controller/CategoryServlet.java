@@ -21,10 +21,10 @@ public class CategoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
         List<Category> categories = CategoryService.selectAll();
-        Map<Integer, String> createdByNames = new HashMap<>();
+        Map<String, String> createdByNames = new HashMap<>();
 
         for (Category category : categories) {
-            int createdBy = category.getCreatedBy();
+            String createdBy = category.getCreatedBy();
             if (!createdByNames.containsKey(createdBy)) {
                 createdByNames.put(createdBy, CategoryService.getEmployeeNameByCreatedBy(createdBy));
             }

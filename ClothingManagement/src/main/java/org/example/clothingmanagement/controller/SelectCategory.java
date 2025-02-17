@@ -10,11 +10,13 @@ import org.example.clothingmanagement.service.CategoryService;
 
 import java.io.IOException;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @WebServlet(name = "SelectCategory", value = "/SelectCategory")
@@ -23,7 +25,7 @@ public class SelectCategory extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         CategoryService dao = new CategoryService();
         List<Category> categories = new ArrayList<>();
-        Map<Integer, String> createdByNames = null;
+        Map<String, String> createdByNames = null;
         try {
             // Lấy dữ liệu từ form
             String categoryName = request.getParameter("categoryName");
@@ -35,10 +37,20 @@ public class SelectCategory extends HttpServlet {
             Date startDate = (startDateStr != null && !startDateStr.isEmpty()) ? java.sql.Date.valueOf(startDateStr) : null;
             Date endDate = (endDateStr != null && !endDateStr.isEmpty()) ? java.sql.Date.valueOf(endDateStr) : null;
 
-            Integer createdBy = null;
+            if (startDate.after(endDate)) {
+                // Nếu có lỗi, hiển thị tất cả bằng alert
+                response.setContentType("text/html;charset=UTF-8");
+                PrintWriter out = response.getWriter();
+                out.println("<script type='text/javascript'>");
+                out.println("alert('Ngày bắt đầu không thể xảy ra sau ngày kết thúc.');");
+                out.println("window.history.back();"); // Quay lại trang trước
+                out.println("</script>");
+                return;
+            }
+
+            String createdBy = null;
             if (createdByStr != null && !createdByStr.trim().isEmpty()) {
                 createdBy = dao.getEmployeeIDByName(createdByStr);
-
             }
             // Lọc dữ liệu
             categories = dao.filterCategories(categoryName, startDate, endDate, createdBy);
