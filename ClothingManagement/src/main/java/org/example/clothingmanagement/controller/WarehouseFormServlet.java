@@ -24,10 +24,10 @@ public class WarehouseFormServlet extends HttpServlet {
             request.setAttribute("warehouse", warehouse);
 
             // set form action -> update
-            request.setAttribute("formAction", "/ClothingManagement_war_exploded/warehouseForm?action=update");
+            request.setAttribute("formAction", "/ClothingManagement_war/warehouseForm?action=update");
         } else {
             // set form action -> create
-            request.setAttribute("formAction", "/ClothingManagement_war_exploded/warehouseForm?action=create");
+            request.setAttribute("formAction", "/ClothingManagement_war/warehouseForm?action=create");
         }
         request.getRequestDispatcher("/updateWarehouse.jsp").forward(request, response);
     }
