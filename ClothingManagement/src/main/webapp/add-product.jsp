@@ -100,7 +100,7 @@
 
                                                                                         <!-- Material -->
                                                                                         <label for="material">Material:</label>
-                                                                                        <input type="text" id="material" name="material">
+                                                                                        <input type="text" id="material" name="material" required>
 
                                                                                         <!-- Gender -->
                                                                                         <label for="gender">Gender:</label>
