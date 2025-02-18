@@ -37,7 +37,7 @@ public class SelectCategory extends HttpServlet {
             Date startDate = (startDateStr != null && !startDateStr.isEmpty()) ? java.sql.Date.valueOf(startDateStr) : null;
             Date endDate = (endDateStr != null && !endDateStr.isEmpty()) ? java.sql.Date.valueOf(endDateStr) : null;
 
-            if (startDate.after(endDate)) {
+            if (startDate != null && endDate != null && startDate.after(endDate)) {
                 // Nếu có lỗi, hiển thị tất cả bằng alert
                 response.setContentType("text/html;charset=UTF-8");
                 PrintWriter out = response.getWriter();

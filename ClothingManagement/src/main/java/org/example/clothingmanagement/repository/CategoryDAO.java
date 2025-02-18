@@ -143,7 +143,7 @@ public class CategoryDAO {
             sql += " AND createdDate <= ?";
             params.add(new java.sql.Date(endDate.getTime()));
         }
-        if (createdBy != null) {
+        if (createdBy != null && !createdBy.trim().isEmpty()) {
             sql += " AND createdBy = ?";
             params.add(createdBy);
         }
