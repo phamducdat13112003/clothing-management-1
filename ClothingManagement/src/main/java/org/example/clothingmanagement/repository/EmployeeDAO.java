@@ -364,30 +364,46 @@ public class EmployeeDAO {
         return null;
     }
 
-    public List<String> getEmployeeIDsWithoutAccount() {
-        List<String> employeeIds = new ArrayList<>();
-        String sql = "SELECT e.EmployeeID \n" +
-                "FROM Employee e \n" +
-                "LEFT JOIN Account a \n" +
-                "ON e.EmployeeID = a.EmployeeID \n" +
-                "WHERE a.EmployeeID IS NULL \n" +
+    public List<Employee> getEmployeesWithoutAccount() {
+        List<Employee> employees = new ArrayList<>();
+        String sql = "SELECT e.EmployeeID, e.EmployeeName, e.Email, e.Phone, e.Address, e.Gender, " +
+                "e.DateOfBirth, e.Status, e.RoleID, e.WarehouseID, e.Image, r.RoleName, w.WarehouseName " +
+                "FROM Employee e " +
+                "LEFT JOIN Account a ON e.EmployeeID = a.EmployeeID " +
+                "LEFT JOIN Role r ON e.RoleID = r.RoleID " +
+                "LEFT JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
+                "WHERE a.EmployeeID IS NULL " +
                 "AND e.Status = 'Active'";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement pt = conn.prepareStatement(sql)) {
 
-            try (ResultSet rs = pt.executeQuery()) {
-                while (rs.next()) {
-                    employeeIds.add(rs.getString("EmployeeID"));
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql);
+             ResultSet rs = pt.executeQuery()) {
+
+            while (rs.next()) {
+                Employee employee = new Employee();
+                employee.setEmployeeID(rs.getString("EmployeeID"));
+                employee.setEmployeeName(rs.getString("EmployeeName"));
+                employee.setEmail(rs.getString("Email"));
+                employee.setPhone(rs.getString("Phone"));
+                employee.setAddress(rs.getString("Address"));
+                employee.setGender(rs.getString("Gender"));
+                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setStatus(rs.getString("Status"));
+                employee.setRoleId(rs.getInt("RoleID"));
+                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setImage(rs.getString("Image"));
+                employee.setRoleName(rs.getString("RoleName"));
+                employee.setWarehouseName(rs.getString("WarehouseName"));
+
+                employees.add(employee);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
 
-        return employeeIds;
+        return employees;
     }
+
 
     public boolean isEmailExistForEmployee(String email, String employeeId) throws SQLException {
         String sql = "SELECT * FROM Employee WHERE Email = ? AND EmployeeID = ? AND Status = 'Active'";

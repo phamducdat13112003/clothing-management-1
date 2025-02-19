@@ -27,7 +27,7 @@ public class AccountDAO {
         String sql = "SELECT a.*, r.RoleName " +
                 "FROM Account a " +
                 "JOIN Role r ON a.RoleID = r.RoleID " +
-                "WHERE a.status = 'Active' " +
+                "WHERE a.status = 'Active' AND r.RoleName != 'Manager' " +
                 "LIMIT ? OFFSET ?";
         try (Connection connection = DBContext.getConnection();
              PreparedStatement stmt = connection.prepareStatement(sql)) {

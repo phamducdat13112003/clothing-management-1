@@ -128,10 +128,9 @@
                                     <thead class="sherah-table__head">
                                     <tr>
                                         <th class="sherah-table__column-2 sherah-table__h2">AccountID</th>
-                                        <th class="sherah-table__column-3 sherah-table__h3">Email</th>
-                                        <th class="sherah-table__column-4 sherah-table__h4">Password</th>
+                                        <th class="sherah-table__column-3 sherah-table__h3">EmployeeId</th>
+                                        <th class="sherah-table__column-4 sherah-table__h4">Email</th>
                                         <th class="sherah-table__column-4 sherah-table__h4">Role</th>
-                                        <th class="sherah-table__column-4 sherah-table__h4">EmployeeId</th>
                                         <th class="sherah-table__column-4 sherah-table__h8" style="text-align: center;">Action</th>
                                     </tr>
                                     </thead>
@@ -151,11 +150,6 @@
                                             <td class="sherah-table__column-2 sherah-table__data-2">
                                                 <div class="sherah-table__product-content">
                                                     <p class="sherah-table__product-desc">${account.email}</p>
-                                                </div>
-                                            </td>
-                                            <td class="sherah-table__column-3 sherah-table__data-3">
-                                                <div class="sherah-table__product-content">
-                                                    **********
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-3 sherah-table__data-3">

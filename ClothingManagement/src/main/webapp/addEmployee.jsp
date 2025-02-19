@@ -127,9 +127,9 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Employee Image <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Employee Image </label>
                                                             <div class="form-group__input">
-                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload" required>
+                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
                                                                 <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
                                                                 <img src="${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
                                                             </div>
@@ -195,7 +195,7 @@
                                                 <h4 class="form-title m-0">Organization</h4>
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Role: <span class="required">*</span></label>
+                                                        <label class="sherah-wc__form-label">Position: <span class="required">*</span></label>
                                                         <select class="form-group__input" name="role" aria-label="Default select example">
                                                             <c:forEach items="${list}" var="role">
                                                                 <option value="${role.id}">${role.roleName}</option>

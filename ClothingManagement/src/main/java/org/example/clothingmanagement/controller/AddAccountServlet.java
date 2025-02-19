@@ -6,6 +6,7 @@ import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Email;
+import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Role;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.EmployeeService;
@@ -13,6 +14,7 @@ import org.example.clothingmanagement.service.EmployeeService;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.security.SecureRandom;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -42,8 +44,8 @@ public class AddAccountServlet extends HttpServlet {
         EmployeeService employeeService = new EmployeeService();
         try {
             List<Role> list = accountService.getAllRoles();
-            List<String> employeeIds = employeeService.getEmployeeIDsWithoutAccount();
-            request.setAttribute("employeeIds", employeeIds);
+            List<Employee> employees = employeeService.getEmployeeIDsWithoutAccount();
+            request.setAttribute("employees", employees);
             request.setAttribute("roles", list);
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,22 +58,17 @@ public class AddAccountServlet extends HttpServlet {
         AccountService accountService = new AccountService();
         EmployeeService employeeService = new EmployeeService();
         String email = request.getParameter("email").trim();
-        String password = request.getParameter("password").trim();
         String roleId = request.getParameter("roleId");
         String employeeId = request.getParameter("employeeId");
         List<Role> list = null;
-        List<String> employeeIds =null;
+        List<Employee> employees =null;
         boolean hasError = false;
         int page = 1;
         int pageSize = 5;
         int totalAccounts = 0;
         try {
             list = accountService.getAllRoles();
-            employeeIds = employeeService.getEmployeeIDsWithoutAccount();
-            if (!isRoleCorrect(roleId, employeeId)) {
-                request.setAttribute("errorRole", "You have selected the wrong role for this employee.");
-                hasError = true;
-            }
+            employees = employeeService.getEmployeeIDsWithoutAccount();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -81,34 +78,16 @@ public class AddAccountServlet extends HttpServlet {
             hasError = true;
         }
 
-        try {
-            if (!isEmailExistForEmployee(email, employeeId)) {
-                request.setAttribute("errorEmail", "This email is not from an employee.");
-                hasError = true;
-            }
-        } catch (SQLException e) {
-            request.setAttribute("errorEmail", "Error checking email for employee.");
-            hasError = true;
-        }
-
-        if (!isValidPassword(password)) {
-            request.setAttribute("errorPassword", "Password must be at least 8 characters, including uppercase letters, numbers, and special characters.");
-            hasError = true;
-        }
-
         if (hasError) {
             request.setAttribute("roles", list);
-            request.setAttribute("employeeIds", employeeIds);
-            request.setAttribute("email", email);
-            request.setAttribute("password", password);
+            request.setAttribute("employees", employees);
             request.getRequestDispatcher("./addAccount.jsp").forward(request, response);
             return;
         }
-
-        // Mã hóa mật khẩu
+        String password = generateRandomPassword();
         String encryptedPassword = MD5.getMd5(password);
 
-        Account account = new Account(email,encryptedPassword, Integer.parseInt(roleId),"True", employeeId);
+        Account account = new Account(email, encryptedPassword, Integer.parseInt(roleId),"True", employeeId);
         try {
             accountService.createAccount(account);
             totalAccounts = accountService.getTotalAccounts();
@@ -129,27 +108,43 @@ public class AddAccountServlet extends HttpServlet {
         request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
     }
 
-    private boolean isValidPassword(String password) {
-        // Biểu thức chính quy kiểm tra mật khẩu
-        String regex = "^(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$";
-        return password.matches(regex);
-    }
-
-    // Phương thức kiểm tra Email
-    private boolean isEmailExistForEmployee(String email, String employeeId) throws SQLException {
-        EmployeeService employeeService = new EmployeeService();
-        return employeeService.isEmailExistForEmployee(email, employeeId);
-    }
-
-    // Phương thức kiểm tra Role
-    private boolean isRoleCorrect(String roleId, String employeeId) throws SQLException {
-        EmployeeService employeeService = new EmployeeService();
-        int employeeRoleId = employeeService.getRoleIdByEmployeeId(employeeId);
-        return Integer.parseInt(roleId) == employeeRoleId;
-    }
-
     // Phương thức kiểm tra Employee ID
     private boolean isEmployeeIdValid(String employeeId) {
         return employeeId != null && !employeeId.trim().isEmpty();
     }
+
+    private static String generateRandomPassword() {
+        final String UPPERCASE = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String LOWERCASE = "abcdefghijklmnopqrstuvwxyz";
+        final String DIGITS = "0123456789";
+        final String SPECIAL_CHARACTERS = "!@#$%^&*()-_+=<>?/";
+        final String ALL_CHARACTERS = UPPERCASE + LOWERCASE + DIGITS + SPECIAL_CHARACTERS;
+        final int PASSWORD_LENGTH = 8;
+        SecureRandom random = new SecureRandom();
+
+        StringBuilder password = new StringBuilder();
+
+        // Đảm bảo có ít nhất 1 ký tự của từng loại
+        password.append(UPPERCASE.charAt(random.nextInt(UPPERCASE.length())));
+        password.append(LOWERCASE.charAt(random.nextInt(LOWERCASE.length())));
+        password.append(DIGITS.charAt(random.nextInt(DIGITS.length())));
+        password.append(SPECIAL_CHARACTERS.charAt(random.nextInt(SPECIAL_CHARACTERS.length())));
+
+        // Điền các ký tự còn lại ngẫu nhiên
+        for (int i = 4; i < PASSWORD_LENGTH; i++) {
+            password.append(ALL_CHARACTERS.charAt(random.nextInt(ALL_CHARACTERS.length())));
+        }
+
+        // Xáo trộn mật khẩu để tránh thứ tự cố định
+        char[] passwordArray = password.toString().toCharArray();
+        for (int i = passwordArray.length - 1; i > 0; i--) {
+            int j = random.nextInt(i + 1);
+            char temp = passwordArray[i];
+            passwordArray[i] = passwordArray[j];
+            passwordArray[j] = temp;
+        }
+
+        return new String(passwordArray);
+    }
+
 }
