@@ -133,10 +133,6 @@
                                                                                             <p class="sherah-profile-info__text">${employee.dateOfBirth}</p>
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
-                                                                                            <h4 class="sherah-profile-info__title">Role :</h4>
-                                                                                            <p class="sherah-profile-info__text">${employee.roleName}</p>
-                                                                                        </li>
-                                                                                        <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Warehouse :</h4>
                                                                                             <p class="sherah-profile-info__text">${employee.warehouseName}</p>
                                                                                         </li>

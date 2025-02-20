@@ -93,7 +93,6 @@ public class EditEmployeeServlet extends HttpServlet {
         address = capitalizeName(address);
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
-        String roleID = request.getParameter("role");
         String warehouseID = request.getParameter("warehouse");
         listWarehouse = warehouseDAO.getAllWareHouse();
         if (!isValidEmail(email)) {
@@ -129,7 +128,7 @@ public class EditEmployeeServlet extends HttpServlet {
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
-            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(roleID), Integer.parseInt(warehouseID), "");
+            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(warehouseID), "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();

@@ -195,16 +195,6 @@
                                                 <h4 class="form-title m-0">Organization</h4>
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Position: <span class="required">*</span></label>
-                                                        <select class="form-group__input" name="role" aria-label="Default select example">
-                                                            <c:forEach items="${list}" var="role">
-                                                                <option value="${role.id}">${role.roleName}</option>
-                                                            </c:forEach>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
                                                         <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
                                                         <select class="form-group__input" name="warehouse" aria-label="Default select example" required>
                                                             <c:forEach items="${listWarehouse}" var="ware">

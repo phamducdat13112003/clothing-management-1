@@ -51,14 +51,6 @@ public class EmployeeService {
         return employeeDAO.getEmployeeId();
     }
 
-    public static String getEmployeeNameByEmployeeId(int employeeID) throws SQLException{
-        return EmployeeDAO.getEmployeeNameByEmployeeId(employeeID);
-    }
-
-    public static int getAccountIdByEmployeeId(int employeeID) throws SQLException{
-        return EmployeeDAO.getAccountIdByEmployeeId(employeeID);
-    }
-
     public boolean isEmployeeExistedWhenAdd(String email, String phone) throws SQLException{
         return employeeDAO.isEmployeeExistedWhenAdd(email, phone);
     }
@@ -69,9 +61,6 @@ public class EmployeeService {
 
     public boolean isEmailExistForEmployee (String email, String employeeId) throws SQLException{
         return employeeDAO.isEmailExistForEmployee(email, employeeId);
-    }
-    public int getRoleIdByEmployeeId(String employeeId) throws SQLException{
-        return employeeDAO.getRoleIdByEmployeeId(employeeId);
     }
 
     public boolean isEmployeeExisted(String employeeId ,String email, String phone) throws SQLException{

@@ -46,15 +46,8 @@ public class AddEmployeeServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         RoleService roleService = new RoleService();
         WarehouseDAO wareHouseDAO = new WarehouseDAO();
-        List<Role> list = null;
         List<Warehouse> listWarehouse = null;
-        try {
-            list =  roleService.getAllRoles();
-            listWarehouse = wareHouseDAO.getAllWareHouse();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        request.setAttribute("list", list);
+        listWarehouse = wareHouseDAO.getAllWareHouse();
         request.setAttribute("listWarehouse", listWarehouse);
         request.getRequestDispatcher("./addEmployee.jsp").forward(request, response);
     }
@@ -86,7 +79,6 @@ public class AddEmployeeServlet extends HttpServlet {
         String phone = request.getParameter("phone").trim();
         String address = request.getParameter("address").trim();
         address = capitalizeName(address);
-        String roleId = request.getParameter("role");
         String gender = request.getParameter("gender");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String warehouseID = request.getParameter("warehouse");
@@ -121,7 +113,7 @@ public class AddEmployeeServlet extends HttpServlet {
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./addEmployee.jsp").forward(request, response);
         }else{
-            Employee employee = new Employee(name, email, phone, address, gender, dateOfBirth, Integer.parseInt(roleId), Integer.parseInt(warehouseID),"");
+            Employee employee = new Employee(name, email, phone, address, gender, dateOfBirth, Integer.parseInt(warehouseID),"");
             Part part = request.getPart("img");
             String contentType = part.getContentType();
             if (!isImageFile(contentType)) {
