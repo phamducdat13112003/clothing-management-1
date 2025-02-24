@@ -74,14 +74,6 @@ public class EditAccountServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if (!isValidPassword(password)) {
-            // Thông báo lỗi nếu mật khẩu không hợp lệ
-            request.setAttribute("roles", list);
-            request.setAttribute("account", account);
-            request.setAttribute("errorPassword", "Password must be at least 8 characters, including uppercase letters, numbers, and special characters.");
-            request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
-            return;
-        }
         Account existingAccount;
         try {
              existingAccount = accountService.getAccountById(accountID);
@@ -95,8 +87,20 @@ public class EditAccountServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        // Mã hóa mật khẩu
-        String encryptedPassword = MD5.getMd5(password);
+
+        String encryptedPassword;
+        if (password.isEmpty()) {
+            encryptedPassword = existingAccount.getPassword(); // Giữ lại mật khẩu cũ
+        } else {
+            if (!isValidPassword(password)) {
+                request.setAttribute("roles", list);
+                request.setAttribute("account", account);
+                request.setAttribute("errorPassword", "Password must be at least 8 characters, including uppercase letters, numbers, and special characters.");
+                request.getRequestDispatcher("./editAccount.jsp").forward(request, response);
+                return;
+            }
+            encryptedPassword = MD5.getMd5(password); // Mã hóa mật khẩu mới
+        }
 
         Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId), status);
         List<Account> listAccount= null;

@@ -52,9 +52,9 @@
             <input type="email" class="form-control" id="email" name="email" value="${account.email}" readonly>
         </div>
         <div class="mb-3">
-            <label for="password" class="form-label">Password <span class="required">*</span></label>
+            <label for="password" class="form-label">Password</label>
             <div class="input-group">
-                <input minlength="8" type="password" class="form-control" id="password" name="password" required>
+                <input minlength="8" type="password" class="form-control" id="password" name="password">
                 <span class="input-group-text" id="togglePassword" style="cursor: pointer;">
                     <i class="bi bi-eye-slash" id="eyeIcon"></i> <!-- Mặc định là icon mắt đóng -->
                 </span>

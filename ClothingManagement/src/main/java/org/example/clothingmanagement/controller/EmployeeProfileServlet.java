@@ -72,7 +72,7 @@ public class EmployeeProfileServlet extends HttpServlet {
             String warehouseName = null;
             try {
                 warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
-                roleName = RoleDAO.getRoleNameById(employee.getRoleId());
+                //roleName = RoleDAO.getRoleNameById(employee.getRoleId());
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -86,7 +86,7 @@ public class EmployeeProfileServlet extends HttpServlet {
             System.out.println("Gender: " + employee.getGender());
             System.out.println("Date of Birth: " + employee.getDateOfBirth());
             System.out.println("Status: " + employee.getStatus());
-            System.out.println("Role ID: " + employee.getRoleId());
+            //System.out.println("Role ID: " + employee.getRoleId());
             System.out.println("Warehouse ID: " + employee.getWarehouseID());
             System.out.println("Image URL: " + employee.getImage());
             System.out.println("Role Name: " + roleName);
@@ -206,7 +206,7 @@ public class EmployeeProfileServlet extends HttpServlet {
             employee.setStatus(status);
             employee.setWarehouseID(warehouseID);
             employee.setImage(image);
-            employee.setRoleId(roleID);
+            //employee.setRoleId(roleID);
 
             // Store values in session
             session.setAttribute("roleName", roleName);
@@ -231,7 +231,7 @@ public class EmployeeProfileServlet extends HttpServlet {
         employee.setStatus(status);
         employee.setWarehouseID(warehouseID);
         employee.setImage(image);
-        employee.setRoleId(roleID);
+        //employee.setRoleId(roleID);
 
         System.out.println("Updating employee: " + employee.toString());
 
