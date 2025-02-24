@@ -254,6 +254,7 @@ public class AccountDAO {
                 account = new Account();
                 account.setId(rs.getString("accountId"));
                 account.setEmail(rs.getString("email"));
+                account.setStatus(rs.getString("status"));
                 account.setPassword(rs.getString("password"));
                 account.setRoleId(rs.getInt("roleID"));
             }

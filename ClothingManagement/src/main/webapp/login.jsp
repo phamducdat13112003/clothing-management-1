@@ -99,6 +99,10 @@
                                     <div class="alert" style="color:red; font-weight: bold">${error_login}</div>
                                     <% session.removeAttribute("error_login"); %> <!-- Xóa sau khi hiển thị -->
                                 </c:if>
+                                <c:if test="${not empty error_inactive}">
+                                    <div class="alert" style="color:red; font-weight: bold">${error_inactive}</div>
+                                    <% session.removeAttribute("error_inactive"); %> <!-- Xóa sau khi hiển thị -->
+                                </c:if>
                             </div>
                             <!-- Form Group -->
 <%--                            <div class="form-group mg-top-20">--%>

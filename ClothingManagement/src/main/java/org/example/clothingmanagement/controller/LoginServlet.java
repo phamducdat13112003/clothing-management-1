@@ -4,7 +4,6 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
-import org.example.clothingmanagement.repository.EmployeeDAO;
 import org.example.clothingmanagement.service.AccountService;
 import org.example.clothingmanagement.service.AccountService;
 
@@ -26,7 +25,6 @@ public class LoginServlet extends HttpServlet {
         String password = request.getParameter("password");
         String hashedPassword = MD5.getMd5(password); // Mã hóa mật khẩu trước khi kiểm tra
         String remember = request.getParameter("remember");
-
         Account account = null;
         try {
             account = accountDAO.findAccount(email, hashedPassword); // Kiểm tra với mật khẩu đã mã hóa
@@ -40,41 +38,38 @@ public class LoginServlet extends HttpServlet {
             response.addCookie(cookie_email);
             response.addCookie(cookie_password);
             response.sendRedirect("login.jsp");
-        } else {
-            session.removeAttribute("error_login");
-            response.addCookie(cookie_email);
-            response.addCookie(cookie_password);
-            session.setAttribute("account", account);
-            session.setAttribute("role", account.getRoleId());
-            session.setAttribute("account_id", account.getId());
-            String employeeID = EmployeeDAO.getEmployeeIdByAccountId(account.getId());
-            session.setAttribute("employeeID", employeeID);
-
-            // Debugging: Account info in session
-            System.out.println("Account ID set in session: " + account.getId());
-            System.out.println("Employee ID set in session: " + employeeID);
-            session.setMaxInactiveInterval(60 * 60 * 24);
-            if (remember != null && remember.equalsIgnoreCase("1")) {
-                cookie_email.setMaxAge(60 * 60);
-                cookie_password.setMaxAge(60 * 60);
+        } else if (account.getStatus().equals("Inactive")) {
+            session.setAttribute("error_inactive", "Account is inactive!");
+            response.sendRedirect("login.jsp");
+        }else {
+                session.removeAttribute("error_login");
+                response.addCookie(cookie_email);
                 response.addCookie(cookie_password);
-            } else {
-                cookie_email.setMaxAge(0);
-                cookie_password.setMaxAge(0);
+                session.setAttribute("account", account);
+                session.setAttribute("role", account.getRoleId());
+                session.setAttribute("account_id", account.getId());
+                session.setMaxInactiveInterval(60 * 60 * 24);
+                if (remember != null && remember.equalsIgnoreCase("1")) {
+                    cookie_email.setMaxAge(60 * 60);
+                    cookie_password.setMaxAge(60 * 60);
+                    response.addCookie(cookie_password);
+                } else {
+                    cookie_email.setMaxAge(0);
+                    cookie_password.setMaxAge(0);
+                    response.addCookie(cookie_password);
+                }
+                if (account.getRoleId() == 1) {//Manager
+                    response.sendRedirect("Dashboard.jsp");
+                } else if (account.getRoleId() == 2) {//Sale
+                    response.sendRedirect("Dashboard.jsp");
+                } else if (account.getRoleId() == 3) {//Storage Staff
+                    response.sendRedirect("Dashboard.jsp");
+                } else if (account.getRoleId() == 4) {//Admin
+                    response.sendRedirect("account");
+                }
+                response.addCookie(cookie_email);
                 response.addCookie(cookie_password);
-            }
-            if (account.getRoleId() == 1) {//Manager
-                response.sendRedirect("Dashboard.jsp");
-            } else if (account.getRoleId() == 2) {//Sale
-                response.sendRedirect("Dashboard.jsp");
-            } else if (account.getRoleId() == 3) {//Storage Staff
-                response.sendRedirect("Dashboard.jsp");
-            } else if (account.getRoleId() == 4) {//Admin
-                response.sendRedirect("account");
-            }
-            response.addCookie(cookie_email);
-            response.addCookie(cookie_password);
 
+            }
         }
     }
-}
