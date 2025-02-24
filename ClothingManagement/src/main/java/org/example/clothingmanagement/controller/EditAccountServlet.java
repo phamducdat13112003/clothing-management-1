@@ -89,6 +89,7 @@ public class EditAccountServlet extends HttpServlet {
         }
 
         String encryptedPassword;
+        boolean isPasswordUpdated = false;
         if (password.isEmpty()) {
             encryptedPassword = existingAccount.getPassword(); // Giữ lại mật khẩu cũ
         } else {
@@ -100,6 +101,7 @@ public class EditAccountServlet extends HttpServlet {
                 return;
             }
             encryptedPassword = MD5.getMd5(password); // Mã hóa mật khẩu mới
+            isPasswordUpdated = true;
         }
 
         Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId), status);
@@ -109,8 +111,10 @@ public class EditAccountServlet extends HttpServlet {
             accountService.updateAccount(updatedAccount);
             listAccount = accountService.getAccountsByPage(page, pageSize);
             totalAccounts = accountService.getTotalAccounts();
-            Email emailSender = new Email();
-            emailSender.sendPasswordChangedEmail(email, password);
+            if (isPasswordUpdated) { // Chỉ gửi email khi mật khẩu được cập nhật
+                Email emailSender = new Email();
+                emailSender.sendPasswordChangedEmail(email, password);
+            }
         } catch (SQLException e) {
             request.setAttribute("message", "Can't update account");
         } catch (MessagingException e) {
