@@ -9,9 +9,11 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Category {
-    private int categoryID;
-    private String categoryName;
+public class PurchaseOrder {
+    private String poID;
     private Date createdDate;
+    private String supplierID;
     private String createdBy;
+    private String status;
+    private int totalPrice;
 }
