@@ -21,7 +21,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@MultipartConfig
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 2 * 1024 * 1024,   // 2MB
+        maxRequestSize = 4 * 1024 * 1024 // 4MB
+)
 @WebServlet(name = "AddEmployeeServlet", value = "/addemployee")
 public class AddEmployeeServlet extends HttpServlet {
 
@@ -57,7 +61,6 @@ public class AddEmployeeServlet extends HttpServlet {
         EmployeeService employeeService = new EmployeeService();
         RoleService roleService = new RoleService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
-
         StringBuilder message = new StringBuilder();
         List<Role> list =null;
         List<Warehouse> listWarehouse = null;
@@ -70,6 +73,13 @@ public class AddEmployeeServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        String employeeId = null;
+        try {
+            employeeId = generateNewEmployeeId();
+        } catch (SQLException e) {
+            request.setAttribute("message", "Cannot create employeeID.");
+        }
         String name = request.getParameter("name").trim();
         if (!isValidName(name)) {
             request.setAttribute("errorName", "Name must contain only letters.");
@@ -79,7 +89,8 @@ public class AddEmployeeServlet extends HttpServlet {
         String phone = request.getParameter("phone").trim();
         String address = request.getParameter("address").trim();
         address = capitalizeName(address);
-        String gender = request.getParameter("gender");
+        String genderParam = request.getParameter("gender");
+        boolean gender = "1".equals(genderParam);
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String warehouseID = request.getParameter("warehouse");
 
@@ -102,7 +113,7 @@ public class AddEmployeeServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
+        if(employeeId == null || !message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
             request.setAttribute("message", message.toString());
             request.setAttribute("name", name);
             request.setAttribute("email", email);
@@ -113,33 +124,37 @@ public class AddEmployeeServlet extends HttpServlet {
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./addEmployee.jsp").forward(request, response);
         }else{
-            Employee employee = new Employee(name, email, phone, address, gender, dateOfBirth, Integer.parseInt(warehouseID),"");
+            Employee employee = new Employee(employeeId ,name, email, phone, address, gender, dateOfBirth, warehouseID,"");
             Part part = request.getPart("img");
             String contentType = part.getContentType();
+            long fileSize = part.getSize(); // Kích thước tệp ảnh (bytes)
             if (!isImageFile(contentType)) {
                 request.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
-            }
-            String realPath = request.getServletContext().getRealPath("/img/Employee"); //where the photo is saved
-            String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
-            // convert it to a string, get just the filename without including the full path.
-            if (!source.isEmpty()) {
-                String filename = null;
-                try {
-                    filename = employeeService.getEmployeeId() + ".png";
-                } catch (SQLException e) {
-                    request.setAttribute("message", "Can't create filename.");
+            }else if (fileSize > 2 * 1024 * 1024) { // Kiem tra nếu lớn hơn 2MB
+                request.setAttribute("message", "Image size must not exceed 2MB.");
+            } else {
+                String realPath = request.getServletContext().getRealPath("/img/Employee"); //where the photo is saved
+                String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
+                // convert it to a string, get just the filename without including the full path.
+                if (!source.isEmpty()) {
+                    String filename = null;
+                    try {
+                        filename = employeeService.getEmployeeId() + ".png";
+                    } catch (SQLException e) {
+                        request.setAttribute("message", "Can't create filename.");
+                    }
+                    if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
+                        Files.createDirectories(Path.of(realPath));
+                    }
+                    part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
+                    employee.setImage("/img/Employee/" + filename); //Set the path to the image file
                 }
-                if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
-                    Files.createDirectories(Path.of(realPath));
-                }
-                part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
-                employee.setImage("/img/Employee/" + filename); //Set the path to the image file
             }
             boolean success = false;
             try {
                 success = employeeService.createEmployee(employee);
             } catch (SQLException e) {
-                request.setAttribute("message", "Appear mistake can't add to database.");
+                request.setAttribute("message", "Can't add employee.");
             }
             if (success) {
                     request.setAttribute("messageSuccess", "Employee added successfully");
@@ -225,6 +240,14 @@ public class AddEmployeeServlet extends HttpServlet {
     private boolean isValidName(String name) {
         return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặèéẹẻẽêếềểễệìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựýỳỵỷỹđĐ]+$");
     }
+
+    public String generateNewEmployeeId() throws SQLException {
+        EmployeeService employeeService = new EmployeeService();
+        String prefix = "EP00"; // Luôn có "EP00"
+        int maxId = employeeService.getMaxEmployeeId(); // Lấy số lớn nhất từ database
+        return prefix + (maxId + 1); // Tăng lên 1 và ghép vào
+    }
+
 
 
 }

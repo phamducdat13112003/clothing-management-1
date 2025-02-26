@@ -35,6 +35,10 @@ public class EmployeeService {
     public boolean updateEmployee(Employee employee)throws SQLException{
         return EmployeeDAO.updateEmployee(employee);
     }
+
+    public int getMaxEmployeeId() throws SQLException {
+        return employeeDAO.getMaxEmployeeId();
+    }
     public boolean updateAccountEmail(String employeeId, String newEmail) throws SQLException{
         return EmployeeDAO.updateAccountEmail(employeeId, newEmail);
     }
