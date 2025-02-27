@@ -1,4 +1,4 @@
-package org.example.clothingmanagement.Encryption;
+package org.example.clothingmanagement.encryption;
 
 import java.math.BigInteger;
 import java.security.MessageDigest;

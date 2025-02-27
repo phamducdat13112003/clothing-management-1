@@ -10,7 +10,7 @@ import jakarta.servlet.http.HttpSession;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.repository.AccountDAO;
 import org.example.clothingmanagement.repository.EmployeeDAO;
-import org.example.clothingmanagement.Encryption.MD5;
+import org.example.clothingmanagement.encryption.MD5;
 
 import java.io.IOException;
 import java.sql.SQLException;
