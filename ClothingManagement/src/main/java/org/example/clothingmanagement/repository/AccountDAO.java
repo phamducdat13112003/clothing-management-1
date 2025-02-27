@@ -21,7 +21,6 @@ public class AccountDAO {
         return false;
     }
 
-
     public List<Account> getAccountsByPage(int page, int pageSize) throws SQLException {
         List<Account> list = new ArrayList<>();
         String sql = "SELECT a.*, r.RoleName " +
@@ -49,6 +48,19 @@ public class AccountDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public int getMaxAccountId() throws SQLException {
+        int maxId = 0;
+        String query = "SELECT MAX(CAST(SUBSTRING(AccountID, 6) AS UNSIGNED)) FROM Account";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                maxId = rs.getInt(1);
+            }
+        }
+        return maxId;
     }
 
     public int getTotalAccounts() throws SQLException {
@@ -139,14 +151,15 @@ public class AccountDAO {
         return account;
     }
     public void updateAccount(Account account) throws SQLException {
-        String sql = "UPDATE account SET email = ?, password = ? , roleID = ?, status = ? WHERE accountId = ?";
+        String sql = "UPDATE account SET email = ?, password = ? ,LastUpdate=? , roleID = ?, status = ? WHERE accountId = ?";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getEmail());
             stmt.setString(2, account.getPassword());
-            stmt.setInt(3, account.getRoleId());
-            stmt.setString(4, account.getStatus());
-            stmt.setString(5, account.getId());
+            stmt.setTimestamp(3, java.sql.Timestamp.valueOf(account.getLastUpdate()));
+            stmt.setInt(4, account.getRoleId());
+            stmt.setString(5, account.getStatus());
+            stmt.setString(6, account.getId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -194,15 +207,31 @@ public class AccountDAO {
         }
     }
 
+    public boolean updateStatusAccount(String status, String employeeId) throws SQLException {
+        String sql = "UPDATE Account SET status = ? WHERE employeeId = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, status);
+            stmt.setString(2, employeeId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 
     public void createAccount(Account account) throws SQLException {
-        String sql = "INSERT INTO account (Email, Password, RoleID, Status, EmployeeID) VALUES (?, ?, ?, 'Active', ?)";
+        String sql = "INSERT INTO account (AccountID,Email, Password, LastUpdate, RoleID, Status, EmployeeID) VALUES (?,?, ?, ?,?,'Active',?)";
         try (Connection connection = DBContext.getConnection();
         PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, account.getEmail());
-            stmt.setString(2, account.getPassword());
-            stmt.setInt(3, account.getRoleId());
-            stmt.setString(4, account.getEmployeeId());
+            stmt.setString(1, account.getId());
+            stmt.setString(2, account.getEmail());
+            stmt.setString(3, account.getPassword());
+            stmt.setTimestamp(4, java.sql.Timestamp.valueOf(account.getLastUpdate()));
+            stmt.setInt(5, account.getRoleId());
+            stmt.setString(6, account.getEmployeeId());
             stmt.executeUpdate();
         }catch (SQLException e) {
             e.printStackTrace();
@@ -249,7 +278,6 @@ public class AccountDAO {
         try (Connection connection = DBContext.getConnection();
              Statement stmt = connection.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-
             if (rs.next()) {
                 account = new Account();
                 account.setId(rs.getString("accountId"));

@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.SecureRandom;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @WebServlet(name = "AddAccountServlet", value = "/addaccount")
@@ -60,6 +61,13 @@ public class AddAccountServlet extends HttpServlet {
         String email = request.getParameter("email").trim();
         String roleId = request.getParameter("roleId");
         String employeeId = request.getParameter("employeeId");
+        LocalDateTime lastUpdate = LocalDateTime.now();
+        String accountId = null;
+        try {
+            accountId = generateNewAccountId();
+        } catch (SQLException e) {
+            request.setAttribute("message", "Cannot create accountID. Please check again.");
+        }
         List<Role> list = null;
         List<Employee> employees =null;
         boolean hasError = false;
@@ -87,9 +95,14 @@ public class AddAccountServlet extends HttpServlet {
         String password = generateRandomPassword();
         String encryptedPassword = MD5.getMd5(password);
 
-        Account account = new Account(email, encryptedPassword, Integer.parseInt(roleId),"True", employeeId);
+        Account account = new Account(accountId, email, encryptedPassword, Integer.parseInt(roleId), lastUpdate ,"Active", employeeId);
         try {
-            accountService.createAccount(account);
+            try {
+                accountService.createAccount(account);
+            } catch(SQLException e) {
+                request.setAttribute("message", "Cannot create account. Please check again.");
+                request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
+            }
             totalAccounts = accountService.getTotalAccounts();
             String subject = "Account Created Successfully!";
             Email emailSender = new Email();
@@ -98,9 +111,11 @@ public class AddAccountServlet extends HttpServlet {
             request.setAttribute("list", listAccount);
             request.setAttribute("messageSuccess", "Account successfully added!");
         } catch (SQLException e) {
-            request.setAttribute("message", "Failed to add account!");
+            request.setAttribute("message", "Appear error can't add account");
+            request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
         } catch (MessagingException e) {
-            throw new RuntimeException(e);
+            request.setAttribute("message", "Failed to send email!");
+            request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
         }
         int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);
         request.setAttribute("currentPage", page);
@@ -145,6 +160,13 @@ public class AddAccountServlet extends HttpServlet {
         }
 
         return new String(passwordArray);
+    }
+
+    public String generateNewAccountId() throws SQLException {
+        AccountService accountService = new AccountService();
+        String prefix = "ACC00"; // Luôn có "ACC00"
+        int maxId = accountService.getMaxAccountId(); // Lấy số lớn nhất từ database
+        return prefix + (maxId + 1); // Tăng lên 1 và ghép vào
     }
 
 }

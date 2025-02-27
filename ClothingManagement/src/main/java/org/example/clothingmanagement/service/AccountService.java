@@ -18,6 +18,10 @@ public class AccountService {
         return accountDAO.getTotalAccounts();
     }
 
+    public int getMaxAccountId() throws SQLException {
+        return accountDAO.getMaxAccountId();
+    }
+
     public int getTotalAccounts(String keyword) throws SQLException {
         return accountDAO.getTotalAccounts(keyword);
     }
@@ -43,6 +47,9 @@ public class AccountService {
     }
     public List<Role> getAllRoles() throws SQLException{
         return accountDAO.getAllRoles();
+    }
+    public boolean updateStatusAccount(String status, String employeeId) throws SQLException{
+        return accountDAO.updateStatusAccount(status, employeeId);
     }
 
     public boolean isAccountExist(String email, String accountId) throws SQLException{
