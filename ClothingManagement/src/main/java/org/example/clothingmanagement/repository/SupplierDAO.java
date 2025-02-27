@@ -19,8 +19,8 @@ public class SupplierDAO {
             List<Supplier> suppliers = new ArrayList<>();
             while(rs.next()){
                 Supplier supplier = Supplier.builder()
-                        .id(rs.getString("SupplierID"))
-                        .name(rs.getString("SupplierName"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .supplierName(rs.getString("SupplierName"))
                         .address(rs.getString("Address"))
                         .email(rs.getString("ContactEmail"))
                         .phone(rs.getString("Phone"))
@@ -31,6 +31,53 @@ public class SupplierDAO {
             return suppliers;
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public List<Supplier> getSuppliersWithPagination(int page, int pageSize) {
+        List<Supplier> suppliers = new ArrayList<>();
+        String sql = "SELECT * FROM Supplier WHERE Status = 1 LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setInt(1, pageSize);
+            pt.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = pt.executeQuery();
+            while (rs.next()) {
+                Supplier supplier = new Supplier();
+                supplier.setSupplierId(rs.getString("SupplierID"));
+                supplier.setSupplierName(rs.getString("SupplierName"));
+                supplier.setEmail(rs.getString("ContactEmail"));
+                supplier.setPhone(rs.getString("Phone"));
+                supplier.setAddress(rs.getString("Address"));
+                supplier.setStatus(rs.getBoolean("Status"));
+                suppliers.add(supplier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return suppliers;
+    }
+
+    public int getTotalSupplierCount() {
+        String sql = "SELECT COUNT(*) AS total FROM Supplier WHERE Status = 1";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql);
+             ResultSet rs = pt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        SupplierDAO dao = new SupplierDAO();
+        List<Supplier> list = dao.getSuppliersWithPagination(1, 5);
+        for (Supplier supplier : list) {
+            System.out.println(supplier);
         }
     }
 }

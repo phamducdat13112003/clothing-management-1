@@ -11,5 +11,12 @@ public class SupplierService {
     public List<Supplier> getAllSuppliers() {
         return supplierDAO.getAllSuppliers();
     }
+    public List<Supplier> getSuppliersWithPagination(int page, int pageSize){
+        return supplierDAO.getSuppliersWithPagination(page, pageSize);
+    }
+    public int getTotalSupplierCount() {
+        return supplierDAO.getTotalSupplierCount();
+    }
+
 
 }
