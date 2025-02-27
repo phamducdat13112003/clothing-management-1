@@ -119,7 +119,7 @@ public class EmployeeDAO {
             pt.setString(2, employee.getEmail());
             pt.setString(3, employee.getPhone());
             pt.setString(4, employee.getAddress());
-            pt.setBoolean(6, employee.isGender());
+            pt.setBoolean(5, employee.isGender());
             pt.setDate(6, Date.valueOf(employee.getDob()));
             pt.setString(7, employee.getStatus());
             pt.setString(8, employee.getWarehouseID());
@@ -210,8 +210,7 @@ public class EmployeeDAO {
         String sql = "SELECT e.*, w.WarehouseName " +
                 "FROM Employee e " +
                 "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
-                "WHERE e.Status = 'Active' " +
-                "AND (e.EmployeeName LIKE ? OR e.Email LIKE ? OR e.Phone LIKE ? OR e.EmployeeID LIKE ?) " +
+                "WHERE (e.EmployeeName LIKE ? OR e.Email LIKE ? OR e.Phone LIKE ? OR e.EmployeeID LIKE ?) " +
                 "LIMIT ? OFFSET ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -246,9 +245,7 @@ public class EmployeeDAO {
 
     public int getTotalEmployeeCount(String keyword) {
         String sql = "SELECT COUNT(*) AS total FROM Employee " +
-                "WHERE Status = 'Active' " +
-                "AND (EmployeeName LIKE ? OR Email LIKE ? OR Phone LIKE ? OR EmployeeID LIKE ?)";
-
+                "WHERE (EmployeeName LIKE ? OR Email LIKE ? OR Phone LIKE ? OR EmployeeID LIKE ?)";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             String searchKeyword = "%" + keyword + "%";
@@ -265,8 +262,6 @@ public class EmployeeDAO {
         }
         return 0;
     }
-
-
 
     public List<Employee> getEmployeesWithPagination(int page, int pageSize) {
         List<Employee> employees = new ArrayList<>();
@@ -306,7 +301,7 @@ public class EmployeeDAO {
         String sql = "SELECT e.*, w.WarehouseName " +
                 "FROM Employee e " +
                 "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
-                "WHERE e.EmployeeID = ? AND e.Status = 'Active'";
+                "WHERE e.EmployeeID = ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)){
             pt.setString(1, employeeID);
@@ -363,7 +358,7 @@ public class EmployeeDAO {
     public List<Employee> getEmployeesWithoutAccount() {
         List<Employee> employees = new ArrayList<>();
         String sql = "SELECT e.EmployeeID, e.EmployeeName, e.Email, e.Phone, e.Address, e.Gender, " +
-                "e.DateOfBirth, e.Status, e.RoleID, e.WarehouseID, e.Image, w.WarehouseName " +
+                "e.Dob, e.Status, e.WarehouseID, e.Image, w.WarehouseName " +
                 "FROM Employee e " +
                 "LEFT JOIN Account a ON e.EmployeeID = a.EmployeeID " +
                 "LEFT JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
@@ -384,13 +379,11 @@ public class EmployeeDAO {
                 employee.setWarehouseID(rs.getString("WarehouseID"));
                 employee.setImage(rs.getString("Image"));
                 employee.setWarehouseName(rs.getString("WarehouseName"));
-
                 employees.add(employee);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return employees;
     }
 

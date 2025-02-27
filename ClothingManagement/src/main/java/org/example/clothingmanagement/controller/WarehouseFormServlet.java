@@ -68,7 +68,7 @@ public class WarehouseFormServlet extends HttpServlet {
         int branchId = Integer.parseInt(request.getParameter("branchId"));
 
         Warehouse warehouse = new Warehouse();
-        warehouse.setWarehouseId(warehouseId);
+        //warehouse.setWarehouseId(warehouseId);
         warehouse.setWarehouseName(warehouseName);
         warehouse.setAddress(address);
         warehouse.setBranchId(branchId);

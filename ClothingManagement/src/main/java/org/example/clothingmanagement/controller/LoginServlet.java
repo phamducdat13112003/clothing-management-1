@@ -5,7 +5,6 @@ import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.service.AccountService;
-import org.example.clothingmanagement.service.AccountService;
 
 import java.io.IOException;
 import java.sql.SQLException;

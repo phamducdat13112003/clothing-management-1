@@ -19,11 +19,12 @@ public class SupplierDAO {
             List<Supplier> suppliers = new ArrayList<>();
             while(rs.next()){
                 Supplier supplier = Supplier.builder()
-                        .id(rs.getLong("SupplierID"))
+                        .id(rs.getString("SupplierID"))
                         .name(rs.getString("SupplierName"))
                         .address(rs.getString("Address"))
                         .email(rs.getString("ContactEmail"))
                         .phone(rs.getString("Phone"))
+                        .status(rs.getBoolean("Status"))
                         .build();
                 suppliers.add(supplier);
             }

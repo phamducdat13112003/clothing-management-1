@@ -93,7 +93,7 @@
                                 </ul>
                             </div>
                         </li>
-                        <c:if test="${account.getRoleId() == 4}">
+                        <c:if test="${account.getRoleId() == 3}">
                             <li><a href="account" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.259" height="19.146" viewBox="0 0 22.259 19.146">
