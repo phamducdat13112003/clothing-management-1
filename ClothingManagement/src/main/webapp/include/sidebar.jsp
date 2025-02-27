@@ -113,7 +113,7 @@
                                             <span class="menu-bar__name">Employee</span></span></a></span>
                             </li>
                         </c:if>
-                        <c:if test="${account.getRoleId() == 2">
+                        <c:if test="${account.getRoleId() == 2}">
                             <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.029" height="20.972" viewBox="0 0 22.029 20.972">
