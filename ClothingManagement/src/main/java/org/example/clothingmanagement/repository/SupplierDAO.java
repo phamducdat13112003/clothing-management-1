@@ -24,6 +24,7 @@ public class SupplierDAO {
                         .address(rs.getString("Address"))
                         .email(rs.getString("ContactEmail"))
                         .phone(rs.getString("Phone"))
+                        .status(rs.getBoolean("Status"))
                         .build();
                 suppliers.add(supplier);
             }
