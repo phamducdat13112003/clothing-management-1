@@ -113,6 +113,27 @@
                                             <span class="menu-bar__name">Employee</span></span></a></span>
                             </li>
                         </c:if>
+                        <c:if test="${account.getRoleId() == 2">
+                            <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span class="menu-bar__text">
+                                            <span class="sherah-menu-icon sherah-svg-icon__v1">
+                                                <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.029" height="20.972" viewBox="0 0 22.029 20.972">
+                                                <g id="Icon" transform="translate(-451.809 -436.251)">
+                                                <path id="Path_234" data-name="Path 234" d="M467.255,446.744q0,4.038,0,8.077c0,1.587-.776,2.4-2.294,2.4-2.7,0-5.39-.01-8.085.005a1.466,1.466,0,0,1-1.172-.506q-1.723-1.84-3.5-3.629a1.259,1.259,0,0,1-.381-.945c0-.907-.017-1.814-.017-2.722q0-5.4.007-10.8a2.082,2.082,0,0,1,2.28-2.37q5.44,0,10.881,0a2.076,2.076,0,0,1,2.278,2.369Q467.259,442.683,467.255,446.744Zm-10.039,9.007h7.751c.691,0,.864-.179.864-.893q0-8.119,0-16.237c0-.719-.169-.895-.859-.895H454.1c-.678,0-.846.167-.846.857q0,6.29,0,12.58c0,.144.014.288.024.474,1.017,0,2,0,2.988,0,.725,0,.953.234.955.981C457.218,453.641,457.217,454.665,457.217,455.75Zm-2.774-2.636,1.3,1.408v-1.408Z" transform="translate(0 0)"/>
+                                                <path id="Path_235" data-name="Path 235" d="M640.677,446.844c0,2.765.005,5.531,0,8.3a2.052,2.052,0,0,1-1.852,2.175.733.733,0,1,1-.177-1.452.635.635,0,0,0,.6-.721q0-8.3,0-16.592a.632.632,0,0,0-.6-.721.734.734,0,1,1,.174-1.454,2.054,2.054,0,0,1,1.853,2.174C640.682,441.313,640.677,444.079,640.677,446.844Z" transform="translate(-170.125 -0.109)"/>
+                                                <path id="Path_236" data-name="Path 236" d="M678.986,446.8c0,2.78.005,5.56,0,8.339a2.04,2.04,0,0,1-1.845,2.13.725.725,0,0,1-.862-.655.736.736,0,0,1,.689-.8c.464-.088.595-.253.6-.81q.006-2.876,0-5.753,0-5.262,0-10.524c0-.722-.044-.777-.728-.953a.744.744,0,0,1-.558-.791.712.712,0,0,1,.735-.66,2.033,2.033,0,0,1,1.97,2.1c.013,2.021,0,4.043,0,6.065Q678.986,445.64,678.986,446.8Z" transform="translate(-205.15 -0.063)"/>
+                                                </g>
+                                                </svg>
+                                            </span>
+                                            <span class="menu-bar__name">Purchase Order</span></span><span class="sherah__toggle"></span></a></span>
+                                <!-- Dropdown Menu -->
+                                <div class="collapse sherah__dropdown" id="menu-item__9" data-bs-parent="#sherahMenu">
+                                    <ul class="menu-bar__one-dropdown">
+                                        <li><a href="viewpurchaseorder"><span class="menu-bar__text"><span class="menu-bar__name">View Purchase Order</span></span></a></li>
+                                        <li><a href="Createpurchaseorder"><span class="menu-bar__text"><span class="menu-bar__name">Create Purchase Order </span></span></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </c:if>
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__orders"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg  class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="17.092" height="17.873" viewBox="0 0 17.092 17.873">
@@ -169,26 +190,6 @@
                                                 </svg>
                                             </span>
                                             <span class="menu-bar__name">Settings</span></span></a></span>
-                        </li>
-                        <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span class="menu-bar__text">
-                                            <span class="sherah-menu-icon sherah-svg-icon__v1">
-                                                <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" width="22.029" height="20.972" viewBox="0 0 22.029 20.972">
-                                                <g id="Icon" transform="translate(-451.809 -436.251)">
-                                                <path id="Path_234" data-name="Path 234" d="M467.255,446.744q0,4.038,0,8.077c0,1.587-.776,2.4-2.294,2.4-2.7,0-5.39-.01-8.085.005a1.466,1.466,0,0,1-1.172-.506q-1.723-1.84-3.5-3.629a1.259,1.259,0,0,1-.381-.945c0-.907-.017-1.814-.017-2.722q0-5.4.007-10.8a2.082,2.082,0,0,1,2.28-2.37q5.44,0,10.881,0a2.076,2.076,0,0,1,2.278,2.369Q467.259,442.683,467.255,446.744Zm-10.039,9.007h7.751c.691,0,.864-.179.864-.893q0-8.119,0-16.237c0-.719-.169-.895-.859-.895H454.1c-.678,0-.846.167-.846.857q0,6.29,0,12.58c0,.144.014.288.024.474,1.017,0,2,0,2.988,0,.725,0,.953.234.955.981C457.218,453.641,457.217,454.665,457.217,455.75Zm-2.774-2.636,1.3,1.408v-1.408Z" transform="translate(0 0)"/>
-                                                <path id="Path_235" data-name="Path 235" d="M640.677,446.844c0,2.765.005,5.531,0,8.3a2.052,2.052,0,0,1-1.852,2.175.733.733,0,1,1-.177-1.452.635.635,0,0,0,.6-.721q0-8.3,0-16.592a.632.632,0,0,0-.6-.721.734.734,0,1,1,.174-1.454,2.054,2.054,0,0,1,1.853,2.174C640.682,441.313,640.677,444.079,640.677,446.844Z" transform="translate(-170.125 -0.109)"/>
-                                                <path id="Path_236" data-name="Path 236" d="M678.986,446.8c0,2.78.005,5.56,0,8.339a2.04,2.04,0,0,1-1.845,2.13.725.725,0,0,1-.862-.655.736.736,0,0,1,.689-.8c.464-.088.595-.253.6-.81q.006-2.876,0-5.753,0-5.262,0-10.524c0-.722-.044-.777-.728-.953a.744.744,0,0,1-.558-.791.712.712,0,0,1,.735-.66,2.033,2.033,0,0,1,1.97,2.1c.013,2.021,0,4.043,0,6.065Q678.986,445.64,678.986,446.8Z" transform="translate(-205.15 -0.063)"/>
-                                                </g>
-                                                </svg>
-                                            </span>
-                                            <span class="menu-bar__name">Pages</span></span><span class="sherah__toggle"></span></a></span>
-                            <!-- Dropdown Menu -->
-                            <div class="collapse sherah__dropdown" id="menu-item__9" data-bs-parent="#sherahMenu">
-                                <ul class="menu-bar__one-dropdown">
-                                    <li><a href="notifications.html"><span class="menu-bar__text"><span class="menu-bar__name">Notifications</span></span></a></li>
-                                    <li><a href="terms-conditions.html"><span class="menu-bar__text"><span class="menu-bar__name">Terms & Conditions</span></span></a></li>
-                                    <li><a href="faq.html"><span class="menu-bar__text"><span class="menu-bar__name">Faqs</span></span></a></li>
-                                </ul>
-                            </div>
                         </li>
                         <li><a class="collapsed" href="languages.html"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
