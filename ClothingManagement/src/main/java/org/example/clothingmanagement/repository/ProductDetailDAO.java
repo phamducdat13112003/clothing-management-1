@@ -21,13 +21,13 @@ public class ProductDetailDAO {
             List<ProductDetail> list = new ArrayList<ProductDetail>();
             while(rs.next()){
                 ProductDetail productDetail = ProductDetail.builder()
-                        .id(rs.getLong("ProductDetailId"))
+                        .id(rs.getString("ProductDetailId"))
                         .quantity(rs.getInt("Quantity"))
                         .weight(rs.getDouble("Weight"))
                         .color(rs.getString("Color"))
                         .size(rs.getString("Size"))
                         .image(rs.getString("ProductImage"))
-                        .id(rs.getLong("ProductId"))
+                        .id(rs.getString("ProductId"))
                         .build();
                 list.add(productDetail);
             }
@@ -48,13 +48,13 @@ public class ProductDetailDAO {
             List<ProductDetail> list = new ArrayList<>();
             while(rs.next()){
                 ProductDetail productDetail = ProductDetail.builder()
-                        .id(rs.getLong("ProductDetailId"))
+                        .id(rs.getString("ProductDetailId"))
                         .quantity(rs.getInt("Quantity"))
                         .weight(rs.getDouble("Weight"))
                         .color(rs.getString("Color"))
                         .size(rs.getString("Size"))
                         .image(rs.getString("ProductImage"))
-                        .id(rs.getLong("ProductId"))
+                        .id(rs.getString("ProductId"))
                         .build();
                 list.add(productDetail);
             }
@@ -77,13 +77,13 @@ public class ProductDetailDAO {
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 ProductDetail productDetail = ProductDetail.builder()
-                        .id(rs.getLong("ProductDetailId"))
+                        .id(rs.getString("ProductDetailId"))
                         .quantity(rs.getInt("Quantity"))
                         .weight(rs.getDouble("Weight"))
                         .color(rs.getString("Color"))
                         .size(rs.getString("Size"))
                         .image(rs.getString("ProductImage"))
-                        .id(rs.getLong("ProductId"))
+                        .id(rs.getString("ProductId"))
                         .build();
                 return Optional.of(productDetail);
             }

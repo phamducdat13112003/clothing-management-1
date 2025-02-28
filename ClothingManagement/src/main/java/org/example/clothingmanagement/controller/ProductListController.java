@@ -24,18 +24,18 @@ public class ProductListController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Product> products = productService.getAllProducts();
+        //List<Product> products = productService.getAllProducts();
 
 
-        for (Product product : products) {
-            List<ProductDetail> list = productDetailService.getProductDetailById(product.getId());
-            product.setTotalQuantity(list.size());
+        //for (Product product : products) {
+            //List<ProductDetail> list = productDetailService.getProductDetailById(product.getId());
+            //product.setTotalQuantity(list.size());
 
-        }
+        //}
 
 
         // Đặt sản phẩm vào trong request để chuyển đến JSP
-        req.setAttribute("products", products);
+        //req.setAttribute("products", products);
 
 
         // Chuyển tiếp đến JSP để hiển thị

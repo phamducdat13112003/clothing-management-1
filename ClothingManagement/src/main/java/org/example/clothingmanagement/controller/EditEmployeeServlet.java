@@ -128,7 +128,6 @@ public class EditEmployeeServlet extends HttpServlet {
         }
         if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
             request.setAttribute("message", message.toString());
-            System.out.println(message);
             request.setAttribute("employee", employee);
             request.setAttribute("list", list);
             request.setAttribute("listWarehouse", listWarehouse);

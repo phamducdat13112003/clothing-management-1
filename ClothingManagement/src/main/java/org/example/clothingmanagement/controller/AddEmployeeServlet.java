@@ -157,9 +157,9 @@ public class AddEmployeeServlet extends HttpServlet {
                 request.setAttribute("message", "Can't add employee.");
             }
             if (success) {
-                    request.setAttribute("messageSuccess", "Employee added successfully");
+                request.setAttribute("messageSuccess", "Employee added successfully");
             } else {
-                    request.setAttribute("message", "Failed to add employee");
+                request.setAttribute("message", "Failed to add employee");
             }
             List<Employee> listEmployee = null;
             try {

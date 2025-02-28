@@ -2,6 +2,13 @@
   Created by IntelliJ IDEA.
   User: LENOVO
   Date: 2/28/2025
+  Time: 12:32 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%--
+  Created by IntelliJ IDEA.
+  User: LENOVO
+  Date: 2/28/2025
   Time: 8:39 AM
   To change this template use File | Settings | File Templates.
 --%>
@@ -82,7 +89,7 @@
                             </div>
                         </div>
                         <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
-                            <form class="sherah-wc__form-main" action="addsupplier" method="post">
+                            <form class="sherah-wc__form-main" action="editsupplier" method="post">
                                 <div class="row">
                                     <div class="col-12">
                                         <!-- Basic Information -->
@@ -91,9 +98,16 @@
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div class="form-group">
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Supplier Id" type="hidden" name="supplierId" value="${supplier.supplierId}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
                                                         <label class="sherah-wc__form-label">Supplier Name <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input value="${name}" class="sherah-wc__form-input" type="text" name="name" required>
+                                                            <input class="sherah-wc__form-input" type="text" name="name" required value="${supplier.supplierName}">
                                                             <c:if test="${not empty errorName}">
                                                                 <span class="error-message">${errorName}</span>
                                                             </c:if>
@@ -104,7 +118,7 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${supplier.email}" required>
                                                             <c:if test="${not empty errorEmail}">
                                                                 <span class="error-message">${errorEmail}</span>
                                                             </c:if>
@@ -115,7 +129,7 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${supplier.phone}" required>
                                                             <c:if test="${not empty errorPhone}">
                                                                 <span class="error-message">${errorPhone}</span>
                                                             </c:if>
@@ -126,15 +140,26 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Address <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${supplier.address}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Status <span class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <select class="sherah-wc__form-input" name="status" required>
+                                                                <option value="1" ${supplier.status == true ? "selected" : ""}>Active</option>
+                                                                <option value="0" ${supplier.status == false ? "selected" : ""}>Inactive</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        <!-- End Basic Information -->
+                                            <!-- End Basic Information -->
                                         </div>
                                         <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30">
-                                            <button type="submit" class="sherah-btn sherah-btn__primary">Add</button>
+                                            <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
                                             <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
                                         </div>
                                     </div>
@@ -277,5 +302,6 @@
 </script>
 </body>
 </html>
+
 
 

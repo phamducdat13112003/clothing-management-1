@@ -83,7 +83,6 @@ public class AccountDAO {
                 "FROM Account a " +
                 "JOIN Role r ON a.RoleID = r.RoleID " +
                 "WHERE (a.email LIKE ? OR a.employeeID LIKE ?) " +
-                "AND a.status = 'Active' " +
                 "LIMIT ? OFFSET ?";
 
         try (Connection conn = DBContext.getConnection();

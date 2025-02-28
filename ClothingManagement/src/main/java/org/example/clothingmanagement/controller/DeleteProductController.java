@@ -19,16 +19,16 @@ public class DeleteProductController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         Integer id = Integer.parseInt(req.getParameter("id"));
-        boolean result = productService.deleteProduct(id);
-        if (result) {
-            session.setAttribute("alertMessage", "Delete Product Success");
-            session.setAttribute("alertType", "success");
-            resp.sendRedirect("product-list");
-        }else {
-            req.setAttribute("alertMessage", "Update Product Failed");
-            req.setAttribute("alertType", "error");
-            req.getRequestDispatcher("product-list.jsp").forward(req, resp);
-        }
+//        boolean result = productService.deleteProduct(id);
+//        if (result) {
+//            session.setAttribute("alertMessage", "Delete Product Success");
+//            session.setAttribute("alertType", "success");
+//            resp.sendRedirect("product-list");
+//        }else {
+//            req.setAttribute("alertMessage", "Update Product Failed");
+//            req.setAttribute("alertType", "error");
+//            req.getRequestDispatcher("product-list.jsp").forward(req, resp);
+//        }
     }
 
     @Override

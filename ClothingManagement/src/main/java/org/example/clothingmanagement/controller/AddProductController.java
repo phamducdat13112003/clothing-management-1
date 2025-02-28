@@ -45,14 +45,14 @@ public class AddProductController extends HttpServlet {
         int supplierID = Integer.parseInt(req.getParameter("supplierID"));
         String madeIn = req.getParameter("madeIn");
 
-        Product product = new Product(productName,price,seasons,supplierID,material,madeIn,gender,description,categoryID,minQuantity,1,1);
-        boolean check = productService.addProduct(product);
-        if (check) {
-            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=1");
-        }
-        else{
-            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=2");
-        }
+        //Product product = new Product(productName,price,seasons,supplierID,material,madeIn,gender,description,categoryID,minQuantity,1,1);
+        //boolean check = productService.addProduct(product);
+//        if (check) {
+//            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=1");
+//        }
+//        else{
+//            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=2");
+//        }
 
     }
 }

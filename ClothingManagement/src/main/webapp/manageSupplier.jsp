@@ -241,7 +241,7 @@
 <script src="js/main.js"></script>
 <script type="text/javascript">
   function confirmDelete(supplierId) {
-    if (confirm("Are you sure want to delete this account?")) {
+    if (confirm("Are you sure want to delete this supplier?")) {
       window.location = "deletesupplier?supplierId=" + supplierId;
     }
   }

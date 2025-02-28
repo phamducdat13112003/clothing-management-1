@@ -4,15 +4,16 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.service.AccountService;
+import org.example.clothingmanagement.entity.Supplier;
 import org.example.clothingmanagement.service.EmployeeService;
+import org.example.clothingmanagement.service.SupplierService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet(name = "DeleteEmployeeServlet", value = "/deleteemployee")
-public class DeleteEmployeeServlet extends HttpServlet {
+@WebServlet(name = "DeleteSupplierServlet", value = "/deletesupplier")
+public class DeleteSupplierServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -33,38 +34,33 @@ public class DeleteEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String employeeId= request.getParameter("employeeId");
-        EmployeeService employeeService = new EmployeeService();
-        AccountService accountService = new AccountService();
+        String supplierId= request.getParameter("supplierId");
+        SupplierService supplierService = new SupplierService();
         int page = 1;
         int pageSize = 5;
-        int totalEmployees = 0;
-        List<Employee> list =null;
-        if(employeeId != null){
+        int totalSuppliers = 0;
+        List<Supplier> list =null;
+        if(supplierId != null){
             try {
-                boolean isDeleted= employeeService.deleteEmployee(employeeId);
-                boolean isAccountDeleted = true;
-                if (employeeService.hasAccount(employeeId)) {
-                    isAccountDeleted = accountService.deleteAccountWhenDeleteEmployee(employeeId);
-                }
-                if((isDeleted) && (isAccountDeleted)){
-                     list= employeeService.getEmployeesWithPagination(page, pageSize);
-                    totalEmployees = employeeService.getTotalEmployeeCount();
-                    request.setAttribute("messageSuccess", "Employee deleted");
+                boolean isDeleted= supplierService.deleteSupplier(supplierId);
+                if((isDeleted)){
+                    list= supplierService.getSuppliersWithPagination(page, pageSize);
+                    totalSuppliers= supplierService.getTotalSupplierCount();
+                    request.setAttribute("messageSuccess", "Supplier deleted");
                 }else{
-                     list= employeeService.getEmployeesWithPagination(page, pageSize);
-                     totalEmployees = employeeService.getTotalEmployeeCount();
-                    request.setAttribute("message", "Failed to delete employee");
+                    list= supplierService.getSuppliersWithPagination(page, pageSize);
+                    totalSuppliers= supplierService.getTotalSupplierCount();
+                    request.setAttribute("message", "Failed to delete supplier");
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        int totalPages = (int) Math.ceil((double) totalEmployees / pageSize);
+        int totalPages = (int) Math.ceil((double) totalSuppliers / pageSize);
         request.setAttribute("list", list);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
-        request.getRequestDispatcher("./manageEmployee.jsp").forward(request, response);
+        request.getRequestDispatcher("./manageSupplier.jsp").forward(request, response);
     }
 
     @Override
