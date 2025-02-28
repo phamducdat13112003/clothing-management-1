@@ -1,5 +1,4 @@
 package org.example.clothingmanagement.controller;
-
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -13,45 +12,49 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@WebServlet(name = "AddSupplierServlet", value = "/addsupplier")
-public class AddSupplierServlet extends HttpServlet {
+@WebServlet(name = "EditSupplierServlet", value = "/editsupplier")
+public class EditSupplierServlet extends HttpServlet {
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddAcc</title>");
+            out.println("<title>Servlet AddAcc</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddAcc at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AddAcc at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    }
+    } 
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
-        request.getRequestDispatcher("./addSupplier.jsp").forward(request, response);
+        SupplierService supplierService = new SupplierService();
+        String supplierId = request.getParameter("supplierId");
+        Supplier supplier = null;
+        try {
+            supplier = supplierService.getSupplierById(supplierId);
+        } catch (SQLException e) {
+            request.setAttribute("message", "Can't find supplier with ID " + supplierId);
+        }
+        request.setAttribute("supplier", supplier);
+        request.getRequestDispatcher("./editSupplier.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         SupplierService supplierService = new SupplierService();
+        String supplierId = request.getParameter("supplierId");
         StringBuilder message = new StringBuilder();
+        Supplier supplier = null;
         int page = 1;
         int pageSize = 5;
-        int totalSuppliers= 0;
-        String supplierId= null;
-        try {
-            supplierId = generateNewSupplierId();
-        } catch (SQLException e) {
-            request.setAttribute("message", "Can't create new supplier");
-        }
+        int totalSuppliers =0;
         String name = request.getParameter("name").trim();
         if (!isValidName(name)) {
             request.setAttribute("errorName", "Invalid name");
@@ -70,11 +73,16 @@ public class AddSupplierServlet extends HttpServlet {
             request.setAttribute("errorPhone", "Invalid phone number. The telephone number have 10 digits");
         }
         try {
-            if(supplierService.isSupplierExistedWhenAdd(email, phone)){
+            if(supplierService.isSupplierExisted(supplierId, email, phone)){
                 message.append("Supplier already existed.\n");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+        try {
+            supplier = supplierService.getSupplierById(supplierId);
+        } catch (SQLException e) {
+            request.setAttribute("message", "Can't find supplier with ID " + supplierId);
         }
         if(supplierId == null || !message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone)){
             request.setAttribute("message", message.toString());
@@ -84,21 +92,22 @@ public class AddSupplierServlet extends HttpServlet {
             request.setAttribute("address", address);
             request.getRequestDispatcher("./addSupplier.jsp").forward(request, response);
         }else{
-            Supplier supplier = new Supplier(supplierId, name, address, email, phone, true);
+            Supplier editSupplier = new Supplier(supplierId, name, address, email, phone, true);
             boolean success = false;
             try {
-                success= supplierService.createSupplier(supplier);
+                success = supplierService.updateSupplier(editSupplier);
             } catch (Exception e) {
-                request.setAttribute("message", "Can't add employee.");
+                e.printStackTrace();
+                request.setAttribute("message", "Cannot update supplier due to a error.");
             }
             if (success) {
-                request.setAttribute("messageSuccess", "Supplier added successfully");
-            }else{
-                request.setAttribute("message", "Failed to add supplier");
+                request.setAttribute("messageSuccess", "Supplier updated successfully");
+            } else {
+                request.setAttribute("message", "Failed to update supplier");
             }
-            List<Supplier> list= null;
+            List<Supplier> list = null;
             try {
-                list= supplierService.getSuppliersWithPagination(page, pageSize);
+                list = supplierService.getSuppliersWithPagination(page, pageSize);
                 totalSuppliers = supplierService.getTotalSupplierCount();
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -109,6 +118,7 @@ public class AddSupplierServlet extends HttpServlet {
             request.setAttribute("list", list);
             request.getRequestDispatcher("./manageSupplier.jsp").forward(request, response);
         }
+
     }
 
     private String capitalizeName(String name) {
@@ -143,12 +153,5 @@ public class AddSupplierServlet extends HttpServlet {
 
     private boolean isValidName(String name) {
         return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặèéẹẻẽêếềểễệìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựýỳỵỷỹđĐ&\\-_.(),/+%#:]+$");
-    }
-
-    private String generateNewSupplierId() throws SQLException {
-        SupplierService supplierService = new SupplierService();
-        String prefix = "SP00"; // Luôn có "EP00"
-        int maxId = supplierService.getMaxSupplierId(); // Lấy số lớn nhất từ database
-        return prefix + (maxId + 1); // Tăng lên 1 và ghép vào
     }
 }

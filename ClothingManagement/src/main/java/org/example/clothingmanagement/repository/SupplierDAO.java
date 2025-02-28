@@ -13,7 +13,7 @@ public class SupplierDAO {
     public List<Supplier> getAllSuppliers() {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT SupplierID, SupplierName, Address, ContactEmail, Phone FROM Supplier ");
+            sql.append(" SELECT SupplierID, SupplierName, Address, ContactEmail, Phone, Status FROM Supplier ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ResultSet rs = ps.executeQuery();
             List<Supplier> suppliers = new ArrayList<>();
@@ -59,6 +59,115 @@ public class SupplierDAO {
         return suppliers;
     }
 
+    public boolean isSupplierExistedWhenAdd(String email, String phone) {
+        boolean exists = false;
+        String sql = "SELECT * FROM Supplier WHERE (ContactEmail = ? OR Phone = ?)";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, email);
+            pt.setString(2, phone);
+            ResultSet rs = pt.executeQuery();
+            if (rs.next()) {
+                exists = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi ra console để debug
+        }
+        return exists;
+    }
+
+    public boolean isSupplierExisted(String supplierId, String email, String phone) {
+        boolean exists = false;
+        String sql = "SELECT * FROM Supplier WHERE (ContactEmail = ? OR Phone = ?) AND SupplierID != ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, email);
+            pt.setString(2, phone);
+            pt.setString(3, supplierId);
+            ResultSet rs = pt.executeQuery();
+            if (rs.next()) {
+                exists = true;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // In lỗi ra console để debug
+        }
+        return exists;
+    }
+
+    public Supplier getSupplierById(String supplierId) {
+        Supplier supplier = null;
+        String sql = "SELECT * FROM Supplier WHERE SupplierID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, supplierId);
+            ResultSet rs = pt.executeQuery();
+            if (rs.next()) {
+                supplier = new Supplier();
+                supplier.setSupplierId(rs.getString("SupplierID"));
+                supplier.setSupplierName(rs.getString("SupplierName"));
+                supplier.setAddress(rs.getString("Address"));
+                supplier.setEmail(rs.getString("ContactEmail"));
+                supplier.setPhone(rs.getString("Phone"));
+                supplier.setStatus(rs.getBoolean("Status"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return supplier;
+    }
+
+    public boolean createSupplier(Supplier supplier) {
+        String sql = "INSERT INTO Supplier (SupplierID, SupplierName, Address, ContactEmail, Phone, Status) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, supplier.getSupplierId());
+            pt.setString(2, supplier.getSupplierName());
+            pt.setString(3, supplier.getAddress());
+            pt.setString(4, supplier.getEmail());
+            pt.setString(5, supplier.getPhone());
+            pt.setBoolean(6, supplier.isStatus());
+            int rowsAffected = pt.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu thêm thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean updateSupplier(Supplier supplier) {
+        String sql = "UPDATE Supplier SET SupplierName = ?, Address = ?, ContactEmail = ?, Phone = ?, Status = ? WHERE SupplierID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, supplier.getSupplierName());
+            pt.setString(2, supplier.getAddress());
+            pt.setString(3, supplier.getEmail());
+            pt.setString(4, supplier.getPhone());
+            pt.setBoolean(5, supplier.isStatus());
+            pt.setString(6, supplier.getSupplierId());
+            int rowsAffected = pt.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+
+    public boolean deleteSupplier(String supplierId) {
+        String sql = "UPDATE Supplier SET Status = 0 WHERE SupplierID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, supplierId);
+            int rowsUpdated = pt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public int getTotalSupplierCount() {
         String sql = "SELECT COUNT(*) AS total FROM Supplier WHERE Status = 1";
         try (Connection conn = DBContext.getConnection();
@@ -73,11 +182,20 @@ public class SupplierDAO {
         return 0;
     }
 
-    public static void main(String[] args) {
-        SupplierDAO dao = new SupplierDAO();
-        List<Supplier> list = dao.getSuppliersWithPagination(1, 5);
-        for (Supplier supplier : list) {
-            System.out.println(supplier);
+    public int getMaxSupplierId() throws SQLException {
+        int maxId = 0;
+        String query = "SELECT MAX(CAST(SUBSTRING(supplierID, 5) AS UNSIGNED)) FROM Supplier";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                maxId = rs.getInt(1);
+            }
         }
+        return maxId;
+    }
+
+
+    public static void main(String[] args) {
     }
 }

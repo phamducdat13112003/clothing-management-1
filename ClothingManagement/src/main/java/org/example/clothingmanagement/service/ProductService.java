@@ -9,20 +9,20 @@ import java.util.Optional;
 public class ProductService {
     private final ProductDAO productDAO = new ProductDAO();
 
-    public List<Product> getAllProducts() {
-        List<Product> products = productDAO.getAllProducts();
-        return products;
-    }
-
-    public boolean addProduct(Product product) {
-        return productDAO.addProduct(product);
-    }
-
-    public boolean deleteProduct(Integer id) {
-        return productDAO.deleteProduct(id);
-    }
-
-    public Optional<Product> getProductById(Integer id) {
-        return productDAO.getProductById(id);
-    }
+//    public List<Product> getAllProducts() {
+//        List<Product> products = productDAO.getAllProducts();
+//        return products;
+//    }
+//
+//    public boolean addProduct(Product product) {
+//        return productDAO.addProduct(product);
+//    }
+//
+//    public boolean deleteProduct(Integer id) {
+//        return productDAO.deleteProduct(id);
+//    }
+//
+//    public Optional<Product> getProductById(Integer id) {
+//        return productDAO.getProductById(id);
+//    }
 }
