@@ -41,6 +41,12 @@ public class SupplierService {
     public boolean deleteSupplier(String supplierId) throws SQLException {
         return supplierDAO.deleteSupplier(supplierId);
     }
+    public List<Supplier> searchSupplier(String keyword, int page, int pageSize) throws SQLException {
+        return supplierDAO.searchSupplier(keyword, page, pageSize);
+    }
+    public int getTotalSupplierCount(String keyword) throws SQLException {
+        return supplierDAO.getTotalSupplierCount(keyword);
+    }
 
 
 

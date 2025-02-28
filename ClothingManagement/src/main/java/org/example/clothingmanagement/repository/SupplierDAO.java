@@ -153,8 +153,6 @@ public class SupplierDAO {
         return false;
     }
 
-
-
     public boolean deleteSupplier(String supplierId) {
         String sql = "UPDATE Supplier SET Status = 0 WHERE SupplierID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -166,6 +164,58 @@ public class SupplierDAO {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public List<Supplier> searchSupplier(String keyword, int page, int pageSize) {
+        List<Supplier> suppliers = new ArrayList<>();
+        String sql = "SELECT * FROM Supplier " +
+                "WHERE (SupplierName LIKE ? OR ContactEmail LIKE ? OR Phone LIKE ? OR SupplierID LIKE ?) " +
+                "LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchKeyword = "%" + keyword + "%";
+            stmt.setString(1, searchKeyword);
+            stmt.setString(2, searchKeyword);
+            stmt.setString(3, searchKeyword);
+            stmt.setString(4, searchKeyword);
+            stmt.setInt(5, pageSize);
+            stmt.setInt(6, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Supplier supplier = new Supplier();
+                supplier.setSupplierId(rs.getString("SupplierID"));
+                supplier.setSupplierName(rs.getString("SupplierName"));
+                supplier.setAddress(rs.getString("Address"));
+                supplier.setEmail(rs.getString("ContactEmail"));
+                supplier.setPhone(rs.getString("Phone"));
+                supplier.setStatus(rs.getBoolean("Status"));
+                suppliers.add(supplier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
+
+    public int getTotalSupplierCount(String keyword) {
+        String sql = "SELECT COUNT(*) AS total FROM Supplier " +
+                "WHERE (SupplierName LIKE ? OR ContactEmail LIKE ? OR Phone LIKE ? OR SupplierID LIKE ?)";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchKeyword = "%" + keyword + "%";
+            stmt.setString(1, searchKeyword);
+            stmt.setString(2, searchKeyword);
+            stmt.setString(3, searchKeyword);
+            stmt.setString(4, searchKeyword);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public int getTotalSupplierCount() {
