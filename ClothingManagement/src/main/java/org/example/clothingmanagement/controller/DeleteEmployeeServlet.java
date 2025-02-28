@@ -44,16 +44,16 @@ public class DeleteEmployeeServlet extends HttpServlet {
             try {
                 boolean isDeleted= employeeService.deleteEmployee(employeeId);
                 boolean isAccountDeleted = true;
-
                 if (employeeService.hasAccount(employeeId)) {
                     isAccountDeleted = accountService.deleteAccountWhenDeleteEmployee(employeeId);
                 }
-
                 if((isDeleted) && (isAccountDeleted)){
                      list= employeeService.getEmployeesWithPagination(page, pageSize);
-                    request.setAttribute("message", "Employee deleted");
+                    totalEmployees = employeeService.getTotalEmployeeCount();
+                    request.setAttribute("messageSuccess", "Employee deleted");
                 }else{
                      list= employeeService.getEmployeesWithPagination(page, pageSize);
+                     totalEmployees = employeeService.getTotalEmployeeCount();
                     request.setAttribute("message", "Failed to delete employee");
                 }
             } catch (Exception e) {
