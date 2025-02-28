@@ -64,7 +64,8 @@ public class EditSupplierServlet extends HttpServlet {
         address = capitalizeName(address);
         String phone = request.getParameter("phone").trim();
         String email = request.getParameter("email").trim();
-
+        String statusParam = request.getParameter("status");
+        boolean status = "1".equals(statusParam);
         if (!isValidEmail(email)) {
             request.setAttribute("errorEmail", "Invalid email");
         }
@@ -92,7 +93,7 @@ public class EditSupplierServlet extends HttpServlet {
             request.setAttribute("address", address);
             request.getRequestDispatcher("./addSupplier.jsp").forward(request, response);
         }else{
-            Supplier editSupplier = new Supplier(supplierId, name, address, email, phone, true);
+            Supplier editSupplier = new Supplier(supplierId, name, address, email, phone, status);
             boolean success = false;
             try {
                 success = supplierService.updateSupplier(editSupplier);
