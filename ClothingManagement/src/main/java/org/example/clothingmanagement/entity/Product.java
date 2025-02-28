@@ -12,7 +12,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 public class Product {
-    private Long id;
+    private String id;
     private String name;
     private Double price;
     private Integer binId;
