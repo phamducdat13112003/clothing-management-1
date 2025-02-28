@@ -18,5 +18,8 @@ public class SupplierService {
         return supplierDAO.getTotalSupplierCount();
     }
 
+    public Supplier getSupplierBySupplierID(String supplierID) throws Exception{
+        return supplierDAO.getSupplierBySupplierID(supplierID);
+    }
 
 }

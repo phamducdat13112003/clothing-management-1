@@ -1,6 +1,7 @@
 package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Product;
+import org.example.clothingmanagement.entity.ProductDetail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -122,7 +123,67 @@ public class ProductDAO {
 
 
 
+    public Optional<Product> getProductById(String id) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn FROM Product ");
+            sql.append(" WHERE ProductID = ?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Product product = Product.builder()
+                        .id(rs.getLong("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .binId(rs.getInt("binID"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate"))
+                        .description(rs.getString("Description"))
+                        .createdBy(rs.getInt("CreatedBy"))
+                        .supplierId(rs.getInt("SupplierID"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .build();
+                return Optional.of(product);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return Optional.empty();
+    }
 
-
-
+    public Product getProductByProductID(String productID) {
+        String sql = "SELECT * FROM product WHERE ProductID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return Product.builder()
+                        .id(rs.getString("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate"))
+                        .description(rs.getString("Description"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .binId(rs.getString("BinID"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .createdBy(rs.getString("CategoryID"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .Status(rs.getInt("Status"))
+                        .build();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
 }

@@ -19,6 +19,10 @@ public class ProductDetailService {
         List<ProductDetail> productDetails = productDetailDAO.findByProductId(id);
         return productDetails;
     }
-
-
+    public ProductDetail getProductDetailByProductDetailID(String productDetailID) throws Exception {
+        return productDetailDAO.getProductDetailByProductDetailID(productDetailID);
+    }
+    public String getProductIDByProductDetailID(String productDetailID) throws Exception {
+        return productDetailDAO.getProductIDByProductDetailID(productDetailID);
+    }
 }

@@ -94,4 +94,48 @@ public class ProductDetailDAO {
             throw new RuntimeException(e);
         }
     }
+    public ProductDetail getProductDetailByProductDetailID(String productDetailID) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT * FROM `productdetail` WHERE ProductDetailID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, productDetailID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return ProductDetail.builder()
+                        .id(rs.getString("ProductDetailID"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductID"))
+                        .build();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
+    public String getProductIDByProductDetailID(String productDetailID) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT ProductID FROM `productdetail` WHERE ProductDetailID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, productDetailID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("ProductID");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
+
+
+
 }

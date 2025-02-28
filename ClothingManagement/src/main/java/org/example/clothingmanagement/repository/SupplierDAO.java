@@ -72,6 +72,29 @@ public class SupplierDAO {
         }
         return 0;
     }
+    public Supplier getSupplierBySupplierID(String supplierID) {
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT * FROM `supplier` WHERE SupplierID = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, supplierID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return Supplier.builder()
+                        .supplierId(rs.getString("SupplierID"))
+                        .supplierName(rs.getString("SupplierName"))
+                        .address(rs.getString("Address"))
+                        .email(rs.getString("ContactEmail"))
+                        .phone(rs.getString("Phone"))
+                        .status(rs.getBoolean("Status"))
+                        .build();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
+    }
+
 
     public static void main(String[] args) {
         SupplierDAO dao = new SupplierDAO();

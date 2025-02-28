@@ -25,4 +25,10 @@ public class ProductService {
     public Optional<Product> getProductById(Integer id) {
         return productDAO.getProductById(id);
     }
+    public Optional<Product> getProductById(String id) {
+        return productDAO.getProductById(id);
+    }
+public Product getProductByProductID(String productID) throws Exception {
+          return productDAO.getProductByProductID(productID);
+      }
 }
