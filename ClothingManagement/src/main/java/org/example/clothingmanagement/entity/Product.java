@@ -22,7 +22,7 @@ public class Product {
     private Date createdDate;
     private String description;
     private String madeIn;
-    private Integer binId;
+    private String binId;
     private Integer categoryId;
     private String createdBy;
     private String supplierId;
@@ -33,7 +33,7 @@ public class Product {
     private Integer totalQuantity;
     private String urlImage;
 
-    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,Integer BinId,String createdBy) {
+    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String BinId,String createdBy) {
         this.name = name;
         this.price = price;
         this.seasons = seasons;
@@ -47,7 +47,7 @@ public class Product {
         this.binId = BinId;
         this.createdBy = createdBy;
     }
-    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,Integer BinId,String createdBy, int Status) {
+    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String BinId,String createdBy, int Status) {
         this.name = name;
         this.price = price;
         this.seasons = seasons;
