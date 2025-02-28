@@ -156,6 +156,11 @@
                                     </div>
                                 </div>
                             </div>
+                            <ul class="nav nav-tabs" id="myTab" role="tablist">
+                                <li class="nav-item">
+                                    <a class="nav-link"  href="viewpurchaseorder">Back</a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                 </div>

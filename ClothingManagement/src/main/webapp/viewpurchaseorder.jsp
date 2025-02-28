@@ -85,6 +85,48 @@
             from { opacity: 0; transform: scale(0.9); }
             to { opacity: 1; transform: scale(1); }
         }
+        .search-form {
+            display: flex;
+            align-items: center;
+            gap: 10px; /* Khoảng cách giữa input và button */
+        }
+
+        .search-form input {
+            flex: 1; /* Input mở rộng để chiếm hết không gian trống */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-form button {
+            padding: 8px 12px;
+            border-radius: 5px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        .search-form button:hover {
+            background-color: #5a6268;
+        }
+        .pagination-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        .pagination-btn {
+            margin: 2px;
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+        }
+
+        .pagination-btn.active {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
 
     </style>
 
@@ -113,43 +155,81 @@
                                             <li class="active"><a href="#">Purchase Order List</a></li>
                                         </ul>
                                     </div>
-                                <form action="searchpurchaseorder" method="GET" class="search-form">
-                                    <input value="${txtS}"  type="text" name="txt" placeholder="Search PO ID, Supplier, Status..." class="search-input">
-                                    <button type="submit" class="search-btn">Search</button>
-                                </form>
-
+                                    <!-- End Sherah Breadcrumb -->
+                                    <a href="add" class="sherah-btn sherah-gbcolor">Add New Purchase Order</a>
+                                </div>
+                            </div>
+                            <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
+                                <div class="search-container" >
+                                    <form action="searchpurchaseorder" method="GET" class="search-form">
+                                        <input value="${txtS}" type="text" id="customSearch" name="txt" placeholder="Search PO ID, CreateDate, Supplier, CreateBy, TotalPrice,...">
+                                        <button type="submit" class="btn btn-secondary btn-number">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </form>
+                                </div>
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
+                                    <!-- sherah Table Head -->
                                     <thead class="sherah-table__head">
                                     <tr>
                                         <th class="sherah-table__column-1 sherah-table__h1">PO ID</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Created Date</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Crated Date</th>
                                         <th class="sherah-table__column-3 sherah-table__h3">Supplier Name</th>
-                                        <th class="sherah-table__column-4 sherah-table__h4">Created By</th>
+                                        <th class="sherah-table__column-4 sherah-table__h4">CreatBy</th>
                                         <th class="sherah-table__column-5 sherah-table__h5">Status</th>
-                                        <th class="sherah-table__column-6 sherah-table__h6">Total Price</th>
+                                        <th class="sherah-table__column-6 sherah-table__h6">TotalPrice</th>
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
                                     <c:forEach items="${purchaseOrderList}" var="listpo">
-                                        <tr>
-                                            <td class="sherah-table__column-1">
-                                                <a href="purchaseorderdetail?poID=${listpo.poID}" class="sherah-color1">${listpo.poID}</a>
+                                        <tr> <!-- Thêm thẻ <tr> ở đây -->
+                                            <td class="sherah-table__column-1 sherah-table__data-1">
+                                                <div class="sherah-language-form__input">
+                                                    <p class="crany-table__product--number">
+                                                        <a href="purchaseorderdetail?poID=${listpo.poID}" class="sherah-color1">${listpo.poID}</a>
+                                                    </p>
+                                                </div>
                                             </td>
-                                            <td class="sherah-table__column-2">${listpo.createdDate}</td>
-                                            <td class="sherah-table__column-3">${listpo.supplierID}</td>
-                                            <td class="sherah-table__column-4">${listpo.createdBy}</td>
-                                            <td class="sherah-table__column-5">${listpo.status}</td>
-                                            <td class="sherah-table__column-6">${listpo.totalPrice}</td>
-                                        </tr>
+                                            <td class="sherah-table__column-2 sherah-table__data-2">
+                                                <p class="sherah-table__product-desc">${listpo.createdDate}</p>
+                                            </td>
+                                            <td class="sherah-table__column-3 sherah-table__data-3">
+                                                <div class="sherah-table__product-content">
+                                                    <p class="sherah-table__product-desc">${listpo.supplierID}</p>
+                                                </div>
+                                            </td>
+                                            <td class="sherah-table__column-4 sherah-table__data-4">
+                                                <div class="sherah-table__product-content">
+                                                    <div class="sherah-table__status sherah-color1 sherah-color1__bg--opactity">
+                                                        <a href="javascript:void(0);" class="sherah-color1" onclick="openPopup('popupCreatedBy', '${listpo.createdBy}')">
+                                                                ${listpo.createdBy}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="sherah-table__column-5 sherah-table__data-5">
+                                                <div class="sherah-table__product-content">
+                                                    <p class="sherah-table__product-desc">${listpo.status}</p>
+                                                </div>
+                                            </td>
+                                            <td class="sherah-table__column-6 sherah-table__data-6">
+                                                <div class="sherah-table__product-content">
+                                                    <p class="sherah-table__product-desc">${listpo.totalPrice}</p>
+                                                </div>
+                                            </td>
+                                        </tr> <!-- Đóng thẻ <tr> -->
                                     </c:forEach>
                                     </tbody>
-                                </table>
 
+                                </table>
+                                <div id="pagination" class="pagination-container"></div>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
+
+
             </div>
         </div>
     </section>
@@ -157,16 +237,55 @@
 
 </div>
 
+
 <!-- sherah Scripts -->
 <script>
-    function openPopup(popupId, content) {
-        document.getElementById(popupId).style.display = "block";
-        document.getElementById(popupId + "Content").innerText = content;
-    }
+    document.addEventListener("DOMContentLoaded", function () {
+        let table = document.querySelector(".sherah-table__body");
+        let rows = table.querySelectorAll("tr");
+        let rowsPerPage = 5; // Số dòng trên mỗi trang
+        let currentPage = 1;
 
-    function closePopup(popupId) {
-        document.getElementById(popupId).style.display = "none";
-    }
+        function displayTablePage(page) {
+            let start = (page - 1) * rowsPerPage;
+            let end = start + rowsPerPage;
+            rows.forEach((row, index) => {
+                row.style.display = index >= start && index < end ? "table-row" : "none";
+            });
+        }
+
+        function createPaginationButtons() {
+            let totalPages = Math.ceil(rows.length / rowsPerPage);
+            let paginationContainer = document.getElementById("pagination");
+            paginationContainer.innerHTML = "";
+
+            for (let i = 1; i <= totalPages; i++) {
+                let btn = document.createElement("button");
+                btn.innerText = i;
+                btn.classList.add("pagination-btn");
+                if (i === currentPage) {
+                    btn.classList.add("active");
+                }
+                btn.addEventListener("click", function () {
+                    currentPage = i;
+                    displayTablePage(currentPage);
+                    updateActiveButton();
+                });
+                paginationContainer.appendChild(btn);
+            }
+        }
+
+        function updateActiveButton() {
+            let buttons = document.querySelectorAll(".pagination-btn");
+            buttons.forEach((btn, index) => {
+                btn.classList.toggle("active", index + 1 === currentPage);
+            });
+        }
+
+        displayTablePage(currentPage);
+        createPaginationButtons();
+    });
+
 </script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>

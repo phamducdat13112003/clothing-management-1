@@ -14,7 +14,7 @@ import java.util.List;
 public class SearchPurchaseOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String txtSearch= request.getParameter("txt");
+        String txtSearch= request.getParameter("txt").trim();
         PurchaseOrderService purchaseorderservice = new PurchaseOrderService();
         List<PurchaseOrder> purchaseOrderList = null;
         try {

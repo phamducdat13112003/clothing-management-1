@@ -53,14 +53,14 @@ public List<PurchaseOrder> getAllPurchaseOrder() {
     }
     public List<PurchaseOrder> searchPO(String searchQuery) {
         List<PurchaseOrder> purchaseOrders = new ArrayList<>();
-        String sql = "SELECT * FROM po WHERE POID LIKE ? OR CreatedDate LIKE ? OR SupplierID LIKE ? OR TotalPrice LIKE ?";
+        String sql = "SELECT * FROM po WHERE POID LIKE ? OR CreatedDate LIKE ? OR SupplierID LIKE ? OR TotalPrice LIKE ? OR CreatedBy LIKE ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             // Thêm wildcard "%" vào trước và sau searchQuery để tìm kiếm mọi vị trí trong chuỗi
             String searchPattern = "%" + searchQuery + "%";
-            for (int i = 1; i <= 4; i++) {
+            for (int i = 1; i <= 5; i++) {
                 ps.setString(i, searchPattern);
             }
 
@@ -80,6 +80,28 @@ public List<PurchaseOrder> getAllPurchaseOrder() {
             throw new RuntimeException(e);
         }
         return purchaseOrders;
+    }
+    public PurchaseOrder getPObyPoID(String poID) {
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT * FROM `po` WHERE POID = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, poID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new PurchaseOrder(
+                        rs.getString("POID"),
+                        rs.getDate("CreatedDate"),
+                        rs.getString("SupplierID"),
+                        rs.getString("CreatedBy"),
+                        rs.getString("Status"),
+                        rs.getFloat("TotalPrice")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 
 }
