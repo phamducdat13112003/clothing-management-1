@@ -110,8 +110,8 @@
                 <div class="sherah-breadcrumb mg-top-30">
                   <h2 class="sherah-breadcrumb__title">Manage Supplier</h2>
                   <ul class="sherah-breadcrumb__list">
-                    <li><a href="account">Home</a></li>
-                    <li class="active"><a href="addaccount">Add Supplier</a></li>
+                    <li><a href="managesupplier">Home</a></li>
+                    <li class="active"><a href="addsupplier">Add Supplier</a></li>
                   </ul>
                   <c:if test="${not empty message}">
                     <span class="error-message">${message}</span>

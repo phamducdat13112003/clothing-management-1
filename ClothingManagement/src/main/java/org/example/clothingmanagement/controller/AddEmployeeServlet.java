@@ -48,7 +48,6 @@ public class AddEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RoleService roleService = new RoleService();
         WarehouseDAO wareHouseDAO = new WarehouseDAO();
         List<Warehouse> listWarehouse = null;
         listWarehouse = wareHouseDAO.getAllWareHouse();
@@ -58,6 +57,7 @@ public class AddEmployeeServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
         EmployeeService employeeService = new EmployeeService();
         RoleService roleService = new RoleService();
         WarehouseDAO warehouseDAO = new WarehouseDAO();
