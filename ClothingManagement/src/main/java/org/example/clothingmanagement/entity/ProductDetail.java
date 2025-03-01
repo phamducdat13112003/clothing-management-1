@@ -17,8 +17,8 @@ public class ProductDetail {
     private String color;
     private String size;
     private String image;
-    private String productId; // trước để kiểu Long
-    private int Status;
+    private String productId;
+    private int status;
 
 
 

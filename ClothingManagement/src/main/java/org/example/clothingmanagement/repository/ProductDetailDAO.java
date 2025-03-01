@@ -15,7 +15,7 @@ public class ProductDetailDAO {
     public List<ProductDetail> findAll() {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId FROM ProductDetail ");
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, status FROM ProductDetail ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ResultSet rs = ps.executeQuery();
             List<ProductDetail> list = new ArrayList<ProductDetail>();
@@ -28,6 +28,7 @@ public class ProductDetailDAO {
                         .size(rs.getString("Size"))
                         .image(rs.getString("ProductImage"))
                         .id(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
                         .build();
                 list.add(productDetail);
             }
