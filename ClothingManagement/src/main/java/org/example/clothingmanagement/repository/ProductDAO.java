@@ -13,38 +13,38 @@ import java.util.Optional;
 
 public class ProductDAO {
     public List<Product> getAllProducts() {
-       try(Connection conn = DBContext.getConnection()){
-           StringBuilder sql = new StringBuilder();
-           sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product  ");
-           PreparedStatement ps = conn.prepareStatement(sql.toString());
-           ResultSet rs = ps.executeQuery();
-           List<Product> products = new ArrayList<>();
-           while(rs.next()){
-               Product product = Product.builder()
-                       .id(rs.getString("ProductID"))
-                       .name(rs.getString("ProductName"))
-                       .price(rs.getDouble("Price"))
-                       .binId(rs.getString("binID"))
-                       .categoryId(rs.getInt("CategoryID"))
-                       .material(rs.getString("Material"))
-                       .gender(rs.getString("Gender"))
-                       .seasons(rs.getString("Seasons"))
-                       .minQuantity(rs.getInt("MinQuantity"))
-                       .createdDate(rs.getDate("CreatedDate"))
-                       .description(rs.getString("Description"))
-                       .createdBy(rs.getString("CreatedBy"))
-                       .supplierId(rs.getString("SupplierID"))
-                       .madeIn(rs.getString("MadeIn"))
-                       .Status(rs.getInt("Status"))
-                       .build();
-               products.add(product);
+        try(Connection conn = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product  ");
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            List<Product> products = new ArrayList<>();
+            while(rs.next()){
+                Product product = Product.builder()
+                        .id(rs.getString("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .binId(rs.getString("binID"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate"))
+                        .description(rs.getString("Description"))
+                        .createdBy(rs.getString("CreatedBy"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .Status(rs.getInt("Status"))
+                        .build();
+                products.add(product);
 
-           }
-           return products;
+            }
+            return products;
 
-       } catch (SQLException e) {
-           throw new RuntimeException(e);
-       }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
     }
 
@@ -104,6 +104,10 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
     }
+
+
+
+
 
     public Optional<Product> getProductById(String id) {
         try(Connection con = DBContext.getConnection()){
