@@ -104,7 +104,25 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
         System.out.println(employee);
 
         //Product, purchaseOrderDetail, productDetail cho chung vào 1 list rồi đẩy lên
+        List<PurchaseOrderDetailDTO> purchaseOrderDetailDTOs = new ArrayList<>();
+        PurchaseOrderDetailDTO dto = new PurchaseOrderDetailDTO(productDetails.)
+            try {
+                // Tạo DTO và thêm vào danh sách
+                PurchaseOrderDetailDTO dto = new PurchaseOrderDetailDTO(
+                        productDetail.getImage(),
+                        product.getName(),
+                        productDetail.getWeight(),
+                        productDetail.getColor(),
+                        productDetail.getSize(),
+                        detail.getQuantity(),
+                        detail.getPrice(),
+                        detail.getTotalPrice()
+                );
+                purchaseOrderDetailDTOs.add(dto);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
 
+        }
 
         //hết gửi lên JSP
         request.setAttribute("purchaseOrder", purchaseOrder);
