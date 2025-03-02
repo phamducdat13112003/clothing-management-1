@@ -19,7 +19,7 @@ public class ProductService {
         return productDAO.addProduct(product);
     }
 
-    public boolean deleteProduct(String id) {
+    public boolean deleteProduct(Integer id) {
         return productDAO.deleteProduct(id);
     }
 
