@@ -23,14 +23,13 @@ public class ProductDetailController extends HttpServlet {
         String id = req.getParameter("id");
         Product product = new Product();
         if(ps.getProductById(id).isPresent()){
-             product = ps.getProductById(id).get();
+            product = ps.getProductById(id).get();
         }
         else{
-             product=null;
+            product = new Product();
         }
-
         List<ProductDetail> productDetails = pds.getAllProductDetailByProductId(id);
-        req.setAttribute("product",product);
+        req.setAttribute("product", product);
         req.setAttribute("productDetails", productDetails);
         req.getRequestDispatcher("list-product-detail.jsp").forward(req, resp);
     }

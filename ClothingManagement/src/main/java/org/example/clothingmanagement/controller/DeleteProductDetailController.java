@@ -20,20 +20,28 @@ public class DeleteProductDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String id = req.getParameter("id");
+        String productId = req.getParameter("productid");
         boolean result = pds.deleteProductDetail(id);
+
+
         if (result) {
             session.setAttribute("alertMessage", "Delete Product Success");
             session.setAttribute("alertType", "success");
-            resp.sendRedirect("list-product-detail");
-        }else {
+            resp.sendRedirect("list-product-detail?id="+productId);
+        }
+        else {
             req.setAttribute("alertMessage", "Update Product Failed");
             req.setAttribute("alertType", "error");
             req.getRequestDispatcher("list-product-detail.jsp").forward(req, resp);
         }
+
+
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
     }
+
+
 }

@@ -38,10 +38,10 @@ public class ProductDetailService {
     }
 
     public static void main(String[] args){
-//        ProductDetailService pds = new ProductDetailService();
-//        List<ProductDetail> pd = pds.getAllProductDetailByProductId("P001");
-//        for(ProductDetail productDetail : pd){
-//            System.out.println(productDetail.toString());
-//        }
+        ProductDetailService pds = new ProductDetailService();
+        List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");
+        for(ProductDetail pd : pdList){
+            System.out.println(pd);
+        }
     }
 }

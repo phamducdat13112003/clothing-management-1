@@ -20,11 +20,13 @@ public class RecoverProductDetailController extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String id = req.getParameter("id");
+        String productId = req.getParameter("productid");
         boolean result = pds.recoverProductDetail(id);
         if (result) {
             session.setAttribute("alertMessage", "Recover Product Success");
             session.setAttribute("alertType", "success");
-            resp.sendRedirect("list-product-detail");
+            resp.sendRedirect("list-product-detail?id="+productId);
+
         }else {
             req.setAttribute("alertMessage", "Recover Product Failed");
             req.setAttribute("alertType", "error");

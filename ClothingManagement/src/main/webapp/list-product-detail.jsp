@@ -66,8 +66,8 @@
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
                                     <tr>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Code</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Image</th>
+                                        <th class="sherah-table__column-1 sherah-table__h2">Code</th>
+                                        <th class="sherah-table__column-2 sherah-table__h1">Image</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Color</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Size</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Weight</th>
@@ -123,7 +123,8 @@
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
                                                                 <a href="#"
-                                                                   onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${productDetail.id}');">
+                                                                    onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${productDetail.id}&productid=${productDetail.productId}');">
+
                                                                     Delete
                                                                 </a>
                                                             </p>
@@ -136,7 +137,7 @@
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
                                                                 <a href="#"
-                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${productDetail.id}');">
+                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${productDetail.id}&productid=${productDetail.productId}');">
                                                                     Recover
                                                                 </a>
                                                             </p>
