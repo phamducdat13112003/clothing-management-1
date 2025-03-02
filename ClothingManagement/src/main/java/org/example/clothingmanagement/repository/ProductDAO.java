@@ -105,38 +105,7 @@ public class ProductDAO {
         }
     }
 
-    public Optional<Product> getProductById(Integer id) {
-        try(Connection con = DBContext.getConnection()){
-            StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn FROM Product ");
-            sql.append(" WHERE ProductID = ?");
-            PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setLong(1, id);
-            ResultSet rs = ps.executeQuery();
-            if(rs.next()){
-                Product product = Product.builder()
-                        .id(rs.getString("ProductID"))
-                        .name(rs.getString("ProductName"))
-                        .price(rs.getDouble("Price"))
-                        .binId(rs.getString("binID"))
-                        .categoryId(rs.getInt("CategoryID"))
-                        .material(rs.getString("Material"))
-                        .gender(rs.getString("Gender"))
-                        .seasons(rs.getString("Seasons"))
-                        .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
-                        .description(rs.getString("Description"))
-                        .createdBy(rs.getString("CreatedBy"))
-                        .supplierId(rs.getString("SupplierID"))
-                        .madeIn(rs.getString("MadeIn"))
-                        .build();
-                return Optional.of(product);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return Optional.empty();
-    }
+
 
 
 
@@ -174,7 +143,7 @@ public class ProductDAO {
     }
 
     public Product getProductByProductID(String productID) {
-        String sql = "SELECT * FROM product WHERE ProductID = ?";
+        String sql = " SELECT * FROM product WHERE ProductID = ? ";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, productID);

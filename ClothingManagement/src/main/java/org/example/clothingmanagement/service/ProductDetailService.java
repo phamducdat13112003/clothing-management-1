@@ -11,8 +11,7 @@ public class ProductDetailService {
     private final ProductDetailDAO productDetailDAO = new ProductDetailDAO();
 
     public List<ProductDetail> getAllProductDetails() {
-        List<ProductDetail> productDetails = productDetailDAO.findAll();
-        return productDetails;
+        return  productDetailDAO.findAll();
     }
 
     public List<ProductDetail> getAllProductDetailByProductId(String productId) {
@@ -30,16 +29,19 @@ public class ProductDetailService {
         return productDetailDAO.getProductIDByProductDetailID(productDetailID);
     }
 
+    public boolean deleteProductDetail(String id){
+        return productDetailDAO.deleteProductDetail(id);
+    }
+
+    public boolean recoverProductDetail(String id){
+        return productDetailDAO.recoverProductDetail(id);
+    }
+
     public static void main(String[] args){
-        ProductDetailService pds = new ProductDetailService();
-        if(pds.findTheFirstProductDetailOfProductId("P001").isPresent()){
-            ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId("P001").get();
-            System.out.println(productDetail.getImage());
-
-        }
-            else{
-            System.out.println("ERROR");
-
-        }
+//        ProductDetailService pds = new ProductDetailService();
+//        List<ProductDetail> pd = pds.getAllProductDetailByProductId("P001");
+//        for(ProductDetail productDetail : pd){
+//            System.out.println(productDetail.toString());
+//        }
     }
 }
