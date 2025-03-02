@@ -28,7 +28,8 @@
     <!-- Site Title -->
     <title>Sherah - HTML eCommerce Dashboard Template</title>
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
     <!-- sherah Stylesheet -->
@@ -63,35 +64,13 @@
                                             <li class="active"><a href="#">Purchase Order Detail</a></li>
                                         </ul>
                                     </div>
-<%--                                    <a href="add" class="sherah-btn sherah-gbcolor">Add New Purchase Order</a>--%>
+                                    <%--                                    <a href="add" class="sherah-btn sherah-gbcolor">Add New Purchase Order</a>--%>
                                 </div>
                             </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <div class="cart-wrapper">
                                     <div class="container">
-                                        <div class="row g-4">
-                                            <div class="col-lg-6">
-                                                <div class="summary-card">
-                                                    <h5 class="mb-4">Information Supplier</h5>
-                                                    <div class="d-flex justify-content-between mb-3">
-                                                        <span class="text-muted">Supplier Name:</span>
-                                                        <span class="text-muted">${supplier.supplierName}</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between mb-3">
-                                                        <span class="text-muted">Supplier Address:</span>
-                                                        <span class="text-muted">${supplier.address}</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between mb-3">
-                                                        <span class="text-muted">Supplier Email:</span>
-                                                        <span class="text-muted">${supplier.email}</span>
-                                                    </div>
-                                                    <div class="d-flex justify-content-between mb-3">
-                                                        <span class="text-muted">Supplier Phone:</span>
-                                                        <span class="text-muted">${supplier.phone}</span>
-                                                    </div>
-                                                    <hr>
-                                                </div>
-                                            </div>
+                                        <div class="row">
                                             <div class="col-lg-6">
                                                 <div class="summary-card">
                                                     <h5 class="mb-4">Information Other</h5>
@@ -115,50 +94,93 @@
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
+                                        <div class="row g-4">
+                                            <!-- Supplier Information -->
+                                            <c:forEach var="supplier" items="${supplier}">
+                                            <div class="col-lg-6">
+                                                <div class="summary-card p-4 border rounded">
+                                                    <h5 class="mb-4">Supplier Information</h5>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Name:</span>
+                                                        <span>${supplier.supplierName}</span>
+                                                    </div>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Address:</span>
+                                                        <span>${supplier.address}</span>
+                                                    </div>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Email:</span>
+                                                        <span>${supplier.email}</span>
+                                                    </div>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Phone:</span>
+                                                        <span>${supplier.phone}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            </c:forEach>
 
-                                    <div class="product-card p-3 shadow-sm">
-                                        <div class="row align-items-center">
-                                            <div class="col-md-2">
-                                                <img src="${productDetail.image}" alt="Product" class="product-image">
-                                            </div>
-                                            <div class="col-md-2">
-                                                <h6 class="mb-1">Product Name</h6>
-                                                <p class="text-muted mb-0">${product.name}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <h6 class="mb-1">Product weight</h6>
-                                                <p class="text-muted mb-0">${productDetail.weight}</p>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <h6 class="mb-1">Product color</h6>
-                                                <p class="text-muted mb-0">${productDetail.color}</p>
-                                            </div>
-                                            <div class="col-md-1">
-                                                <h6 class="mb-1">Product size</h6>
-                                                <p class="text-muted mb-0">${productDetail.size}</p>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <h6 class="mb-1">Quantity Product PO</h6>
-                                                <p class="text-muted mb-0">${purchaseOrderDetail.quantity}</p>
-                                            </div>
-                                            <div class="col-md-2">
-                                                <h6 class="mb-1">Price Of one product</h6>
-                                                <p class="text-muted mb-0">${purchaseOrderDetail.price}</p>
+                                            <!-- Product Information -->
+                                            <div class="col-lg-6">
+                                                <div class="summary-card p-4 border rounded">
+                                                    <h5 class="mb-4">Product Information</h5>
+                                                    <c:forEach var="productDetail" items="${productDetail}">
+                                                    <div class="text-center mb-3">
+                                                        <img src="${productDetail.image}" alt="Product Image" class="img-fluid rounded" style="max-width: 200px;">
+                                                    </div>
+                                                    </c:forEach>
+                                                    <c:forEach var="product" items="${product}">
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Product Name:</span>
+                                                        <span>${product.name}</span>
+                                                    </div>
+                                                    </c:forEach>
+                                                    <c:forEach var="productDetail" items="${productDetail}">
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Weight:</span>
+                                                        <span>${productDetail.weight} kg</span>
+                                                    </div>
+
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Color:</span>
+                                                        <span>${productDetail.color}</span>
+                                                    </div>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Size:</span>
+                                                        <span>${productDetail.size}</span>
+                                                    </div>
+                                                    </c:forEach>
+                                                    <c:forEach var="purchaseOrderDetail" items="${purchaseOrderDetail}">
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Quantity:</span>
+                                                        <span>${purchaseOrderDetail.quantity}</span>
+                                                    </div>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted">Price Per Unit:</span>
+                                                        <span>${purchaseOrderDetail.price}</span>
+                                                    </div>
+                                                    <div class="mb-3 d-flex justify-content-between">
+                                                        <span class="text-muted fw-bold">Total Price:</span>
+                                                        <span class="fw-bold text-primary">${purchaseOrderDetail.totalPrice}</span>
+                                                    </div>
+                                                    </c:forEach>
+                                                </div>
+                                                <hr>
+                                                <div class="row mt-2">
+                                                    <div class="col-md-12 text-end">
+                                                        <h5 class="text-primary fw-bold fs-5">Total
+                                                            Price: ${purchaseOrder.totalPrice} VND</h5>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
-                                        <hr>
-                                        <div class="row mt-2">
-                                            <div class="col-md-12 text-end">
-                                                <h5 class="text-primary fw-bold fs-5">Total Price: ${purchaseOrderDetail.totalPrice}<Span> VND</Span></h5>
-                                            </div>
-                                        </div>
+
                                     </div>
                                 </div>
                             </div>
                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                 <li class="nav-item">
-                                    <a class="nav-link"  href="viewpurchaseorder">Back</a>
+                                    <a class="nav-link" href="viewpurchaseorder">Back</a>
                                 </li>
                             </ul>
                         </div>
@@ -168,6 +190,22 @@
         </div>
     </section>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const quantityInput = document.querySelector('input[name="productQuantity"]');
+        const priceInput = document.querySelector('input[name="productPrice"]');
+        const totalPriceInput = document.querySelector('input[name="totalPrice"]');
+
+        function updateTotalPrice() {
+            const quantity = parseFloat(quantityInput.value) || 0;
+            const price = parseFloat(priceInput.value) || 0;
+            totalPriceInput.value = (quantity * price).toFixed(2);
+        }
+
+        quantityInput.addEventListener("input", updateTotalPrice);
+        priceInput.addEventListener("input", updateTotalPrice);
+    });
+</script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>
 <script src="js/jquery-ui.min.js"></script>

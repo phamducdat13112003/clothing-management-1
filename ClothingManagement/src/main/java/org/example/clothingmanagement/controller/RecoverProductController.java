@@ -11,21 +11,21 @@ import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
 
-@WebServlet(name="DeleteProduct", urlPatterns = "/delete-product")
-public class DeleteProductController extends HttpServlet {
-    private final ProductService productService =  new ProductService();
+@WebServlet(name="RecoverProduct", urlPatterns = "/recover-product")
+public class RecoverProductController extends HttpServlet {
+    private final ProductService ps =  new ProductService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String id = req.getParameter("id");
-        boolean result = productService.deleteProduct(id);
+        boolean result = ps.recoverProduct(id);
         if (result) {
-            session.setAttribute("alertMessage", "Delete Product Success");
+            session.setAttribute("alertMessage", "Recover Product Success");
             session.setAttribute("alertType", "success");
             resp.sendRedirect("product-list");
         }else {
-            req.setAttribute("alertMessage", "Update Product Failed");
+            req.setAttribute("alertMessage", "Recover Product Failed");
             req.setAttribute("alertType", "error");
             req.getRequestDispatcher("product-list.jsp").forward(req, resp);
         }

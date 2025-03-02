@@ -11,10 +11,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>Product List</title>
+    <title>Product Detail</title>
 
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
 
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
@@ -45,15 +46,15 @@
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
                             <!-- Sherah Breadcrumb -->
-<%--                            <form action="search-product" method="get">--%>
-<%--                                <div class="input-group mb-3">--%>
-<%--                                    <input type="text" class="form-control" placeholder="Search for a product..." name="searchQuery" id="searchQuery">--%>
-<%--                                    <button class="btn btn-primary" type="submit">Search</button>--%>
-<%--                                </div>--%>
-<%--                            </form>--%>
+                            <%--                            <form action="search-product" method="get">--%>
+                            <%--                                <div class="input-group mb-3">--%>
+                            <%--                                    <input type="text" class="form-control" placeholder="Search for a product..." name="searchQuery" id="searchQuery">--%>
+                            <%--                                    <button class="btn btn-primary" type="submit">Search</button>--%>
+                            <%--                                </div>--%>
+                            <%--                            </form>--%>
 
                             <div class="sherah-breadcrumb mg-top-30">
-                                <h2 class="sherah-breadcrumb__title">Product</h2>
+                                <h2 class="sherah-breadcrumb__title">${product.name}</h2>
                                 <%--                                <ul class="sherah-breadcrumb__list">--%>
                                 <%--                                    <li><a href="#">Home</a></li>--%>
                                 <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
@@ -65,62 +66,65 @@
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
                                     <tr>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Serial No</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Name</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Image</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Category</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Price</th>
+                                        <th class="sherah-table__column-1 sherah-table__h2">Code</th>
+                                        <th class="sherah-table__column-2 sherah-table__h1">Image</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Color</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Size</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Weight</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
-                                    <c:if test="${not empty products}">
-                                        <c:forEach var="entry" items="${products}">
+                                    <c:if test="${not empty productDetails}">
+                                        <c:forEach var="productDetail" items="${productDetails}">
                                             <tr>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.id}</p>
-                                                    </div>
-                                                </td>
-                                                <td class="sherah-table__column-2 sherah-table__data-2">
-                                                    <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.name}</p>
+                                                        <p class="sherah-table__product-desc">${productDetail.id}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <img src="img/${entry.key.urlImage}" alt="Product Image" width="100" height="100">
+                                                            <img src="img/${productDetail.image}"
+                                                                 alt="Product Detail Image" width="100" height="100">
                                                         </p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value}</p>
+                                                        <p class="sherah-table__product-desc">${productDetail.color}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.price}</p>
+                                                        <p class="sherah-table__product-desc">${productDetail.size}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.totalQuantity}</p>
+                                                        <p class="sherah-table__product-desc">${productDetail.weight}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.status}</p>
+                                                        <p class="sherah-table__product-desc">${productDetail.quantity}</p>
                                                     </div>
                                                 </td>
-                                                <c:if test="${entry.key.status==1}">
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${productDetail.status}</p>
+                                                    </div>
+                                                </td>
+                                                <c:if test="${productDetail.status==1}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
-                                                                <a href="#" onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product?id=${entry.key.id}');">
+                                                                <a href="#"
+                                                                    onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${productDetail.id}&productid=${productDetail.productId}');">
+
                                                                     Delete
                                                                 </a>
                                                             </p>
@@ -128,21 +132,23 @@
                                                     </td>
                                                 </c:if>
 
-                                                <c:if test="${entry.key.status==0}">
+                                                <c:if test="${productDetail.status==0}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
-                                                                <a href="#" onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product?id=${entry.key.id}');">
+                                                                <a href="#"
+                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${productDetail.id}&productid=${productDetail.productId}');">
                                                                     Recover
                                                                 </a>
                                                             </p>
                                                         </div>
-                                                    </td>                                                </c:if>
+                                                    </td>
+                                                </c:if>
 
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/list-product-detail?id=${entry.key.id}">
+                                                            <a href="${pageContext.request.contextPath}/product-detail?id=${productDetail.id}">
                                                                 Detail
                                                             </a>
                                                         </p>
@@ -153,7 +159,7 @@
                                         </c:forEach>
 
                                     </c:if>
-                                    <c:if test="${empty products}">
+                                    <c:if test="${empty productDetails}">
                                         <tr>
                                             <td colspan="4" class="text-center">No products available</td>
                                         </tr>

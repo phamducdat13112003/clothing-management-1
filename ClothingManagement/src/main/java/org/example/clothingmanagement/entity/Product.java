@@ -29,7 +29,7 @@ public class Product {
     private int Status;
 
 
-    //Thừa
+    //attributes not exist in database
     private Integer totalQuantity;
     private String urlImage;
 

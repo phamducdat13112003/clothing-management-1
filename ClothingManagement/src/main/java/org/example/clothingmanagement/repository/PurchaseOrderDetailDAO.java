@@ -10,26 +10,27 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 public class PurchaseOrderDetailDAO {
-    public PurchaseOrderDetail getPODetailbypoID(String poID) {
+    public List<PurchaseOrderDetail> getListPODetailbypoID(String poID) {
+        List<PurchaseOrderDetail> poDetails = new ArrayList<>();
         try (Connection conn = DBContext.getConnection()) {
             String sql = "SELECT * FROM `podetail` WHERE POID = ?";
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setString(1, poID);
             ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return new PurchaseOrderDetail(
+            while (rs.next()) {
+                poDetails.add(new PurchaseOrderDetail(
                         rs.getString("POdetailID"),
                         rs.getString("POID"),
                         rs.getString("ProductDetailID"),
                         rs.getInt("Quantity"),
                         rs.getFloat("Price"),
                         rs.getFloat("TotalPrice")
-                );
+                ));
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return null;
+        return poDetails;
     }
 
     public String getProductDetailID(String poID) {

@@ -9,6 +9,7 @@ import org.example.clothingmanagement.entity.Category;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.Supplier;
 import org.example.clothingmanagement.repository.CategoryDAO;
+import org.example.clothingmanagement.service.CategoryService;
 import org.example.clothingmanagement.service.ProductService;
 import org.example.clothingmanagement.service.SupplierService;
 
@@ -19,11 +20,12 @@ import java.util.List;
 public class AddProductController extends HttpServlet {
     private final SupplierService supplierService = new SupplierService();
     private final ProductService productService = new ProductService();
+    private final CategoryService cs = new CategoryService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         List<Category> categories = null;
-        categories = CategoryDAO.selectAll();
+        categories = cs.selectAll();
 
         List<Supplier> suppliers = supplierService.getAllSuppliers();
         req.setAttribute("categories", categories);

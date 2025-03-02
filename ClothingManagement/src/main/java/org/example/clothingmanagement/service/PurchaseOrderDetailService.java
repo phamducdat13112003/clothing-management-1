@@ -8,8 +8,8 @@ import java.util.List;
 public class PurchaseOrderDetailService {
     private final PurchaseOrderDetailDAO purchaseOrderDetailDAO = new PurchaseOrderDetailDAO();
 
-    public PurchaseOrderDetail getPODetailbypoID(String poID) throws SQLException {
-        return purchaseOrderDetailDAO.getPODetailbypoID(poID);
+    public List<PurchaseOrderDetail> getListPODetailbypoID(String poID) throws SQLException {
+        return purchaseOrderDetailDAO.getListPODetailbypoID(poID);
     }
 
     public String getProductDetailID(String poID) throws SQLException {
