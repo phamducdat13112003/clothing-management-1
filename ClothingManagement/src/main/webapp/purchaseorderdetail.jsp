@@ -1,4 +1,5 @@
-<%--
+<%@ page import="org.example.clothingmanagement.entity.PurchaseOrderDetailDTO" %>
+<%@ page import="java.util.List" %><%--
   Created by IntelliJ IDEA.
   User: admin
   Date: 2/27/2025
@@ -93,10 +94,7 @@
                                                     <hr>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row g-4">
                                             <!-- Supplier Information -->
-                                            <c:forEach var="supplier" items="${supplier}">
                                             <div class="col-lg-6">
                                                 <div class="summary-card p-4 border rounded">
                                                     <h5 class="mb-4">Supplier Information</h5>
@@ -118,63 +116,55 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            </c:forEach>
+                                        </div>
+                                        <div class="row g-4">
 
                                             <!-- Product Information -->
-                                            <div class="col-lg-6">
+                                            <div class="col-12">
+                                                <h5 class="mb-4">Product Information</h5>
+                                                <%
+                                                    List<PurchaseOrderDetailDTO> purchaseOrderDetailDTOs = (List<PurchaseOrderDetailDTO>) request.getAttribute("purchaseOrderDetailDTOs");
+                                                    if (purchaseOrderDetailDTOs != null) {
+                                                        for (PurchaseOrderDetailDTO dto : purchaseOrderDetailDTOs) {
+                                                %>
                                                 <div class="summary-card p-4 border rounded">
-                                                    <h5 class="mb-4">Product Information</h5>
-                                                    <c:forEach var="productDetail" items="${productDetail}">
-                                                    <div class="text-center mb-3">
-                                                        <img src="${productDetail.image}" alt="Product Image" class="img-fluid rounded" style="max-width: 200px;">
+                                                    <div class="row align-items-center">
+                                                        <div class="col-lg-4 col-md-6 text-center">
+                                                            <img src="<%= dto.getImage() %>" alt="Product Image" class="img-fluid rounded" style="max-width: 200px;">
+                                                        </div>
+                                                        <div class="col-lg-8 col-md-6">
+                                                            <div class="row">
+                                                                <div class="col-md-4 mb-3"><strong>Product Name:</strong> <%= dto.getProductName() %></div>
+                                                                <div class="col-md-4 mb-3"><strong>Weight:</strong> <%= dto.getWeight() %> kg</div>
+                                                                <div class="col-md-4 mb-3"><strong>Color:</strong> <%= dto.getColor() %></div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-4 mb-3"><strong>Size:</strong> <%= dto.getSize() %></div>
+                                                                <div class="col-md-4 mb-3"><strong>Quantity:</strong> <%= dto.getQuantity() %></div>
+                                                                <div class="col-md-4 mb-3"><strong>Price Per Unit:</strong> <%= dto.getPrice() %></div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-md-12 mb-3 text-end">
+                                                                    <strong>Total Price Of PoDetail: <%= dto.getTotalPrice() %> VND</strong>
+                                                                </div>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    </c:forEach>
-                                                    <c:forEach var="product" items="${product}">
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted">Product Name:</span>
-                                                        <span>${product.name}</span>
-                                                    </div>
-                                                    </c:forEach>
-                                                    <c:forEach var="productDetail" items="${productDetail}">
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted">Weight:</span>
-                                                        <span>${productDetail.weight} kg</span>
-                                                    </div>
-
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted">Color:</span>
-                                                        <span>${productDetail.color}</span>
-                                                    </div>
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted">Size:</span>
-                                                        <span>${productDetail.size}</span>
-                                                    </div>
-                                                    </c:forEach>
-                                                    <c:forEach var="purchaseOrderDetail" items="${purchaseOrderDetail}">
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted">Quantity:</span>
-                                                        <span>${purchaseOrderDetail.quantity}</span>
-                                                    </div>
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted">Price Per Unit:</span>
-                                                        <span>${purchaseOrderDetail.price}</span>
-                                                    </div>
-                                                    <div class="mb-3 d-flex justify-content-between">
-                                                        <span class="text-muted fw-bold">Total Price:</span>
-                                                        <span class="fw-bold text-primary">${purchaseOrderDetail.totalPrice}</span>
-                                                    </div>
-                                                    </c:forEach>
                                                 </div>
+                                                <%
+                                                        }
+                                                    }
+                                                %>
+
+
                                                 <hr>
                                                 <div class="row mt-2">
                                                     <div class="col-md-12 text-end">
-                                                        <h5 class="text-primary fw-bold fs-5">Total
-                                                            Price: ${purchaseOrder.totalPrice} VND</h5>
+                                                        <h5 class="text-primary fw-bold fs-5">Total Price PO: ${purchaseOrder.totalPrice} VND</h5>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
@@ -192,19 +182,25 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        const quantityInput = document.querySelector('input[name="productQuantity"]');
-        const priceInput = document.querySelector('input[name="productPrice"]');
-        const totalPriceInput = document.querySelector('input[name="totalPrice"]');
+        const quantityInputs = document.querySelectorAll('input[name="productQuantity"]');
+        const priceInputs = document.querySelectorAll('input[name="productPrice"]');
+        const totalPriceInputs = document.querySelectorAll('input[name="totalPrice"]');
 
-        function updateTotalPrice() {
-            const quantity = parseFloat(quantityInput.value) || 0;
-            const price = parseFloat(priceInput.value) || 0;
-            totalPriceInput.value = (quantity * price).toFixed(2);
+        function updateTotalPrice(index) {
+            const quantity = parseFloat(quantityInputs[index].value) || 0;
+            const price = parseFloat(priceInputs[index].value) || 0;
+            totalPriceInputs[index].value = (quantity * price).toFixed(2);
         }
 
-        quantityInput.addEventListener("input", updateTotalPrice);
-        priceInput.addEventListener("input", updateTotalPrice);
+        quantityInputs.forEach((input, index) => {
+            input.addEventListener("input", () => updateTotalPrice(index));
+        });
+
+        priceInputs.forEach((input, index) => {
+            input.addEventListener("input", () => updateTotalPrice(index));
+        });
     });
+
 </script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>

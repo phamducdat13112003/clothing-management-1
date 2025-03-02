@@ -1,4 +1,6 @@
-package org.example.clothingmanagement.controller;import jakarta.servlet.*;
+package org.example.clothingmanagement.controller;
+
+import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.*;
@@ -20,7 +22,6 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
         SupplierService supplierService = new SupplierService();
         EmployeeService employeeService = new EmployeeService();
         String purchaseOrderId = request.getParameter("poID");
-        System.out.println(purchaseOrderId);
         //lấy PO
         PurchaseOrder purchaseOrder;
         try {
@@ -28,7 +29,6 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(purchaseOrder);
 
         //từ PO lấy list PoDetail
         List<PurchaseOrderDetail> purchaseOrderDetail;
@@ -43,7 +43,6 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
         for (PurchaseOrderDetail detail : purchaseOrderDetail) {
             productDetailIds.add(detail.getProductDetailID());
         }
-        System.out.println(productDetailIds);
 
 
         //Lấy ProductID bằng ProductDetailID
@@ -56,7 +55,6 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println(productIds);
 
         //Lây ra list productDetails và Product
         List<ProductDetail> productDetails = new ArrayList<>();
@@ -77,21 +75,20 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
                 throw new RuntimeException(e);
             }
         }
-        System.out.println(productDetails);
-        System.out.println(products);
 
         //Lấy ra nhà cung câps (Supplier)
-        List<Supplier> suppliers = new ArrayList<>();
-
-        for (Product product : products) {
-            try {
-                Supplier supplier = supplierService.getSupplierBySupplierID(product.getSupplierId());
-                suppliers.add(supplier);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+        String supplierid = null;
+        try {
+            supplierid = purchaseOrderService.getSupplierIDByPoID(purchaseOrderId);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-        System.out.println(suppliers);
+        Supplier supplier;
+        try {
+            supplier = supplierService.getSupplierBySupplierID(supplierid);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
 
         //Lấy employee
         String employeeid = purchaseOrder.getCreatedBy();
@@ -101,20 +98,55 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        System.out.println(employee);
 
         //Product, purchaseOrderDetail, productDetail cho chung vào 1 list rồi đẩy lên
+        // Lấy danh sách DTO
+        List<PurchaseOrderDetailDTO> purchaseOrderDetailDTOs = new ArrayList<>();
 
+        for (PurchaseOrderDetail detail : purchaseOrderDetail) {
+            try {
+                String productDetailId = detail.getProductDetailID();
+                ProductDetail productDetail = productDetailService.getProductDetailByProductDetailID(productDetailId);
+                String productId = productDetailService.getProductIDByProductDetailID(productDetailId);
+                Product product = productService.getProductByProductID(productId);
+                PurchaseOrderDetailDTO dto = new PurchaseOrderDetailDTO(
+                        productDetail.getImage(),
+                        product.getName(),
+                        productDetail.getWeight(),
+                        productDetail.getColor(),
+                        productDetail.getSize(),
+                        detail.getQuantity(),
+                        detail.getPrice(),
+                        detail.getTotalPrice()
+                );
+                purchaseOrderDetailDTOs.add(dto);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println("====== Liste des PurchaseOrderDetailDTO ======");
+        for (PurchaseOrderDetailDTO dto : purchaseOrderDetailDTOs) {
+            System.out.println("Image: " + dto.getImage());
+            System.out.println("Product Name: " + dto.getProductName());
+            System.out.println("Weight: " + dto.getWeight());
+            System.out.println("Color: " + dto.getColor());
+            System.out.println("Size: " + dto.getSize());
+            System.out.println("Quantity: " + dto.getQuantity());
+            System.out.println("Price: " + dto.getPrice());
+            System.out.println("Total Price: " + dto.getTotalPrice());
+            System.out.println("---------------------------------------------");
+        }
 
         //hết gửi lên JSP
         request.setAttribute("purchaseOrder", purchaseOrder);
-        request.setAttribute("purchaseOrderId", purchaseOrderId);
-        request.setAttribute("productdetailid", productDetailIds);
-        request.setAttribute("productid", productIds);
-        request.setAttribute("product", products);
-        request.setAttribute("productDetail", productDetails);
-        request.setAttribute("purchaseOrderDetail", purchaseOrderDetail);
-        request.setAttribute("supplier", suppliers);
+//        request.setAttribute("purchaseOrderId", purchaseOrderId);
+//        request.setAttribute("productdetailid", productDetailIds);
+//        request.setAttribute("productid", productIds);
+//        request.setAttribute("product", products);
+//        request.setAttribute("productDetail", productDetails);
+//        request.setAttribute("purchaseOrderDetail", purchaseOrderDetail);
+        request.setAttribute("purchaseOrderDetailDTOs", purchaseOrderDetailDTOs);
+        request.setAttribute("supplier", supplier);
         request.setAttribute("employee", employee);
         request.getRequestDispatcher("purchaseorderdetail.jsp").forward(request, response);
 

@@ -1,60 +1,56 @@
 package org.example.clothingmanagement.entity;
 
-import java.util.List;
-
 public class PurchaseOrderDetailDTO {
-    private List<String> images;
-    private List<String> productNames;
-    private List<Double> weights;
-    private List<String> colors;
-    private List<String> sizes;
-    private List<Integer> quantities;
-    private List<Double> prices;
-    private List<Double> totalPrices;
+    private String image;
+    private String productName;
+    private Double weight;
+    private String color;
+    private String size;
+    private Integer quantity;
+    private Float price;
+    private Float totalPrice;
 
-    public PurchaseOrderDetailDTO(List<String> images, List<String> productNames, List<Double> weights, List<String> colors,
-                                  List<String> sizes, List<Integer> quantities, List<Double> prices, List<Double> totalPrices) {
-        this.images = images;
-        this.productNames = productNames;
-        this.weights = weights;
-        this.colors = colors;
-        this.sizes = sizes;
-        this.quantities = quantities;
-        this.prices = prices;
-        this.totalPrices = totalPrices;
+    public PurchaseOrderDetailDTO(String image, String productName, Double weight, String color,
+                                  String size, int quantity, float price, float totalPrice) {
+        this.image = image;
+        this.productName = productName;
+        this.weight = weight;
+        this.color = color;
+        this.size = size;
+        this.quantity = quantity;
+        this.price = price;
+        this.totalPrice = totalPrice;
     }
 
-    public List<String> getImages() {
-        return images;
+    public String getImage() {
+        return image;
     }
 
-    public List<String> getProductNames() {
-        return productNames;
+    public String getProductName() {
+        return productName;
     }
 
-    public List<Double> getWeights() {
-        return weights;
+    public Double getWeight() {
+        return weight;
     }
 
-    public List<String> getColors() {
-        return colors;
+    public String getColor() {
+        return color;
     }
 
-    public List<String> getSizes() {
-        return sizes;
+    public String getSize() {
+        return size;
     }
 
-    public List<Integer> getQuantities() {
-        return quantities;
+    public Integer getQuantity() {
+        return quantity;
     }
 
-    public List<Double> getPrices() {
-        return prices;
+    public Float getPrice() {
+        return price;
     }
 
-    public List<Double> getTotalPrices() {
-        return totalPrices;
+    public Float getTotalPrice() {
+        return totalPrice;
     }
-
-
 }
