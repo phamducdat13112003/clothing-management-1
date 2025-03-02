@@ -169,7 +169,7 @@ public class EmployeeDAO {
         String sql = "SELECT e.*, w.WarehouseName " +
                 "FROM Employee e " +
                 "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
-                "WHERE e.EmployeeID = ? AND e.Status = 'Active'";
+                "WHERE e.Status = 'Active'";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql);
              ResultSet rs = pt.executeQuery()) {
@@ -513,9 +513,16 @@ public class EmployeeDAO {
 
 
     public static void main(String[] args) {
-         EmployeeDAO employeeDAO = new EmployeeDAO();
-         int a = employeeDAO.getTotalEmployeeCount();
-         System.out.print(a);
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        List<Employee> employees = employeeDAO.getAllEmployees();
+
+        System.out.println("Total Employees Retrieved: " + employees.size());
+        for (Employee emp : employees) {
+            System.out.println("ID: " + emp.getEmployeeID() +
+                    ", Name: " + emp.getEmployeeName() +
+                    ", Email: " + emp.getEmail() +
+                    ", Warehouse: " + emp.getWarehouseName());
+        }
     }
 
 }
