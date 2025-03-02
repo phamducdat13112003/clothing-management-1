@@ -90,6 +90,21 @@ public class ProductDAO {
         }
     }
 
+    public boolean recoverProduct(String id) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" UPDATE Product ");
+            sql.append(" SET Status=1");
+            sql.append(" WHERE ProductID=?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, id);
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Optional<Product> getProductById(Integer id) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
