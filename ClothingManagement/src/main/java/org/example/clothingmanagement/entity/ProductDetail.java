@@ -10,13 +10,14 @@ import lombok.*;
 @Getter
 @Setter
 public class ProductDetail {
-    private Long id;
+    private String id;
     private Integer quantity;
     private Double weight;
     private String color;
     private String size;
     private String image;
-    private Long productId;
+    private String productId;
+    private int status;
 
 
 

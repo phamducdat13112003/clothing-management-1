@@ -18,9 +18,10 @@ import java.util.Map;
 
 @WebServlet(name = "CategoryServlet", value = "/CategoryServlet")
 public class CategoryServlet extends HttpServlet {
+    private final CategoryService cs = new CategoryService();
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, ServletException {
-        List<Category> categories = CategoryService.selectAll();
+        List<Category> categories = cs.selectAll();
         Map<String, String> createdByNames = new HashMap<>();
 
         for (Category category : categories) {

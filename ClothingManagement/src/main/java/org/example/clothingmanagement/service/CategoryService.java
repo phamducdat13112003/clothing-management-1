@@ -12,8 +12,8 @@ public class CategoryService {
     private static final CategoryDAO categoryDAO = new CategoryDAO();
 
     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
-    public static List<Category> selectAll()  {
-        return CategoryDAO.selectAll();
+    public List<Category> selectAll()  {
+        return categoryDAO.selectAll();
     }
 
     public void addCategory(Category category) throws SQLException {

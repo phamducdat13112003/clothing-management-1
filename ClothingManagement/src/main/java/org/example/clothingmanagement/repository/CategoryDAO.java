@@ -12,7 +12,7 @@ public class CategoryDAO {
 
 
     // Phương thức lấy tất cả Category từ cơ sở dữ liệu
-    public static List<Category> selectAll() {
+    public List<Category> selectAll() {
         List<Category> categories = new ArrayList<>();
         String sql = "SELECT * FROM category";
 
@@ -256,6 +256,8 @@ public class CategoryDAO {
         } else {
             errors.forEach(System.out::println);
         }
+
+
     }
 
 

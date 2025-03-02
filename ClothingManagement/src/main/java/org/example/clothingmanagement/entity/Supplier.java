@@ -11,9 +11,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 public class Supplier {
-    private Long id;
-    private String name;
+    private String supplierId;
+    private String supplierName;
     private String address;
     private String email;
     private String phone;
+    private boolean status;
 }

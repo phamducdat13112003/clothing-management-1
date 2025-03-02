@@ -26,19 +26,20 @@ public class EmployeeDAO {
 
 
     public boolean createEmployee(Employee employee) {
-        String sql = "INSERT INTO Employee (EmployeeName, Email, Phone, Address, Gender, DateOfBirth, Status, WarehouseID, Image) " +
-                "VALUES (?, ?, ?, ?, ?, ?, 'Active', ?, ?)";
+        String sql = "INSERT INTO Employee (EmployeeID,EmployeeName, Email, Phone, Address, Gender, Dob, Status, WarehouseID, Image) " +
+                "VALUES (?,?, ?, ?, ?, ?, ?, 'Active', ?, ?)";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
-            pt.setString(1, employee.getEmployeeName());
-            pt.setString(2, employee.getEmail());
-            pt.setString(3, employee.getPhone());
-            pt.setString(4, employee.getAddress());
-            pt.setString(5, employee.getGender());
-            pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
-            pt.setInt(7, employee.getWarehouseID());
-            pt.setString(8, employee.getImage());
+            pt.setString(1, employee.getEmployeeID());
+            pt.setString(2, employee.getEmployeeName());
+            pt.setString(3, employee.getEmail());
+            pt.setString(4, employee.getPhone());
+            pt.setString(5, employee.getAddress());
+            pt.setBoolean(6, employee.isGender());
+            pt.setDate(7, Date.valueOf(employee.getDob()));
+            pt.setString(8, employee.getWarehouseID());
+            pt.setString(9, employee.getImage());
             int rowsAffected = pt.executeUpdate();
             return rowsAffected > 0; // Return true if insertion was successful
         } catch (SQLException e) {
@@ -49,7 +50,7 @@ public class EmployeeDAO {
 
     public boolean isEmployeeExisted(String employeeId ,String email, String phone) {
         boolean exists = false;
-        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?) AND employeeId != ? AND status = 'Active'";
+        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?) AND employeeId != ? ";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setString(1, email);
@@ -67,7 +68,7 @@ public class EmployeeDAO {
 
     public boolean isEmployeeExistedWhenAdd(String email, String phone) {
         boolean exists = false;
-        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?)  AND status = 'Active'";
+        String sql = "SELECT * FROM Employee WHERE (Email = ? OR Phone = ?)";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
             pt.setString(1, email);
@@ -110,7 +111,7 @@ public class EmployeeDAO {
     }
 
     public static boolean updateEmployee(Employee employee) {
-        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, DateOfBirth = ?, Status = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
+        String sql = "UPDATE employee SET EmployeeName = ?, Email = ?, Phone = ?, Address = ?, Gender = ?, Dob = ?, Status = ?, WarehouseID = ?, Image = ? WHERE EmployeeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
@@ -118,13 +119,12 @@ public class EmployeeDAO {
             pt.setString(2, employee.getEmail());
             pt.setString(3, employee.getPhone());
             pt.setString(4, employee.getAddress());
-            pt.setString(5, employee.getGender());
-            pt.setDate(6, Date.valueOf(employee.getDateOfBirth()));
+            pt.setBoolean(5, employee.isGender());
+            pt.setDate(6, Date.valueOf(employee.getDob()));
             pt.setString(7, employee.getStatus());
-            pt.setInt(8, employee.getWarehouseID());
+            pt.setString(8, employee.getWarehouseID());
             pt.setString(9, employee.getImage());
             pt.setString(10, employee.getEmployeeID());
-
             return pt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -132,7 +132,18 @@ public class EmployeeDAO {
         return false;
     }
 
-
+    public int getMaxEmployeeId() throws SQLException {
+        int maxId = 0;
+        String query = "SELECT MAX(CAST(SUBSTRING(employeeID, 5) AS UNSIGNED)) FROM employee";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                maxId = rs.getInt(1);
+            }
+        }
+        return maxId;
+    }
 
     public static boolean updateAccountEmail(String employeeId, String newEmail) {
         String sql = "UPDATE account SET email = ? WHERE employeeId = ?";
@@ -180,10 +191,10 @@ public class EmployeeDAO {
                 employee.setEmail(rs.getString("Email"));
                 employee.setPhone(rs.getString("Phone"));
                 employee.setAddress(rs.getString("Address"));
-                employee.setGender(rs.getString("Gender"));
-                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setGender(rs.getBoolean("Gender"));
+                employee.setDob(rs.getDate("Dob").toLocalDate());
                 employee.setStatus(rs.getString("Status"));
-                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setWarehouseID(rs.getString("WarehouseID"));
                 employee.setWarehouseName(rs.getString("WarehouseName")); // Lấy tên kho
                 employee.setImage(rs.getString("Image"));
                 employees.add(employee);
@@ -199,8 +210,7 @@ public class EmployeeDAO {
         String sql = "SELECT e.*, w.WarehouseName " +
                 "FROM Employee e " +
                 "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
-                "WHERE e.Status = 'Active' " +
-                "AND (e.EmployeeName LIKE ? OR e.Email LIKE ? OR e.Phone LIKE ? OR e.EmployeeID LIKE ?) " +
+                "WHERE (e.EmployeeName LIKE ? OR e.Email LIKE ? OR e.Phone LIKE ? OR e.EmployeeID LIKE ?) " +
                 "LIMIT ? OFFSET ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -219,10 +229,10 @@ public class EmployeeDAO {
                 employee.setEmail(rs.getString("Email"));
                 employee.setPhone(rs.getString("Phone"));
                 employee.setAddress(rs.getString("Address"));
-                employee.setGender(rs.getString("Gender"));
-                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setGender(rs.getBoolean("Gender"));
+                employee.setDob(rs.getDate("Dob").toLocalDate());
                 employee.setStatus(rs.getString("Status"));
-                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setWarehouseID(rs.getString("WarehouseID"));
                 employee.setWarehouseName(rs.getString("WarehouseName"));
                 employee.setImage(rs.getString("Image"));
                 employees.add(employee);
@@ -235,9 +245,7 @@ public class EmployeeDAO {
 
     public int getTotalEmployeeCount(String keyword) {
         String sql = "SELECT COUNT(*) AS total FROM Employee " +
-                "WHERE Status = 'Active' " +
-                "AND (EmployeeName LIKE ? OR Email LIKE ? OR Phone LIKE ? OR EmployeeID LIKE ?)";
-
+                "WHERE (EmployeeName LIKE ? OR Email LIKE ? OR Phone LIKE ? OR EmployeeID LIKE ?)";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             String searchKeyword = "%" + keyword + "%";
@@ -254,8 +262,6 @@ public class EmployeeDAO {
         }
         return 0;
     }
-
-
 
     public List<Employee> getEmployeesWithPagination(int page, int pageSize) {
         List<Employee> employees = new ArrayList<>();
@@ -276,10 +282,10 @@ public class EmployeeDAO {
                 employee.setEmail(rs.getString("Email"));
                 employee.setPhone(rs.getString("Phone"));
                 employee.setAddress(rs.getString("Address"));
-                employee.setGender(rs.getString("Gender"));
-                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setGender(rs.getBoolean("Gender"));
+                employee.setDob(rs.getDate("Dob").toLocalDate());
                 employee.setStatus(rs.getString("Status"));
-                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setWarehouseID(rs.getString("WarehouseID"));
                 employee.setWarehouseName(rs.getString("WarehouseName"));
                 employee.setImage(rs.getString("Image"));
                 employees.add(employee);
@@ -295,7 +301,7 @@ public class EmployeeDAO {
         String sql = "SELECT e.*, w.WarehouseName " +
                 "FROM Employee e " +
                 "JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
-                "WHERE e.EmployeeID = ? AND e.Status = 'Active'";
+                "WHERE e.EmployeeID = ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)){
             pt.setString(1, employeeID);
@@ -307,10 +313,10 @@ public class EmployeeDAO {
                     employee.setEmail(rs.getString("Email"));
                     employee.setPhone(rs.getString("Phone"));
                     employee.setAddress(rs.getString("Address"));
-                    employee.setGender(rs.getString("Gender"));
-                    employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                    employee.setGender(rs.getBoolean("Gender"));
+                    employee.setDob(rs.getDate("Dob").toLocalDate());
                     employee.setStatus(rs.getString("Status"));
-                    employee.setWarehouseID(rs.getInt("WarehouseID"));
+                    employee.setWarehouseID(rs.getString("WarehouseID"));
                     employee.setWarehouseName(rs.getString("WarehouseName"));
                     employee.setImage(rs.getString("Image"));
                 }
@@ -352,12 +358,11 @@ public class EmployeeDAO {
     public List<Employee> getEmployeesWithoutAccount() {
         List<Employee> employees = new ArrayList<>();
         String sql = "SELECT e.EmployeeID, e.EmployeeName, e.Email, e.Phone, e.Address, e.Gender, " +
-                "e.DateOfBirth, e.Status, e.RoleID, e.WarehouseID, e.Image, w.WarehouseName " +
+                "e.Dob, e.Status, e.WarehouseID, e.Image, w.WarehouseName " +
                 "FROM Employee e " +
                 "LEFT JOIN Account a ON e.EmployeeID = a.EmployeeID " +
                 "LEFT JOIN Warehouse w ON e.WarehouseID = w.WarehouseID " +
-                "WHERE a.EmployeeID IS NULL " +
-                "AND e.Status = 'Active'";
+                "WHERE a.EmployeeID IS NULL ";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql);
              ResultSet rs = pt.executeQuery()) {
@@ -368,19 +373,17 @@ public class EmployeeDAO {
                 employee.setEmail(rs.getString("Email"));
                 employee.setPhone(rs.getString("Phone"));
                 employee.setAddress(rs.getString("Address"));
-                employee.setGender(rs.getString("Gender"));
-                employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                employee.setGender(rs.getBoolean("Gender"));
+                employee.setDob(rs.getDate("Dob").toLocalDate());
                 employee.setStatus(rs.getString("Status"));
-                employee.setWarehouseID(rs.getInt("WarehouseID"));
+                employee.setWarehouseID(rs.getString("WarehouseID"));
                 employee.setImage(rs.getString("Image"));
                 employee.setWarehouseName(rs.getString("WarehouseName"));
-
                 employees.add(employee);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         return employees;
     }
 
@@ -478,10 +481,10 @@ public class EmployeeDAO {
                     employee.setEmail(rs.getString("Email"));
                     employee.setPhone(rs.getString("Phone"));
                     employee.setAddress(rs.getString("Address"));
-                    employee.setGender(rs.getString("Gender"));
-                    employee.setDateOfBirth(rs.getDate("DateOfBirth").toLocalDate());
+                    employee.setGender(rs.getBoolean("Gender"));
+                    employee.setDob(rs.getDate("Dob").toLocalDate());
                     employee.setStatus(rs.getString("Status"));
-                    employee.setWarehouseID(rs.getInt("WarehouseID"));
+                    employee.setWarehouseID(rs.getString("WarehouseID"));
                     employee.setWarehouseName(rs.getString("WarehouseName"));
                     employee.setImage(rs.getString("Image"));
                 }
@@ -523,6 +526,11 @@ public class EmployeeDAO {
                     ", Email: " + emp.getEmail() +
                     ", Warehouse: " + emp.getWarehouseName());
         }
+         EmployeeDAO employeeDAO = new EmployeeDAO();
+         List<Employee> list = employeeDAO.getEmployeesWithPagination(1, 5);
+         for (Employee employee : list) {
+             System.out.println(employee);
+         }
     }
 
 }

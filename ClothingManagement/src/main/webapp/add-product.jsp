@@ -140,6 +140,8 @@
                                                                                         <label for="madeIn">Made In:</label>
                                                                                         <input type="text" id="madeIn" name="madeIn">
 
+
+
                                                                                         <!-- Submit Button -->
                                                                                         <button type="submit">Add Product</button>
 

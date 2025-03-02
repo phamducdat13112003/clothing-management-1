@@ -126,11 +126,11 @@
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Gender :</h4>
-                                                                                            <p class="sherah-profile-info__text">${employee.gender}</p>
+                                                                                            <p class="sherah-profile-info__text">${employee.gender ? "Nam" : "Nữ"}</p>
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Date of Birth :</h4>
-                                                                                            <p class="sherah-profile-info__text">${employee.dateOfBirth}</p>
+                                                                                            <p class="sherah-profile-info__text">${employee.dob}</p>
                                                                                         </li>
                                                                                         <li class="sherah-dflex">
                                                                                             <h4 class="sherah-profile-info__title">Warehouse :</h4>
