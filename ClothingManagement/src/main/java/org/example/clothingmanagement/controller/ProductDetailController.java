@@ -16,17 +16,18 @@ public class ProductDetailController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        Integer productId = Integer.valueOf(req.getParameter("id"));
-//        boolean check = productService.getProductById(productId).isPresent();
-//
-//        if(check) {
-//                Product product = productService.getProductById(productId).get();
-//                req.setAttribute("product", product);
-//                req.getRequestDispatcher("/product-detail.jsp").forward(req, resp);
-//        }
-//        else{
-//            Product product = null;
-//        }
+
+        String productId = req.getParameter("id");
+        boolean check = productService.getProductById(productId).isPresent();
+
+        if(check) {
+                Product product = productService.getProductById(productId).get();
+                req.setAttribute("product", product);
+                req.getRequestDispatcher("/product-detail.jsp").forward(req, resp);
+        }
+        else{
+            Product product = null;
+        }
     }
 
     @Override

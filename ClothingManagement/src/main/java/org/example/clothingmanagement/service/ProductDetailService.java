@@ -15,10 +15,10 @@ public class ProductDetailService {
         return productDetails;
     }
 
-    public List<ProductDetail> getProductDetailById(Long id) {
-        List<ProductDetail> productDetails = productDetailDAO.findByProductId(id);
-        return productDetails;
+    public List<ProductDetail> getAllProductDetailByProductId(String productId) {
+        return productDetailDAO.findByProductId(productId);
     }
+
     public ProductDetail getProductDetailByProductDetailID(String productDetailID) throws Exception {
         return productDetailDAO.getProductDetailByProductDetailID(productDetailID);
     }

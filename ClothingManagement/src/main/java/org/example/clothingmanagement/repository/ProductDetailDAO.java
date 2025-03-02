@@ -38,13 +38,13 @@ public class ProductDetailDAO {
         }
     }
 
-    public List<ProductDetail> findByProductId(Long productId) {
+    public List<ProductDetail> findByProductId(String productId) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId FROM ProductDetail ");
             sql.append(" WHERE ProductId = ?");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setLong(1, productId);
+            ps.setString(1, productId);
             ResultSet rs = ps.executeQuery();
             List<ProductDetail> list = new ArrayList<>();
             while(rs.next()){

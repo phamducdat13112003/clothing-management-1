@@ -15,7 +15,7 @@ public class ProductDAO {
     public List<Product> getAllProducts() {
        try(Connection conn = DBContext.getConnection()){
            StringBuilder sql = new StringBuilder();
-           sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn FROM Product  ");
+           sql.append(" SELECT ProductID, ProductName, Price, binID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product  ");
            PreparedStatement ps = conn.prepareStatement(sql.toString());
            ResultSet rs = ps.executeQuery();
            List<Product> products = new ArrayList<>();
@@ -35,6 +35,7 @@ public class ProductDAO {
                        .createdBy(rs.getString("CreatedBy"))
                        .supplierId(rs.getString("SupplierID"))
                        .madeIn(rs.getString("MadeIn"))
+                       .Status(rs.getInt("Status"))
                        .build();
                products.add(product);
 
@@ -74,13 +75,14 @@ public class ProductDAO {
         }
     }
 
-    public boolean deleteProduct(Integer id) {
+    public boolean deleteProduct(String id) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
-            sql.append(" DELETE FROM Product ");
-            sql.append(" WHERE ProductID = ?");
+            sql.append(" UPDATE Product ");
+            sql.append(" SET Status=0");
+            sql.append(" WHERE ProductID=?");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setLong(1, id);
+            ps.setString(1, id);
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {

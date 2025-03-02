@@ -70,6 +70,7 @@
                                         <th class="sherah-table__column-2 sherah-table__h2">Image</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Price</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Action</th>
                                     </tr>
                                     </thead>
@@ -106,7 +107,7 @@
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${product.totalQuantity}</p>
+                                                        <p class="sherah-table__product-desc">${product.status}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
@@ -121,7 +122,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/update-product?id=${product.id}">
+                                                            <a href="${pageContext.request.contextPath}/product-detail?id=${product.id}">
                                                                 Detail
                                                             </a>
                                                         </p>
