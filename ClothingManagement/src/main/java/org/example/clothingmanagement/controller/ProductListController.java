@@ -5,12 +5,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.clothingmanagement.entity.Category;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.ProductDetail;
+import org.example.clothingmanagement.service.CategoryService;
 import org.example.clothingmanagement.service.ProductDetailService;
 import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -18,13 +22,14 @@ import java.util.List;
 public class ProductListController extends HttpServlet {
     private final ProductService ps = new ProductService();
     private final ProductDetailService pds = new ProductDetailService();
+    private final CategoryService cs = new CategoryService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Product> products = ps.getAllProducts();
+        HashMap<Product,String> list = ps.getAllProducts();
 
         //run through all the product
-        for(Product product : products) {
+        for(Product product : list.keySet()) {
 
             // get all the product detail that belong to 1 product
             List<ProductDetail> listPDs = pds.getAllProductDetailByProductId(product.getId());
@@ -38,7 +43,7 @@ public class ProductListController extends HttpServlet {
             product.setTotalQuantity(totalQuan);
         }
 
-        req.setAttribute("products", products);
+        req.setAttribute("products", list);
 
         req.getRequestDispatcher("product-list.jsp").forward(req, resp);
     }

@@ -19,10 +19,27 @@ public class ProductDetailService {
         return productDetailDAO.findByProductId(productId);
     }
 
+    public Optional<ProductDetail> findTheFirstProductDetailOfProductId(String productId) {
+        return productDetailDAO.findTheFirstProductDetailOfProductId(productId);
+    }
+
     public ProductDetail getProductDetailByProductDetailID(String productDetailID) throws Exception {
         return productDetailDAO.getProductDetailByProductDetailID(productDetailID);
     }
     public String getProductIDByProductDetailID(String productDetailID) throws Exception {
         return productDetailDAO.getProductIDByProductDetailID(productDetailID);
+    }
+
+    public static void main(String[] args){
+        ProductDetailService pds = new ProductDetailService();
+        if(pds.findTheFirstProductDetailOfProductId("P001").isPresent()){
+            ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId("P001").get();
+            System.out.println(productDetail.getImage());
+
+        }
+            else{
+            System.out.println("ERROR");
+
+        }
     }
 }

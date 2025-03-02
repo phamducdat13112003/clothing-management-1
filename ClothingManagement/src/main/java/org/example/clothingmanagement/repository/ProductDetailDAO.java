@@ -67,14 +67,14 @@ public class ProductDetailDAO {
 
     }
 
-    public Optional<ProductDetail> findTheFirstProductDetailOfProductId(Long id) {
+    public Optional<ProductDetail> findTheFirstProductDetailOfProductId(String id) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId FROM ProductDetail ");
             sql.append(" WHERE ProductId = ? ");
-            sql.append(" AND ProductDetailId = 1 ");
+            sql.append(" LIMIT 1 ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setLong(1, id);
+            ps.setString(1, id);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 ProductDetail productDetail = ProductDetail.builder()
