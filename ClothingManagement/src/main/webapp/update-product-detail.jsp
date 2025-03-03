@@ -117,32 +117,14 @@
 
                                             </div>
                                             <!-- End Organization -->
-                                            <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end" >
-                                                <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
-                                                <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
-                                            </div>
+
                                         </div>
                                     </div>
                                     <div class="col-lg-6 col-12">
                                         <!-- Basic Information -->
                                         <div class="product-form-box sherah-border mg-top-30">
-                                            <h4 class="form-title m-0">Basic Information</h4>
+                                            <h4 class="form-title m-0">Basic Information Of ${p.name}</h4>
                                             <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Employee Id" type="hidden" name="employeeId" value="${pd.id}" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Product Name" type="text" name="name" value="${p.name}" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Product Image Upload <span class="required">*</span></label>
@@ -165,7 +147,7 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" value="${pd.weight}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" step="0.1" value="${pd.weight}" required>
 
                                                         </div>
                                                     </div>

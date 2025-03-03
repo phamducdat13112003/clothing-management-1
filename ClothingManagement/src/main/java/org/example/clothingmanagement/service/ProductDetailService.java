@@ -42,6 +42,10 @@ public class ProductDetailService {
         return productDetailDAO.recoverProductDetail(id);
     }
 
+    public boolean updateProductDetail(ProductDetail productDetail){
+        return productDetailDAO.updateProductDetail(productDetail);
+    }
+
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");

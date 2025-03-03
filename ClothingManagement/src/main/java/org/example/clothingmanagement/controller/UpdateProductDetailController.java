@@ -43,6 +43,19 @@ public class UpdateProductDetailController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String id = req.getParameter("id");
+        String image = req.getParameter("image");
+        Double weight = Double.parseDouble(req.getParameter("weight"));
+        Integer quantity = Integer.parseInt(req.getParameter("quantity"));
+
+        ProductDetail pd = new ProductDetail(id,image,quantity,weight);
+        boolean check = pds.updateProductDetail(pd);
+        if(check){
+            //TODO nếu update thành công thì làm gì...
+        }
+        else{
+            // TODO nếu update fail thì làm gì
+        }
 
     }
 }
