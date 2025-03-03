@@ -151,6 +151,35 @@ public class ProductDetailDAO {
         return null;
     }
 
+    public Optional<ProductDetail> getOptionalProductDetailByProductDetailID(String productDetailID) {
+        try(Connection  con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status FROM ProductDetail ");
+            sql.append(" WHERE ProductDetailId = ? ");
+            PreparedStatement ps =con.prepareStatement(sql.toString());
+            ps.setString(1,productDetailID);
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .id(rs.getString("ProductDetailId"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
+                        .build();
+                return Optional.of(productDetail);
+            }
+            else{
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public String getProductIDByProductDetailID(String productDetailID) {
         try (Connection con = DBContext.getConnection()) {

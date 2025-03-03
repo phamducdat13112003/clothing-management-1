@@ -16,8 +16,8 @@ import org.example.clothingmanagement.service.SupplierService;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name="AddProduct", urlPatterns = "/add-product")
-public class AddProductController extends HttpServlet {
+@WebServlet(name="AddProductDetail", urlPatterns = "/add-product-detail")
+public class AddProductDetailController extends HttpServlet {
     private final SupplierService ss = new SupplierService();
     private final ProductService productService = new ProductService();
     private final CategoryService cs = new CategoryService();

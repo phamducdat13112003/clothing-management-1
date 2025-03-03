@@ -59,6 +59,7 @@
                                 <%--                                    <li><a href="#">Home</a></li>--%>
                                 <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
                                 <%--                                </ul>--%>
+                                <button class="btn btn-primary" onclick="window.location.href='${pageContext.request.contextPath}/product-detail?id=${product.id}'">Back</button>
                             </div>
                             <!-- End Sherah Breadcrumb -->
                             <!-- Product List -->
@@ -148,7 +149,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/product-detail?id=${pdList.id}">
+                                                            <a href="${pageContext.request.contextPath}/update-product-detail?id=${pdList.id}">
                                                                 Detail
                                                             </a>
                                                         </p>
