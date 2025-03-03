@@ -516,21 +516,7 @@ public class EmployeeDAO {
 
 
     public static void main(String[] args) {
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        List<Employee> employees = employeeDAO.getAllEmployees();
 
-        System.out.println("Total Employees Retrieved: " + employees.size());
-        for (Employee emp : employees) {
-            System.out.println("ID: " + emp.getEmployeeID() +
-                    ", Name: " + emp.getEmployeeName() +
-                    ", Email: " + emp.getEmail() +
-                    ", Warehouse: " + emp.getWarehouseName());
-        }
-         EmployeeDAO employeeDAO = new EmployeeDAO();
-         List<Employee> list = employeeDAO.getEmployeesWithPagination(1, 5);
-         for (Employee employee : list) {
-             System.out.println(employee);
-         }
     }
 
 }

@@ -73,6 +73,8 @@
             border: 1px solid #ccc;
             width: 65%;
             z-index: 10;
+            margin-left: 311px;
+            margin-top: 33px;
         }
 
         .suggestion-item {
@@ -111,6 +113,20 @@
 
         .add-product-btn:hover {
             background-color: #007B8C;
+        }
+
+        /* Red color scheme for Action button and header */
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .delete-btn:hover {
+            background-color: #d32f2f;
         }
     </style>
 </head>
@@ -183,23 +199,13 @@
                 <th>Product Name</th>
                 <th>Weight</th>
                 <th>Quantity</th>
+                <th>Action</th>
             </tr>
             </thead>
             <tbody id="productDetailsBody">
-            <!-- Empty row for adding products dynamically -->
-            <tr>
-                <td>1</td>
-                <td><input type="text" name="productDetailID[]" id="productDetailID1" required readonly></td>
-                <td><span id="productName1"></span></td>
-                <td><span id="productWeight1"></span></td>
-                <td><input type="number" name="quantity[]" required></td>
-            </tr>
+
             </tbody>
         </table>
-
-        <div class="form-buttons">
-            <button type="button" class="add-product-btn" onclick="addProductRow()">Add Another Product</button>
-        </div>
 
         <div class="form-buttons">
             <button type="submit">Create Transfer Order</button>
@@ -219,29 +225,49 @@
 <script>
     let rowCount = 1;  // Start row number from 1
 
-    // Function to search product details as user types
     function searchProductDetails() {
         const searchValue = document.getElementById("productDetailSearch").value.trim();
 
-        if (searchValue.length > 0) {
-            // Make an AJAX request to search product details
+        console.log("Searching for:", searchValue);  // Debugging line
+
+        if (searchValue.length > 2) {  // Wait until user types more than 2 characters
             fetch(`/ClothingManagement_war/transfer-order/searchProductDetail?query=${searchValue}`)
                 .then(response => response.json())
                 .then(data => {
                     const suggestionBox = document.getElementById("suggestionBox");
                     suggestionBox.innerHTML = "";  // Clear previous suggestions
+
                     if (data.success && data.suggestions.length > 0) {
-                        // Show suggestion box with results
-                        suggestionBox.style.display = "block";
+                        suggestionBox.style.display = "block";  // Show suggestion box
+
+                        // Loop through suggestions and create divs for each suggestion
                         data.suggestions.forEach(suggestion => {
                             const div = document.createElement("div");
                             div.classList.add("suggestion-item");
-                            div.textContent = `${suggestion.productDetailID} - ${suggestion.productName} - ${suggestion.weight}`;
+
+// Explicitly convert each property to string and check for `null` or `undefined`
+                            const productDetailID = (suggestion.productDetailID != null) ? String(suggestion.productDetailID) : "No ID";
+                            const productName = (suggestion.productName != null) ? String(suggestion.productName) : "No name";
+                            const weight = (suggestion.weight != null) ? String(suggestion.weight) : "No weight";  // Explicitly convert weight to string
+
+                            console.log("Final suggestion values:", productDetailID, productName, weight);
+
+// Use textContent to safely set the text
+                            div.textContent = `${productDetailID} - ${productName} - ${weight}`;
+
+// Debugging to ensure the text content is being set correctly
+                            console.log("Final suggestion item text:", div.textContent);
+
+                            // Add click event to select suggestion
                             div.onclick = () => selectSuggestion(suggestion);
+
+                            // Append the suggestion to the box
                             suggestionBox.appendChild(div);
                         });
+
+
                     } else {
-                        suggestionBox.style.display = "none";
+                        suggestionBox.style.display = "none";  // Hide if no results
                     }
                 })
                 .catch(error => {
@@ -249,37 +275,77 @@
                     alert('An error occurred while fetching product details.');
                 });
         } else {
-            document.getElementById("suggestionBox").style.display = "none";
+            document.getElementById("suggestionBox").style.display = "none";  // Hide suggestion box if input is empty
         }
     }
 
-    // Function to select a suggestion and fill in the Product Detail ID, Name, and Weight
-    function selectSuggestion(suggestion) {
-        document.getElementById("productDetailSearch").value = suggestion.productDetailID;
-        document.getElementById("productName1").innerText = suggestion.productName;
-        document.getElementById("productWeight1").innerText = suggestion.weight;
-        document.getElementById("suggestionBox").style.display = "none";  // Hide suggestions
 
-        // Insert the product detail into the table
-        document.getElementById("productDetailID1").value = suggestion.productDetailID;  // Set Product Detail ID
+
+
+    function selectSuggestion(suggestion) {
+        const tableBody = document.getElementById("productDetailsBody");
+
+        // Always add a new row when a suggestion is clicked
+        addProductRow();  // This ensures a new row is always added
+
+        // Fill the last row with selected product details
+        const lastRow = tableBody.lastElementChild;
+
+        // Fill the product details in the last row
+        lastRow.querySelector('input[name="productDetailID[]"]').value = suggestion.productDetailID;
+        lastRow.querySelector(`#productName${rowCount}`).innerText = suggestion.productName;
+        lastRow.querySelector(`#productWeight${rowCount}`).innerText = suggestion.weight;
+
+        // Hide the suggestion box
+        document.getElementById("suggestionBox").style.display = "none";
+
+        // Debugging logs
+        console.log("Selected Product:", suggestion.productDetailID, suggestion.productName, suggestion.weight);
     }
 
-    // Function to add another product row dynamically
-    function addProductRow() {
-        rowCount++;  // Increment row count
 
+    function selectSuggestion(suggestion) {
+        const tableBody = document.getElementById("productDetailsBody");
+
+        // Always add a new row when a suggestion is clicked
+        addProductRow();  // This ensures a new row is always added
+
+        // Fill the last row with selected product details
+        const lastRow = tableBody.lastElementChild;
+
+        // Fill the product details in the last row
+        lastRow.querySelector('input[name="productDetailID[]"]').value = suggestion.productDetailID;
+        lastRow.querySelector(`#productName${rowCount}`).innerText = suggestion.productName;
+        lastRow.querySelector(`#productWeight${rowCount}`).innerText = suggestion.weight;
+
+        // Hide the suggestion box
+        document.getElementById("suggestionBox").style.display = "none";
+
+        // Debugging logs
+        console.log("Selected Product:", suggestion.productDetailID, suggestion.productName, suggestion.weight);
+    }
+
+
+
+
+
+
+    function addProductRow() {
+        // Increment row count after creating a row
         var tableBody = document.getElementById("productDetailsBody");
 
+        // Create a new row element
         var newRow = document.createElement("tr");
 
+        // Create cell for # (row number)
         var cell1 = document.createElement("td");
-        cell1.textContent = rowCount;  // Auto-increment the number
+        cell1.textContent = rowCount;  // Set the row number
 
+        // Create the other cells (Product Detail ID, Product Name, Weight, Quantity)
         var cell2 = document.createElement("td");
         var productDetailInput = document.createElement("input");
         productDetailInput.setAttribute("type", "text");
         productDetailInput.setAttribute("name", "productDetailID[]");
-        productDetailInput.setAttribute("id", `productDetailID${rowCount}`);
         productDetailInput.setAttribute("readonly", true);  // Set to readonly, only allow editing quantity
         cell2.appendChild(productDetailInput);
 
@@ -300,14 +366,36 @@
         quantityInput.setAttribute("required", true);
         cell5.appendChild(quantityInput);
 
+        // Create a cell for the delete button
+        var cell6 = document.createElement("td");
+        var deleteButton = document.createElement("button");
+        deleteButton.textContent = "Delete";
+        deleteButton.classList.add("delete-btn"); // Add a class for styling
+
+        // Add event listener to delete button
+        deleteButton.onclick = function() {
+            tableBody.removeChild(newRow);  // Remove the row from the table
+        };
+
+        cell6.appendChild(deleteButton);
+
+        // Append the cells to the new row
         newRow.appendChild(cell1);
         newRow.appendChild(cell2);
         newRow.appendChild(cell3);
         newRow.appendChild(cell4);
         newRow.appendChild(cell5);
+        newRow.appendChild(cell6); // Append the delete button column
 
+        // Append the new row to the table body
         tableBody.appendChild(newRow);
+
+        // Increment row count after the row is added
+        rowCount++;  // Now increment after adding the row
     }
+
+
+
 </script>
 
 </body>
