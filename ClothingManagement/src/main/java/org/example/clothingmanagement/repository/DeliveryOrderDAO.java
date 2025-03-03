@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DeliveryOrderDAO {
-
+//1
     public static List<PurchaseOrder> getPurchaseOrderOpen() {
         List<PurchaseOrder> purchaseOrders = new ArrayList<>();
         String sql = "SELECT * FROM `po` WHERE Status = 'open';";
@@ -37,7 +37,7 @@ public class DeliveryOrderDAO {
 
         return purchaseOrders;
     }
-
+//2
     public static String getSupplierNameByID(String supplierID) {
         String query = "SELECT SupplierName FROM supplier WHERE SupplierID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -53,7 +53,7 @@ public class DeliveryOrderDAO {
         }
         return "Unknown Supplier"; // Trả về giá trị mặc định thay vì null
     }
-
+//3
     public static String getEmployeeNameByEmployeeID(String employeeID) {
         String query = "SELECT EmployeeName FROM employee WHERE EmployeeID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -69,7 +69,7 @@ public class DeliveryOrderDAO {
         }
         return "Unknown Employee"; // Trả về giá trị mặc định thay vì null
     }
-
+//4
     public static List<PurchaseOrderDetail> getPODetailsByPOIDs(List<String> poIDs) {
         List<PurchaseOrderDetail> poDetails = new ArrayList<>();
 
@@ -108,7 +108,7 @@ public class DeliveryOrderDAO {
 
         return poDetails;
     }
-
+//5
     public static List<Map<String, Object>> getProductDetailsByProductDetailIDs(List<String> productDetailIDs) {
         List<Map<String, Object>> productDetails = new ArrayList<>();
 
@@ -152,7 +152,7 @@ public class DeliveryOrderDAO {
 
         return productDetails;
     }
-
+//6
     public static boolean addDO(String doID, Date plannedShippingDate, Date receiptDate, String poID, String createdBy, String recipient, boolean status) {
         String query = "INSERT INTO DO (DOID, PlannedShippingDate, ReceiptDate, POID, CreatedBy, Recipient, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBContext.getConnection();
@@ -170,7 +170,7 @@ public class DeliveryOrderDAO {
         }
         return false;
     }
-
+//7
     public static String generateDOID()  {
         String query = "SELECT MAX(DOID) FROM DO";
         try (Connection conn = DBContext.getConnection();
@@ -186,6 +186,7 @@ public class DeliveryOrderDAO {
         }catch(Exception e) {}
         return "DO1"; // Nếu chưa có dữ liệu, bắt đầu từ DO1
     }
+    //8
     public static List<DeliveryOrder> getAllActiveDOs() {
         List<DeliveryOrder> doList = new ArrayList<>();
         String query = "SELECT * FROM DO WHERE Status = 1";
@@ -212,42 +213,7 @@ public class DeliveryOrderDAO {
         return doList;
     }
 
-    public List<DeliveryOrderDetail> getDODetailsByDOIDs(List<String> doIDs) {
-        List<DeliveryOrderDetail> doDetailList = new ArrayList<>();
-        if (doIDs == null || doIDs.isEmpty()) {
-            return doDetailList;
-        }
-
-        // Tạo danh sách dấu '?' cho PreparedStatement
-        String placeholders = String.join(",", Collections.nCopies(doIDs.size(), "?"));
-        String sql = "SELECT DODetailID, ProductDetailID, Quantity, DOID " +
-                "FROM DODetail WHERE DOID IN (" + placeholders + ")";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            for (int i = 0; i < doIDs.size(); i++) {
-                ps.setString(i + 1, doIDs.get(i));
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    DeliveryOrderDetail detail = new DeliveryOrderDetail(
-                            rs.getString("DODetailID"),
-                            rs.getString("ProductDetailID"),
-                            rs.getInt("Quantity"),
-                            rs.getString("DOID")
-                    );
-                    doDetailList.add(detail);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return doDetailList;
-    }
-
-
-
+//9
     public static List<Map<String, Object>> getDODetailsWithProductInfo(List<String> doIDs) {
         List<Map<String, Object>> doDetailList = new ArrayList<>();
         if (doIDs == null || doIDs.isEmpty()) {
@@ -294,6 +260,7 @@ public class DeliveryOrderDAO {
         }
         return doDetailList;
     }
+    //10
     public static void updateDO(String receiptDate, String Recipient) throws SQLException {
         String sql = "UPDATE DO SET ReceiptDate = ?, Recipient = ?, Status = false WHERE Status = true";
 
@@ -305,7 +272,7 @@ public class DeliveryOrderDAO {
         }
     }
 
-
+//11
     // Cập nhật số lượng trong DODetail
     public static void updateDODetailQuantity(String dodetailId, int newQuantity) throws SQLException {
         String sql = "UPDATE DODetail SET Quantity = ? WHERE DODetailID = ?";
@@ -317,6 +284,7 @@ public class DeliveryOrderDAO {
             stmt.executeUpdate();
         }
     }
+    //12
     public static String getEmployeeIDByAccountID(String accountID) {
         String query = "SELECT e.EmployeeID FROM account e WHERE e.AccountID = ? LIMIT 1";
 
@@ -333,7 +301,7 @@ public class DeliveryOrderDAO {
         }
         return null; // Trả về null nếu không tìm thấy EmployeeID
     }
-
+//13
     public static List<DeliveryOrder> getAllDOs() {
         List<DeliveryOrder> doList = new ArrayList<>();
         String query = "SELECT DOID, PlannedShippingDate, ReceiptDate, POID, CreatedBy, Recipient FROM DO";
@@ -361,7 +329,8 @@ public class DeliveryOrderDAO {
 
 
 
-    public static void main(String[] args) {List<DeliveryOrder> doList = DeliveryOrderDAO.getAllDOs();
+    public static void main(String[] args) {
+        List<DeliveryOrder> doList = DeliveryOrderDAO.getAllDOs();
 
         if (doList == null || doList.isEmpty()) {
             System.out.println("❌ Test Failed: Không có DO nào được lấy ra hoặc danh sách null.");
