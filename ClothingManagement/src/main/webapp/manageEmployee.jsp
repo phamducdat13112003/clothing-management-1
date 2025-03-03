@@ -234,7 +234,7 @@
 
     <script type="text/javascript">
         function confirmDelete(employeeID) {
-            if (confirm("Are you sure want to delete this account?")) {
+            if (confirm("Are you sure want to delete this employee?")) {
                 window.location = "deleteemployee?employeeId=" + employeeID;
             }
         }

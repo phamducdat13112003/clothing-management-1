@@ -95,13 +95,13 @@ public class ManageWarehouseServlet extends HttpServlet {
 
     // Cập nhật thông tin warehouse
     private void updateWarehouse(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int warehouseId = Integer.parseInt(request.getParameter("warehouseId"));
+        //int warehouseId = Integer.parseInt(request.getParameter("warehouseId"));
         String warehouseName = request.getParameter("warehouseName");
         String address = request.getParameter("address");
         int branchId = Integer.parseInt(request.getParameter("branchId"));
 
         Warehouse warehouse = new Warehouse();
-        warehouse.setWarehouseId(warehouseId);
+        //warehouse.setWarehouseId(warehouseId);
         warehouse.setWarehouseName(warehouseName);
         warehouse.setAddress(address);
         warehouse.setBranchId(branchId);

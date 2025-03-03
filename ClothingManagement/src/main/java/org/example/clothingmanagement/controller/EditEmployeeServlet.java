@@ -22,7 +22,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@MultipartConfig
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 2 * 1024 * 1024,   // 2MB
+        maxRequestSize = 4 * 1024 * 1024 // 4MB
+)
 @WebServlet(name = "EditEmployeeServlet", value = "/editemployee")
 public class EditEmployeeServlet extends HttpServlet {
 
@@ -91,9 +95,11 @@ public class EditEmployeeServlet extends HttpServlet {
         String phone = request.getParameter("phone").trim();
         String address = request.getParameter("address").trim();
         address = capitalizeName(address);
-        String gender = request.getParameter("gender");
+        String genderParam = request.getParameter("gender");
+        boolean gender = "1".equals(genderParam);
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
         String warehouseID = request.getParameter("warehouse");
+        String status = request.getParameter("status");
         listWarehouse = warehouseDAO.getAllWareHouse();
         if (!isValidEmail(email)) {
             request.setAttribute("errorEmail", "Invalid email");
@@ -122,13 +128,12 @@ public class EditEmployeeServlet extends HttpServlet {
         }
         if(!message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone) || !isAdult(String.valueOf(dateOfBirth))) {
             request.setAttribute("message", message.toString());
-            System.out.println(message);
             request.setAttribute("employee", employee);
             request.setAttribute("list", list);
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
-            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, "Active", Integer.parseInt(warehouseID), "");
+            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, status, warehouseID, "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();
@@ -160,19 +165,24 @@ public class EditEmployeeServlet extends HttpServlet {
                 }
             boolean success = false;
             boolean emailUpdated = true;
+            boolean isUpdateStatusAccount =true;
             try {
                 success = employeeService.updateEmployee(editEmployee);
 
                 // Kiểm tra nếu có tài khoản, thì mới cập nhật email
                 if (employeeService.hasAccount(employeeId)) {
                     emailUpdated = employeeService.updateAccountEmail(employeeId, email);
+                    isUpdateStatusAccount = accountService.updateStatusAccount(status, employeeId);
+                    if (!emailUpdated || ! isUpdateStatusAccount) {
+                        request.setAttribute("message", "Employee updated, but account update failed.");
+                    }
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
                 request.setAttribute("message", "Cannot update Employee due to a database error.");
             }
 
-            if (success && emailUpdated) {
+            if (success && emailUpdated && isUpdateStatusAccount) {
                 request.setAttribute("messageSuccess", "Employee updated successfully");
             } else {
                 request.setAttribute("message", "Failed to update employee");

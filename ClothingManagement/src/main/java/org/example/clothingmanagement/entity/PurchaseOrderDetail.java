@@ -11,6 +11,14 @@ public class PurchaseOrderDetail {
     private String poID;
     private String productDetailID;
     private int quantity;
-    private int price;
-    private int totalPrice;
+    private float price;
+    private float totalPrice;
+
+    public PurchaseOrderDetail(String productDetailID) {
+        this.productDetailID = productDetailID;
+    }
+
+//    public PurchaseOrderDetail1(String productDetailID) {
+//        this.productDetailID = productDetailID;
+//    }
 }

@@ -18,7 +18,7 @@ public class DeleteProductController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
-        Integer id = Integer.parseInt(req.getParameter("id"));
+        String id = req.getParameter("id");
         boolean result = productService.deleteProduct(id);
         if (result) {
             session.setAttribute("alertMessage", "Delete Product Success");

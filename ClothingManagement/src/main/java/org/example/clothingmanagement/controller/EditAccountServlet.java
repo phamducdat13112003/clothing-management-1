@@ -14,6 +14,7 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @WebServlet(name = "EditAccountServlet", value = "/editaccount")
@@ -65,7 +66,7 @@ public class EditAccountServlet extends HttpServlet {
         String password = request.getParameter("password").trim();
         String roleId = request.getParameter("roleId");
         String status = request.getParameter("status");
-
+        LocalDateTime lastUpdate = LocalDateTime.now();
         int page = 1;
         int pageSize = 5; // Số dòng trên mỗi trang
         try {
@@ -101,10 +102,9 @@ public class EditAccountServlet extends HttpServlet {
                 return;
             }
             encryptedPassword = MD5.getMd5(password); // Mã hóa mật khẩu mới
-            isPasswordUpdated = true;
+            isPasswordUpdated = false;
         }
-
-        Account updatedAccount = new Account(accountID ,email, encryptedPassword, Integer.parseInt(roleId), status);
+        Account updatedAccount = new Account(accountID ,email, encryptedPassword, lastUpdate, Integer.parseInt(roleId), status);
         List<Account> listAccount= null;
         int totalAccounts = 0;
         try {

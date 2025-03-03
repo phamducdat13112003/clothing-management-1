@@ -5,7 +5,6 @@ import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.service.AccountService;
-import org.example.clothingmanagement.service.AccountService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -61,7 +60,7 @@ public class LoginServlet extends HttpServlet {
                 if (account.getRoleId() == 1) {//Manager
                     response.sendRedirect("Dashboard.jsp");
                 } else if (account.getRoleId() == 2) {//Sale
-                    response.sendRedirect("Dashboard.jsp");
+                    response.sendRedirect("viewpurchaseorder");
                 } else if (account.getRoleId() == 3) {//Storage Staff
                     response.sendRedirect("Dashboard.jsp");
                 } else if (account.getRoleId() == 4) {//Admin

@@ -15,8 +15,12 @@ public class PurchaseOrder {
     private String supplierID;
     private String createdBy;
     private String status;
-    private int totalPrice;
+
+
 
 
     
+
+    private float totalPrice;
+
 }

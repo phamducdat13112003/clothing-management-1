@@ -15,7 +15,7 @@ public class WarehouseDAO {
              ResultSet rs = stmt.executeQuery(sql)){
             while(rs.next()){
                 Warehouse w = new Warehouse();
-                w.setWarehouseId(rs.getInt("WarehouseID"));
+                w.setWarehouseId(rs.getString("WarehouseID"));
                 w.setWarehouseName(rs.getString("WarehouseName"));
                 w.setAddress(rs.getString("Address"));
                 w.setBranchId(rs.getInt("BranchID"));
@@ -50,7 +50,7 @@ public class WarehouseDAO {
             stmt.setString(1, warehouse.getWarehouseName());
             stmt.setInt(2, warehouse.getBranchId());
             stmt.setString(3, warehouse.getAddress());
-            stmt.setInt(4, warehouse.getWarehouseId());
+            stmt.setString(4, warehouse.getWarehouseId());
             stmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -89,7 +89,7 @@ public class WarehouseDAO {
                 if (rs.next()) {
                     // Create a new Warehouse object and populate it with the data
                     warehouse = new Warehouse();
-                    warehouse.setWarehouseId(rs.getInt("WarehouseID"));
+                    warehouse.setWarehouseId(rs.getString("WarehouseID"));
                     warehouse.setWarehouseName(rs.getString("WarehouseName"));
                     warehouse.setBranchId(rs.getInt("BranchID"));
                     warehouse.setAddress(rs.getString("Address"));

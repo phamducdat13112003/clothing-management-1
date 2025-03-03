@@ -174,8 +174,8 @@
                             <div class="form-group">
                               <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
                               <select class="form-group__input" name="gender" aria-label="Default select example" required>
-                                <option value="Male" selected>Nam</option>
-                                <option value="Female">Nữ</option>
+                                <option value="1" selected>Nam</option>
+                                <option value="0">Nữ</option>
                               </select>
                             </div>
                           </div>
@@ -183,7 +183,7 @@
                             <div class="form-group">
                               <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>
                               <div class="form-group__input">
-                                <input value="${employee.dateOfBirth}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
+                                <input value="${employee.dob}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
                                 <c:if test="${not empty errorDateofBirth}">
                                   <span class="error-message">${errorDateofBirth}</span>
                                 </c:if>
@@ -210,6 +210,16 @@
                                   </c:forEach>
                               </select>
                           </div>
+                          <div class="col-12">
+                            <div class="form-group">
+                              <label class="sherah-wc__form-label">Status <span class="required">*</span></label>
+                              <div class="form-group__input">
+                                <select class="form-group__input" name="status" required>
+                                  <option value="Active" ${employee.status == 'Active' ? 'selected' : ''}>Active</option>
+                                  <option value="Inactive" ${employee.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                </select>
+                              </div>
+                            </div>
                         </div>
                       </div>
                       <!-- End Organization -->
@@ -218,6 +228,7 @@
                         <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
                       </div>
                     </div>
+                  </div>
                   </div>
                 </form>
               </div>

@@ -16,10 +16,10 @@ public class Employee {
     private String email;
     private String phone;
     private String address;
-    private String gender;
-    private LocalDate dateOfBirth;
+    private boolean gender;
+    private LocalDate dob;
     private String status; //  Active, Inactive
-    private int warehouseID;
+    private String warehouseID;
     private String image;
     private String warehouseName;
 
@@ -34,26 +34,27 @@ public class Employee {
         this.phone = phone;
     }
 
-    public Employee(String employeeID, String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth,String status ,int warehouseID ,  String image) {
+    public Employee(String employeeID, String employeeName, String email, String phone, String address, boolean gender, LocalDate dob,String status ,String warehouseID ,  String image) {
         this.employeeID = employeeID;
         this.employeeName = employeeName;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
+        this.dob = dob;
         this.status = status;
         this.warehouseID = warehouseID;
         this.image = image;
     }
 
-    public Employee(String employeeName, String email, String phone, String address, String gender, LocalDate dateOfBirth, int warehouseID, String image) {
+    public Employee(String employeeID,String employeeName, String email, String phone, String address, boolean gender, LocalDate dob, String warehouseID, String image) {
+        this.employeeID = employeeID;
         this.employeeName = employeeName;
         this.email = email;
         this.phone = phone;
         this.address = address;
         this.gender = gender;
-        this.dateOfBirth = dateOfBirth;
+        this.dob = dob;
         this.warehouseID = warehouseID;
         this.image=image;
     }
