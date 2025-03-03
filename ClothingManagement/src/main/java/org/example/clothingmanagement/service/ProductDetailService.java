@@ -25,6 +25,11 @@ public class ProductDetailService {
     public ProductDetail getProductDetailByProductDetailID(String productDetailID) throws Exception {
         return productDetailDAO.getProductDetailByProductDetailID(productDetailID);
     }
+
+    public Optional<ProductDetail> getOptionalProductDetailByProductDetailId(String productDetailId){
+        return productDetailDAO.getOptionalProductDetailByProductDetailID(productDetailId);
+    }
+
     public String getProductIDByProductDetailID(String productDetailID) throws Exception {
         return productDetailDAO.getProductIDByProductDetailID(productDetailID);
     }

@@ -11,9 +11,16 @@ import java.util.Date;
 @AllArgsConstructor
 public class PurchaseOrder {
     private String poID;
-    private Date createdDate;
+    private Date CreatedDate;
     private String supplierID;
     private String createdBy;
     private String status;
+
+
+
+
+    
+
     private float totalPrice;
+
 }
