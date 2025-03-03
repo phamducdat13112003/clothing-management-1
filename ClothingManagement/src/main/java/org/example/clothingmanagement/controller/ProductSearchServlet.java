@@ -3,6 +3,7 @@ package org.example.clothingmanagement.controller;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -12,6 +13,7 @@ import org.example.clothingmanagement.repository.TransferOrderDAO;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet(name = "SearchProductDetailServlet", value = "/transfer-order/searchProductDetail")
 public class ProductSearchServlet extends HttpServlet {
     private TransferOrderDAO transferOrderDAO;
 
@@ -34,7 +36,7 @@ public class ProductSearchServlet extends HttpServlet {
                 JsonArray suggestionArray = new JsonArray();
                 for (ProductDetail suggestion : suggestions) {
                     JsonObject suggestionObj = new JsonObject();
-                    suggestionObj.addProperty("productDetailID", suggestion.getProductDetailID());
+                    suggestionObj.addProperty("productDetailID", suggestion.getId());
                     suggestionObj.addProperty("productName", suggestion.getProductName());
                     suggestionObj.addProperty("weight", suggestion.getWeight());
                     suggestionArray.add(suggestionObj);
@@ -55,4 +57,6 @@ public class ProductSearchServlet extends HttpServlet {
         response.setContentType("application/json");
         response.getWriter().write(responseJson.toString());
     }
+
+
 }

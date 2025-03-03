@@ -19,6 +19,9 @@ public class ProductDetail {
     private String productId;
     private int status;
 
+    private String productName;
+
+
 
 
 }

@@ -411,6 +411,7 @@ public class TransferOrderDAO {
 
     public List<ProductDetail> searchProductDetails(String query) {
         List<ProductDetail> productDetailsList = new ArrayList<>();
+        // SQL Query to filter based on ProductDetailID or ProductName
         String sql = "SELECT pd.ProductDetailID, pd.Weight, p.ProductName " +
                 "FROM productdetail pd " +
                 "JOIN product p ON pd.ProductID = p.ProductID " +
@@ -428,10 +429,9 @@ public class TransferOrderDAO {
 
             while (rs.next()) {
                 ProductDetail productDetail = new ProductDetail();
-                // Use Long.valueOf to convert to the correct data type for ProductDetailID
-                productDetail.setProductDetailID(rs.getString("ProductDetailID"));  // Assuming ProductDetailID is a string
+                productDetail.setId(rs.getString("ProductDetailID"));  // ProductDetailID mapped to 'id'
                 productDetail.setWeight(rs.getDouble("Weight"));
-                productDetail.setProductName(rs.getString("ProductName"));
+                productDetail.setProductName(rs.getString("ProductName"));  // Set Product Name from join
 
                 productDetailsList.add(productDetail);
             }
@@ -441,5 +441,10 @@ public class TransferOrderDAO {
 
         return productDetailsList;
     }
+
+
+
+
+
 
 }

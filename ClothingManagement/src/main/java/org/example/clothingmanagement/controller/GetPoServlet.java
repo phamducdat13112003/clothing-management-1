@@ -55,5 +55,10 @@ public void doPost(HttpServletRequest request, HttpServletResponse response) thr
     request.getRequestDispatcher("deliveryOrder.jsp").forward(request, response);
 }
 
+/*
 
+ - chưa trừ quantity podetail, phải làm hàm check nếu quantity của các đoetail = quantity podetail
+thì cho podetail close, còn nếu bé hơn thì vẫn ho mở, đôn thời thay đổi quantity của podetail
+- ếu xóa
+* */
 }
