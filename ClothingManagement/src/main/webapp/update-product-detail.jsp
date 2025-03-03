@@ -94,106 +94,18 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="sherah-breadcrumb mg-top-30">
-                                    <h2 class="sherah-breadcrumb__title">${pd.name}</h2>
+                                    <h2 class="sherah-breadcrumb__title">product detail</h2>
                                     <ul class="sherah-breadcrumb__list">
                                         <li><a href="manageemployee">Home</a></li>
                                     </ul>
-                                    <c:if test="${not empty message}">
-                                        <span class="error-message">${message}</span>
-                                    </c:if>
+
                                 </div>
                             </div>
                         </div>
                         <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
                             <form class="sherah-wc__form-main" action="editemployee" method="post" enctype="multipart/form-data">
                                 <div class="row">
-                                    <div class="col-lg-6 col-12">
-                                        <!-- Basic Information -->
-                                        <div class="product-form-box sherah-border mg-top-30">
-                                            <h4 class="form-title m-0">Basic Information</h4>
-                                            <div class="row">
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Employee Id" type="hidden" name="employeeId" value="${employee.employeeID}" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Employee Name <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Employee Name" type="text" name="name" value="${employee.employeeName}" required>
-                                                            <c:if test="${not empty errorName}">
-                                                                <span class="error-message">${errorName}</span>
-                                                            </c:if>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Employee Image <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                                            <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
-                                                            <img src=".${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${employee.email}" required>
-                                                            <c:if test="${not empty errorEmail}">
-                                                                <span class="error-message">${errorEmail}</span>
-                                                            </c:if>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${employee.phone}" required>
-                                                            <c:if test="${not empty errorPhone}">
-                                                                <span class="error-message">${errorPhone}</span>
-                                                            </c:if>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Address<span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${employee.address}" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
-                                                        <select class="form-group__input" name="gender" aria-label="Default select example" required>
-                                                            <option value="1" selected>Nam</option>
-                                                            <option value="0">Nữ</option>
-                                                        </select>
-                                                    </div>
-                                                </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input value="${employee.dob}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
-                                                            <c:if test="${not empty errorDateofBirth}">
-                                                                <span class="error-message">${errorDateofBirth}</span>
-                                                            </c:if>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End Basic Information -->
-                                    </div>
+
                                     <div class="col-lg-6 col-12">
                                         <!-- Organization -->
                                         <div class="product-form-box sherah-border mg-top-30">
@@ -210,6 +122,85 @@
                                                 <button type="button" class="sherah-btn sherah-btn__third">Cancel</button>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-lg-6 col-12">
+                                        <!-- Basic Information -->
+                                        <div class="product-form-box sherah-border mg-top-30">
+                                            <h4 class="form-title m-0">Basic Information</h4>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Employee Id" type="hidden" name="employeeId" value="${pd.id}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Product Name" type="text" name="name" value="${p.name}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Product Image Upload <span class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                                            <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
+                                                            <img src="img/${pd.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${pd.image}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Quantity <span class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Quantity" type="number" name="quantity" value="${pd.quantity}" required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" value="${pd.weight}" required>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+<%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
+<%--                                                    <div class="form-group">--%>
+<%--                                                        <label class="sherah-wc__form-label">Address<span class="required">*</span></label>--%>
+<%--                                                        <div class="form-group__input">--%>
+<%--                                                            <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${employee.address}" required>--%>
+<%--                                                        </div>--%>
+<%--                                                    </div>--%>
+<%--                                                </div>--%>
+<%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
+<%--                                                    <div class="form-group">--%>
+<%--                                                        <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>--%>
+<%--                                                        <select class="form-group__input" name="gender" aria-label="Default select example" required>--%>
+<%--                                                            <option value="1" selected>Nam</option>--%>
+<%--                                                            <option value="0">Nữ</option>--%>
+<%--                                                        </select>--%>
+<%--                                                    </div>--%>
+<%--                                                </div>--%>
+<%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
+<%--                                                    <div class="form-group">--%>
+<%--                                                        <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>--%>
+<%--                                                        <div class="form-group__input">--%>
+<%--                                                            <input value="${employee.dob}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>--%>
+<%--                                                            <c:if test="${not empty errorDateofBirth}">--%>
+<%--                                                                <span class="error-message">${errorDateofBirth}</span>--%>
+<%--                                                            </c:if>--%>
+<%--                                                        </div>--%>
+<%--                                                    </div>--%>
+<%--                                                </div>--%>
+                                            </div>
+                                        </div>
+                                        <!-- End Basic Information -->
                                     </div>
                                 </div>
                             </form>
