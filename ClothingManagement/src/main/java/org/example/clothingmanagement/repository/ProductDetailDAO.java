@@ -151,6 +151,24 @@ public class ProductDetailDAO {
         return null;
     }
 
+    public boolean updateProductDetail(ProductDetail pd) {
+        try (Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" UPDATE ProductDetail ");
+            sql.append(" SET Quantity = ?, Weight = ?, ProductImage = ? ");
+            sql.append(" WHERE ProductDetailId = ?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setInt(1, pd.getQuantity());
+            ps.setDouble(2, pd.getWeight());
+            ps.setString(3, pd.getImage());
+            ps.setString(4, pd.getId());
+            ps.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Optional<ProductDetail> getOptionalProductDetailByProductDetailID(String productDetailID) {
         try(Connection  con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
@@ -197,24 +215,184 @@ public class ProductDetailDAO {
         return null;
     }
 
-    public boolean updateProductDetail(ProductDetail pd){
+    public List<ProductDetail> getProductDetailByProductId(String productId, int page, int pageSize) {
+        List<ProductDetail> productDetails = new ArrayList<>();
+        String sql = "SELECT * FROM ProductDetail WHERE ProductID = ? LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            stmt.setInt(2, pageSize);
+            stmt.setInt(3, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) { // Lặp qua tất cả các dòng kết quả
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setId(rs.getString("ProductDetailId"));
+                productDetail.setQuantity(rs.getInt("Quantity"));
+                productDetail.setWeight(rs.getDouble("Weight"));
+                productDetail.setColor(rs.getString("Color"));
+                productDetail.setSize(rs.getString("Size"));
+                productDetail.setImage(rs.getString("ProductImage"));
+                productDetail.setProductId(rs.getString("ProductId"));
+                productDetail.setStatus(rs.getInt("Status"));
+
+                productDetails.add(productDetail); // Thêm vào danh sách
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return productDetails; // Trả về danh sách thay vì chỉ một đối tượng
+    }
+
+    public int getTotalProductDetails(String productId) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM ProductDetail WHERE ProductID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
+    public List<ProductDetail> searchProductDetailsByID(String id, int page, int pageSize){
+        List<ProductDetail> list= new ArrayList<>();
+        String sql ="SELECT * FROM ProductDetail WHERE ProductDetailId = ? OR ProductId = ? LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            stmt.setString(2, id);
+            stmt.setInt(3, pageSize);
+            stmt.setInt(4, (page-1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setId(rs.getString("ProductDetailId"));
+                productDetail.setQuantity(rs.getInt("Quantity"));
+                productDetail.setWeight(rs.getDouble("Weight"));
+                productDetail.setColor(rs.getString("Color"));
+                productDetail.setSize(rs.getString("Size"));
+                productDetail.setImage(rs.getString("ProductImage"));
+                productDetail.setProductId(rs.getString("ProductId"));
+                productDetail.setStatus(rs.getInt("Status"));
+                list.add(productDetail);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    public int getTotalProductDetailCount(String code) {
+        String sql = "SELECT COUNT(*) AS total FROM productDetail WHERE ProductDetailId LIKE ? ";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchCode = "%" + code + "%";
+            stmt.setString(1, searchCode);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getTotalProductCount() {
+        String sql = "SELECT COUNT(*) AS total FROM productDetail";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<ProductDetail> getAllProductDetailWithPagination(int page, int pageSize){
+        List<ProductDetail> list = new ArrayList<>();
+        String sql = "SELECT * FROM ProductDetail LIMIT ? OFFSET ?";
+        try(Connection conn = DBContext.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, (page-1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setId(rs.getString("ProductDetailId"));
+                productDetail.setQuantity(rs.getInt("Quantity"));
+                productDetail.setWeight(rs.getDouble("Weight"));
+                productDetail.setColor(rs.getString("Color"));
+                productDetail.setSize(rs.getString("Size"));
+                productDetail.setImage(rs.getString("ProductImage"));
+                productDetail.setProductId(rs.getString("ProductId"));
+                productDetail.setStatus(rs.getInt("Status"));
+                list.add(productDetail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean insertProductDetail(ProductDetail pd) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
-            sql.append(" UPDATE ProductDetail ");
-            sql.append(" SET Quantity = ?, Weight = ?, ProductImage = ? ");
-            sql.append(" WHERE ProductDetailId = ?");
+            sql.append(" INSERT INTO ProductDetail (ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status) ");
+            sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setInt(1, pd.getQuantity());
-            ps.setDouble(2, pd.getWeight());
-            ps.setString(3, pd.getImage());
-            ps.setString(4, pd.getId());
+            ps.setString(1, pd.getId());
+            ps.setInt(2, pd.getQuantity());
+            ps.setDouble(3, pd.getWeight());
+            ps.setString(4, pd.getColor());
+            ps.setString(5, pd.getSize());
+            ps.setString(6, pd.getImage());
+            ps.setString(7, pd.getProductId());
+            ps.setInt(8, pd.getStatus());
             ps.executeUpdate();
             return true;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
     }
 
-
+    public Optional<ProductDetail> getLastProductDetail(String id){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status FROM productdetail  ");
+            sql.append("ORDER BY productdetailid DESC LIMIT 1 ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .id(rs.getString("ProductDetailId"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
+                        .build();
+                return Optional.of(productDetail);
+            }
+            else{
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
 }

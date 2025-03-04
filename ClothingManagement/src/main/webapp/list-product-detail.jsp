@@ -59,6 +59,9 @@
                                 <%--                                    <li><a href="#">Home</a></li>--%>
                                 <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
                                 <%--                                </ul>--%>
+                                <a href="${pageContext.request.contextPath}/add-product-detail" class="sherah-breadcrumb__title-link">
+                                    <h2 class="sherah-breadcrumb__title">Add new product to ${product.name}</h2>
+                                </a>
                             </div>
                             <!-- End Sherah Breadcrumb -->
                             <!-- Product List -->
@@ -148,7 +151,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/update-product-detail?id=${productDetail.id}">
+                                                            <a href="${pageContext.request.contextPath}/view-product-detail?id=${productDetail.id}">
                                                                 Detail
                                                             </a>
                                                         </p>

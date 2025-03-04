@@ -34,6 +34,9 @@ public class ProductDetailService {
         return productDetailDAO.getProductIDByProductDetailID(productDetailID);
     }
 
+    public List<ProductDetail> getProductDetailByProductId(String productId, int page, int pageSize) {
+        return productDetailDAO.getProductDetailByProductId(productId, page, pageSize);
+    }
     public boolean deleteProductDetail(String id){
         return productDetailDAO.deleteProductDetail(id);
     }
@@ -42,10 +45,35 @@ public class ProductDetailService {
         return productDetailDAO.recoverProductDetail(id);
     }
 
-    public boolean updateProductDetail(ProductDetail productDetail){
+    public boolean updateProductDetail(ProductDetail productDetail) {
         return productDetailDAO.updateProductDetail(productDetail);
     }
 
+    public int getTotalProductDetails(String productId) {
+        return productDetailDAO.getTotalProductDetails(productId);
+    }
+
+    public int getTotalProductDetailCount(String code) {
+        return productDetailDAO.getTotalProductDetailCount(code);
+    }
+    public List<ProductDetail> searchProductDetailsByID(String id, int page, int pageSize){
+        return productDetailDAO.searchProductDetailsByID(id, page, pageSize);
+    }
+
+    public List<ProductDetail> getAllProductDetailWithPagination(int page, int pageSize){
+        return productDetailDAO.getAllProductDetailWithPagination(page, pageSize);
+    }
+    public int getTotalProductCount() {
+        return productDetailDAO.getTotalProductCount();
+    }
+
+    public boolean insertProductDetail(ProductDetail productDetail) {
+        return productDetailDAO.insertProductDetail(productDetail);
+    }
+
+    public Optional<ProductDetail> getLastProductDetail(String id){
+        return productDetailDAO.getLastProductDetail(id);
+    }
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");

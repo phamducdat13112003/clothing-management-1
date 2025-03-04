@@ -27,4 +27,23 @@ public class ProductDetail {
         this.quantity = quantity;
         this.weight = weight;
     }
+
+    public ProductDetail(String color, String image, Integer quantity, String size, Double weight) {
+        this.color = color;
+        this.image = image;
+        this.quantity = quantity;
+        this.size = size;
+        this.weight = weight;
+    }
+
+    public ProductDetail(Double weight, int status, String size, Integer quantity, String productId, String image, String id, String color) {
+        this.weight = weight;
+        this.status = status;
+        this.size = size;
+        this.quantity = quantity;
+        this.productId = productId;
+        this.image = image;
+        this.id = id;
+        this.color = color;
+    }
 }

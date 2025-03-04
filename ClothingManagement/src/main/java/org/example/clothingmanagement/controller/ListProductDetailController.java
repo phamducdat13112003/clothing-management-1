@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @WebServlet(name="ProductDetail", urlPatterns = "/list-product-detail")
-public class ProductDetailController extends HttpServlet {
+public class ListProductDetailController extends HttpServlet {
     private final ProductService ps = new ProductService();
     private final ProductDetailService pds = new ProductDetailService();
 
