@@ -345,4 +345,54 @@ public class ProductDetailDAO {
         return list;
     }
 
+    public boolean insertProductDetail(ProductDetail pd) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" INSERT INTO ProductDetail (ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status) ");
+            sql.append(" VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, pd.getId());
+            ps.setInt(2, pd.getQuantity());
+            ps.setDouble(3, pd.getWeight());
+            ps.setString(4, pd.getColor());
+            ps.setString(5, pd.getSize());
+            ps.setString(6, pd.getImage());
+            ps.setString(7, pd.getProductId());
+            ps.setInt(8, pd.getStatus());
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<ProductDetail> getLastProductDetail(String id){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status FROM productdetail  ");
+            sql.append("ORDER BY productdetailid DESC LIMIT 1 ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .id(rs.getString("ProductDetailId"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
+                        .build();
+                return Optional.of(productDetail);
+            }
+            else{
+                return Optional.empty();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }

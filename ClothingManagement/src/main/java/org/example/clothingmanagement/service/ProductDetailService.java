@@ -67,6 +67,13 @@ public class ProductDetailService {
         return productDetailDAO.getTotalProductCount();
     }
 
+    public boolean insertProductDetail(ProductDetail productDetail) {
+        return productDetailDAO.insertProductDetail(productDetail);
+    }
+
+    public Optional<ProductDetail> getLastProductDetail(String id){
+        return productDetailDAO.getLastProductDetail(id);
+    }
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");

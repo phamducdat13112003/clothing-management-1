@@ -59,6 +59,9 @@
                                 <%--                                    <li><a href="#">Home</a></li>--%>
                                 <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
                                 <%--                                </ul>--%>
+                                <a href="${pageContext.request.contextPath}/add-product-detail" class="sherah-breadcrumb__title-link">
+                                    <h2 class="sherah-breadcrumb__title">Add new product to ${product.name}</h2>
+                                </a>
                             </div>
                             <!-- End Sherah Breadcrumb -->
                             <!-- Product List -->
