@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>Update Product Detail</title>
+    <title>View Product Detail</title>
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -103,16 +103,16 @@
                             </div>
                         </div>
                         <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
-                            <form class="sherah-wc__form-main" action="editemployee" method="post" enctype="multipart/form-data">
+                            <form class="sherah-wc__form-main" action="${pageContext.request.contextPath}/view-product-detail" method="post">
                                 <div class="row">
 
                                     <div class="col-lg-6 col-12">
                                         <!-- Organization -->
                                         <div class="product-form-box sherah-border mg-top-30">
-                                            <h4 class="form-title m-0">Organization</h4>
+                                            <h4 class="form-title m-0"></h4>
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="form-group">
-                                                    <img src="img/${pd.image}" alt="Product Image" width="100" height="100">
+                                                    <img src="img/${pd.image}" alt="Product Image">
                                                 </div>
 
                                             </div>
@@ -125,6 +125,7 @@
                                         <div class="product-form-box sherah-border mg-top-30">
                                             <h4 class="form-title m-0">Basic Information Of ${p.name}</h4>
                                             <div class="row">
+                                                <input type="hidden" name="id" value="${pd.id}" />
                                                 <div class="col-12">
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Product Image Upload <span class="required">*</span></label>
@@ -139,7 +140,7 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Quantity <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Quantity" type="number" name="quantity" value="${pd.quantity}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Quantity" type="number" min="0" name="quantity" value="${pd.quantity}" required>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -147,10 +148,14 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" step="0.1" value="${pd.weight}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" min="0.1" step="0.1" value="${pd.weight}" required>
 
                                                         </div>
                                                     </div>
+                                                </div>
+                                                <div>
+                                                    <button type="submit" class="btn btn-primary">Update</button>
+                                                    <button type="reset" class="btn btn-secondary">Reset</button>
                                                 </div>
 <%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
 <%--                                                    <div class="form-group">--%>
@@ -209,27 +214,70 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-<script type="text/javascript">
-    function chooseFile(fileInput) {
-        if (fileInput.files && fileInput.files[0]) {
-            var file = fileInput.files[0];
-            var fileType = file.type;
-            var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
-
-            if (!validImageTypes.includes(fileType)) {
-                alert("Only image files (JPG, PNG, GIF) are allowed.");
-                fileInput.value = ""; // Clear the input
-                return;
-            }
-
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                $('#image').attr('src', e.target.result);
-            };
-            reader.readAsDataURL(file); // đọc nội dung tệp dưới dạng url
+<script>
+    window.onload = () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const errorCode = parseInt(urlParams.get('abc'));
+        switch (errorCode) {
+            case 1:
+                window.alert('Successful')
+                break;
+            case 2:
+                window.alert('Something went wrong');
+                break;
         }
-    }
+    };
+</script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    window.onload = function () {
+        const alertMessage = '<%= request.getAttribute("alertMessage") != null ? request.getAttribute("alertMessage") : "" %>';
+        const alertType = '<%= request.getAttribute("alertType") != null ? request.getAttribute("alertType") : "" %>';
+        if (alertMessage.trim() !== "" && alertType.trim() !== "") {
+            Swal.fire({
+                icon: alertType,
+                title: alertMessage,
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
+    };
+</script>
+<script>
+    // function validateForm() {
+    //     let isValid = true;
+    //
+    //     let errorMessages = document.querySelectorAll(".error-message");
+    //     errorMessages.forEach(function (message) {
+    //         message.textContent = '';
+    //     });
+    //
+    //     const name = document.getElementById("name").value.trim();
+    //     if (name === "") {
+    //         document.querySelector("#name + .error-message").textContent = "Fresher Name is required.";
+    //         isValid = false;
+    //     } else if (name.length < 3 || name.length > 50) {
+    //         document.querySelector("#name + .error-message").textContent = "Fresher Name must be between 3 and 50 characters.";
+    //         isValid = false;
+    //     }
+    //
+    //     const birthDate = document.getElementById("birthDate").value;
+    //     if (birthDate === "") {
+    //         document.querySelector("#birthDate + .error-message").textContent = "Birth Date is required.";
+    //         isValid = false;
+    //     } else {
+    //         const currentDate = new Date();
+    //
+    //         const birthDateObj = new Date(birthDate);
+    //
+    //         if (birthDateObj > currentDate) {
+    //             document.querySelector("#birthDate + .error-message").textContent = "Birth Date cannot be in the future.";
+    //             isValid = false;
+    //         }
+    //     }
+    //     return isValid;
+    // }
 </script>
 </body>
 </html>

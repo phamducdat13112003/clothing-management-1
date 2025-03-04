@@ -148,7 +148,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/update-product-detail?id=${productDetail.id}">
+                                                            <a href="${pageContext.request.contextPath}/view-product-detail?id=${productDetail.id}">
                                                                 Detail
                                                             </a>
                                                         </p>
