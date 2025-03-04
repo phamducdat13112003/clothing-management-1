@@ -20,41 +20,36 @@ public class ConfirmDOServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String doID = request.getParameter("doId");
         String receiptDate = request.getParameter("ReceiptDate");
         String accountID = request.getParameter("createBy");
-        String createdBy = DeliveryOrderDAO.getEmployeeIDByAccountID(accountID);
-        String[] dodetailIds = request.getParameterValues("DODetailID[]");
-        String[] quantityArray = request.getParameterValues("quantity[]");
+        String createBy = DeliveryOrderDAO.getEmployeeIDByAccountID(accountID);
+        String productDetailID = request.getParameter("productDetailID");
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        int quantityCheck = Integer.parseInt(request.getParameter("quantityCheck"));
 
         // Kiểm tra dữ liệu đầu vào
-        if (receiptDate == null || createdBy == null || dodetailIds == null || quantityArray == null || dodetailIds.length != quantityArray.length) {
+        if (doID == null || receiptDate == null || createBy == null || productDetailID == null) {
             request.setAttribute("error", "Dữ liệu nhập vào không hợp lệ.");
             request.getRequestDispatcher("deliveryOrderWS.jsp").forward(request, response);
             return;
         }
 
         try {
-            // Cập nhật ReceiptDate và đặt Status = false cho đơn hàng
-            System.out.println("createdBy: " + createdBy);
-            DeliveryOrderDAO.updateDO(receiptDate,createdBy);
-
-            // Duyệt danh sách DODetailID và cập nhật số lượng tương ứng
-            for (int i = 0; i < dodetailIds.length; i++) {
-                String dodetailId = dodetailIds[i];
-                int quantity = Integer.parseInt(quantityArray[i]);
-
-                if (quantity < 1) {
-                    request.setAttribute("error", "Số lượng không hợp lệ.");
-                    request.getRequestDispatcher("deliveryOrderWS.jsp").forward(request, response);
-                    return;
-                }
-
-                DeliveryOrderDAO.updateDODetailQuantity(dodetailId, quantity);
+            if (quantity == quantityCheck) {
+                // Nếu số lượng nhập vào bằng số lượng kiểm tra, cập nhật DO và đổi trạng thái thành false
+                DeliveryOrderDAO.updateDO(doID, receiptDate, createBy, false);
+            } else if (quantity < quantityCheck) {
+                // Nếu số lượng nhỏ hơn, chỉ cập nhật số lượng
+                DeliveryOrderDAO.updateDODetailQuantity(productDetailID, quantity);
+                DeliveryOrderDAO.updateDO(doID, receiptDate, createBy, true);
+            } else {
+                request.setAttribute("error", "Số lượng nhập vào không hợp lệ.");
+                request.getRequestDispatcher("Category.jsp").forward(request, response);
+                return;
             }
 
-            // Chuyển hướng về danh sách đơn hàng sau khi cập nhật thành công
-            
-            response.sendRedirect("deliveryOrderWS.jsp");
+            response.sendRedirect("account");
 
         } catch (Exception e) {
             e.printStackTrace();
