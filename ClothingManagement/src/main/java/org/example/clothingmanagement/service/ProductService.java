@@ -37,8 +37,15 @@ public class ProductService {
         return map;
     }
 
-    public List<Product> getAllProduct(){
-        return pd.getAllProducts();
+    public List<Product> getAllProductsWithPagination(int page, int pageSize){
+        return pd.getAllProductsWithPagination(page,pageSize);
+    }
+    public List<Product> searchProduct(String keyword, int page, int pageSize) {
+        return pd.searchProduct(keyword,page,pageSize);
+    }
+
+    public int getTotalProductCount(String keyword){
+        return pd.getTotalProductCount(keyword);
     }
 
     public boolean addProduct(Product product) {
@@ -72,8 +79,6 @@ public class ProductService {
     public int countAllProducts() {
         return pd.countAllProducts();
     }
-
-
 
 
 }

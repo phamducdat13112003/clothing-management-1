@@ -253,7 +253,6 @@ public class ProductDetailDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, productId);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 total = rs.getInt(1);
             }
@@ -261,6 +260,89 @@ public class ProductDetailDAO {
             e.printStackTrace();
         }
         return total;
+    }
+    public List<ProductDetail> searchProductDetailsByID(String id, int page, int pageSize){
+        List<ProductDetail> list= new ArrayList<>();
+        String sql ="SELECT * FROM ProductDetail WHERE ProductDetailId = ? OR ProductId = ? LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, id);
+            stmt.setString(2, id);
+            stmt.setInt(3, pageSize);
+            stmt.setInt(4, (page-1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setId(rs.getString("ProductDetailId"));
+                productDetail.setQuantity(rs.getInt("Quantity"));
+                productDetail.setWeight(rs.getDouble("Weight"));
+                productDetail.setColor(rs.getString("Color"));
+                productDetail.setSize(rs.getString("Size"));
+                productDetail.setImage(rs.getString("ProductImage"));
+                productDetail.setProductId(rs.getString("ProductId"));
+                productDetail.setStatus(rs.getInt("Status"));
+                list.add(productDetail);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return list;
+    }
+
+    public int getTotalProductDetailCount(String code) {
+        String sql = "SELECT COUNT(*) AS total FROM productDetail WHERE ProductDetailId LIKE ? ";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            String searchCode = "%" + code + "%";
+            stmt.setString(1, searchCode);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int getTotalProductCount() {
+        String sql = "SELECT COUNT(*) AS total FROM productDetail";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<ProductDetail> getAllProductDetailWithPagination(int page, int pageSize){
+        List<ProductDetail> list = new ArrayList<>();
+        String sql = "SELECT * FROM ProductDetail LIMIT ? OFFSET ?";
+        try(Connection conn = DBContext.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, (page-1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setId(rs.getString("ProductDetailId"));
+                productDetail.setQuantity(rs.getInt("Quantity"));
+                productDetail.setWeight(rs.getDouble("Weight"));
+                productDetail.setColor(rs.getString("Color"));
+                productDetail.setSize(rs.getString("Size"));
+                productDetail.setImage(rs.getString("ProductImage"));
+                productDetail.setProductId(rs.getString("ProductId"));
+                productDetail.setStatus(rs.getInt("Status"));
+                list.add(productDetail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 
 }

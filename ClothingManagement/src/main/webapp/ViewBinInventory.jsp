@@ -107,7 +107,7 @@
                 </div>
               </div>
               <div class="col-6">
-                <form action="searchbin" method="post" class="search-form">
+                <form action="searchproduct" method="post" class="search-form">
                   <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
                   <button type="submit" class="search-button">Search</button>
                 </form>
@@ -122,6 +122,11 @@
                     <option value="${bin.binID}" ${bin.binID == selectedBin ? 'selected' : ''}>${bin.binID} - ${bin.binName}</option>
                   </c:forEach>
                 </select>
+                <span id="maxCapacityDisplay" style="margin-left: 15px; font-weight: bold;">
+                    <c:if test="${not empty selectedBin}">
+                      Max Capacity: ${maxCapacity}
+                    </c:if>
+                </span>
               </div>
             </div>
             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
@@ -193,15 +198,15 @@
               </table>
               <div class="pagination">
                 <c:if test="${currentPage > 1}">
-                  <a href="viewbininventory?page=${currentPage - 1}&binID=${selectedBin}">Previous</a>
+                  <a href="viewbininventory?page=${currentPage - 1}&binID=${selectedBin}&search=${search}">Previous</a>
                 </c:if>
 
                 <c:forEach var="i" begin="1" end="${totalPages}">
-                  <a href="viewbininventory?page=${i}&binID=${selectedBin}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                  <a href="viewbininventory?page=${i}&binID=${selectedBin}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                 </c:forEach>
 
                 <c:if test="${currentPage < totalPages}">
-                  <a href="viewbininventory?page=${currentPage + 1}&binID=${selectedBin}">Next</a>
+                  <a href="viewbininventory?page=${currentPage + 1}&binID=${selectedBin}&search=${search}">Next</a>
                 </c:if>
               </div>
             </div>
@@ -229,10 +234,17 @@
 <script src="js/main.js"></script>
 
 <script>
-  document.getElementById("binSelect").addEventListener("change", function() {
+  document.getElementById("binSelect").addEventListener("change", function () {
     let binID = this.value;
-    let currentPage = 1; // Khi đổi bin, về trang đầu tiên
-    window.location.href = "viewbininventory?binID=" + binID + "&page=" + currentPage;
+    let maxCapacityDisplay = document.getElementById("maxCapacityDisplay");
+
+    if (binID === "") {
+      maxCapacityDisplay.textContent = ""; // Ẩn nếu không chọn bin
+      return;
+    }
+
+    // Gửi request với binID, server sẽ trả về trang có maxCapacity cập nhật
+    window.location.href = "viewbininventory?binID=" + binID;
   });
 </script>
 

@@ -142,7 +142,7 @@ public class AddSupplierServlet extends HttpServlet {
     }
 
     private boolean isValidName(String name) {
-        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặèéẹẻẽêếềểễệìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựýỳỵỷỹđĐ&\\-_.(),/+%#:]+$");
+        return name.matches("^[a-zA-Z0-9\\sàáạảãâấầẩẫậăắằẳẵặèéẹẻẽêếềểễệìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựýỳỵỷỹđĐ&\\-_.(),/+%#:]+$");
     }
 
     private String generateNewSupplierId() throws SQLException {

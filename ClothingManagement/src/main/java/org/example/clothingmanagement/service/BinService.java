@@ -13,4 +13,8 @@ public class BinService {
     public List<Bin> getAllBins(){
         return binDAO.getAllBins();
     }
+
+    public double getMaxCapacityByBinID(String binID) {
+        return binDAO.getMaxCapacityByBinID(binID);
+    }
 }
