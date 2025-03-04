@@ -49,13 +49,13 @@ public class UpdateProductDetailController extends HttpServlet {
         Integer quantity = Integer.parseInt(req.getParameter("quantity"));
 
         ProductDetail pd = new ProductDetail(id,image,quantity,weight);
-        //boolean check = pds.updateProductDetail(pd);
-        //if(check){
+        boolean check = pds.updateProductDetail(pd);
+        if(check){
             //TODO nếu update thành công thì làm gì...
-        //}
-        //else{
+        }
+        else {
             // TODO nếu update fail thì làm gì
-        //}
+        }
 
     }
 }

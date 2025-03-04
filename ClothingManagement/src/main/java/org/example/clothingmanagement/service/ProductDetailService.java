@@ -45,6 +45,10 @@ public class ProductDetailService {
         return productDetailDAO.recoverProductDetail(id);
     }
 
+    public boolean updateProductDetail(ProductDetail productDetail) {
+        return productDetailDAO.updateProductDetail(productDetail);
+    }
+
     public int getTotalProductDetails(String productId) {
         return productDetailDAO.getTotalProductDetails(productId);
     }
