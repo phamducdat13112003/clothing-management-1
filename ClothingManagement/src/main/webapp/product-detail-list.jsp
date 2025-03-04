@@ -81,6 +81,7 @@
                                     <c:if test="${not empty pdList}">
                                         <c:forEach var="pdList" items="${pdList}">
                                             <tr>
+                                            <td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">${pdList.id}</p>
@@ -119,34 +120,31 @@
                                                         <p class="sherah-table__product-desc">${pdList.status}</p>
                                                     </div>
                                                 </td>
-                                                <c:if test="${pdList.status==1}">
-                                                    <td class="sherah-table__column-2 sherah-table__data-2">
-                                                        <div class="sherah-table__product-content">
-                                                            <p class="sherah-table__product-desc">
-                                                                <a href="#"
-                                                                   onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${pdList.id}&productid=${pdList.productId}');">
-
-                                                                    Delete
-                                                                </a>
-                                                            </p>
-                                                        </div>
-                                                    </td>
-                                                </c:if>
-
-                                                <c:if test="${pdList.status==0}">
-                                                    <td class="sherah-table__column-2 sherah-table__data-2">
-                                                        <div class="sherah-table__product-content">
-                                                            <p class="sherah-table__product-desc">
-                                                                <a href="#"
-                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${pdList.id}&productid=${pdList.productId}');">
-                                                                    Recover
-                                                                </a>
-                                                            </p>
-                                                        </div>
-                                                    </td>
-                                                </c:if>
-
-                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <c:if test="${pdList.status==1}">
+                                                        <td class="sherah-table__column-2 sherah-table__data-2">
+                                                            <div class="sherah-table__product-content">
+                                                                <p class="sherah-table__product-desc">
+                                                                    <a href="#"
+                                                                       onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${pdList.id}&productid=${pdList.productId}');">
+                                                                        Delete
+                                                                    </a>
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                    </c:if>
+                                                    <c:if test="${pdList.status==0}">
+                                                        <td class="sherah-table__column-2 sherah-table__data-2">
+                                                            <div class="sherah-table__product-content">
+                                                                <p class="sherah-table__product-desc">
+                                                                    <a href="#"
+                                                                       onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${pdList.id}&productid=${pdList.productId}');">
+                                                                        Recover
+                                                                    </a>
+                                                                </p>
+                                                            </div>
+                                                        </td>
+                                                    </c:if>
+                                            <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
                                                             <a href="${pageContext.request.contextPath}/update-product-detail?id=${pdList.id}">
@@ -155,7 +153,6 @@
                                                         </p>
                                                     </div>
                                                 </td>
-
                                             </tr>
                                         </c:forEach>
 

@@ -93,7 +93,7 @@
                                                                                 <!--Profile Cover Info -->
                                                                                 <div class="sherah-profile-cover sherah-offset-bg sherah-dflex">
                                                                                     <div class="sherah-profile-cover__img">
-                                                                                        <img src=".${employee.image}" alt="Image">
+                                                                                        <img src=".${employee.image}" alt="Employee Image">
                                                                                     </div>
                                                                                     <div class="sherah-profile-cover__content">
                                                                                         <h3 class="sherah-profile-cover__title">${employee.employeeName}</h3>

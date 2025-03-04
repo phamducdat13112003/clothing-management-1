@@ -197,24 +197,52 @@ public class ProductDetailDAO {
         return null;
     }
 
-    public boolean updateProductDetail(ProductDetail pd){
-        try(Connection con = DBContext.getConnection()){
-            StringBuilder sql = new StringBuilder();
-            sql.append(" UPDATE ProductDetail ");
-            sql.append(" SET Quantity = ?, Weight = ?, ProductImage = ? ");
-            sql.append(" WHERE ProductDetailId = ?");
-            PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setInt(1, pd.getQuantity());
-            ps.setDouble(2, pd.getWeight());
-            ps.setString(3, pd.getImage());
-            ps.setString(4, pd.getId());
-            ps.executeUpdate();
-            return true;
+    public List<ProductDetail> getProductDetailByProductId(String productId, int page, int pageSize) {
+        List<ProductDetail> productDetails = new ArrayList<>();
+        String sql = "SELECT * FROM ProductDetail WHERE ProductID = ? LIMIT ? OFFSET ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            stmt.setInt(2, pageSize);
+            stmt.setInt(3, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) { // Lặp qua tất cả các dòng kết quả
+                ProductDetail productDetail = new ProductDetail();
+                productDetail.setId(rs.getString("ProductDetailId"));
+                productDetail.setQuantity(rs.getInt("Quantity"));
+                productDetail.setWeight(rs.getDouble("Weight"));
+                productDetail.setColor(rs.getString("Color"));
+                productDetail.setSize(rs.getString("Size"));
+                productDetail.setImage(rs.getString("ProductImage"));
+                productDetail.setProductId(rs.getString("ProductId"));
+                productDetail.setStatus(rs.getInt("Status"));
+
+                productDetails.add(productDetail); // Thêm vào danh sách
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
+        return productDetails; // Trả về danh sách thay vì chỉ một đối tượng
     }
 
+    public int getTotalProductDetails(String productId) {
+        int total = 0;
+        String sql = "SELECT COUNT(*) FROM ProductDetail WHERE ProductID = ?";
 
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, productId);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return total;
+    }
 
 }
