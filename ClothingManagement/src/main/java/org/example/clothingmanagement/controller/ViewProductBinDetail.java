@@ -49,8 +49,8 @@ public class ViewProductBinDetail extends HttpServlet {
         List<ProductDetail> list= null;
 
         if(productId != null) {
-                totalProductDetails = productDetailService.getTotalProductDetails(productId);
-                list = productDetailService.getProductDetailByProductId(productId, page, pageSize);
+            totalProductDetails = productDetailService.getTotalProductDetails(productId);
+            list = productDetailService.getProductDetailByProductId(productId, page, pageSize);
         }
         int totalPages = (int) Math.ceil((double) totalProductDetails / pageSize);
         request.setAttribute("productdetail", list);

@@ -101,6 +101,12 @@
                     </ul>
                   </div>
                 </div>
+                <div class="col-6">
+                  <form action="searchproductbin" method="post" class="search-form">
+                    <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                    <button type="submit" class="search-button">Search</button>
+                  </form>
+                </div>
               </div>
               <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
@@ -166,15 +172,15 @@
                 </table>
                 <div class="pagination">
                   <c:if test="${currentPage > 1}">
-                    <a href="viewproductbindetail?page=${currentPage - 1}&productId=${productId}">Previous</a>
+                    <a href="viewproductbindetail?page=${currentPage - 1}&search=${search}">Previous</a>
                   </c:if>
 
                   <c:forEach var="i" begin="1" end="${totalPages}">
-                    <a href="viewproductbindetail?page=${i}&productId=${productId}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                    <a href="viewproductbindetail?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                   </c:forEach>
 
                   <c:if test="${currentPage < totalPages}">
-                    <a href="viewproductbindetail?page=${currentPage + 1}&productId=${productId}">Next</a>
+                    <a href="viewproductbindetail?page=${currentPage + 1}&search=${search}">Next</a>
                   </c:if>
                 </div>
               </div>

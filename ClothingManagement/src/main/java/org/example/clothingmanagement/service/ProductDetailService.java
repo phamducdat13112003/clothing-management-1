@@ -52,6 +52,21 @@ public class ProductDetailService {
     public int getTotalProductDetails(String productId) {
         return productDetailDAO.getTotalProductDetails(productId);
     }
+
+    public int getTotalProductDetailCount(String code) {
+        return productDetailDAO.getTotalProductDetailCount(code);
+    }
+    public List<ProductDetail> searchProductDetailsByID(String id, int page, int pageSize){
+        return productDetailDAO.searchProductDetailsByID(id, page, pageSize);
+    }
+
+    public List<ProductDetail> getAllProductDetailWithPagination(int page, int pageSize){
+        return productDetailDAO.getAllProductDetailWithPagination(page, pageSize);
+    }
+    public int getTotalProductCount() {
+        return productDetailDAO.getTotalProductCount();
+    }
+
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");
