@@ -44,7 +44,7 @@ public class AddProductDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productId = req.getParameter("id");
-        Integer quantity = Integer.parseInt(req.getParameter("quantity"));
+        Integer quantity = 0;
         Double weight = Double.parseDouble(req.getParameter("weight"));
         String color = req.getParameter("color");
         if(color.matches("^[a-zA-Z]+$")){

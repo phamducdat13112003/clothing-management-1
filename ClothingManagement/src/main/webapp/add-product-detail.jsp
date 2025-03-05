@@ -91,16 +91,7 @@
                                                                                                             </div>
                                                                                                         </div>
                                                                                                     </div>
-                                                                                                    <div class="col-lg-6 col-md-6 col-12">
-                                                                                                        <div class="form-group">
-                                                                                                            <label class="sherah-wc__form-label">Quantity <span class="required">*</span></label>
-                                                                                                            <div class="form-group__input">
-                                                                                                                <input class="sherah-wc__form-input" placeholder="Quantity" type="number" min="0" name="quantity" id="quantity" required>
-                                                                                                                <small class="error-message" style="color: red;"></small>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                    <div class="col-lg-6 col-md-6 col-12">
+
                                                                                                         <div class="form-group">
                                                                                                             <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
                                                                                                             <div class="form-group__input">
@@ -108,8 +99,7 @@
                                                                                                                 <small class="error-message" style="color: red;"></small>
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                    </div>
-                                                                                                    <div class="col-lg-6 col-md-6 col-12">
+
                                                                                                         <div class="form-group">
                                                                                                             <label class="sherah-wc__form-label">Size <span class="required">*</span></label>
                                                                                                             <div class="form-group__input">
@@ -124,8 +114,7 @@
                                                                                                                 </select>
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                    </div>
-                                                                                                    <div class="col-lg-6 col-md-6 col-12">
+
                                                                                                         <div class="form-group">
                                                                                                             <label class="sherah-wc__form-label">Color <span class="required">*</span></label>
                                                                                                             <div class="form-group__input">
@@ -134,7 +123,6 @@
 
                                                                                                             </div>
                                                                                                         </div>
-                                                                                                    </div>
                                                                                                     <div>
                                                                                                         <button type="submit" class="btn btn-primary">Save</button>
                                                                                                         <button type="reset" class="btn btn-secondary">Reset</button>
