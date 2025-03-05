@@ -245,39 +245,39 @@
     };
 </script>
 <script>
-    // function validateForm() {
-    //     let isValid = true;
-    //
-    //     let errorMessages = document.querySelectorAll(".error-message");
-    //     errorMessages.forEach(function (message) {
-    //         message.textContent = '';
-    //     });
-    //
-    //     const name = document.getElementById("name").value.trim();
-    //     if (name === "") {
-    //         document.querySelector("#name + .error-message").textContent = "Fresher Name is required.";
-    //         isValid = false;
-    //     } else if (name.length < 3 || name.length > 50) {
-    //         document.querySelector("#name + .error-message").textContent = "Fresher Name must be between 3 and 50 characters.";
-    //         isValid = false;
-    //     }
-    //
-    //     const birthDate = document.getElementById("birthDate").value;
-    //     if (birthDate === "") {
-    //         document.querySelector("#birthDate + .error-message").textContent = "Birth Date is required.";
-    //         isValid = false;
-    //     } else {
-    //         const currentDate = new Date();
-    //
-    //         const birthDateObj = new Date(birthDate);
-    //
-    //         if (birthDateObj > currentDate) {
-    //             document.querySelector("#birthDate + .error-message").textContent = "Birth Date cannot be in the future.";
-    //             isValid = false;
-    //         }
-    //     }
-    //     return isValid;
-    // }
+    function validateForm() {
+        let isValid = true;
+
+        let errorMessages = document.querySelectorAll(".error-message");
+        errorMessages.forEach(function (message) {
+            message.textContent = '';
+        });
+
+        const name = document.getElementById("name").value.trim();
+        if (name === "") {
+            document.querySelector("#name + .error-message").textContent = "Fresher Name is required.";
+            isValid = false;
+        } else if (name.length < 3 || name.length > 50) {
+            document.querySelector("#name + .error-message").textContent = "Fresher Name must be between 3 and 50 characters.";
+            isValid = false;
+        }
+
+        const birthDate = document.getElementById("birthDate").value;
+        if (birthDate === "") {
+            document.querySelector("#birthDate + .error-message").textContent = "Birth Date is required.";
+            isValid = false;
+        } else {
+            const currentDate = new Date();
+
+            const birthDateObj = new Date(birthDate);
+
+            if (birthDateObj > currentDate) {
+                document.querySelector("#birthDate + .error-message").textContent = "Birth Date cannot be in the future.";
+                isValid = false;
+            }
+        }
+        return isValid;
+    }
 </script>
 </body>
 </html>
