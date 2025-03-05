@@ -83,7 +83,7 @@ public class ProductService {
     public HashMap<Product, String> searchProducts(String txt) throws Exception {
         return pd.searchProducts(txt);
 
-    public static void main(String[] args) throws Exception {
+    }public static void main(String[] args) throws Exception {
         String test = "PD002";
         String code = test.substring(0,2);
         String number = test.substring(2);
@@ -97,4 +97,4 @@ public class ProductService {
     }
 
 }
-}
+
