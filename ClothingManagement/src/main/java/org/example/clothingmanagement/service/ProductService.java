@@ -79,6 +79,8 @@ public class ProductService {
     public int countAllProducts() {
         return pd.countAllProducts();
     }
-
+    public HashMap<Product, String> searchProducts(String txt) throws Exception {
+        return pd.searchProducts(txt);
+    }
 
 }
