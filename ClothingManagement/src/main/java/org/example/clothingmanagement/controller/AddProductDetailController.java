@@ -47,6 +47,13 @@ public class AddProductDetailController extends HttpServlet {
         Integer quantity = Integer.parseInt(req.getParameter("quantity"));
         Double weight = Double.parseDouble(req.getParameter("weight"));
         String color = req.getParameter("color");
+        if(color.matches("^[a-zA-Z]+$")){
+            color = color.toLowerCase();
+            color = color.substring(0,1).toUpperCase() + color.substring(1);
+        }
+        else{
+            color = "XXX";
+        }
         String size = req.getParameter("size");
 //        String urlImage = req.getParameter("image");
         String urlImage = "";
