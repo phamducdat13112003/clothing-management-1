@@ -176,7 +176,7 @@
 </script>
 
 
-<form action="SelectDOServlet" method="post">
+
     <table border="1">
     <tr>
         <th>Select</th>
@@ -188,7 +188,7 @@
     <c:forEach var="dod" items="${activeDOs}">
         <tr>
             <td>
-                <form action="SelectDOServlet" method="get">
+                <form action="SelectDOServlet" method="post">
                     <input type="hidden" name="doID" value="${dod.doID}">
                     <input type="hidden" name="poId" value="${dod.poID}">
                     <button type="submit">Select</button>
@@ -201,7 +201,7 @@
         </tr>
     </c:forEach>
 </table>
-</form>
+
 </div>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>

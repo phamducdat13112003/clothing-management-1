@@ -25,8 +25,8 @@ public class SelectDOServlet extends HttpServlet {
 // Nhận dữ liệu từ request
         String doID = request.getParameter("doID"); // Đảm bảo khớp với input trong JSP
         String poID = request.getParameter("poId");
-        String productDetailID = DeliveryOrderDAO.getProductDetailIDByDOID(doID);
-        String createBy = request.getParameter("createBy");
+        String productDetailID = DeliveryOrderDAO.getProductDetailIDByPOIDAndDOID(poID,doID);
+//        String createBy = request.getParameter("createBy");
 
         // Kiểm tra doID hợp lệ
         if (doID == null || doID.trim().isEmpty()) {
@@ -50,7 +50,7 @@ public class SelectDOServlet extends HttpServlet {
         request.setAttribute("doID", doID);
         request.setAttribute("productDetail", productDetail);
         request.setAttribute("quantity", quantity);
-        request.setAttribute("createBy", createBy);
+//        request.setAttribute("createBy", createBy);
 
         // Forward đến JSP phù hợp
         request.getRequestDispatcher("confirmDO.jsp").forward(request, response);

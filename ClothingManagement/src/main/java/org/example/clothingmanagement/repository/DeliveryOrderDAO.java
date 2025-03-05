@@ -354,6 +354,7 @@ public static List<DeliveryOrder> getAllDOs() {
 
         return productDetails;
     }
+
     public static Map<String, Object> getProductDetailByProductDetailID(String productDetailID) {
         Map<String, Object> productDetail = new HashMap<>();
 
@@ -451,6 +452,7 @@ public static List<DeliveryOrder> getAllDOs() {
         }
         return false;
     }
+
     public boolean isDOIDExist(String doID) {
         String sql = "SELECT COUNT(*) FROM DO WHERE DOID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -467,6 +469,7 @@ public static List<DeliveryOrder> getAllDOs() {
         }
         return false;
     }
+
     public boolean isValidDate(String poId, Date dateToCheck) {
         String sql = "SELECT CreatedDate FROM PO WHERE POID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -487,6 +490,7 @@ public static List<DeliveryOrder> getAllDOs() {
         }
         return false; // Lỗi hoặc POID không tồn tại
     }
+
     public static List<DeliveryOrder> filterDOs(String supplierID, String startDate, String endDate, String poID, String createdBy) {
         List<DeliveryOrder> doList = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT d.DOID, d.PlannedShippingDate, d.ReceiptDate, d.POID, d.CreatedBy, d.Recipient, d.Status " +
@@ -579,6 +583,7 @@ public static List<DeliveryOrder> getAllDOs() {
 
         return employeeID;
     }
+
     public static Map<String, Object> getDODetailsByDOID(String doID) {
         Map<String, Object> productDetail = null;
 
@@ -669,29 +674,28 @@ public static List<DeliveryOrder> getAllDOs() {
         return quantity;
     }
 
-    public static String getProductDetailIDByDOID(String doID) {
-            String productDetailID = null;
-            String sql = "SELECT ProductDetailID FROM DODetail WHERE DOID = ?";
+    public static String getProductDetailIDByPOIDAndDOID(String poID, String doID) {
+        String productDetailID = null;
+        String sql = "SELECT dd.ProductDetailID " +
+                "FROM DODetail dd " +
+                "JOIN DO d ON dd.DOID = d.DOID " +
+                "WHERE d.POID = ? AND dd.DOID = ?";
 
-            try (Connection conn = DBContext.getConnection();
-                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-                stmt.setString(1, doID);
-                ResultSet rs = stmt.executeQuery();
+            stmt.setString(1, poID);
+            stmt.setString(2, doID);
+            ResultSet rs = stmt.executeQuery();
 
-                if (rs.next()) { // Chỉ lấy giá trị đầu tiên
-                    productDetailID = rs.getString("ProductDetailID");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+            if (rs.next()) { // Chỉ lấy giá trị đầu tiên
+                productDetailID = rs.getString("ProductDetailID");
             }
-            return productDetailID;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-
-
-
-
+        return productDetailID;
+    }
 
 
 
