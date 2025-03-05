@@ -44,9 +44,16 @@ public class AddProductDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productId = req.getParameter("id");
-        Integer quantity = Integer.parseInt(req.getParameter("quantity"));
+        Integer quantity = 0;
         Double weight = Double.parseDouble(req.getParameter("weight"));
         String color = req.getParameter("color");
+        if(color.matches("^[a-zA-Z]+$")){
+            color = color.toLowerCase();
+            color = color.substring(0,1).toUpperCase() + color.substring(1);
+        }
+        else{
+            color = "XXX";
+        }
         String size = req.getParameter("size");
 //        String urlImage = req.getParameter("image");
         String urlImage = "";
@@ -61,14 +68,17 @@ public class AddProductDetailController extends HttpServlet {
         }
         String code = pd.getId().substring(0,2);
         String number = pd.getId().substring(2);
-        String id = code+Integer.parseInt(number)+1;
+        int num = Integer.parseInt(number);
+        num += 1; // Tăng số lên 1
+        String newStr = String.format("%03d", num); // Đảm bảo số có 3 chữ số
+        String id = code + newStr; // Nối chuỗi code và newStr
         ProductDetail productDetail = new ProductDetail(weight,status,size,quantity,productId,urlImage,id,color);
         boolean check = pds.insertProductDetail(productDetail);
         if (check) {
             HttpSession session = req.getSession();
             session.setAttribute("alertMessage", "Successfully.");
             session.setAttribute("alertType", "success");
-            resp.sendRedirect(req.getContextPath() + "/list-product-detail");
+            resp.sendRedirect(req.getContextPath() + "/list-product-detail?id=" + productId + "");
         } else {
             req.setAttribute("alertMessage", "Failed.");
             req.setAttribute("alertType", "error");

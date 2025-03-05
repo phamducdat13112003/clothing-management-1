@@ -121,26 +121,30 @@
     <tr>
       <th>DOID</th>
       <th>Planned Shipping Date</th>
+      <th>ReceiptDate</th>
       <th>POID</th>
       <th>Created By</th>
-      <th>Action</th>
+      <th>Recipient</th>
+<%--      <th>Action</th>--%>
 
     </tr>
     <c:forEach var="dod" items="${DOs}">
       <tr>
         <td>${dod.doID}</td>
         <td>${dod.plannedShippingDate}</td>
+        <td>${dod.receiptDate}</td>
         <td>${dod.poID}</td>
         <td>${dod.createdBy}</td>
-        <td>
-<%--          <a href="UpdateDOServlet?doID=${dod.doID}">Update</a> |--%>
-          <a href="DeleteDOServlet?doID=${dod.doID}" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a> |
-<%--          <a href="ViewDODetailServlet?doID=${dod.doID}">View Detail</a>--%>
-        </td>
+        <td>${dod.recipient}</td>
+<%--        <td>--%>
+<%--&lt;%&ndash;          <a href="UpdateDOServlet?doID=${dod.doID}">Update</a> |&ndash;%&gt;--%>
+<%--&lt;%&ndash;          <a href="DeleteDOServlet?doID=${dod.doID}" onclick="return confirm('Are you sure you want to delete this item?');">Delete</a> |&ndash;%&gt;--%>
+<%--&lt;%&ndash;          <a href="ViewDODetailServlet?doID=${dod.doID}">View Detail</a>&ndash;%&gt;--%>
+<%--        </td>--%>
       </tr>
     </c:forEach>
   </table>
-  <button type="submit">Submit</button>
+  
 </form>
 </div>
 <script src="js/jquery.min.js"></script>
