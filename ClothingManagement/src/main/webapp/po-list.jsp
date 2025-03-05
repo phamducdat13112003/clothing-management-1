@@ -1,5 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <%@ page isELIgnored="false" %>
 <html>
 <head>
@@ -178,8 +180,9 @@
                     <td>${productDetailInfo.Color}</td>
                     <td>${productDetailInfo.Size}</td>
                     <td>${detail.quantity}</td>
-                    <td>${detail.price}</td>
-                    <td>${detail.totalPrice}</td>
+                    <td><fmt:formatNumber value="${detail.price}" type="number" groupingUsed="true" /></td>
+                    <td><fmt:formatNumber value="${detail.totalPrice}" type="number" groupingUsed="true" /></td>
+
                 </tr>
             </c:forEach>
         </table>

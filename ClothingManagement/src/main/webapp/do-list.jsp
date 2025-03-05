@@ -126,12 +126,12 @@
         </c:forEach>
     </select>
 
-    <input type="text" name="poID" placeholder="Enter PO ID">
+<%--    <input type="text" name="poID" placeholder="Enter PO ID">--%>
     <input type="date" name="startDate" placeholder="startDate">
     <input type="date" name="endDate" placeholder="endDate">
-    <input type="text" name="createdBy" placeholder="createdBy">
+<%--    <input type="text" name="createdBy" placeholder="createdBy">--%>
     <button type="submit" name="action" value="filter">Filter</button>
-    <button type="submit" name="action" value="selectAll">Select ALL</button>
+<%--    <button type="submit" name="action" value="selectAll">Select ALL</button>--%>
 </form>
 <script>
     document.getElementById("poForm").addEventListener("submit", function (event) {
