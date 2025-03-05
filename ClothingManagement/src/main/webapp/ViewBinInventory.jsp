@@ -169,7 +169,7 @@
                     </td>
                     <td class="sherah-table__column-4 sherah-table__data-4">
                       <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" />VND</p>
+                        <p class="sherah-table__product-desc"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</p>
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
