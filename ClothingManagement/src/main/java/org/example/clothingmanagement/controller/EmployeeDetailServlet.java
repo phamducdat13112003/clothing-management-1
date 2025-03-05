@@ -5,7 +5,6 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.service.EmployeeService;
-import org.example.clothingmanagement.repository.WarehouseDAO;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -34,7 +33,6 @@ public class EmployeeDetailServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String employeeID = request.getParameter("employeeId");
         EmployeeService employeeService = new EmployeeService();
-        WarehouseDAO wareHouseDAO = new WarehouseDAO();
         if (employeeID != null) {
             try {
                 Employee employee= employeeService.getEmployeeByID(employeeID);

@@ -5,90 +5,97 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.clothingmanagement.entity.DeliveryOrderDetail;
 import org.example.clothingmanagement.repository.DeliveryOrderDAO;
 import org.example.clothingmanagement.repository.DeliveryOrderDetailDAO;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.util.*;
-
 
 @WebServlet(name = "AddDOServlet", value = "/AddDOServlet")
 public class AddDOServlet extends HttpServlet {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    response.setContentType("text/html;charset=UTF-8");
+    PrintWriter out = response.getWriter();
+
+    // Lấy dữ liệu từ request
+    String doId = request.getParameter("doId");
+    String quantityStr = request.getParameter("quantity");
+    String plannedShippingDateStr = request.getParameter("plannedShippingDate");
+    String poId = request.getParameter("poId");
+    String accountID = request.getParameter("createBy");
+    String createdBy = DeliveryOrderDAO.getEmployeeIDByAccountID(accountID);
+    String productDetailID = request.getParameter("productDetailID");
+    Date receiptDate = Date.valueOf("1970-01-01");
+    ; // Ngày hiện tại làm ReceiptDate
+    boolean status = true;
+    int quantity = 0;
+
+    // Kiểm tra dữ liệu nhập vào
+    if (doId == null || doId.trim().isEmpty() || plannedShippingDateStr == null || plannedShippingDateStr.trim().isEmpty()) {
+        out.println("<script>alert('Vui lòng điền đầy đủ thông tin!'); window.history.back();</script>");
+        return;
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // **1. Nhận danh sách PO ID**
-        List<String> poIDList = request.getParameterValues("poID") != null
-                ? new ArrayList<>(Arrays.asList(request.getParameterValues("poID")))
-                : new ArrayList<>();
+    // Chuyển đổi ngày giao hàng
+    Date plannedShippingDate;
+    try {
+        plannedShippingDate = Date.valueOf(plannedShippingDateStr);
+    } catch (IllegalArgumentException e) {
+        out.println("<script>alert('Ngày giao hàng không hợp lệ!'); window.history.back();</script>");
+        return;
+    }
 
-        if (poIDList.isEmpty()) {
-            request.setAttribute("error", "No purchase order selected.");
-            request.getRequestDispatcher("deliveryOrder.jsp").forward(request, response);
+    // Kiểm tra số lượng
+    if (quantityStr != null && !quantityStr.isEmpty()) {
+        try {
+            quantity = Integer.parseInt(quantityStr);
+        } catch (NumberFormatException e) {
+            out.println("<script>alert('Số lượng không hợp lệ!'); window.history.back();</script>");
             return;
         }
-
-        // **2. Nhận dữ liệu từ request**
-        String plannedShippingDateStr = request.getParameter("plannedShippingDate");
-        String accountID = request.getParameter("createBy");
-        String createdBy = DeliveryOrderDAO.getEmployeeIDByAccountID(accountID);
-        Date plannedShippingDate = Date.valueOf(plannedShippingDateStr);
-        Date receiptDate = new Date(System.currentTimeMillis()); // Ngày hiện tại làm ReceiptDate
-        boolean status = true; // Trạng thái mặc định
-
-        // **3. Tạo DO và lưu vào database**
-        for (String poID : poIDList) {
-            String newDOID = null;
-            try {
-                newDOID = DeliveryOrderDAO.generateDOID();
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-
-            boolean isDOAdded = DeliveryOrderDAO.addDO(newDOID, plannedShippingDate, receiptDate, poID, createdBy, null, status);
-
-            if (!isDOAdded) {
-                request.setAttribute("error", "Failed to create Delivery Order for POID: " + poID);
-                request.getRequestDispatcher("deliveryOrder.jsp").forward(request, response);
-                return;
-            }
-
-            // **4. Thêm danh sách sản phẩm vào bảng DODetail**
-            Enumeration<String> paramNames = request.getParameterNames();
-            while (paramNames.hasMoreElements()) {
-                String paramName = paramNames.nextElement();
-                if (paramName.startsWith("quantity_")) {
-                    String productDetailID = paramName.substring(9); // Lấy ID từ "quantity_{productDetailID}"
-                    int quantity = Integer.parseInt(request.getParameter(paramName));
-
-                    // Tạo ID tự động cho DODetail
-                    String doDetailID = null;
-                    try {
-                        doDetailID = DeliveryOrderDetailDAO.generateDODetailID();
-                    } catch (Exception e) {
-                        throw new RuntimeException(e);
-                    }
-
-                    // Thêm vào bảng DODetail
-                    DeliveryOrderDetailDAO.addDODetail(doDetailID, productDetailID, quantity, newDOID);
-                }
-            }
-        }
-
-        // **5. Chuyển hướng sau khi thêm thành công**
-
-        response.sendRedirect("deliveryOrder.jsp");
     }
 
+    // Kiểm tra nếu DOID đã tồn tại
+    DeliveryOrderDAO dao = new DeliveryOrderDAO();
+    if (dao.isDOIDExist(doId)) {
+        out.println("<script>alert('DOID đã tồn tại! Không thể tạo mới.'); window.history.back();</script>");
+        return;
+    }
 
+    // Kiểm tra ngày plannedShippingDate và receiptDate
+    if (!dao.isValidDate(poId, plannedShippingDate)) {
+        out.println("<script>alert('Ngày giao hàng hoặc ngày nhận hàng không hợp lệ!'); window.history.back();</script>");
+        return;
+    }
 
+    // Thêm DO vào database
+    boolean success = dao.addDO(doId, plannedShippingDate, receiptDate, poId, createdBy, null, status);
+    if (!success) {
+        out.println("<script>alert('Lỗi khi thêm DO! Vui lòng thử lại.'); window.history.back();</script>");
+        return;
+    }
 
+    // Tạo DODetailID
+    String doDetailID;
+    try {
+        doDetailID = DeliveryOrderDetailDAO.generateDODetailID();
+    } catch (Exception e) {
+        out.println("<script>alert('Lỗi khi tạo DODetailID, vui lòng thử lại!'); window.history.back();</script>");
+        return;
+    }
 
+    // Thêm DODetail vào database
+    boolean doDetailSuccess = DeliveryOrderDetailDAO.addDODetail(doDetailID, productDetailID, quantity, doId);
+    if (!doDetailSuccess) {
+        out.println("<script>alert('Lỗi khi thêm DODetail! Vui lòng thử lại.'); window.history.back();</script>");
+        return;
+    }
 
+    // Nếu thành công, chuyển hướng
+    response.sendRedirect("Category.jsp");
+}
 }

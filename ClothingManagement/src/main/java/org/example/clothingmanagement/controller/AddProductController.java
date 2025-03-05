@@ -36,25 +36,24 @@ public class AddProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productName = req.getParameter("productName");
-
-        double price = Double.parseDouble(req.getParameter("price"));
-        int categoryID = Integer.parseInt(req.getParameter("categoryID"));
+        Double price = Double.parseDouble(req.getParameter("price"));
+        Integer categoryID = Integer.parseInt(req.getParameter("categoryID"));
         String material = req.getParameter("material");
         String gender = req.getParameter("gender");
         String seasons = req.getParameter("seasons");
         int minQuantity = Integer.parseInt(req.getParameter("minQuantity"));
         String description = req.getParameter("description");
-        int supplierID = Integer.parseInt(req.getParameter("supplierID"));
+        String supplierID = req.getParameter("supplierID");
         String madeIn = req.getParameter("madeIn");
 
-        //Product product = new Product(productName,price,seasons,supplierID,material,madeIn,gender,description,categoryID,minQuantity,1,1);
-        //boolean check = productService.addProduct(product);
-//        if (check) {
-//            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=1");
-//        }
-//        else{
-//            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=2");
-//        }
+        Product product = new Product(productName,price,seasons,supplierID,material,madeIn,gender,description,categoryID,minQuantity,"","");
+        boolean check = productService.addProduct(product);
+        if (check) {
+            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=1");
+        }
+        else{
+            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=2");
+        }
 
     }
 }

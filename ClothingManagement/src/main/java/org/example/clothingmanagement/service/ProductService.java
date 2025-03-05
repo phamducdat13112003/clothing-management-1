@@ -24,20 +24,28 @@ public class ProductService {
             if(pds.findTheFirstProductDetailOfProductId(product.getId()).isPresent()){
                 ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId(product.getId()).get();
                 product.setUrlImage(productDetail.getImage());
-
             }
             else{
                 product.setUrlImage("errorImage-NoDataFound");
             }
-
             for(Category category : categories) {
                 if(product.getCategoryId()==category.getCategoryID()){
                     map.put(product,category.getCategoryName());
                 }
             }
-
         }
         return map;
+    }
+
+    public List<Product> getAllProductsWithPagination(int page, int pageSize){
+        return pd.getAllProductsWithPagination(page,pageSize);
+    }
+    public List<Product> searchProduct(String keyword, int page, int pageSize) {
+        return pd.searchProduct(keyword,page,pageSize);
+    }
+
+    public int getTotalProductCount(String keyword){
+        return pd.getTotalProductCount(keyword);
     }
 
     public boolean addProduct(Product product) {
@@ -61,6 +69,16 @@ public class ProductService {
         return pd.getProductByProductID(productID);
     }
 
+    public List<Product> getProductsByBinID(String binID, int page, int pageSize) {
+        return pd.getProductsByBinID(binID, page, pageSize);
+    }
+    public int countProductsByBinID(String binID) {
+        return pd.countProductsByBinID(binID);
+    }
+
+    public int countAllProducts() {
+        return pd.countAllProducts();
+    }
 
 
 }
