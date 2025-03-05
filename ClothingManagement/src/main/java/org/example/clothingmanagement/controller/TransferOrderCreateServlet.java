@@ -35,15 +35,22 @@ public class TransferOrderCreateServlet extends HttpServlet {
         // Get all employee IDs (optional: for a list of employees)
         List<String> employeeIds = transferOrderDAO.getAllEmployeeIds();
         request.setAttribute("employeeIds", employeeIds);
+
+        // Fetch all bins (you can use your bin fetching method here)
+        List<String> binIds = transferOrderDAO.getAllBinIds();  // Example method to fetch bin IDs
+        request.setAttribute("binIds", binIds);
         request.getRequestDispatcher("/test1.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
-            // Get all employee IDs once
             List<String> employeeIds = transferOrderDAO.getAllEmployeeIds();
             request.setAttribute("employeeIds", employeeIds);
+
+            // Fetch all bins
+            List<String> binIds = transferOrderDAO.getAllBinIds();
+            request.setAttribute("binIds", binIds);
 
             // Get Transfer Order ID from user input
             String toID = request.getParameter("toID");
@@ -77,22 +84,9 @@ public class TransferOrderCreateServlet extends HttpServlet {
             String originBinID = request.getParameter("originBinID");
             String finalBinID = request.getParameter("finalBinID");
 
-            // Validate bins
-            if (!transferOrderDAO.isBinValid(originBinID)) {
-                request.setAttribute("errorOriginBin", "Origin Bin ID is invalid.");
-            }
-
-            if (!transferOrderDAO.isBinValid(finalBinID)) {
-                request.setAttribute("errorFinalBin", "Final Bin ID is invalid.");
-            }
-
             // Check if originBinID and finalBinID are the same
             if (originBinID.equals(finalBinID)) {
                 request.setAttribute("errorBinSame", "Origin Bin ID and Final Bin ID cannot be the same.");
-            }
-
-            // If there is an error with the bins, redirect back to the form with error messages
-            if (request.getAttribute("errorOriginBin") != null || request.getAttribute("errorFinalBin") != null || request.getAttribute("errorBinSame") != null) {
                 request.getRequestDispatcher("/test1.jsp").forward(request, response);
                 return;
             }
@@ -108,28 +102,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 String[] productDetailIDs = request.getParameterValues("productDetailID[]");
                 String[] quantities = request.getParameterValues("quantity[]");
 
-                // Check if productDetailIDs and quantities are not null and valid
-                if (productDetailIDs == null || quantities == null || productDetailIDs.length == 0 || quantities.length == 0) {
-                    request.setAttribute("errorProduct", "Transfer Order must contain at least one product.");
-                    request.getRequestDispatcher("/test1.jsp").forward(request, response);
-                    return;
-                }
-
-                if (productDetailIDs.length != quantities.length) {
-                    request.setAttribute("errorProduct", "Product Detail IDs and Quantities do not match.");
-                    request.getRequestDispatcher("/test1.jsp").forward(request, response);
-                    return;
-                }
-
-                // Check for duplicate productDetailIDs
-                Set<String> productDetailIDSet = new HashSet<>();
-                for (String productDetailID : productDetailIDs) {
-                    if (!productDetailIDSet.add(productDetailID)) {
-                        request.setAttribute("errorProductDetail", "Duplicate Product Detail ID detected.");
-                        request.getRequestDispatcher("/test1.jsp").forward(request, response);
-                        return;
-                    }
-                }
+                double totalWeight = 0.0;
 
                 // Validate productDetailIDs and quantities
                 for (int i = 0; i < productDetailIDs.length; i++) {
@@ -137,16 +110,15 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         String productDetailID = productDetailIDs[i];
                         int quantity = Integer.parseInt(quantities[i]);
 
-                        // Ensure quantity is greater than 0
-                        if (quantity <= 0) {
-                            request.setAttribute("errorQuantity", "Quantity must be greater than 0.");
-                            request.getRequestDispatcher("/test1.jsp").forward(request, response);
-                            return;
-                        }
+                        // Retrieve the weight of the product
+                        double productWeight = transferOrderDAO.getProductWeight(productDetailID);
 
-                        // Check if the productDetailID is valid
-                        if (!transferOrderDAO.isProductDetailIDValid(productDetailID)) {
-                            request.setAttribute("errorProductDetail", "Invalid Product Detail ID.");
+                        // Calculate the total weight for this product detail (weight * quantity)
+                        totalWeight += productWeight * quantity;
+
+                        // Comprehensive validation block
+                        if (quantity <= 0) {
+                            request.setAttribute("errorQuantity1", "Quantity must be greater than 0.");
                             request.getRequestDispatcher("/test1.jsp").forward(request, response);
                             return;
                         }
@@ -154,7 +126,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         // Check if the origin bin has enough quantity for the transfer
                         int availableQuantityInOriginBin = transferOrderDAO.getBinQuantity(originBinID, productDetailID);
                         if (availableQuantityInOriginBin < quantity) {
-                            request.setAttribute("errorQuantity", "Not enough quantity in the origin bin.");
+                            request.setAttribute("errorQuantity2", "Not enough quantity in the origin bin.");
                             request.getRequestDispatcher("/test1.jsp").forward(request, response);
                             return;
                         }
@@ -176,36 +148,47 @@ public class TransferOrderCreateServlet extends HttpServlet {
                             return;
                         }
 
-                        // Subtract quantity from origin bin (update BinDetail)
+                        // Attempt to update bin quantities
                         boolean isOriginBinUpdated = transferOrderDAO.updateBinQuantity(originBinID, productDetailID, -quantity);
-                        if (!isOriginBinUpdated) {
-                            request.setAttribute("errorBin", "Error updating origin bin quantity.");
-                            request.getRequestDispatcher("/test1.jsp").forward(request, response);
-                            return;
-                        }
-
-                        // Add quantity to final bin (update BinDetail)
                         boolean isFinalBinUpdated = transferOrderDAO.updateBinQuantity(finalBinID, productDetailID, quantity);
-                        if (!isFinalBinUpdated) {
-                            request.setAttribute("errorBin", "Error updating final bin quantity.");
+
+                        if (!isOriginBinUpdated || !isFinalBinUpdated) {
+                            request.setAttribute("errorBin", "Error updating bin quantities.");
                             request.getRequestDispatcher("/test1.jsp").forward(request, response);
                             return;
                         }
 
                     } catch (NumberFormatException e) {
-                        request.setAttribute("errorQuantity", "Invalid quantity format.");
+                        request.setAttribute("errorQuantity3", "Invalid quantity format.");
                         request.getRequestDispatcher("/test1.jsp").forward(request, response);
                         return;
                     }
                 }
+
+                // Retrieve the max capacity and current capacity of the final bin
+                double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
+                double currentBinCapacity = transferOrderDAO.getBinCurrentCapacity(finalBinID);
+
+                // Calculate the available capacity of the bin
+                double availableCapacity = binMaxCapacity - currentBinCapacity;
+
+                // Compare total weight with available capacity
+                if (totalWeight > availableCapacity) {
+                    request.setAttribute("errorWeight", "Total weight exceeds the available capacity of the bin.");
+                    request.getRequestDispatcher("/test1.jsp").forward(request, response);
+                    return;
+                }
+
+
             } else {
                 request.setAttribute("errorOrder", "Error creating transfer order.");
                 request.getRequestDispatcher("/test1.jsp").forward(request, response);
+                return;
             }
 
             // Set success message and redirect
             request.setAttribute("successMessage", "Transfer Order Created Successfully.");
-            response.sendRedirect("/ClothingManagement_war/transfer-order/list");  // Redirect to the list of transfer orders
+            response.sendRedirect("/ClothingManagement_war_exploded/transfer-order/list");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -213,6 +196,10 @@ public class TransferOrderCreateServlet extends HttpServlet {
             request.getRequestDispatcher("/test1.jsp").forward(request, response);
         }
     }
+
+
+
+
 
 
 

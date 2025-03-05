@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class TransferOrderDAO {
 
@@ -208,7 +209,7 @@ public class TransferOrderDAO {
         // Define SQL query to check if the Transfer Order ID exists
         String query = "SELECT COUNT(*) FROM TransferOrder WHERE TOID = ?";
 
-        try (Connection conn = DBContext.getConnection(); // Assuming getConnection() is your method for getting the DB connection
+        try (Connection conn = DBContext.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(query)) {
 
             // Set the parameter
@@ -219,12 +220,14 @@ public class TransferOrderDAO {
 
             // If the count is greater than 0, it means the Transfer Order ID exists
             if (rs.next()) {
-                exists = rs.getInt(1) > 0;
+                int count = rs.getInt(1);
+                exists = count > 0;
             }
 
         } catch (SQLException e) {
             e.printStackTrace();
-            // Handle SQL exceptions as necessary, you can throw custom exceptions or log the error
+            System.out.println("Error checking Transfer Order ID: " + toID);
+            System.out.println("SQL Exception: " + e.getMessage());
         }
 
         return exists;
@@ -410,8 +413,9 @@ public class TransferOrderDAO {
 
 
     public List<ProductDetail> searchProductDetails(String query) {
+        System.out.println("Searching with query: '" + query + "'");
         List<ProductDetail> productDetailsList = new ArrayList<>();
-        // SQL Query to filter based on ProductDetailID or ProductName
+
         String sql = "SELECT pd.ProductDetailID, pd.Weight, p.ProductName " +
                 "FROM productdetail pd " +
                 "JOIN product p ON pd.ProductID = p.ProductID " +
@@ -420,21 +424,30 @@ public class TransferOrderDAO {
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            // Set the query parameter to search in ProductDetailID or ProductName
-            String searchQuery = "%" + query + "%";  // Adding % for partial match
+            String searchQuery = "%" + query + "%";
+            System.out.println("SQL search pattern: '" + searchQuery + "'");
+
             stmt.setString(1, searchQuery);
             stmt.setString(2, searchQuery);
 
             ResultSet rs = stmt.executeQuery();
 
+            int count = 0;
             while (rs.next()) {
+                count++;
                 ProductDetail productDetail = new ProductDetail();
-                productDetail.setId(rs.getString("ProductDetailID"));  // ProductDetailID mapped to 'id'
+                String id = rs.getString("ProductDetailID");
+                String name = rs.getString("ProductName");
+
+                System.out.println("Found product: ID=" + id + ", Name=" + name);
+
+                productDetail.setId(id);
                 productDetail.setWeight(rs.getDouble("Weight"));
-                productDetail.setProductName(rs.getString("ProductName"));  // Set Product Name from join
+                productDetail.setProductName(name);
 
                 productDetailsList.add(productDetail);
             }
+            System.out.println("Total products found: " + count);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -442,9 +455,138 @@ public class TransferOrderDAO {
         return productDetailsList;
     }
 
+    public List<String> getAllBinIds() {
+        List<String> binIds = new ArrayList<>();
+        String sql = "SELECT BinID FROM bin";  // Adjust based on your table and column names
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String binId = rs.getString("BinID");  // Replace with the actual column name in your database
+                binIds.add(binId);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return binIds;
+    }
 
 
+    public double getBinMaxCapacity(String binID) {
+        double maxCapacity = 0.0;
+
+        // Query the database to get the max capacity for the given finalBinID
+        String query = "SELECT MaxCapacity FROM bin WHERE BinID = ?";
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, binID);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                maxCapacity = resultSet.getDouble("maxCapacity");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle exception (you could throw it or log it)
+        }
+
+        return maxCapacity;
+    }
+
+    public double getBinCurrentCapacity(String binID) {
+        double currentCapacity = 0.0;
+
+        // SQL query to retrieve the current capacity from the 'bin' table
+        String query = "SELECT CurrentCapacity FROM bin WHERE BinID = ?";
+
+        // Execute the query and get the current capacity
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            // Set the bin ID parameter
+            statement.setString(1, binID);
+
+            // Execute the query
+            ResultSet resultSet = statement.executeQuery();
+
+            // If the result exists, get the current capacity value
+            if (resultSet.next()) {
+                currentCapacity = resultSet.getDouble("CurrentCapacity");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle exception (e.g., log or rethrow)
+        }
+
+        return currentCapacity;
+    }
 
 
+    public double getProductWeight(String productDetailID) {
+        double weight = 0.0;
 
+        // Query the database to get the weight of the product based on productDetailID
+        String query = "SELECT weight FROM productdetail WHERE productDetailID = ?";
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+
+            statement.setString(1, productDetailID);
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                weight = resultSet.getDouble("weight");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle exception (you could throw it or log it)
+        }
+
+        return weight;
+    }
+
+
+    // Method 2: With Capacity Limit Validation
+    public boolean updateBinCurrentCapacity(String binID, double weightToAdd, double maxCapacity) {
+        // First, check if adding the weight would exceed max capacity
+        String checkSql = "SELECT currentCapacity FROM Bin WHERE binID = ?";
+        String updateSql = "UPDATE Bin SET currentCapacity = currentCapacity + ? WHERE binID = ? AND (currentCapacity + ?) <= ?";
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement checkStmt = connection.prepareStatement(checkSql);
+             PreparedStatement updateStmt = connection.prepareStatement(updateSql)) {
+
+            // First, check current capacity
+            checkStmt.setString(1, binID);
+
+            // Perform the update with capacity limit
+            updateStmt.setDouble(1, weightToAdd);
+            updateStmt.setString(2, binID);
+            updateStmt.setDouble(3, weightToAdd);
+            updateStmt.setDouble(4, maxCapacity);
+
+            int rowsAffected = updateStmt.executeUpdate();
+
+            if (rowsAffected == 0) {
+                // This means the update failed due to capacity limit
+                System.err.println("Cannot add weight. Bin capacity would be exceeded.");
+                return false;
+            }
+
+            return true;
+
+        } catch (SQLException e) {
+            System.err.println("Error updating bin capacity: " + e.getMessage());
+            return false;
+        }
+    }
 }
