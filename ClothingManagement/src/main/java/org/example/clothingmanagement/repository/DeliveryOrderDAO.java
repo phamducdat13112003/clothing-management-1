@@ -177,7 +177,7 @@ public class DeliveryOrderDAO {
 public static List<DeliveryOrder> getAllDOs() {
     List<DeliveryOrder> doList = new ArrayList<>();
     String query = "SELECT DOID, PlannedShippingDate, ReceiptDate, POID, CreatedBy, Recipient " +
-            "FROM DO WHERE Status = TRUE"; // Thêm điều kiện lọc
+            "FROM DO WHERE Status = False"; // Thêm điều kiện lọc
 
     try (Connection conn = DBContext.getConnection();
          PreparedStatement ps = conn.prepareStatement(query);

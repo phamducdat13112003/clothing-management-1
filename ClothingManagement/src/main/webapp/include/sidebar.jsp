@@ -244,10 +244,10 @@
                                     <ul class="menu-bar__one-dropdown">
                                         <li><a href="DeliveryOrderServlet"><span class="menu-bar__text"><span
                                                 class="menu-bar__name">DO For PS</span></span></a></li>
-<%--                                        <ul class="menu-bar__one-dropdown">--%>
-<%--                                            <li><a href="ViewDOServlet"><span class="menu-bar__text"><span--%>
-<%--                                                    class="menu-bar__name">ViewDOActive</span></span></a></li>--%>
-<%--                                        </ul>--%>
+                                        <ul class="menu-bar__one-dropdown">
+                                            <li><a href="ViewDOServlet"><span class="menu-bar__text"><span
+                                                    class="menu-bar__name">ViewDOActive</span></span></a></li>
+                                        </ul>
                                     </ul>
                                 </div>
                             </li>
@@ -277,10 +277,10 @@
                                         <li><a href="DOListOpen"><span class="menu-bar__text"><span
                                                 class="menu-bar__name">DO For WS</span></span></a></li>
                                     </ul>
-<%--                                    <ul class="menu-bar__one-dropdown">--%>
-<%--                                        <li><a href="ViewDOServlet"><span class="menu-bar__text"><span--%>
-<%--                                                class="menu-bar__name">ViewDOActive</span></span></a></li>--%>
-<%--                                    </ul>--%>
+                                    <ul class="menu-bar__one-dropdown">
+                                        <li><a href="ViewDOServlet"><span class="menu-bar__text"><span
+                                                class="menu-bar__name">ViewDOActive</span></span></a></li>
+                                    </ul>
                                 </div>
                             </li>
                         </c:if>
