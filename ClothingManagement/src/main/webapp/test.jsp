@@ -19,13 +19,26 @@
     </div>
 </c:if>
 
+<!-- Create Transfer Order Button -->
+<div>
+    <a href="/ClothingManagement_war_exploded/transfer-order/create">
+        <button>Create Transfer Order</button>
+    </a>
+
+</div>
+<c:if test="${not empty successMessage}">
+    <p class="success-message">${successMessage}</p>
+</c:if>
+
+
 <table border="1">
     <thead>
     <tr>
         <th>TOID</th>
         <th>Created By</th>
         <th>Status</th>
-        <th>Actions</th>
+        <th>Created Date</th>
+        <th>Action</th>
     </tr>
     </thead>
     <tbody>
@@ -37,13 +50,13 @@
             <td>${order.createdDate}</td>
             <td>
                 <!-- Link to view the transfer order details -->
-                <a href="/ClothingManagement_war/transfer-order/view?toID=${order.toID}">View</a>
+                <a href="/ClothingManagement_war_exploded/transfer-order/view?toID=${order.toID}">View</a>
 
                 <!-- Link to edit the transfer order -->
-                <a href="/ClothingManagement_war/transfer-order/update?toID=${order.toID}">Edit</a>
+                <a href="/ClothingManagement_war_exploded/transfer-order/update?toID=${order.toID}">Edit</a>
 
                 <!-- Link to delete the transfer order -->
-                <a href="/ClothingManagement_war/transfer-order/list?action=delete&toID=${order.toID}"
+                <a href="/ClothingManagement_war_exploded/transfer-order/list?action=delete&toID=${order.toID}"
                    onclick="return confirm('Are you sure you want to delete this transfer order?');">Delete</a>
             </td>
 

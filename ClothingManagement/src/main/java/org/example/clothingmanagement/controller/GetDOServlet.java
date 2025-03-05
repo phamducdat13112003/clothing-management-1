@@ -5,7 +5,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.clothingmanagement.entity.DeliveryOrder;
 import org.example.clothingmanagement.entity.DeliveryOrderDetail;
+import org.example.clothingmanagement.entity.Supplier;
 import org.example.clothingmanagement.repository.DeliveryOrderDAO;
 import org.example.clothingmanagement.repository.DeliveryOrderDetailDAO;
 
@@ -23,27 +25,20 @@ public class GetDOServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-            String[] doIDsArray = request.getParameterValues("doID");
+        String supplierID = request.getParameter("supplier");
+        String poID = request.getParameter("poID");
+        String createdBy = request.getParameter("createdBy");
+        List<Supplier> suppliers = DeliveryOrderDAO.getAllSuppliers();
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        DeliveryOrderDAO dao = new DeliveryOrderDAO();
 
-            if (doIDsArray == null || doIDsArray.length == 0) {
-                request.setAttribute("error", "No DO selected. Please select at least one.");
-                request.getRequestDispatcher("deliveryOrderWS.jsp").forward(request, response);
-                return;
-            }
 
-            List<String> doIDs = Arrays.asList(doIDsArray);
-            List<Map<String, Object>> doDetails = DeliveryOrderDAO.getDODetailsWithProductInfo(doIDs);
+        List<DeliveryOrder> activeDOs = DeliveryOrderDAO.filterDOs(supplierID,  startDate, endDate, poID, createdBy);
 
-            if (doDetails.isEmpty()) {
-                request.setAttribute("error", "No DO details found for the selected IDs.");
-                request.getRequestDispatcher("deliveryOrderWS.jsp").forward(request, response);
-                return;
-            }
-
-            request.setAttribute("doDetails", doDetails);
-            request.setAttribute("doIDs", doIDs);
-            request.getRequestDispatcher("deliveryOrderWS.jsp").forward(request, response);
-
+        request.setAttribute("activeDOs", activeDOs);
+        request.setAttribute("suppliers", suppliers);
+        request.getRequestDispatcher("do-list.jsp").forward(request, response);
     }
 
 

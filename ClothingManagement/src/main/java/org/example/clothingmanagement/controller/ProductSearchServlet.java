@@ -25,6 +25,9 @@ public class ProductSearchServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String query = request.getParameter("query");
+        System.out.println("Received query: " + query);  // Improved logging
+
+        // Create JsonObject at the start of the method
         JsonObject responseJson = new JsonObject();
 
         try {
@@ -32,16 +35,29 @@ public class ProductSearchServlet extends HttpServlet {
             List<ProductDetail> suggestions = transferOrderDAO.searchProductDetails(query);
 
             if (suggestions != null && !suggestions.isEmpty()) {
+                // Explicitly set success to true
                 responseJson.addProperty("success", true);
+
                 JsonArray suggestionArray = new JsonArray();
                 for (ProductDetail suggestion : suggestions) {
                     JsonObject suggestionObj = new JsonObject();
-                    suggestionObj.addProperty("productDetailID", suggestion.getId());
-                    suggestionObj.addProperty("productName", suggestion.getProductName());
-                    suggestionObj.addProperty("weight", suggestion.getWeight());
+
+                    // Ensure non-null values
+                    suggestionObj.addProperty("productDetailID",
+                            suggestion.getId() != null ? suggestion.getId() : "");
+                    suggestionObj.addProperty("productName",
+                            suggestion.getProductName() != null ? suggestion.getProductName() : "");
+                    suggestionObj.addProperty("weight",
+                            suggestion.getWeight() != null ? suggestion.getWeight() : 0.0);
+
                     suggestionArray.add(suggestionObj);
                 }
+
+                // Add suggestions array to response
                 responseJson.add("suggestions", suggestionArray);
+
+                // Debug logging
+                System.out.println("Response JSON: " + responseJson.toString());
             } else {
                 responseJson.addProperty("success", false);
                 responseJson.addProperty("message", "No products found.");
@@ -50,12 +66,16 @@ public class ProductSearchServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             responseJson.addProperty("success", false);
-            responseJson.addProperty("message", "Error occurred while searching for products.");
+            responseJson.addProperty("message", "Error occurred while searching for products: " + e.getMessage());
         }
 
         // Send the response as JSON
         response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");  // Ensure proper character encoding
         response.getWriter().write(responseJson.toString());
+
+        // Additional debug logging
+        System.out.println("Final Response JSON: " + responseJson.toString());
     }
 
 
