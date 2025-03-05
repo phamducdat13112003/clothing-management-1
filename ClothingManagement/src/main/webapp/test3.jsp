@@ -46,7 +46,7 @@
 <hr>
 
 <!-- Button to go back to the Transfer Order List -->
-<a href="/ClothingManagement_war/transfer-order/list">Back to Transfer Orders</a>
+<a href="/ClothingManagement_war_exploded/transfer-order/list">Back to Transfer Orders</a>
 
 </body>
 </html>
