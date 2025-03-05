@@ -27,7 +27,9 @@
 
 </div>
 <c:if test="${not empty successMessage}">
-    <p class="success-message">${successMessage}</p>
+    <div style="color: limegreen;">
+        <p>${successMessage}</p>
+    </div>
 </c:if>
 
 

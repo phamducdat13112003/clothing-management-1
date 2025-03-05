@@ -171,7 +171,7 @@ public class TransferOrderUpdateServlet extends HttpServlet {
                 }
 
                 // Redirect to Transfer Order List page
-                response.sendRedirect("/ClothingManagement_war/transfer-order/list");
+                response.sendRedirect("/ClothingManagement_war_exploded/transfer-order/list");
             } else {
                 request.setAttribute("errorMessage", "Error updating transfer order.");
                 request.getRequestDispatcher("/test2.jsp").forward(request, response);

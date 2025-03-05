@@ -45,14 +45,21 @@ public class TransferOrderCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            // Lấy danh sách employee và bin để duy trì form state
             List<String> employeeIds = transferOrderDAO.getAllEmployeeIds();
             request.setAttribute("employeeIds", employeeIds);
 
-            // Fetch all bins
             List<String> binIds = transferOrderDAO.getAllBinIds();
             request.setAttribute("binIds", binIds);
 
-            // Get Transfer Order ID from user input
+            // Gọi phương thức validation trước khi xử lý
+            if (!validateTransferOrderCreation(request)) {
+                // Nếu validation thất bại, chuyển về form với các thông báo lỗi
+                request.getRequestDispatcher("/test1.jsp").forward(request, response);
+                return;
+            }
+
+            // Validate Transfer Order ID
             String toID = request.getParameter("toID");
             if (toID == null || toID.trim().isEmpty()) {
                 request.setAttribute("errorToID", "Transfer Order ID cannot be empty.");
@@ -60,17 +67,18 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 return;
             }
 
-            // Check if Transfer Order ID already exists
+            // Kiểm tra Transfer Order ID đã tồn tại
             if (transferOrderDAO.isTransferOrderIDExist(toID)) {
                 request.setAttribute("errorToID", "Transfer Order ID already exists.");
                 request.getRequestDispatcher("/test1.jsp").forward(request, response);
                 return;
             }
 
+            // Lấy thông tin người tạo và trạng thái
             String createdBy = request.getParameter("createdBy");
-            String status = "Processing"; // "Processing" status
+            String status = "Processing";
 
-            // Retrieve and validate createdDate
+            // Validate ngày tạo
             LocalDate createdDate;
             try {
                 createdDate = LocalDate.parse(request.getParameter("createdDate"));
@@ -80,50 +88,45 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 return;
             }
 
-            // Retrieve bin information
+            // Validate bin
             String originBinID = request.getParameter("originBinID");
             String finalBinID = request.getParameter("finalBinID");
 
-            // Check if originBinID and finalBinID are the same
+            // Kiểm tra origin và final bin không được trùng nhau
             if (originBinID.equals(finalBinID)) {
                 request.setAttribute("errorBinSame", "Origin Bin ID and Final Bin ID cannot be the same.");
                 request.getRequestDispatcher("/test1.jsp").forward(request, response);
                 return;
             }
 
-            // Create a Transfer Order object with the selected createdBy
+            // Tạo Transfer Order
             TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
 
-            // Insert Transfer Order into the database
+            // Thêm Transfer Order vào database
             boolean isOrderCreated = transferOrderDAO.createTransferOrder(transferOrder);
 
             if (isOrderCreated) {
-                // Retrieve ProductDetailID and Quantity from form
+                // Lấy thông tin chi tiết sản phẩm
                 String[] productDetailIDs = request.getParameterValues("productDetailID[]");
                 String[] quantities = request.getParameterValues("quantity[]");
 
                 double totalWeight = 0.0;
+                System.out.println("Total weight before processing: " + totalWeight); // Log initial total weight
 
-                // Validate productDetailIDs and quantities
+                // Validate và xử lý từng sản phẩm
                 for (int i = 0; i < productDetailIDs.length; i++) {
                     try {
                         String productDetailID = productDetailIDs[i];
                         int quantity = Integer.parseInt(quantities[i]);
 
-                        // Retrieve the weight of the product
-                        double productWeight = transferOrderDAO.getProductWeight(productDetailID);
-
-                        // Calculate the total weight for this product detail (weight * quantity)
-                        totalWeight += productWeight * quantity;
-
-                        // Comprehensive validation block
+                        // Validate số lượng
                         if (quantity <= 0) {
                             request.setAttribute("errorQuantity1", "Quantity must be greater than 0.");
                             request.getRequestDispatcher("/test1.jsp").forward(request, response);
                             return;
                         }
 
-                        // Check if the origin bin has enough quantity for the transfer
+                        // Kiểm tra số lượng trong bin nguồn
                         int availableQuantityInOriginBin = transferOrderDAO.getBinQuantity(originBinID, productDetailID);
                         if (availableQuantityInOriginBin < quantity) {
                             request.setAttribute("errorQuantity2", "Not enough quantity in the origin bin.");
@@ -131,7 +134,14 @@ public class TransferOrderCreateServlet extends HttpServlet {
                             return;
                         }
 
-                        // Create TODetail object
+                        // Tính trọng lượng sản phẩm
+                        double productWeight = transferOrderDAO.getProductWeight(productDetailID);
+                        System.out.println("Product weight for " + productDetailID + ": " + productWeight); // Log product weight
+
+                        totalWeight += productWeight * quantity;
+                        System.out.println("Updated total weight: " + totalWeight); // Log updated total weight
+
+                        // Tạo TODetail
                         TODetail toDetail = new TODetail();
                         toDetail.setToDetailID(UUID.randomUUID().toString());
                         toDetail.setProductDetailID(productDetailID);
@@ -140,7 +150,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         toDetail.setOriginBinID(originBinID);
                         toDetail.setFinalBinID(finalBinID);
 
-                        // Insert TODetail into the database
+                        // Thêm TODetail vào database
                         boolean isTODetailCreated = transferOrderDAO.addTODetail(toDetail);
                         if (!isTODetailCreated) {
                             request.setAttribute("errorDetail", "Error creating Transfer Order Detail.");
@@ -148,7 +158,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                             return;
                         }
 
-                        // Attempt to update bin quantities
+                        // Cập nhật số lượng bin
                         boolean isOriginBinUpdated = transferOrderDAO.updateBinQuantity(originBinID, productDetailID, -quantity);
                         boolean isFinalBinUpdated = transferOrderDAO.updateBinQuantity(finalBinID, productDetailID, quantity);
 
@@ -165,28 +175,28 @@ public class TransferOrderCreateServlet extends HttpServlet {
                     }
                 }
 
-                // Retrieve the max capacity and current capacity of the final bin
+                // Kiểm tra trọng lượng bin cuối
                 double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
                 double currentBinCapacity = transferOrderDAO.getBinCurrentCapacity(finalBinID);
-
-                // Calculate the available capacity of the bin
                 double availableCapacity = binMaxCapacity - currentBinCapacity;
 
-                // Compare total weight with available capacity
+                // Validate trọng lượng
+                System.out.println("Bin max capacity: " + binMaxCapacity); // Log max bin capacity
+                System.out.println("Current bin capacity: " + currentBinCapacity); // Log current bin capacity
+                System.out.println("Available bin capacity: " + availableCapacity); // Log available bin capacity
+
                 if (totalWeight > availableCapacity) {
                     request.setAttribute("errorWeight", "Total weight exceeds the available capacity of the bin.");
                     request.getRequestDispatcher("/test1.jsp").forward(request, response);
                     return;
                 }
-
-
             } else {
                 request.setAttribute("errorOrder", "Error creating transfer order.");
                 request.getRequestDispatcher("/test1.jsp").forward(request, response);
                 return;
             }
 
-            // Set success message and redirect
+            // Chuyển hướng sau khi tạo thành công
             request.setAttribute("successMessage", "Transfer Order Created Successfully.");
             response.sendRedirect("/ClothingManagement_war_exploded/transfer-order/list");
 
@@ -195,6 +205,88 @@ public class TransferOrderCreateServlet extends HttpServlet {
             request.setAttribute("errorGeneral", "An unexpected error occurred.");
             request.getRequestDispatcher("/test1.jsp").forward(request, response);
         }
+    }
+
+
+    private boolean validateTransferOrderCreation(HttpServletRequest request) {
+        // Kiểm tra Transfer Order ID
+        String toID = request.getParameter("toID");
+        if (toID == null || toID.trim().isEmpty()) {
+            request.setAttribute("errorToID", "Transfer Order ID cannot be empty.");
+            return false;
+        }
+
+        if (transferOrderDAO.isTransferOrderIDExist(toID)) {
+            request.setAttribute("errorToID", "Transfer Order ID already exists.");
+            return false;
+        }
+
+        // Validate ngày tạo
+        try {
+            LocalDate createdDate = LocalDate.parse(request.getParameter("createdDate"));
+            // Có thể thêm logic kiểm tra ngày không được là ngày tương lai
+        } catch (DateTimeParseException e) {
+            request.setAttribute("errorDate", "Invalid date format.");
+            return false;
+        }
+
+        // Validate Bin
+        String originBinID = request.getParameter("originBinID");
+        String finalBinID = request.getParameter("finalBinID");
+
+        if (originBinID.equals(finalBinID)) {
+            request.setAttribute("errorBinSame", "Origin Bin ID and Final Bin ID cannot be the same.");
+            return false;
+        }
+
+        // Validate sản phẩm và số lượng
+        String[] productDetailIDs = request.getParameterValues("productDetailID[]");
+        String[] quantities = request.getParameterValues("quantity[]");
+
+        if (productDetailIDs == null || productDetailIDs.length == 0) {
+            request.setAttribute("errorProduct", "No products selected for transfer.");
+            return false;
+        }
+
+        double totalWeight = 0.0;
+        for (int i = 0; i < productDetailIDs.length; i++) {
+            try {
+                String productDetailID = productDetailIDs[i];
+                int quantity = Integer.parseInt(quantities[i]);
+
+                // Validate số lượng
+                if (quantity <= 0) {
+                    request.setAttribute("errorQuantity1", "Quantity must be greater than 0.");
+                    return false;
+                }
+
+                // Kiểm tra số lượng trong bin nguồn
+                int availableQuantityInOriginBin = transferOrderDAO.getBinQuantity(originBinID, productDetailID);
+                if (availableQuantityInOriginBin < quantity) {
+                    request.setAttribute("errorQuantity2", "Not enough quantity in the origin bin.");
+                    return false;
+                }
+
+                // Tính tổng trọng lượng
+                double productWeight = transferOrderDAO.getProductWeight(productDetailID);
+                totalWeight += productWeight * quantity;
+            } catch (NumberFormatException e) {
+                request.setAttribute("errorQuantity3", "Invalid quantity format.");
+                return false;
+            }
+        }
+
+        // Kiểm tra trọng lượng bin cuối
+        double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
+        double currentBinCapacity = transferOrderDAO.getBinCurrentCapacity(finalBinID);
+        double availableCapacity = binMaxCapacity - currentBinCapacity;
+
+        if (totalWeight > availableCapacity) {
+            request.setAttribute("errorWeight", "Total weight exceeds the available capacity of the bin.");
+            return false;
+        }
+
+        return true;
     }
 
 

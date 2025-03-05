@@ -52,6 +52,7 @@
 
         .form-buttons {
             text-align: center;
+            margin-top: 203px;
         }
 
         button {
@@ -139,6 +140,14 @@
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+
+        .error-message {
+            color: red;  /* Set the text color to red */
+            font-size: 14px;  /* Optional: set the font size */
+            font-weight: bold;  /* Optional: make the error message bold */
+            margin-top: 10px;  /* Optional: add some spacing */
+        }
+
     </style>
 
 </head>
