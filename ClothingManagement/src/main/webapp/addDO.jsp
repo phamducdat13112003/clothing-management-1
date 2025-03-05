@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page isELIgnored="false" %>
 <!DOCTYPE html>
 <html lang="vi">
@@ -77,7 +78,7 @@
                 <div><strong>Weight:</strong> ${productDetail.Weight} kg</div>
                 <div><strong>Color:</strong> ${productDetail.Color}</div>
                 <div><strong>Size:</strong> ${productDetail.Size}</div>
-                <div><strong>Price:</strong> ${productDetail.Price} VND</div>
+                <div><strong>Price:</strong> <fmt:formatNumber value="${productDetail.Price}" type="number" groupingUsed="true" /> VND</div>
             </div>
         </c:if>
     </div>

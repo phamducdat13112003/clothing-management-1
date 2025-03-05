@@ -246,7 +246,7 @@
                                                 class="menu-bar__name">DO For PS</span></span></a></li>
                                         <ul class="menu-bar__one-dropdown">
                                             <li><a href="ViewDOServlet"><span class="menu-bar__text"><span
-                                                    class="menu-bar__name">ViewDOActive</span></span></a></li>
+                                                    class="menu-bar__name">ViewDODone</span></span></a></li>
                                         </ul>
                                     </ul>
                                 </div>
@@ -279,7 +279,7 @@
                                     </ul>
                                     <ul class="menu-bar__one-dropdown">
                                         <li><a href="ViewDOServlet"><span class="menu-bar__text"><span
-                                                class="menu-bar__name">ViewDOActive</span></span></a></li>
+                                                class="menu-bar__name">ViewDODone</span></span></a></li>
                                     </ul>
                                 </div>
                             </li>

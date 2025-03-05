@@ -42,7 +42,7 @@ public class ConfirmDOServlet extends HttpServlet {
             } else if (quantity < quantityCheck) {
                 // Nếu số lượng nhỏ hơn, chỉ cập nhật số lượng
                 DeliveryOrderDAO.updateDODetailQuantity(productDetailID, quantity);
-                DeliveryOrderDAO.updateDO(doID, receiptDate, createBy, true);
+                DeliveryOrderDAO.updateDO(doID, receiptDate, createBy, false);
             } else {
                 request.setAttribute("error", "Số lượng nhập vào không hợp lệ.");
                 request.getRequestDispatcher("Category.jsp").forward(request, response);
