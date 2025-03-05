@@ -80,5 +80,16 @@ public class ProductService {
         return pd.countAllProducts();
     }
 
+    public static void main(String[] args) throws Exception {
+        String test = "PD002";
+        String code = test.substring(0,2);
+        String number = test.substring(2);
+        int num = Integer.parseInt(number);
+        num += 1; // Tăng số lên 1
+        String newStr = String.format("%03d", num); // Đảm bảo số có 3 chữ số
+        String id = code + newStr; // Nối chuỗi code và newStr
+        System.out.println(id);
+
+    }
 
 }
