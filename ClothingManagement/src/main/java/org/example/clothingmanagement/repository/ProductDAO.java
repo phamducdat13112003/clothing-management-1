@@ -1,5 +1,6 @@
 package org.example.clothingmanagement.repository;
 
+import org.example.clothingmanagement.entity.BinDetail;
 import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.ProductDetail;
@@ -46,97 +47,6 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
 
-    }
-
-    public List<Product> getAllProductsWithPagination(int page, int pageSize){
-        List<Product> list = new  ArrayList<>();
-        String sql = "SELECT * From Product LIMIT ? OFFSET ?";
-        try(Connection  conn = DBContext.getConnection();
-            PreparedStatement pt = conn.prepareStatement(sql)) {
-                pt.setInt(1, pageSize);
-                pt.setInt(2, (page-1) * pageSize);
-                ResultSet rs = pt.executeQuery();
-                while(rs.next()){
-                    Product product = new Product();
-                    product.setId(rs.getString("ProductID"));
-                    product.setName(rs.getString("ProductName"));
-                    product.setPrice(rs.getDouble("Price"));
-                    product.setBinId(rs.getString("binID"));
-                    product.setCategoryId(rs.getInt("CategoryID"));
-                    product.setMaterial(rs.getString("Material"));
-                    product.setGender(rs.getString("Gender"));
-                    product.setSeasons(rs.getString("Seasons"));
-                    product.setMinQuantity(rs.getInt("MinQuantity"));
-                    product.setCreatedDate(rs.getDate("CreatedDate"));
-                    product.setDescription(rs.getString("Description"));
-                    product.setCreatedBy(rs.getString("CreatedBy"));
-                    product.setSupplierId(rs.getString("SupplierID"));
-                    product.setMadeIn(rs.getString("MadeIn"));
-                    product.setStatus(rs.getInt("Status"));
-                    list.add(product);
-                }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return list;
-    }
-
-    public List<Product> searchProduct(String keyword, int page, int pageSize){
-        List<Product> list = new  ArrayList<>();
-        String sql = "SELECT * From Product WHERE ProductID LIKE ? OR ProductName LIKE ? OR Description LIKE ? OR SupplierID LIKE ? LIMIT ? OFFSET ?";
-        try (Connection conn = DBContext.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-            String searchKeyword = "%" + keyword + "%";
-            stmt.setString(1, searchKeyword);
-            stmt.setString(2, searchKeyword);
-            stmt.setString(3, searchKeyword);
-            stmt.setString(4, searchKeyword);
-            stmt.setInt(5, pageSize);
-            stmt.setInt(6, (page-1) * pageSize);
-            ResultSet rs = stmt.executeQuery();
-            while(rs.next()){
-                Product product = new Product();
-                product.setId(rs.getString("ProductID"));
-                product.setName(rs.getString("ProductName"));
-                product.setPrice(rs.getDouble("Price"));
-                product.setBinId(rs.getString("binID"));
-                product.setCategoryId(rs.getInt("CategoryID"));
-                product.setMaterial(rs.getString("Material"));
-                product.setGender(rs.getString("Gender"));
-                product.setSeasons(rs.getString("Seasons"));
-                product.setMinQuantity(rs.getInt("MinQuantity"));
-                product.setCreatedDate(rs.getDate("CreatedDate"));
-                product.setDescription(rs.getString("Description"));
-                product.setCreatedBy(rs.getString("CreatedBy"));
-                product.setSupplierId(rs.getString("SupplierID"));
-                product.setMadeIn(rs.getString("MadeIn"));
-                product.setStatus(rs.getInt("Status"));
-                list.add(product);
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-        return list;
-    }
-
-    public int getTotalProductCount(String keyword) {
-        String sql = "SELECT COUNT(*) AS total FROM Product " +
-                "WHERE (ProductID LIKE ? OR ProductName LIKE ? OR Description LIKE ? OR SupplierID LIKE ?)";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            String searchKeyword = "%" + keyword + "%";
-            stmt.setString(1, searchKeyword);
-            stmt.setString(2, searchKeyword);
-            stmt.setString(3, searchKeyword);
-            stmt.setString(4, searchKeyword);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("total");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
     }
 
     public boolean addProduct(Product product) {
@@ -260,68 +170,6 @@ public class ProductDAO {
         return null;
     }
 
-    public List<Product> getProductsByBinID(String binID, int page, int pageSize) {
-        List<Product> products = new ArrayList<>();
-        String sql = "SELECT * FROM product WHERE BinID = ? LIMIT ? OFFSET ?";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, binID);
-            stmt.setInt(2, pageSize);
-            stmt.setInt(3, (page - 1) * pageSize);
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                Product product = new Product();
-                product.setId(rs.getString("ProductID"));
-                product.setName(rs.getString("ProductName"));
-                product.setPrice(rs.getDouble("Price"));
-                product.setBinId(rs.getString("binID"));
-                product.setCategoryId(rs.getInt("CategoryID"));
-                product.setMaterial(rs.getString("Material"));
-                product.setGender(rs.getString("Gender"));
-                product.setSeasons(rs.getString("Seasons"));
-                product.setMinQuantity(rs.getInt("MinQuantity"));
-                product.setCreatedDate(rs.getDate("CreatedDate"));
-                product.setDescription(rs.getString("Description"));
-                product.setCreatedBy(rs.getString("CreatedBy"));
-                product.setSupplierId(rs.getString("SupplierID"));
-                product.setMadeIn(rs.getString("MadeIn"));
-                products.add(product);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return products;
-    }
-
-    public int countProductsByBinID(String binID) {
-        String sql = "SELECT COUNT(*) FROM product WHERE binID = ?";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, binID);
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
-    public int countAllProducts() {
-        String sql = "SELECT COUNT(*) FROM product";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
 
 
 }

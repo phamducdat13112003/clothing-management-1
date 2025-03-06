@@ -1,6 +1,8 @@
 package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Bin;
+import org.example.clothingmanagement.entity.BinDetail;
+import org.example.clothingmanagement.entity.Product;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -48,5 +50,157 @@ public class BinDAO {
             e.printStackTrace();
         }
         return 0.0; // Nếu không có dữ liệu, trả về 0.0
+    }
+
+    public List<BinDetail> getBinDetailByBinID(String binID, int page, int pageSize) {
+        List<BinDetail> list = new ArrayList<>();
+        String sql = "SELECT bd.BinDetailID, bd.BinID, bd.ProductDetailID, bd.Quantity, " +
+                "       b.BinName, b.MaxCapacity, b.Status AS BinStatus, b.SectionID, " +
+                "       pd.Quantity AS PD_Quantity, pd.Weight, pd.Color, pd.Size, pd.ProductImage, pd.ProductID, pd.Status " +
+                "FROM BinDetail bd " +
+                "JOIN Bin b ON bd.BinID = b.BinID " +
+                "JOIN ProductDetail pd ON bd.ProductDetailID = pd.ProductDetailID " +
+                "WHERE bd.BinID = ? " +
+                "ORDER BY b.Status DESC, bd.BinID ASC " +
+                "LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binID);
+            stmt.setInt(2, pageSize);
+            stmt.setInt(3, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                BinDetail binDetail = new BinDetail();
+                binDetail.setBinDetailId(rs.getString("BinDetailID"));
+                binDetail.setBinId(rs.getString("BinID"));
+                binDetail.setProductDetailId(rs.getString("ProductDetailID"));
+                binDetail.setQuantity(rs.getInt("Quantity"));
+                binDetail.setStatus(rs.getInt("Status"));
+                binDetail.setColor(rs.getString("Color"));
+                binDetail.setSize(rs.getString("Size"));
+                binDetail.setImage(rs.getString("ProductImage"));
+                list.add(binDetail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public List<BinDetail> searchBinDetail(String nameSearch, String binID) {
+        List<BinDetail> binDetails = new ArrayList<>();
+        String sql = "SELECT bd.BinDetailID, bd.BinID, bd.ProductDetailID, bd.Quantity, " +
+                "       b.BinName, b.MaxCapacity, b.Status, b.SectionID, " +
+                "       p.ProductImage, p.Color, p.Size " +
+                "FROM BinDetail bd " +
+                "JOIN Bin b ON bd.BinID = b.BinID " +
+                "JOIN ProductDetail p ON bd.ProductDetailID = p.ProductDetailID " +
+                "WHERE 1=1 ";
+
+        if (!nameSearch.isEmpty()) {
+            sql += " AND bd.ProductDetailID LIKE ? ";
+        }
+        if (!binID.isEmpty()) {
+            sql += " AND bd.BinID = ? ";
+        }
+        sql += " ORDER BY b.Status DESC, bd.BinID ASC ";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+
+            if (!nameSearch.isEmpty()) {
+                stmt.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+            if (!binID.isEmpty()) {
+                stmt.setString(paramIndex++, binID);
+            }
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                BinDetail binDetail = new BinDetail();
+                binDetail.setBinDetailId(rs.getString("BinDetailID"));
+                binDetail.setBinId(rs.getString("BinID"));
+                binDetail.setProductDetailId(rs.getString("ProductDetailID"));
+                binDetail.setQuantity(rs.getInt("Quantity"));
+                binDetail.setColor(rs.getString("Color"));
+                binDetail.setSize(rs.getString("Size"));
+                binDetail.setImage(rs.getString("ProductImage"));
+                binDetail.setStatus(rs.getInt("Status"));
+                binDetails.add(binDetail);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return binDetails;
+    }
+
+    public int countBinDetail(String nameSearch, String binID) {
+        String sql = "SELECT COUNT(*) FROM BinDetail WHERE 1=1";
+
+        if (!nameSearch.isEmpty()) {
+            sql += " AND ProductDetailID LIKE ? ";
+        }
+        if (!binID.isEmpty()) {
+            sql += " AND BinID = ? ";
+        }
+
+        int count = 0;
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int paramIndex = 1;
+
+            if (!nameSearch.isEmpty()) {
+                stmt.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+            if (!binID.isEmpty()) {
+                stmt.setString(paramIndex++, binID);
+            }
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
+    }
+
+
+    public int countBinDetailByBinID(String binID) {
+        String sql = "SELECT COUNT(*) FROM BinDetail WHERE binID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public int countAllBins() {
+        String sql = "SELECT COUNT(*) FROM Bin";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static void main(String[] args) {
+        BinDAO dao = new BinDAO();
+        List<BinDetail> list = dao.getBinDetailByBinID("B003", 1, 10);
+        for (BinDetail bin : list) {
+            System.out.println(bin);
+        }
     }
 }

@@ -37,17 +37,6 @@ public class ProductService {
         return map;
     }
 
-    public List<Product> getAllProductsWithPagination(int page, int pageSize){
-        return pd.getAllProductsWithPagination(page,pageSize);
-    }
-    public List<Product> searchProduct(String keyword, int page, int pageSize) {
-        return pd.searchProduct(keyword,page,pageSize);
-    }
-
-    public int getTotalProductCount(String keyword){
-        return pd.getTotalProductCount(keyword);
-    }
-
     public boolean addProduct(Product product) {
         return pd.addProduct(product);
     }
@@ -69,16 +58,6 @@ public class ProductService {
         return pd.getProductByProductID(productID);
     }
 
-    public List<Product> getProductsByBinID(String binID, int page, int pageSize) {
-        return pd.getProductsByBinID(binID, page, pageSize);
-    }
-    public int countProductsByBinID(String binID) {
-        return pd.countProductsByBinID(binID);
-    }
-
-    public int countAllProducts() {
-        return pd.countAllProducts();
-    }
 
 //    public HashMap<Product, String> searchProducts(String txt) throws Exception {
 //        return pd.searchProducts(txt);
