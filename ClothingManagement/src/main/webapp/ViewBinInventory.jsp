@@ -119,14 +119,10 @@
                 <select id="binSelect" name="binID" class="search-input">
                   <option value="">-- All Bins--</option>
                   <c:forEach items="${binList}" var="bin">
-                    <option value="${bin.binID}" ${bin.binID == selectedBin ? 'selected' : ''}>${bin.binID} - ${bin.binName}</option>
+                    <option value="${bin.binID}" ${bin.binID.equals(selectedBin) ? 'selected' : ''}>${bin.binID} - ${bin.binName}</option>
                   </c:forEach>
                 </select>
-                <span id="maxCapacityDisplay" style="margin-left: 15px; font-weight: bold;">
-                    <c:if test="${not empty selectedBin}">
-                      Max Capacity: ${maxCapacity}
-                    </c:if>
-                </span>
+                <p>Max Capacity: <span id="maxCapacityDisplay">${maxCapacity}</span></p>
               </div>
             </div>
             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
@@ -141,6 +137,7 @@
                   <th class="sherah-table__column-4 sherah-table__h4">Price</th>
                   <th class="sherah-table__column-3 sherah-table__h4">MadeIn</th>
                   <th class="sherah-table__column-3 sherah-table__h4">BinID</th>
+                  <th class="sherah-table__column-3 sherah-table__h4">SupplierID</th>
                   <th class="sherah-table__column-3 sherah-table__h3">Status</th>
                 </tr>
                 </thead>
@@ -180,6 +177,11 @@
                     <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__product-content">
                         <p class="sherah-table__product-desc">${product.binId}</p>
+                      </div>
+                    </td>
+                    <td class="sherah-table__column-2 sherah-table__data-2">
+                      <div class="sherah-table__product-content">
+                        <p class="sherah-table__product-desc">${product.supplierId}</p>
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
@@ -236,16 +238,15 @@
 <script>
   document.getElementById("binSelect").addEventListener("change", function () {
     let binID = this.value;
-    let maxCapacityDisplay = document.getElementById("maxCapacityDisplay");
+    let url = "viewbininventory";
 
-    if (binID === "") {
-      maxCapacityDisplay.textContent = ""; // Ẩn nếu không chọn bin
-      return;
+    if (binID !== "") {
+      url += "?binID=" + binID;
     }
 
-    // Gửi request với binID, server sẽ trả về trang có maxCapacity cập nhật
-    window.location.href = "viewbininventory?binID=" + binID;
+    window.location.href = url;
   });
+
 </script>
 
 </body>
