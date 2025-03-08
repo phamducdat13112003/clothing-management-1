@@ -12,4 +12,10 @@ public class BinDetail {
     private String binId;
     private String productDetailId;
     private int quantity;
+
+    // trong database không có
+    private int status;
+    private String color;
+    private String size;
+    private String image;
 }
