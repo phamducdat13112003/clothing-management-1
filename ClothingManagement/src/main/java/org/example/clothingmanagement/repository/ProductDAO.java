@@ -8,9 +8,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ProductDAO {
     public List<Product> getAllProducts() {
@@ -247,9 +245,8 @@ public class ProductDAO {
                         .createdDate(rs.getDate("CreatedDate"))
                         .description(rs.getString("Description"))
                         .madeIn(rs.getString("MadeIn"))
-                        .binId(rs.getString("BinID"))
                         .categoryId(rs.getInt("CategoryID"))
-                        .createdBy(rs.getString("CategoryID"))
+                        .createdBy(rs.getString("CreatedBy"))
                         .supplierId(rs.getString("SupplierID"))
                         .Status(rs.getInt("Status"))
                         .build();
@@ -322,6 +319,43 @@ public class ProductDAO {
         }
         return 0;
     }
+//    public HashMap<Product, String> searchProducts(String txt) {
+//        HashMap<Product, String> products = new HashMap<>();
+//        String sql = "SELECT ProductID, ProductName, Price, BinID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product WHERE ProductName LIKE ? OR ProductID LIKE ?";
+//
+//        try (Connection conn = DBContext.getConnection();
+//             PreparedStatement statement = conn.prepareStatement(sql)) {
+//
+//            statement.setString(1, "%" + txt + "%");
+//            statement.setString(2, "%" + txt + "%");
+//
+//            ResultSet resultSet = statement.executeQuery();
+//            while (resultSet.next()) {
+//                Product product = Product.builder()
+//                        .id(resultSet.getString("ProductID"))
+//                        .name(resultSet.getString("ProductName"))
+//                        .price(resultSet.getDouble("Price"))
+//                        .binId(resultSet.getString("BinID"))
+//                        .categoryId(resultSet.getInt("CategoryID"))
+//                        .material(resultSet.getString("Material"))
+//                        .gender(resultSet.getString("Gender"))
+//                        .seasons(resultSet.getString("Seasons"))
+//                        .minQuantity(resultSet.getInt("MinQuantity"))
+//                        .createdDate(resultSet.getDate("CreatedDate"))
+//                        .description(resultSet.getString("Description"))
+//                        .createdBy(resultSet.getString("CreatedBy"))
+//                        .supplierId(resultSet.getString("SupplierID"))
+//                        .madeIn(resultSet.getString("MadeIn"))
+//                        .Status(resultSet.getInt("Status"))
+//                        .build();
+//                products.put(product, resultSet.getString("ProductID"));
+//            }
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//        return products;
+//    }
+
 
 
 }
