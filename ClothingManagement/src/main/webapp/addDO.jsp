@@ -1,147 +1,130 @@
 <%--
   Created by IntelliJ IDEA.
   User: Admin
-  Date: 3/4/2025
-  Time: 9:15 AM
+  Date: 3/7/2025
+  Time: 10:54 AM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ page isELIgnored="false" %>
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bảng nhập dữ liệu</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<html>
+  <head>
+    <title>ADD DO</title>
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="keywords" content="Site keywords here">
+    <meta name="description" content="#">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+    <!-- Fav Icon -->
+    <link rel="icon" href="img/favicon.png">
+
+    <!-- sherah Stylesheet -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/font-awesome-all.min.css">
+    <link rel="stylesheet" href="css/charts.min.css">
+    <link rel="stylesheet" href="css/datatables.min.css">
+    <link rel="stylesheet" href="css/jvector-map.css">
+    <link rel="stylesheet" href="css/slickslider.min.css">
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
     <style>
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: center;
-        }
-        button {
-            margin-top: 10px;
-        }
-        .container {
-            display: flex; /* Sử dụng flexbox để đặt hai div nằm ngang */
-            gap: 20px; /* Khoảng cách giữa hai div */
-        }
-        .order-info, .product-list {
-            flex: 1; /* Chia đều kích thước */
-            padding: 15px;
-            border: 1px solid #ddd;
-            background-color: #f9f9f9;
-            border-radius: 5px;
-        }
-        .product-container {
-            border: 1px solid #ddd;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #fff;
-            border-radius: 5px;
-        }
-        h3 {
-            color: #333;
-        }
+      .container {
+        width: 60%;
+        margin: auto;
+        text-align: center;
+
+      }
+
+      form {
+        margin-bottom: 20px; /* Thêm khoảng cách giữa form và bảng */
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Căn giữa nội dung */
+        gap: 10px; /* Khoảng cách giữa các input */
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 30px; /* Đẩy bảng xuống thấp hơn */
+      }
+
+      th, td {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+      }
+
+      th {
+        background-color: #f2f2f2;
+      }
     </style>
-</head>
-<body>
 
-<h2>Bảng Nhập Dữ Liệu</h2>
+  </head>
+  <body>
+  <jsp:include page="include/sidebar.jsp"></jsp:include>
 
-<div class="container">
-    <!-- Hiển thị thông tin đơn hàng -->
-    <div class="order-info">
-        <h3>Purchase Order Information</h3>
-        <p><strong>PO ID:</strong> ${poID}</p>
-        <p><strong>Quantity:</strong> ${quantity}</p>
-        <p><strong>Created By:</strong> <%= session.getAttribute("account_id") %></p>
-    </div>
+  <div class="container">
+  <h2>Create Delivery Order</h2>
+  <form id="poForm" action="AddDOServlet" method="post">
+    <label for="supplier">Supplier:</label>
 
-    <!-- Hiển thị danh sách sản phẩm -->
-    <div class="product-list">
-        <h3>Product Details</h3>
-        <c:if test="${not empty productDetail}">
-            <div class="product-detail">
-                <div><strong>Product Detail ID:</strong> ${productDetail.ProductDetailID}</div>
-                <div><strong>Product Name:</strong> ${productDetail.ProductName}</div>
-                <div><strong>Gender:</strong> ${productDetail.Gender}</div>
-                <div><strong>Season:</strong> ${productDetail.Seasons}</div>
-                <div><strong>Material:</strong> ${productDetail.Material}</div>
-                <div><strong>Weight:</strong> ${productDetail.Weight} kg</div>
-                <div><strong>Color:</strong> ${productDetail.Color}</div>
-                <div><strong>Size:</strong> ${productDetail.Size}</div>
-                <div><strong>Price:</strong> <fmt:formatNumber value="${productDetail.Price}" type="number" groupingUsed="true" /> VND</div>
-            </div>
-        </c:if>
-    </div>
-</div>
-<form action="AddDOServlet" method="post">
-<table id="dataTable">
-    <tr>
-        <th>DOID</th>
-        <th>Quantity</th>
-        <th>PlannedShippingDate</th>
-    </tr>
-    <tr>
-        <td><input type="text" name="doId"></td>
-        <td><input type="number" name="quantity" min="1" ></td>
-        <td><input type="date" name="plannedShippingDate" required></td>
-    </tr>
+    <select name="supplier" id="supplier" required>
+      <option value="">-- Select Suppliers --</option>
+      <c:forEach var="sup" items="${suppliers}">
+        <option value="${sup.supplierId}">${sup.supplierName}</option>
+      </c:forEach>
+    </select>
+
+<%--    <input type="text" name="poID" placeholder="Enter PO ID">--%>
+<%--    <input type="date" name="startDate" placeholder="startDate">--%>
+<%--    <input type="date" name="endDate" placeholder="endDate">--%>
+<%--    <input type="text" name="createdBy" placeholder="createdBy">--%>
+    <button type="submit" name="action" value="filter">Filter</button>
+  </form>
+
+
+<table border="1">
+<tr>
+  <th>Select</th>
+  <th>PO ID</th>
+  <th>Created Date</th>
+  <th>Supplier</th>
+  <th>Created By</th>
+  <th>Total Price</th>
+</tr>
+<c:forEach var="po" items="${poList}">
+  <tr>
+  <td>
+    <form action="CreatedDOServlet" method="post">
+      <input type="submit" name="poID" value="${po.poID}">
+    </form>
+  </td>
+  <td>${po.poID}</td>
+  <td>${po.createdDate}</td>
+  <td>${supplierNames[po.supplierID] != null ? supplierNames[po.supplierID] : "Unknown Supplier"}</td>
+  <td>${employeeNames[po.createdBy] != null ? employeeNames[po.createdBy] : "Unknown Employee"}</td>
+  <td>${po.totalPrice}</td>
+  </tr>
+  </c:forEach>
 </table>
-    <input type="hidden" name="poId" value="${poID}">
-    <input type="hidden" name="createBy"
-           value="<%= session.getAttribute("account_id") %>" >
-    <input type="hidden" name="productDetailID" value="${productDetail.ProductDetailID}">
-
-    <button type="submit">ADD</button>
-</form>
-<script>
-    $(document).ready(function () {
-        // Cập nhật tổng giá khi thay đổi số lượng
-        $(".quantity-input").on("input", function () {
-            let quantity = parseFloat($(this).val()) || 0;
-            let price = parseFloat($(this).data("price")) || 0;
-            let totalPriceField = $(this).closest("tr").find(".total-price");
-            totalPriceField.val((quantity * price).toFixed(2));
-        });
-
-        // Kiểm tra khi submit form
-        $('form').submit(function (event) {
-            let doidInput = $('input[name="doId"]').val().trim();
-            let quantityInput = $('input[name="quantity"]').val();
-            let maxQuantity = ${quantity}; // Lấy giá trị quantity từ JSP
-
-            // Kiểm tra điều kiện DOID
-            let doidPattern = /^do\d+$/i; // "do" + số (không phân biệt hoa thường)
-            if (!doidPattern.test(doidInput)) {
-                alert("DOID phải theo cú pháp 'do' theo sau là số. Ví dụ: do123");
-                event.preventDefault();
-                return;
-            }
-
-            // Kiểm tra khoảng trắng liên tục
-            if (/\s{2,}/.test(doidInput)) {
-                alert("DOID không được chứa khoảng trắng liên tục.");
-                event.preventDefault();
-                return;
-            }
-
-            // Kiểm tra số lượng
-            if (quantityInput === "" || parseInt(quantityInput) > maxQuantity) {
-                alert("Số lượng không được để trống và không được vượt quá " + maxQuantity);
-                event.preventDefault();
-            }
-        });
-    });
-
-</script>
-</body>
+  </div>
+  <script src="js/jquery.min.js"></script>
+  <script src="js/jquery-migrate.js"></script>
+  <script src="js/jquery-ui.min.js"></script>
+  <script src="js/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="js/charts.js"></script>
+  <script src="js/datatables.min.js"></script>
+  <script src="js/circle-progress.min.js"></script>
+  <script src="js/jquery-jvectormap.js"></script>
+  <script src="js/jvector-map.js"></script>
+  <script src="js/main.js"></script>
+  </body>
 </html>
