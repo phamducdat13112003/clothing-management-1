@@ -31,8 +31,8 @@ public class BinService {
         return binDAO.countAllBins();
     }
 
-    public List<BinDetail> searchBinDetail(String nameSearch, String binID){
-        return binDAO.searchBinDetail(nameSearch, binID);
+    public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize){
+        return binDAO.searchBinDetail(nameSearch, binID, page, pageSize);
     }
 
     public int countBinDetail(String nameSearch, String binID){

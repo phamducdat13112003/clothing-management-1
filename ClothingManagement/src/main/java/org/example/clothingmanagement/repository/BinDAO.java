@@ -87,7 +87,7 @@ public class BinDAO {
         return list;
     }
 
-    public List<BinDetail> searchBinDetail(String nameSearch, String binID) {
+    public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize) {
         List<BinDetail> binDetails = new ArrayList<>();
         String sql = "SELECT bd.BinDetailID, bd.BinID, bd.ProductDetailID, bd.Quantity, " +
                 "       b.BinName, b.MaxCapacity, b.Status, b.SectionID, " +
@@ -103,7 +103,9 @@ public class BinDAO {
         if (!binID.isEmpty()) {
             sql += " AND bd.BinID = ? ";
         }
-        sql += " ORDER BY b.Status DESC, bd.BinID ASC ";
+
+        sql += " ORDER BY b.Status DESC, bd.BinID ASC LIMIT ? OFFSET ?";
+
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             int paramIndex = 1;
@@ -114,8 +116,10 @@ public class BinDAO {
             if (!binID.isEmpty()) {
                 stmt.setString(paramIndex++, binID);
             }
-            ResultSet rs = stmt.executeQuery();
+            stmt.setInt(paramIndex++, pageSize);
+            stmt.setInt(paramIndex++, (page - 1) * pageSize);
 
+            ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 BinDetail binDetail = new BinDetail();
                 binDetail.setBinDetailId(rs.getString("BinDetailID"));
@@ -133,6 +137,7 @@ public class BinDAO {
         }
         return binDetails;
     }
+
 
     public int countBinDetail(String nameSearch, String binID) {
         String sql = "SELECT COUNT(*) FROM BinDetail WHERE 1=1";
