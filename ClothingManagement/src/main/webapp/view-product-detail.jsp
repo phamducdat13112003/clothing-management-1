@@ -136,14 +136,7 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-lg-6 col-md-6 col-12">
-                                                    <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Quantity <span class="required">*</span></label>
-                                                        <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Quantity" type="number" min="0" name="quantity" value="${pd.quantity}" required>
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
@@ -157,34 +150,6 @@
                                                     <button type="submit" class="btn btn-primary">Update</button>
                                                     <button type="reset" class="btn btn-secondary">Reset</button>
                                                 </div>
-<%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
-<%--                                                    <div class="form-group">--%>
-<%--                                                        <label class="sherah-wc__form-label">Address<span class="required">*</span></label>--%>
-<%--                                                        <div class="form-group__input">--%>
-<%--                                                            <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${employee.address}" required>--%>
-<%--                                                        </div>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
-<%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
-<%--                                                    <div class="form-group">--%>
-<%--                                                        <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>--%>
-<%--                                                        <select class="form-group__input" name="gender" aria-label="Default select example" required>--%>
-<%--                                                            <option value="1" selected>Nam</option>--%>
-<%--                                                            <option value="0">Nữ</option>--%>
-<%--                                                        </select>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
-<%--                                                <div class="col-lg-6 col-md-6 col-12">--%>
-<%--                                                    <div class="form-group">--%>
-<%--                                                        <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>--%>
-<%--                                                        <div class="form-group__input">--%>
-<%--                                                            <input value="${employee.dob}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>--%>
-<%--                                                            <c:if test="${not empty errorDateofBirth}">--%>
-<%--                                                                <span class="error-message">${errorDateofBirth}</span>--%>
-<%--                                                            </c:if>--%>
-<%--                                                        </div>--%>
-<%--                                                    </div>--%>
-<%--                                                </div>--%>
                                             </div>
                                         </div>
                                         <!-- End Basic Information -->
@@ -244,41 +209,7 @@
 
     };
 </script>
-<script>
-    function validateForm() {
-        let isValid = true;
 
-        let errorMessages = document.querySelectorAll(".error-message");
-        errorMessages.forEach(function (message) {
-            message.textContent = '';
-        });
-
-        const name = document.getElementById("name").value.trim();
-        if (name === "") {
-            document.querySelector("#name + .error-message").textContent = "Fresher Name is required.";
-            isValid = false;
-        } else if (name.length < 3 || name.length > 50) {
-            document.querySelector("#name + .error-message").textContent = "Fresher Name must be between 3 and 50 characters.";
-            isValid = false;
-        }
-
-        const birthDate = document.getElementById("birthDate").value;
-        if (birthDate === "") {
-            document.querySelector("#birthDate + .error-message").textContent = "Birth Date is required.";
-            isValid = false;
-        } else {
-            const currentDate = new Date();
-
-            const birthDateObj = new Date(birthDate);
-
-            if (birthDateObj > currentDate) {
-                document.querySelector("#birthDate + .error-message").textContent = "Birth Date cannot be in the future.";
-                isValid = false;
-            }
-        }
-        return isValid;
-    }
-</script>
 </body>
 </html>
 

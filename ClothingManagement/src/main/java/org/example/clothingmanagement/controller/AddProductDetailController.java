@@ -57,21 +57,26 @@ public class AddProductDetailController extends HttpServlet {
         String size = req.getParameter("size");
 //        String urlImage = req.getParameter("image");
         String urlImage = "";
-        Integer status=1;
+        int status=1;
+
         ProductDetail pd = new ProductDetail();
-        // viết hàm tự gen ra productdetailid
+        // TODO split id cua productDetail lay 3 so cuoi de tu dong +1 khi gen ra
         if(pds.getLastProductDetail(productId).isPresent()){
             pd = pds.getLastProductDetail(productId).get();
         }
         else{
             pd = new ProductDetail();
         }
-        String code = pd.getId().substring(0,2);
-        String number = pd.getId().substring(2);
+        String[] list = pd.getId().split("-");
+
+        String code = list[0];
+        String number = list[1];
         int num = Integer.parseInt(number);
         num += 1; // Tăng số lên 1
         String newStr = String.format("%03d", num); // Đảm bảo số có 3 chữ số
         String id = code + newStr; // Nối chuỗi code và newStr
+
+
         ProductDetail productDetail = new ProductDetail(weight,status,size,quantity,productId,urlImage,id,color);
         boolean check = pds.insertProductDetail(productDetail);
         if (check) {
