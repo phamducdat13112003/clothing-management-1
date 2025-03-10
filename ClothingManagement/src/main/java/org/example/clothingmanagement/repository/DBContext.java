@@ -7,7 +7,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public class DBContext {
-    private static final String jdbcURL = "jdbc:mysql://localhost:3306/warehousemanagement?useSSL=false&serverTimezone=UTC";
+    private static final String jdbcURL = "jdbc:mysql://localhost:3306/warehousemanagementtest?useSSL=false&serverTimezone=UTC";
     private static final String username = "root"; // Tên người dùng mặc định của XAMPP
     private static final String password = ""; // Mật khẩu mặc định của XAMPP (rỗng)
 

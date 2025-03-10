@@ -109,6 +109,7 @@
               <div class="col-6">
                 <form action="searchproduct" method="post" class="search-form">
                   <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                  <input type="hidden" name="binID" value="${selectedBin}">
                   <button type="submit" class="search-button">Search</button>
                 </form>
               </div>
@@ -117,16 +118,12 @@
               <div class="col-6">
                 <label for="binSelect">Select Bin:</label>
                 <select id="binSelect" name="binID" class="search-input">
-                  <option value="">-- All Bins--</option>
+                  <option value="">-- Select Bin--</option>
                   <c:forEach items="${binList}" var="bin">
-                    <option value="${bin.binID}" ${bin.binID == selectedBin ? 'selected' : ''}>${bin.binID} - ${bin.binName}</option>
+                    <option value="${bin.binID}" ${bin.binID.equals(selectedBin) ? 'selected' : ''}>${bin.binID} - ${bin.binName}</option>
                   </c:forEach>
                 </select>
-                <span id="maxCapacityDisplay" style="margin-left: 15px; font-weight: bold;">
-                    <c:if test="${not empty selectedBin}">
-                      Max Capacity: ${maxCapacity}
-                    </c:if>
-                </span>
+                <p>Max Capacity: <span id="maxCapacityDisplay">${maxCapacity}</span></p>
               </div>
             </div>
             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
@@ -134,64 +131,54 @@
                 <!-- sherah Table Head -->
                 <thead class="sherah-table__head">
                 <tr>
-                  <th class="sherah-table__column-2 sherah-table__h2">ProductID</th>
-                  <th class="sherah-table__column-2 sherah-table__h2">ProductName</th>
-                  <th class="sherah-table__column-3 sherah-table__h3">Season</th>
-                  <th class="sherah-table__column-3 sherah-table__h4">MinQuantity</th>
-                  <th class="sherah-table__column-4 sherah-table__h4">Price</th>
-                  <th class="sherah-table__column-3 sherah-table__h4">MadeIn</th>
-                  <th class="sherah-table__column-3 sherah-table__h4">BinID</th>
+                  <th class="sherah-table__column-2 sherah-table__h2">ProductDetailID</th>
+                  <th class="sherah-table__column-2 sherah-table__h2">Image</th>
+                  <th class="sherah-table__column-2 sherah-table__h2">Color</th>
+                  <th class="sherah-table__column-2 sherah-table__h2">Size</th>
+                  <th class="sherah-table__column-3 sherah-table__h4">Quantity</th>
                   <th class="sherah-table__column-3 sherah-table__h3">Status</th>
                 </tr>
                 </thead>
                 <tbody class="sherah-table__body">
-                <c:forEach items="${list}" var="product">
+                <c:forEach items="${list}" var="bin">
                   <tr>
                     <td class="sherah-table__column-2 sherah-table__data-2">
-                      <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc">${product.id}</p>
-                      </div>
-                    </td>
-                    <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__vendor">
-                        <h4 class="sherah-table__vendor--title"><a style="color: blue" href="viewproductbindetail?productId=${product.id}">${product.name}</a></h4>
+                        <h4 class="sherah-table__vendor--title"><a style="color: blue" href="viewproductbindetail?productId=${bin.productDetailId}">${bin.productDetailId}</a></h4>
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc">${product.seasons}</p>
+                        <img src=".${bin.image}" alt="Product Image" width="100" height="100">
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc">${product.minQuantity}</p>
-                      </div>
-                    </td>
-                    <td class="sherah-table__column-4 sherah-table__data-4">
-                      <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc"><fmt:formatNumber value="${product.price}" type="number" pattern="#,###" /> VND</p>
+                        <p class="sherah-table__product-desc">${bin.color}</p>
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc">${product.madeIn}</p>
+                        <p class="sherah-table__product-desc">${bin.size}</p>
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc">${product.binId}</p>
+                        <p class="sherah-table__product-desc">${bin.quantity}</p>
                       </div>
                     </td>
                     <td class="sherah-table__column-2 sherah-table__data-2">
                       <div class="sherah-table__product-content">
-                        <p class="sherah-table__product-desc">${product.status}</p>
+                        <p class="sherah-table__product-desc">
+                            ${bin.status == 1 ? "Active" : "Inactive"}
+                        </p>
                       </div>
                     </td>
                   </tr>
                 </c:forEach>
                 <c:if test="${empty list}">
                   <tr>
-                    <td colspan="12" class="text-center">No products available</td>
+                    <td colspan="12" class="text-center">No product available</td>
                   </tr>
                 </c:if>
                 </tbody>
@@ -236,16 +223,15 @@
 <script>
   document.getElementById("binSelect").addEventListener("change", function () {
     let binID = this.value;
-    let maxCapacityDisplay = document.getElementById("maxCapacityDisplay");
+    let url = "viewbininventory";
 
-    if (binID === "") {
-      maxCapacityDisplay.textContent = ""; // Ẩn nếu không chọn bin
-      return;
+    if (binID !== "") {
+      url += "?binID=" + binID;
     }
 
-    // Gửi request với binID, server sẽ trả về trang có maxCapacity cập nhật
-    window.location.href = "viewbininventory?binID=" + binID;
+    window.location.href = url;
   });
+
 </script>
 
 </body>
