@@ -395,4 +395,24 @@ public class ProductDetailDAO {
         }
     }
 
+    public List<ProductDetail> getColorNSize(){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT size, color From productDetail ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            List<ProductDetail> list = new ArrayList<>();
+            if(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .build();
+                list.add(productDetail);
+            }
+            return list;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

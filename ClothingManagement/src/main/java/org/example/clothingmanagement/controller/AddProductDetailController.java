@@ -76,19 +76,27 @@ public class AddProductDetailController extends HttpServlet {
         String newStr = String.format("%03d", num); // Đảm bảo số có 3 chữ số
         String id = code + newStr; // Nối chuỗi code và newStr
 
-
         ProductDetail productDetail = new ProductDetail(weight,status,size,quantity,productId,urlImage,id,color);
-        boolean check = pds.insertProductDetail(productDetail);
-        if (check) {
-            HttpSession session = req.getSession();
-            session.setAttribute("alertMessage", "Successfully.");
-            session.setAttribute("alertType", "success");
-            resp.sendRedirect(req.getContextPath() + "/list-product-detail?id=" + productId + "");
-        } else {
-            req.setAttribute("alertMessage", "Failed.");
-            req.setAttribute("alertType", "error");
+        boolean checkExists = pds.checkExistedProductDetail(productDetail);
+        if(checkExists){
+            boolean check = pds.insertProductDetail(productDetail);
+            if (check) {
+                HttpSession session = req.getSession();
+                session.setAttribute("alertMessage", "Successfully.");
+                session.setAttribute("alertType", "success");
+                resp.sendRedirect(req.getContextPath() + "/list-product-detail?id=" + productId + "");
+            } else {
+                req.setAttribute("alertMessage", "Failed.");
+                req.setAttribute("alertType", "error");
+                req.getRequestDispatcher("/add-product-detail.jsp").forward(req, resp);
+            }
+        }
+        else{
+            req.setAttribute("alertMessage", "This product is already existed in the database.");
+            req.setAttribute("alertType", "alreadyExisted");
             req.getRequestDispatcher("/add-product-detail.jsp").forward(req, resp);
         }
+
 
 
 
