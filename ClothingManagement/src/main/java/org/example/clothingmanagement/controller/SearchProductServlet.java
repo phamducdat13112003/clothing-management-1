@@ -44,6 +44,7 @@ public class SearchProductServlet extends HttpServlet {
         String nameSearch = request.getParameter("search") != null ? request.getParameter("search").trim() : "";
         String binID = request.getParameter("binID") != null ? request.getParameter("binID").trim() : "";
         String pageParam = request.getParameter("page");
+        double maxCapacity =0.0;
 
         List<BinDetail> list= null;
         int page = 1;
@@ -58,7 +59,8 @@ public class SearchProductServlet extends HttpServlet {
                 }
             }
             try {
-                list = binService.searchBinDetail(nameSearch, binID);
+                maxCapacity = binService.getMaxCapacityByBinID(binID);
+                list = binService.searchBinDetail(nameSearch, binID, page, pageSize);
                 totalBins = binService.countBinDetail(nameSearch, binID);
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -67,7 +69,9 @@ public class SearchProductServlet extends HttpServlet {
         int totalPages = (int) Math.ceil((double) totalBins / pageSize);
         List<Bin> listBin = binService.getAllBins();
         request.setAttribute("list", list);
+        request.setAttribute("selectedBin", binID);
         request.setAttribute("binList", listBin);
+        request.setAttribute("maxCapacity", maxCapacity);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("search", nameSearch);

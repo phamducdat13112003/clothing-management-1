@@ -5,7 +5,6 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.service.ProductDetailService;
-import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
 import java.io.PrintWriter;

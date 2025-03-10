@@ -111,7 +111,7 @@
                     <th class="sherah-table__column-2 sherah-table__h2">Color</th>
                     <th class="sherah-table__column-2 sherah-table__h2">Size</th>
                     <th class="sherah-table__column-2 sherah-table__h2">Weight</th>
-                    <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
+                    <th class="sherah-table__column-2 sherah-table__h2">Total Quantity</th>
                     <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                   </tr>
                   </thead>
