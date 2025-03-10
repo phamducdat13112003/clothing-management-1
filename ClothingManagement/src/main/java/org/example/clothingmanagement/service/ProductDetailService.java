@@ -65,14 +65,8 @@ public class ProductDetailService {
         return productDetailDAO.insertProductDetail(productDetail);
     }
 
-    public boolean checkExistedProductDetail(ProductDetail productDetail) {
-        List<ProductDetail> list = productDetailDAO.getColorNSize();
-        for(ProductDetail pd : list){
-            if(pd.getSize().equalsIgnoreCase(productDetail.getSize())  && pd.getColor().equalsIgnoreCase(productDetail.getColor()) ){
-                return false;
-            }
-        }
-        return true;
+    public List<ProductDetail> getColorNSize(String productId) {
+        return productDetailDAO.getColorNSize(productId);
     }
 
     public Optional<ProductDetail> getLastProductDetail(String id){

@@ -367,12 +367,14 @@ public class ProductDetailDAO {
         }
     }
 
-    public Optional<ProductDetail> getLastProductDetail(String id){
+    public Optional<ProductDetail> getLastProductDetail(String productId){
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status FROM productdetail  ");
+            sql.append(" WHERE productid  = ? ");
             sql.append("ORDER BY productdetailid DESC LIMIT 1 ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 ProductDetail productDetail = ProductDetail.builder()
@@ -395,24 +397,34 @@ public class ProductDetailDAO {
         }
     }
 
-    public List<ProductDetail> getColorNSize(){
+    public List<ProductDetail> getColorNSize(String productId){
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT size, color From productDetail ");
+            sql.append(" SELECT color,size FROM productdetail  ");
+            sql.append(" WHERE productid  = ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
             ResultSet rs = ps.executeQuery();
             List<ProductDetail> list = new ArrayList<>();
-            if(rs.next()){
+            while (rs.next()) {
                 ProductDetail productDetail = ProductDetail.builder()
                         .color(rs.getString("Color"))
                         .size(rs.getString("Size"))
                         .build();
                 list.add(productDetail);
+
             }
             return list;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args){
+        final ProductDetailDAO productDetailDAO = new ProductDetailDAO();
+        List<ProductDetail> list = productDetailDAO.getColorNSize("P001");
+        for(ProductDetail productDetail : list){
+            System.out.println(productDetail);
         }
     }
 }

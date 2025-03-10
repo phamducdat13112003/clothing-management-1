@@ -74,11 +74,17 @@ public class AddProductDetailController extends HttpServlet {
         int num = Integer.parseInt(number);
         num += 1; // Tăng số lên 1
         String newStr = String.format("%03d", num); // Đảm bảo số có 3 chữ số
-        String id = code + newStr; // Nối chuỗi code và newStr
+        String id = code +"-"+ newStr; // Nối chuỗi code và newStr
 
-        ProductDetail productDetail = new ProductDetail(weight,status,size,quantity,productId,urlImage,id,color);
-        boolean checkExists = pds.checkExistedProductDetail(productDetail);
+        boolean checkExists=true;
+        List<ProductDetail> listPd = pds.getColorNSize(productId);
+        for(ProductDetail productDetailPd : listPd){
+            if(productDetailPd.getSize().equalsIgnoreCase(size) && productDetailPd.getColor().equalsIgnoreCase(color)){
+                checkExists = false;
+            }
+        }
         if(checkExists){
+            ProductDetail productDetail = new ProductDetail(weight,status,size,quantity,productId,urlImage,id,color);
             boolean check = pds.insertProductDetail(productDetail);
             if (check) {
                 HttpSession session = req.getSession();
