@@ -101,12 +101,6 @@
                     </ul>
                   </div>
                 </div>
-                <div class="col-6">
-                  <form action="searchproductbin" method="post" class="search-form">
-                    <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
-                    <button type="submit" class="search-button">Search</button>
-                  </form>
-                </div>
               </div>
               <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">

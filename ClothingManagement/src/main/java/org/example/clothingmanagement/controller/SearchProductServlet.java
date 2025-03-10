@@ -3,7 +3,10 @@ package org.example.clothingmanagement.controller;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.example.clothingmanagement.entity.Bin;
+import org.example.clothingmanagement.entity.BinDetail;
 import org.example.clothingmanagement.entity.Product;
+import org.example.clothingmanagement.service.BinService;
 import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
@@ -37,22 +40,16 @@ public class SearchProductServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        ProductService productService = new ProductService();
+        BinService binService = new BinService();
         String nameSearch = request.getParameter("search") != null ? request.getParameter("search").trim() : "";
+        String binID = request.getParameter("binID") != null ? request.getParameter("binID").trim() : "";
         String pageParam = request.getParameter("page");
 
-        List<Product> list= null;
+        List<BinDetail> list= null;
         int page = 1;
         int pageSize = 5;
-        int totalProducts = 0;
-        if(nameSearch.isEmpty()){
-            try {
-                list= productService.getAllProductsWithPagination(page, pageSize);
-                totalProducts = productService.countAllProducts();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }else{
+        int totalBins = 0;
+        if(!nameSearch.isEmpty() || !binID.isEmpty()){
             if (pageParam != null) {
                 try {
                     page = Integer.parseInt(pageParam);
@@ -61,14 +58,16 @@ public class SearchProductServlet extends HttpServlet {
                 }
             }
             try {
-                list = productService.searchProduct(nameSearch, page, pageSize);
-                totalProducts = productService.getTotalProductCount(nameSearch);
+                list = binService.searchBinDetail(nameSearch, binID);
+                totalBins = binService.countBinDetail(nameSearch, binID);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         }
-        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+        int totalPages = (int) Math.ceil((double) totalBins / pageSize);
+        List<Bin> listBin = binService.getAllBins();
         request.setAttribute("list", list);
+        request.setAttribute("binList", listBin);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
         request.setAttribute("search", nameSearch);

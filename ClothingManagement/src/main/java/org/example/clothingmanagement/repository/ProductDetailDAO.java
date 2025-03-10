@@ -215,9 +215,9 @@ public class ProductDetailDAO {
         return null;
     }
 
-    public List<ProductDetail> getProductDetailByProductId(String productId, int page, int pageSize) {
+    public List<ProductDetail> getProductDetailByProductDetailId(String productId, int page, int pageSize) {
         List<ProductDetail> productDetails = new ArrayList<>();
-        String sql = "SELECT * FROM ProductDetail WHERE ProductID = ? LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM ProductDetail WHERE ProductDetailId = ? LIMIT ? OFFSET ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -247,7 +247,7 @@ public class ProductDetailDAO {
 
     public int getTotalProductDetails(String productId) {
         int total = 0;
-        String sql = "SELECT COUNT(*) FROM ProductDetail WHERE ProductID = ?";
+        String sql = "SELECT COUNT(*) FROM ProductDetail WHERE ProductDetailId = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
