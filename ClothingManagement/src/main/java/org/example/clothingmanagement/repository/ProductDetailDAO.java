@@ -420,6 +420,22 @@ public class ProductDetailDAO {
         }
     }
 
+    public boolean updateAllProductDetail(String productId){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" UPDATE productdetail  ");
+            sql.append(" Set status = 0");
+            sql.append(" WHERE productid = ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args){
         final ProductDetailDAO productDetailDAO = new ProductDetailDAO();
         List<ProductDetail> list = productDetailDAO.getColorNSize("P001");

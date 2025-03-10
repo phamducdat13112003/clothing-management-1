@@ -117,6 +117,7 @@
                                                     </div>
                                                 </td>
                                                 <c:if test="${entry.key.status==1}">
+                                                    <c:if test="${entry.key.totalQuantity==0}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
@@ -126,6 +127,7 @@
                                                             </p>
                                                         </div>
                                                     </td>
+                                                    </c:if>
                                                 </c:if>
 
                                                 <c:if test="${entry.key.status==0}">

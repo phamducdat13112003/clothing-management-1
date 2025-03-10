@@ -72,6 +72,11 @@ public class ProductDetailService {
     public Optional<ProductDetail> getLastProductDetail(String id){
         return productDetailDAO.getLastProductDetail(id);
     }
+
+    public boolean updateAllProductDetail(String productId) {
+        return productDetailDAO.updateAllProductDetail(productId);
+    }
+
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");
