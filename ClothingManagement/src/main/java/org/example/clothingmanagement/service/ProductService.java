@@ -5,10 +5,7 @@ import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.repository.ProductDAO;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class ProductService {
     private final ProductDAO pd = new ProductDAO();
@@ -63,6 +60,9 @@ public class ProductService {
 //        return pd.searchProducts(txt);
 
     //}
+    public List<Map<String, Object>> getAllProductProductDetail() throws Exception {
+        return pd.getAllProductProductDetail();
+    }
 
 
 }
