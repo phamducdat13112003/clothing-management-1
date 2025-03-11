@@ -12,22 +12,21 @@ public class ProductService {
     private final CategoryService cs = new CategoryService();
     private final ProductDetailService pds = new ProductDetailService();
 
-    public HashMap<Product,String> getAllProducts() {
-        List<Product> products =  pd.getAllProducts();
+    public HashMap<Product, String> getAllProducts() {
+        List<Product> products = pd.getAllProducts();
         List<Category> categories = cs.selectAll();
-        HashMap<Product,String> map = new HashMap<>();
-        for(Product product : products) {
+        HashMap<Product, String> map = new HashMap<>();
+        for (Product product : products) {
             // take the first productDetail of a product
-            if(pds.findTheFirstProductDetailOfProductId(product.getId()).isPresent()){
+            if (pds.findTheFirstProductDetailOfProductId(product.getId()).isPresent()) {
                 ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId(product.getId()).get();
                 product.setUrlImage(productDetail.getImage());
-            }
-            else{
+            } else {
                 product.setUrlImage("errorImage-NoDataFound");
             }
-            for(Category category : categories) {
-                if(product.getCategoryId()==category.getCategoryID()){
-                    map.put(product,category.getCategoryName());
+            for (Category category : categories) {
+                if (product.getCategoryId() == category.getCategoryID()) {
+                    map.put(product, category.getCategoryName());
                 }
             }
         }

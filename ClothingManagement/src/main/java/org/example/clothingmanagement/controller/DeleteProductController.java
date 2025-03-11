@@ -7,20 +7,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.example.clothingmanagement.repository.ProductDAO;
+import org.example.clothingmanagement.service.ProductDetailService;
 import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
 
 @WebServlet(name="DeleteProduct", urlPatterns = "/delete-product")
 public class DeleteProductController extends HttpServlet {
-    private final ProductService productService =  new ProductService();
+    private final ProductService ps =  new ProductService();
+    private final ProductDetailService pds = new ProductDetailService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
         String id = req.getParameter("id");
-        boolean result = productService.deleteProduct(id);
-        if (result) {
+        boolean checkStatus = ps.deleteProduct(id);
+        boolean checkStatusPD = pds.updateAllProductDetail(id);
+        if (checkStatus && checkStatusPD) {
             session.setAttribute("alertMessage", "Delete Product Success");
             session.setAttribute("alertType", "success");
             resp.sendRedirect("product-list");

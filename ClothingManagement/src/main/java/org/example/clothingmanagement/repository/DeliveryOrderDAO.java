@@ -9,24 +9,73 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class DeliveryOrderDAO {
-
-//2
-    public static String getSupplierNameByID(String supplierID) {
-        String query = "SELECT SupplierName FROM supplier WHERE SupplierID = ?";
+    
+    //Tạo DOID mới tự động
+    public static String generateDOID()  {
+        String query = "SELECT MAX(DOID) FROM DO";
         try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, supplierID);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getString("SupplierName");
+             PreparedStatement stmt = conn.prepareStatement(query);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                String maxDOID = rs.getString(1);
+                if (maxDOID != null) {
+                    int nextID = Integer.parseInt(maxDOID.substring(2)) + 1;
+                    return "DO" + nextID;
                 }
+            }
+        }catch(Exception e) {}
+        return "DO1"; // Nếu chưa có dữ liệu, bắt đầu từ DO1
+    }
+
+    // Lấy tất cả DO
+    public static List<DeliveryOrder> getAllDOs() {
+        List<DeliveryOrder> doList = new ArrayList<>();
+        String query = "SELECT DOID, PlannedShippingDate, ReceiptDate, POID, CreatedBy, Recipient, Status FROM DO";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                DeliveryOrder dod = new DeliveryOrder();
+                dod.setDoID(rs.getString("doID"));
+                dod.setPlannedShippingDate(rs.getDate("PlannedShippingDate"));
+                dod.setReceiptDate(rs.getDate("ReceiptDate"));
+                dod.setPoID(rs.getString("poID"));
+                dod.setCreatedBy(rs.getString("CreatedBy"));
+                dod.setRecipient(rs.getString("Recipient"));
+                dod.setStatus(rs.getBoolean("Status")); // Thêm trường Status vào đối tượng
+
+                doList.add(dod);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return "Unknown Supplier"; // Trả về giá trị mặc định thay vì null
+        return doList;
     }
-//3
+
+    // Lấy tất cả Supplier
+    public static List<Supplier> getAllSuppliers() {
+        List<Supplier> suppliers = new ArrayList<>();
+        String sql = "SELECT SupplierID, SupplierName FROM supplier WHERE Status = 1";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Supplier supplier = new Supplier();
+                supplier.setSupplierId(rs.getString("SupplierID"));
+                supplier.setSupplierName(rs.getString("SupplierName"));
+                suppliers.add(supplier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return suppliers;
+    }
+
+    // Chuyển các employeeId thành employeeName
     public static String getEmployeeNameByEmployeeID(String employeeID) {
         String query = "SELECT EmployeeName FROM employee WHERE EmployeeID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -42,7 +91,25 @@ public class DeliveryOrderDAO {
         }
         return "Unknown Employee"; // Trả về giá trị mặc định thay vì null
     }
-//4
+
+    // Chuyển các SupplierId thành SupplierName
+    public static String getSupplierNameByID(String supplierID) {
+        String query = "SELECT SupplierName FROM supplier WHERE SupplierID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setString(1, supplierID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("SupplierName");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "Unknown Supplier"; // Trả về giá trị mặc định thay vì null
+    }
+
+    // Lấy danh sách PODetail thành POID
     public static List<PurchaseOrderDetail> getPODetailsByPOIDs(List<String> poIDs) {
         List<PurchaseOrderDetail> poDetails = new ArrayList<>();
 
@@ -81,82 +148,8 @@ public class DeliveryOrderDAO {
 
         return poDetails;
     }
-    //8
-    public static List<DeliveryOrder> getAllActiveDOs() {
-        List<DeliveryOrder> doList = new ArrayList<>();
-        String query = "SELECT * FROM DO WHERE Status = 1";
 
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                DeliveryOrder deliveryOrder = new DeliveryOrder();
-                deliveryOrder.setDoID(rs.getString("doID"));
-                deliveryOrder.setPlannedShippingDate(rs.getDate("PlannedShippingDate"));
-                deliveryOrder.setReceiptDate(rs.getDate("ReceiptDate"));
-                deliveryOrder.setPoID(rs.getString("poID"));
-                deliveryOrder.setCreatedBy(rs.getString("CreatedBy"));
-                deliveryOrder.setRecipient(rs.getString("Recipient"));
-                deliveryOrder.setStatus(rs.getBoolean("Status"));
-
-                doList.add(deliveryOrder);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return doList;
-    }
-
-//9 chuyển đổi dữ liệu lấy dodetail chuyển thành những cái cần thiêt
-    public static List<Map<String, Object>> getDODetailsWithProductInfo(List<String> doIDs) {
-        List<Map<String, Object>> doDetailList = new ArrayList<>();
-        if (doIDs == null || doIDs.isEmpty()) {
-            return doDetailList;
-        }
-
-        // Tạo danh sách dấu '?' cho PreparedStatement
-        String placeholders = String.join(",", Collections.nCopies(doIDs.size(), "?"));
-        String sql = "SELECT d.DODetailID, d.ProductDetailID, d.Quantity, d.DOID, " +
-                "p.ProductName, p.Gender, p.Seasons, p.Material, p.Price, " +  // Thêm p.Price
-                "pd.Weight, pd.Color, pd.Size " +
-                "FROM DODetail d " +
-                "JOIN productdetail pd ON d.ProductDetailID = pd.ProductDetailID " +
-                "JOIN product p ON pd.ProductID = p.ProductID " +
-                "WHERE d.DOID IN (" + placeholders + ")";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            for (int i = 0; i < doIDs.size(); i++) {
-                ps.setString(i + 1, doIDs.get(i));
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Map<String, Object> detailMap = new HashMap<>();
-                    detailMap.put("DODetailID", rs.getString("DODetailID"));
-                    detailMap.put("ProductDetailID", rs.getString("ProductDetailID"));
-                    detailMap.put("Quantity", rs.getInt("Quantity"));
-                    detailMap.put("DOID", rs.getString("DOID"));
-                    detailMap.put("ProductName", rs.getString("ProductName"));
-                    detailMap.put("Gender", rs.getString("Gender"));
-                    detailMap.put("Seasons", rs.getString("Seasons"));
-                    detailMap.put("Material", rs.getString("Material"));
-                    detailMap.put("Weight", rs.getBigDecimal("Weight"));
-                    detailMap.put("Color", rs.getString("Color"));
-                    detailMap.put("Size", rs.getString("Size"));
-                    detailMap.put("Price", rs.getBigDecimal("Price")); // Lấy giá sản phẩm
-
-                    doDetailList.add(detailMap);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return doDetailList;
-    }
-    //10
-     //AccountID thành empployeID cho nhập dữ liệu vào DO
+    // Đổi AccountID thành EmployeeId
     public static String getEmployeeIDByAccountID(String accountID) {
         String query = "SELECT e.EmployeeID FROM account e WHERE e.AccountID = ? LIMIT 1";
 
@@ -173,55 +166,8 @@ public class DeliveryOrderDAO {
         }
         return null; // Trả về null nếu không tìm thấy EmployeeID
     }
-//13
-public static List<DeliveryOrder> getAllDOs() {
-    List<DeliveryOrder> doList = new ArrayList<>();
-    String query = "SELECT DOID, PlannedShippingDate, ReceiptDate, POID, CreatedBy, Recipient " +
-            "FROM DO WHERE Status = False"; // Thêm điều kiện lọc
 
-    try (Connection conn = DBContext.getConnection();
-         PreparedStatement ps = conn.prepareStatement(query);
-         ResultSet rs = ps.executeQuery()) {
-
-        while (rs.next()) {
-            DeliveryOrder dod = new DeliveryOrder();
-            dod.setDoID(rs.getString("DOID"));
-            dod.setPlannedShippingDate(rs.getDate("PlannedShippingDate"));
-            dod.setReceiptDate(rs.getDate("ReceiptDate"));
-            dod.setPoID(rs.getString("POID"));
-            dod.setCreatedBy(rs.getString("CreatedBy"));
-            dod.setRecipient(rs.getString("Recipient"));
-
-            doList.add(dod);
-        }
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-    return doList;
-}
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-// lấy các supplier có trong database
-    public static List<Supplier> getAllSuppliers() {
-        List<Supplier> suppliers = new ArrayList<>();
-        String sql = "SELECT SupplierID, SupplierName FROM supplier WHERE Status = 1";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
-
-            while (rs.next()) {
-                Supplier supplier = new Supplier();
-                supplier.setSupplierId(rs.getString("SupplierID"));
-                supplier.setSupplierName(rs.getString("SupplierName"));
-                suppliers.add(supplier);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return suppliers;
-    }
-// filter đe lay po
+    // Lấy POs theo yêu cầu
     public static List<PurchaseOrder> filterPO(String supplierID, String startDate, String endDate, String poid) {
         List<PurchaseOrder> poList = new ArrayList<>();
         StringBuilder sql = new StringBuilder("SELECT * FROM PO WHERE Status = 'Open'");
@@ -241,7 +187,7 @@ public static List<DeliveryOrder> getAllDOs() {
         }
 
         try (Connection conn = DBContext.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
             int paramIndex = 1;
 
             if (supplierID != null && !supplierID.isEmpty()) {
@@ -275,42 +221,7 @@ public static List<DeliveryOrder> getAllDOs() {
         return poList;
     }
 
-
-    public static List<PurchaseOrderDetail> getPODetailsByPOID(String poID) {
-        List<PurchaseOrderDetail> poDetails = new ArrayList<>();
-
-        if (poID == null || poID.isEmpty()) {
-            return poDetails; // Trả về danh sách rỗng nếu không có POID nào
-        }
-
-        String query = "SELECT POdetailID, POID, ProductDetailID, Quantity, Price, TotalPrice " +
-                "FROM POdetail WHERE POID = ?";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            ps.setString(1, poID); // Chỉ truyền vào một POID
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    PurchaseOrderDetail detail = new PurchaseOrderDetail(
-                            rs.getString("POdetailID"),
-                            rs.getString("POID"),
-                            rs.getString("ProductDetailID"),
-                            rs.getInt("Quantity"),
-                            rs.getInt("Price"),
-                            rs.getInt("TotalPrice")
-                    );
-                    poDetails.add(detail);
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return poDetails;
-    }
-
+    // Lấy các thông tin product từ productdetailID
     public static List<Map<String, Object>> getProductDetailsByProductDetailIDs(List<String> productDetailIDs) {
         List<Map<String, Object>> productDetails = new ArrayList<>();
 
@@ -355,44 +266,7 @@ public static List<DeliveryOrder> getAllDOs() {
         return productDetails;
     }
 
-    public static Map<String, Object> getProductDetailByProductDetailID(String productDetailID) {
-        Map<String, Object> productDetail = new HashMap<>();
-
-        if (productDetailID == null || productDetailID.isEmpty()) {
-            return productDetail; // Trả về map rỗng nếu không có productDetailID hợp lệ
-        }
-
-        String query = "SELECT pd.ProductDetailID, p.ProductName, p.Gender, p.Seasons, p.Material, " +
-                "pd.Weight, pd.Color, pd.Size, p.Price " +
-                "FROM productdetail pd " +
-                "JOIN product p ON pd.ProductID = p.ProductID " +
-                "WHERE pd.ProductDetailID = ?";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            // Gán giá trị cho tham số "?"
-            ps.setString(1, productDetailID);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) { // Lấy dữ liệu của productDetailID đầu tiên tìm thấy
-                    productDetail.put("ProductDetailID", rs.getString("ProductDetailID"));
-                    productDetail.put("ProductName", rs.getString("ProductName"));
-                    productDetail.put("Gender", rs.getString("Gender"));
-                    productDetail.put("Seasons", rs.getString("Seasons"));
-                    productDetail.put("Material", rs.getString("Material"));
-                    productDetail.put("Weight", rs.getDouble("Weight"));
-                    productDetail.put("Color", rs.getString("Color"));
-                    productDetail.put("Size", rs.getString("Size"));
-                    productDetail.put("Price", rs.getBigDecimal("Price"));
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return productDetail;
-    }
+    // lọc các con số còn lại của PO
     public static int getRemainingQuantity(String productDetailID) {
         int remainingQuantity = 0;
         String query = "SELECT (p.Quantity - COALESCE(SUM(d.Quantity), 0)) AS RemainingQuantity " +
@@ -415,6 +289,7 @@ public static List<DeliveryOrder> getAllDOs() {
         return remainingQuantity;
     }
 
+    // lấy các DO đang hoạt
     public static boolean isDOQuantityValid(String productDetailID) {
         String query = "SELECT (COALESCE(SUM(d.Quantity), 0) = p.Quantity) AS IsValid " +
                 "FROM POdetail p " +
@@ -435,6 +310,8 @@ public static List<DeliveryOrder> getAllDOs() {
         }
         return false;
     }
+
+    // thêm do cho purchase order
     public static boolean addDO(String doID, Date plannedShippingDate, Date receiptDate, String poID, String createdBy, String recipient, boolean status) {
         String query = "INSERT INTO DO (DOID, PlannedShippingDate, ReceiptDate, POID, CreatedBy, Recipient, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBContext.getConnection();
@@ -453,50 +330,12 @@ public static List<DeliveryOrder> getAllDOs() {
         return false;
     }
 
-    public boolean isDOIDExist(String doID) {
-        String sql = "SELECT COUNT(*) FROM DO WHERE DOID = ?";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, doID);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt(1) > 0; // Nếu số lượng > 0 thì DOID đã tồn tại
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean isValidDate(String poId, Date dateToCheck) {
-        String sql = "SELECT CreatedDate FROM PO WHERE POID = ?";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, poId);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                Date poCreatedDate = rs.getDate("CreatedDate");
-                Date today = new Date(System.currentTimeMillis());
-
-                // Kiểm tra điều kiện ngày
-                return !(dateToCheck.before(today) || dateToCheck.before(poCreatedDate));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false; // Lỗi hoặc POID không tồn tại
-    }
-
+    // tìm các DO
     public static List<DeliveryOrder> filterDOs(String supplierID, String startDate, String endDate, String poID, String createdBy) {
         List<DeliveryOrder> doList = new ArrayList<>();
         StringBuilder query = new StringBuilder("SELECT d.DOID, d.PlannedShippingDate, d.ReceiptDate, d.POID, d.CreatedBy, d.Recipient, d.Status " +
                 "FROM DO d " +
-                "JOIN PO p ON d.POID = p.POID " +
-                "WHERE d.Status = TRUE "); // Thêm điều kiện chỉ lấy DO có status = true
+                "JOIN PO p ON d.POID = p.POID "); // Thêm điều kiện chỉ lấy DO có status = true
 
         // Map điều kiện vào câu truy vấn
         if (supplierID != null && !supplierID.isEmpty()) {
@@ -563,40 +402,123 @@ public static List<DeliveryOrder> getAllDOs() {
         return doList;
     }
 
-    public static String getEmployeeIDByName(String employeeName) {
-        String employeeID = null;
-        String query = "SELECT EmployeeID FROM employee WHERE EmployeeName = ?";
-
+    //
+    public static boolean isPOFullyReceived(String poID) {
+        String sql = "SELECT " +
+                "(SELECT SUM(Quantity) FROM PODetail WHERE POID = ?) AS totalOrdered, " +
+                "(SELECT SUM(Quantity) FROM DODetail WHERE DOID IN (SELECT DOID FROM DO WHERE POID = ?)) AS totalReceived";
         try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-
-            ps.setString(1, employeeName);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    employeeID = rs.getString("EmployeeID");
-                }
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, poID);
+            ps.setString(2, poID);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                int totalOrdered = rs.getInt("totalOrdered");
+                int totalReceived = rs.getInt("totalReceived");
+                return totalReceived >= totalOrdered; // Nếu số lượng nhập >= số lượng đặt, PO đã hoàn tất
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return employeeID;
+        return false;
     }
 
-    public static Map<String, Object> getDODetailsByDOID(String doID) {
-        Map<String, Object> productDetail = null;
+    public static Map<String, Integer> getRemainingQuantities(String poID) {
+        Map<String, Integer> remainingQuantities = new HashMap<>();
+
+        String sql = "SELECT pd.ProductDetailID, pd.Quantity - COALESCE(SUM(dd.Quantity), 0) AS RemainingQuantity " +
+                "FROM POdetail pd " +
+                "LEFT JOIN DODetail dd ON pd.ProductDetailID = dd.ProductDetailID " +
+                "LEFT JOIN DO d ON dd.DOID = d.DOID " +
+                "WHERE pd.POID = ? " +
+                "GROUP BY pd.ProductDetailID, pd.Quantity";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, poID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                String productDetailID = rs.getString("ProductDetailID");
+                int remainingQuantity = rs.getInt("RemainingQuantity");
+                remainingQuantities.put(productDetailID, remainingQuantity);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return remainingQuantities;
+    }
+
+    public static boolean deleteDOWithDetails(String doID) {
+        if (doID == null || doID.isEmpty()) {
+            return false;
+        }
+
+        Connection conn = null;
+        PreparedStatement checkStatusStmt = null;
+        PreparedStatement deleteDODetailsStmt = null;
+        PreparedStatement deleteDOStmt = null;
+
+        try {
+            conn = DBContext.getConnection();
+            conn.setAutoCommit(false); // Bắt đầu giao dịch
+
+            // Kiểm tra status của DO
+            String checkStatusQuery = "SELECT Status FROM DO WHERE DOID = ?";
+            checkStatusStmt = conn.prepareStatement(checkStatusQuery);
+            checkStatusStmt.setString(1, doID);
+            ResultSet rs = checkStatusStmt.executeQuery();
+
+            if (rs.next() && rs.getBoolean("Status")) {
+                return false; // Không xóa nếu status = true
+            }
+
+            // Xóa tất cả các DODetail liên quan
+            String deleteDODetailsQuery = "DELETE FROM DODetail WHERE DOID = ?";
+            deleteDODetailsStmt = conn.prepareStatement(deleteDODetailsQuery);
+            deleteDODetailsStmt.setString(1, doID);
+            deleteDODetailsStmt.executeUpdate();
+
+            // Xóa DO
+            String deleteDOQuery = "DELETE FROM DO WHERE DOID = ?";
+            deleteDOStmt = conn.prepareStatement(deleteDOQuery);
+            deleteDOStmt.setString(1, doID);
+            deleteDOStmt.executeUpdate();
+
+            conn.commit(); // Xác nhận giao dịch
+            return true;
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Quay lại nếu có lỗi
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (checkStatusStmt != null) checkStatusStmt.close();
+                if (deleteDODetailsStmt != null) deleteDODetailsStmt.close();
+                if (deleteDOStmt != null) deleteDOStmt.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static List<DeliveryOrderDetail> getDODetailsByDOID(String doID) {
+        List<DeliveryOrderDetail> doDetails = new ArrayList<>();
 
         if (doID == null || doID.isEmpty()) {
-            return null; // Trả về null nếu không có doID hợp lệ
+            return doDetails; // Trả về danh sách rỗng nếu DOID không hợp lệ
         }
 
-        String query = "SELECT pd.ProductDetailID, p.ProductName, p.Gender, p.Seasons, p.Material, " +
-                "pd.Weight, pd.Color, pd.Size, p.Price " +
-                "FROM DODetail dd " +
-                "JOIN productdetail pd ON dd.ProductDetailID = pd.ProductDetailID " +
-                "JOIN product p ON pd.ProductID = p.ProductID " +
-                "WHERE dd.DOID = ? LIMIT 1"; // Lấy 1 sản phẩm duy nhất
+        String query = "SELECT DODetailID, ProductDetailID, Quantity, DOID FROM DODetail WHERE DOID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(query)) {
@@ -604,116 +526,166 @@ public static List<DeliveryOrder> getAllDOs() {
             ps.setString(1, doID);
 
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) { // Lấy đúng 1 sản phẩm đầu tiên
-                    productDetail = new HashMap<>();
-                    productDetail.put("ProductDetailID", rs.getString("ProductDetailID"));
-                    productDetail.put("ProductName", rs.getString("ProductName"));
-                    productDetail.put("Gender", rs.getString("Gender"));
-                    productDetail.put("Seasons", rs.getString("Seasons"));
-                    productDetail.put("Material", rs.getString("Material"));
-                    productDetail.put("Weight", rs.getDouble("Weight"));
-                    productDetail.put("Color", rs.getString("Color"));
-                    productDetail.put("Size", rs.getString("Size"));
-                    productDetail.put("Price", rs.getBigDecimal("Price"));
+                while (rs.next()) {
+                    DeliveryOrderDetail detail = new DeliveryOrderDetail(
+                            rs.getString("DODetailID"),
+                            rs.getString("ProductDetailID"),
+                            rs.getInt("Quantity"),
+                            rs.getString("DOID")
+                    );
+                    doDetails.add(detail);
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return productDetail;
+        return doDetails;
     }
-    public static void updateDO(String doID, String receiptDate, String recipient, Boolean setStatusFalse) throws SQLException {
-        String sql = "UPDATE DO SET ReceiptDate = ?, Recipient = ?, Status = ? WHERE DOID = ?";
 
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setDate(1, Date.valueOf(receiptDate));
-            stmt.setString(2, recipient);
-            stmt.setBoolean(3, setStatusFalse); // true hoặc false
-            stmt.setString(4, doID);
-            stmt.executeUpdate();
-        } catch (Exception e) {
-            e.printStackTrace(); // Thêm xử lý ngoại lệ
+    public static boolean updateDOWithDetails(String doID, String plannedShippingDate, String createdBy, List<Map<String, Object>> productDetails) {
+        if (doID == null || doID.trim().isEmpty()) {
+            return false; // DOID không hợp lệ
         }
-    }
 
+        Connection conn = null;
+        PreparedStatement psCheckStatus = null;
+        PreparedStatement psUpdateDO = null;
+        PreparedStatement psDeleteDetails = null;
+        PreparedStatement psInsertDetails = null;
 
-    // Cập nhật số lượng trong DODetail
-    public static void updateDODetailQuantity(String productDetailID, int newQuantity) throws SQLException {
-        String sql = "UPDATE DODetail SET Quantity = ? WHERE ProductDetailID = ?";
+        try {
+            conn = DBContext.getConnection();
+            conn.setAutoCommit(false); // Bắt đầu transaction
 
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, newQuantity);
-            stmt.setString(2, productDetailID);
-            stmt.executeUpdate();
-        }catch(Exception e) {}
-    }
+            // 1️⃣ Kiểm tra nếu DO có status = false thì mới được update
+            String checkStatusQuery = "SELECT Status FROM DO WHERE DOID = ?";
+            psCheckStatus = conn.prepareStatement(checkStatusQuery);
+            psCheckStatus.setString(1, doID);
+            var rs = psCheckStatus.executeQuery();
+            if (!rs.next() || rs.getBoolean("Status")) {
+                return false; // Không thể update nếu status = true
+            }
 
+            // 2️⃣ Cập nhật thông tin DO
+            String updateDOQuery = "UPDATE DO SET PlannedShippingDate = ?, CreatedBy = ? WHERE DOID = ?";
+            psUpdateDO = conn.prepareStatement(updateDOQuery);
+            psUpdateDO.setString(1, plannedShippingDate);
+            psUpdateDO.setString(2, createdBy);
+            psUpdateDO.setString(3, doID);
+            psUpdateDO.executeUpdate();
 
-    public static int getDOQuantity(String doID, String productDetailID) {
-        int quantity = 0;
-        String query = "SELECT Quantity FROM DODetail WHERE DOID = ? AND ProductDetailID = ?";
+            // 3️⃣ Xóa tất cả DODetail cũ của DOID
+            String deleteDODetailQuery = "DELETE FROM DODetail WHERE DOID = ?";
+            psDeleteDetails = conn.prepareStatement(deleteDODetailQuery);
+            psDeleteDetails.setString(1, doID);
+            psDeleteDetails.executeUpdate();
 
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
+            // 4️⃣ Chèn lại các sản phẩm mới trong danh sách productDetails
+            String insertDODetailQuery = "INSERT INTO DODetail (DODetailID, ProductDetailID, Quantity, DOID) VALUES (?, ?, ?, ?)";
+            psInsertDetails = conn.prepareStatement(insertDODetailQuery);
 
-            ps.setString(1, doID);
-            ps.setString(2, productDetailID);
+            for (Map<String, Object> product : productDetails) {
+                psInsertDetails.setString(1, (String) product.get("DODetailID")); // ID mới hoặc giữ nguyên
+                psInsertDetails.setString(2, (String) product.get("ProductDetailID"));
+                psInsertDetails.setInt(3, (int) product.get("Quantity"));
+                psInsertDetails.setString(4, doID);
+                psInsertDetails.addBatch();
+            }
+            psInsertDetails.executeBatch(); // Thực thi batch insert
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    quantity = rs.getInt("Quantity"); // Lấy số lượng từ bảng DODetail
+            conn.commit(); // Commit nếu không lỗi
+            return true;
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback(); // Rollback nếu có lỗi
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
                 }
             }
-        } catch (SQLException e) {
             e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (psCheckStatus != null) psCheckStatus.close();
+                if (psUpdateDO != null) psUpdateDO.close();
+                if (psDeleteDetails != null) psDeleteDetails.close();
+                if (psInsertDetails != null) psInsertDetails.close();
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
-        return quantity;
     }
 
-    public static String getProductDetailIDByPOIDAndDOID(String poID, String doID) {
-        String productDetailID = null;
-        String sql = "SELECT dd.ProductDetailID " +
-                "FROM DODetail dd " +
-                "JOIN DO d ON dd.DOID = d.DOID " +
-                "WHERE d.POID = ? AND dd.DOID = ?";
+    public static DeliveryOrder getDOByID(String doID) {
+        DeliveryOrder deliveryOrder = null;
+        String query = "SELECT doID, plannedShippingDate, createdBy, status FROM DO WHERE doID = ?";
 
         try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(query)) {
 
-            stmt.setString(1, poID);
-            stmt.setString(2, doID);
+            stmt.setString(1, doID);
             ResultSet rs = stmt.executeQuery();
 
-            if (rs.next()) { // Chỉ lấy giá trị đầu tiên
-                productDetailID = rs.getString("ProductDetailID");
+            if (rs.next()) {
+                deliveryOrder = new DeliveryOrder();
+                deliveryOrder.setDoID(rs.getString("doID"));
+                deliveryOrder.setPlannedShippingDate(rs.getDate("plannedShippingDate"));
+                deliveryOrder.setCreatedBy(rs.getString("createdBy"));
+                deliveryOrder.setStatus(rs.getBoolean("status"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();  // Xử lý lỗi SQL
         }
-        return productDetailID;
+
+        return deliveryOrder;
     }
 
+    public boolean updateDOForPS(String doID, String plannedShippingDate, String createdBy) {
+            String sql = "UPDATE DO SET PlannedShippingDate = ?, CreatedBy = ? WHERE DOID = ?";
+            try (Connection conn = DBContext.getConnection();
+                 PreparedStatement ps = conn.prepareStatement(sql)) {
+
+                // Chuyển đổi plannedShippingDate từ String thành java.sql.Date
+                Date sqlDate = Date.valueOf(plannedShippingDate);
+
+                ps.setDate(1, sqlDate);
+                ps.setString(2, createdBy);
+                ps.setString(3, doID);
+
+                return ps.executeUpdate() > 0; // Trả về true nếu có dòng được cập nhật
+            } catch (SQLException | IllegalArgumentException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+
+    public boolean confirmDOForWS(String doID, Date receiptDate, String recipient) {
+        String sql = "UPDATE DO SET ReceiptDate = ?, Recipient = ?, Status = ? WHERE DOID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDate(1, new java.sql.Date(receiptDate.getTime())); // Chuyển đổi Date sang SQL Date
+            ps.setString(2, recipient);
+            ps.setBoolean(3, true); // Đánh dấu DO là hoàn thành
+            ps.setString(4, doID);
+            return ps.executeUpdate() > 0; // Trả về true nếu có dòng được cập nhật
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 
 
 
     public static void main(String[] args) {
-            // Giả sử productDetailID có sẵn trong database
-            String productDetailID = "PD001"; // Thay bằng ID hợp lệ trong DB
-
-            // Kiểm tra số lượng còn lại
-            int remainingQuantity = getRemainingQuantity(productDetailID);
-            System.out.println("Số lượng còn lại của sản phẩm " + productDetailID + " là: " + remainingQuantity);
-
-            // Kiểm tra tính hợp lệ của tổng số lượng DO
-            boolean isValid = isDOQuantityValid(productDetailID);
-            System.out.println("Tổng số lượng DO có hợp lệ không: " + isValid);
-        }
+        DeliveryOrder dao = getDOByID("DO1");
+            System.out.println(dao);
+    }
 
 
 }
