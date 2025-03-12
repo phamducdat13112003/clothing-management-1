@@ -227,7 +227,7 @@ public class ProductDAO {
     }
     public HashMap<Product, String> searchProducts(String txt) {
         HashMap<Product, String> products = new HashMap<>();
-        String sql = "SELECT ProductID, ProductName, Price, BinID, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product WHERE ProductName LIKE ? OR ProductID LIKE ?";
+        String sql = "SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product WHERE ProductName LIKE ? OR ProductID LIKE ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement statement = conn.prepareStatement(sql)) {
@@ -241,7 +241,6 @@ public class ProductDAO {
                         .id(resultSet.getString("ProductID"))
                         .name(resultSet.getString("ProductName"))
                         .price(resultSet.getDouble("Price"))
-                        .binId(resultSet.getString("BinID"))
                         .categoryId(resultSet.getInt("CategoryID"))
                         .material(resultSet.getString("Material"))
                         .gender(resultSet.getString("Gender"))
