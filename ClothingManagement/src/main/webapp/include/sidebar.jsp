@@ -64,12 +64,12 @@
                                                 </g>
                                                 </svg>
                                             </span>
-                                            <span class="menu-bar__name">Vendors</span></span> <span
+                                            <span class="menu-bar__name">Bin</span></span> <span
                                 class="sherah__toggle"></span></a></span>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item_vendors" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
-                                    <li><a href="vendor.html"><span class="menu-bar__text"><span class="menu-bar__name">Vendor Grid</span></span></a>
+                                    <li><a href="${pageContext.request.contextPath}/list-bin"><span class="menu-bar__text"><span class="menu-bar__name">List Bin</span></span></a>
                                     </li>
                                     <li><a href="vendor-list.html"><span class="menu-bar__text"><span
                                             class="menu-bar__name">Vendor List</span></span></a></li>
@@ -131,7 +131,7 @@
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">Products</span></span></a></li>
                                     <li><a href="${pageContext.request.contextPath}/product-detail-list"><span
-                                            class="menu-bar__name">Product Details</span></span></a></li>
+                                            class="menu-bar__name">Product Details</span></a></li>
                                     <li><a href="${pageContext.request.contextPath}/add-product"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">Upload Product</span></span></a></li>

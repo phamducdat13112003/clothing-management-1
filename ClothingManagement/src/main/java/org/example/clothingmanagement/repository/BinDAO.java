@@ -37,6 +37,30 @@ public class BinDAO {
         return bins;
     }
 
+    public List<Bin> getAllBin(){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" Select BinId, BinName, MaxCapacity, Status, SectionID ");
+            sql.append(" FROM Bin");
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+            ResultSet rs = stmt.executeQuery();
+            List<Bin> bins = new ArrayList<>();
+            while (rs.next()) {
+                Bin bin = Bin.builder()
+                        .binID(rs.getString("BinID"))
+                        .binName(rs.getString("BinName"))
+                        .maxCapacity(rs.getDouble("MaxCapacity"))
+                        .status(rs.getBoolean("Status"))
+                        .sectionID(rs.getString("SectionID"))
+                        .build();
+                bins.add(bin);
+            }
+            return bins;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public double getMaxCapacityByBinID(String binID) {
         String sql = "SELECT MaxCapacity FROM Bin WHERE BinID = ?";
         try (Connection conn = DBContext.getConnection();

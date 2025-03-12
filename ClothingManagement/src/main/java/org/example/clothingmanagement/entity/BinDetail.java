@@ -1,12 +1,14 @@
 package org.example.clothingmanagement.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class BinDetail {
     private String binDetailId;
     private String binId;
@@ -15,6 +17,7 @@ public class BinDetail {
 
     // trong database không có
     private int status;
+    private double weight;
     private String color;
     private String size;
     private String image;
