@@ -68,70 +68,46 @@
                                         <th class="sherah-table__column-2 sherah-table__h2">BinId</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Current Capacity</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Available Capacity</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">SectionId</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Action</th>
 
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
-                                    <c:if test="${not empty map}">
-                                        <c:forEach var="entry" items="${map}">
+                                    <c:if test="${not empty bins}">
+                                        <c:forEach var="bin" items="${bins}">
                                             <tr>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.binID}</p>
+                                                        <p class="sherah-table__product-desc">${bin.binID}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.currentCapacity}</p>
+                                                        <p class="sherah-table__product-desc">${bin.currentCapacity}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.availableCapacity}</p>
+                                                        <p class="sherah-table__product-desc">${bin.availableCapacity}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.status}</p>
+                                                        <p class="sherah-table__product-desc">${bin.sectionID}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.sectionId}</p>
+                                                        <p class="sherah-table__product-desc">${bin.status}</p>
                                                     </div>
                                                 </td>
-<%--                                                <c:if test="${entry.key.status==1}">--%>
-<%--                                                    <c:if test="${entry.key.totalQuantity==0}">--%>
-<%--                                                        <td class="sherah-table__column-2 sherah-table__data-2">--%>
-<%--                                                            <div class="sherah-table__product-content">--%>
-<%--                                                                <p class="sherah-table__product-desc">--%>
-<%--                                                                    <a href="#" onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product?id=${entry.key.id}');">--%>
-<%--                                                                        Delete--%>
-<%--                                                                    </a>--%>
-<%--                                                                </p>--%>
-<%--                                                            </div>--%>
-<%--                                                        </td>--%>
-<%--                                                    </c:if>--%>
-<%--                                                </c:if>--%>
-
-<%--                                                <c:if test="${entry.key.status==0}">--%>
-<%--                                                    <td class="sherah-table__column-2 sherah-table__data-2">--%>
-<%--                                                        <div class="sherah-table__product-content">--%>
-<%--                                                            <p class="sherah-table__product-desc">--%>
-<%--                                                                <a href="#" onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product?id=${entry.key.id}');">--%>
-<%--                                                                    Recover--%>
-<%--                                                                </a>--%>
-<%--                                                            </p>--%>
-<%--                                                        </div>--%>
-<%--                                                    </td>                                                </c:if>--%>
 
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/list-product-detail?id=${entry.key.id}">
+                                                            <a href="">
                                                                 Detail
                                                             </a>
                                                         </p>
@@ -142,7 +118,7 @@
                                         </c:forEach>
 
                                     </c:if>
-                                    <c:if test="${empty products}">
+                                    <c:if test="${empty bins}">
                                         <tr>
                                             <td colspan="4" class="text-center">No bin available</td>
                                         </tr>

@@ -36,11 +36,23 @@ public class BinService {
     }
 
     public List<Bin> getAllBin(){
-        return binDAO.getAllBin();
+        List<Bin> bins = binDAO.getAllBin();
+        for(Bin bin : bins){
+            bin.setCurrentCapacity(0.0);
+            bin.setAvailableCapacity(bin.getMaxCapacity());
+        }
+        return bins;
     }
 
     public int countBinDetail(String nameSearch, String binID){
         return binDAO.countBinDetail(nameSearch, binID);
     }
 
+    public static void main(String[] args){
+        BinService bs = new BinService();
+        List<Bin> list = bs.getAllBin();
+        for(Bin b : list){
+            System.out.println(b);
+        }
+    }
 }

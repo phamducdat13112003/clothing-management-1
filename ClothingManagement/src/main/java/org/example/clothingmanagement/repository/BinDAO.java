@@ -51,6 +51,7 @@ public class BinDAO {
                         .binName(rs.getString("BinName"))
                         .maxCapacity(rs.getDouble("MaxCapacity"))
                         .status(rs.getBoolean("Status"))
+                        .currentCapacity(0.0)
                         .sectionID(rs.getString("SectionID"))
                         .build();
                 bins.add(bin);
