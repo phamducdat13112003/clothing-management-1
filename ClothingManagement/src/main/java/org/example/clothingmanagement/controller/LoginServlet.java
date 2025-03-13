@@ -74,16 +74,15 @@ public class LoginServlet extends HttpServlet {
                 }
                 if (account.getRoleId() == 1) {//Manager
                     response.sendRedirect("Dashboard.jsp");
-                } else if (account.getRoleId() == 2) {//Sale
+                } else if (account.getRoleId() == 2) {// Purchase Order Staff
                     response.sendRedirect("viewpurchaseorder");
-                } else if (account.getRoleId() == 3) {//Storage Staff
+                } else if (account.getRoleId() == 4) {//Storage Staff
                     response.sendRedirect("Dashboard.jsp");
-                } else if (account.getRoleId() == 4) {//Admin
+                } else if (account.getRoleId() == 3) {//Admin
                     response.sendRedirect("account");
                 }
                 response.addCookie(cookie_email);
                 response.addCookie(cookie_password);
-
             }
         }
     }

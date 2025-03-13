@@ -215,9 +215,9 @@ public class ProductDetailDAO {
         return null;
     }
 
-    public List<ProductDetail> getProductDetailByProductId(String productId, int page, int pageSize) {
+    public List<ProductDetail> getProductDetailByProductDetailId(String productId, int page, int pageSize) {
         List<ProductDetail> productDetails = new ArrayList<>();
-        String sql = "SELECT * FROM ProductDetail WHERE ProductID = ? LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM ProductDetail WHERE ProductDetailId = ? LIMIT ? OFFSET ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -247,7 +247,7 @@ public class ProductDetailDAO {
 
     public int getTotalProductDetails(String productId) {
         int total = 0;
-        String sql = "SELECT COUNT(*) FROM ProductDetail WHERE ProductID = ?";
+        String sql = "SELECT COUNT(*) FROM ProductDetail WHERE ProductDetailId = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -367,12 +367,14 @@ public class ProductDetailDAO {
         }
     }
 
-    public Optional<ProductDetail> getLastProductDetail(String id){
+    public Optional<ProductDetail> getLastProductDetail(String productId){
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status FROM productdetail  ");
+            sql.append(" WHERE productid  = ? ");
             sql.append("ORDER BY productdetailid DESC LIMIT 1 ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
             ResultSet rs = ps.executeQuery();
             if(rs.next()){
                 ProductDetail productDetail = ProductDetail.builder()
@@ -395,4 +397,50 @@ public class ProductDetailDAO {
         }
     }
 
+    public List<ProductDetail> getColorNSize(String productId){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT color,size FROM productdetail  ");
+            sql.append(" WHERE productid  = ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
+            ResultSet rs = ps.executeQuery();
+            List<ProductDetail> list = new ArrayList<>();
+            while (rs.next()) {
+                ProductDetail productDetail = ProductDetail.builder()
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .build();
+                list.add(productDetail);
+
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean updateAllProductDetail(String productId){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" UPDATE productdetail  ");
+            sql.append(" Set status = 0");
+            sql.append(" WHERE productid = ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void main(String[] args){
+        final ProductDetailDAO productDetailDAO = new ProductDetailDAO();
+        List<ProductDetail> list = productDetailDAO.getColorNSize("P001");
+        for(ProductDetail productDetail : list){
+            System.out.println(productDetail);
+        }
+    }
 }

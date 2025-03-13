@@ -45,20 +45,8 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <!-- Sherah Breadcrumb -->
-                            <%--                            <form action="search-product" method="get">--%>
-                            <%--                                <div class="input-group mb-3">--%>
-                            <%--                                    <input type="text" class="form-control" placeholder="Search for a product..." name="searchQuery" id="searchQuery">--%>
-                            <%--                                    <button class="btn btn-primary" type="submit">Search</button>--%>
-                            <%--                                </div>--%>
-                            <%--                            </form>--%>
-
                             <div class="sherah-breadcrumb mg-top-30">
                                 <h2 class="sherah-breadcrumb__title">${product.name}</h2>
-                                <%--                                <ul class="sherah-breadcrumb__list">--%>
-                                <%--                                    <li><a href="#">Home</a></li>--%>
-                                <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
-                                <%--                                </ul>--%>
                                 <a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}" class="sherah-breadcrumb__title-link">
                                     <h2 class="sherah-breadcrumb__title">Add new product to ${product.name}</h2>
                                 </a>
@@ -122,6 +110,7 @@
                                                     </div>
                                                 </td>
                                                 <c:if test="${productDetail.status==1}">
+                                                    <c:if test="${productDetail.quantity==0}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
@@ -133,6 +122,7 @@
                                                             </p>
                                                         </div>
                                                     </td>
+                                                    </c:if>
                                                 </c:if>
 
                                                 <c:if test="${productDetail.status==0}">

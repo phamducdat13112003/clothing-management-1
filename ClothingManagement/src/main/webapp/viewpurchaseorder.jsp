@@ -6,7 +6,9 @@
   To change this template use File | Settings | File Templates.
 --%>
 <!DOCTYPE html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html class="no-js" lang="zxx">
 <head>
     <!-- Meta Tags -->
@@ -18,7 +20,8 @@
     <!-- Site Title -->
     <title>Sherah - HTML eCommerce Dashboard Template</title>
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
     <!-- sherah Stylesheet -->
@@ -42,6 +45,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
         }
+
         .sherah-popup-content {
             background-color: #fff;
             margin: 15% auto;
@@ -51,22 +55,26 @@
             border-radius: 5px;
             animation: fadeIn 0.3s ease-in-out;
         }
+
         .sherah-popup-close {
             float: right;
             font-size: 24px;
             cursor: pointer;
         }
+
         .popup-title {
             text-align: center;
             font-size: 22px;
             color: #2c3e50;
             font-weight: bold;
         }
+
         .popup-body {
             display: flex;
             flex-wrap: wrap;
             justify-content: space-between;
         }
+
         .supplier-info, .product-info, .order-info {
             width: 48%;
             background: #ecf0f1;
@@ -74,6 +82,7 @@
             border-radius: 8px;
             margin-bottom: 10px;
         }
+
         .product-image {
             display: block;
             width: 100px;
@@ -81,10 +90,18 @@
             object-fit: cover;
             margin-bottom: 10px;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.9); }
-            to { opacity: 1; transform: scale(1); }
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
+
         .search-form {
             display: flex;
             align-items: center;
@@ -110,6 +127,7 @@
         .search-form button:hover {
             background-color: #5a6268;
         }
+
         .pagination-container {
             margin-top: 15px;
             text-align: center;
@@ -132,11 +150,9 @@
 
 </head>
 <body id="sherah-dark-light">
-
 <div class="sherah-body-area">
     <jsp:include page="include/sidebar.jsp"></jsp:include>
     <jsp:include page="include/header.jsp"></jsp:include>
-
     <!-- sherah Dashboard -->
     <section class="sherah-adashboard sherah-show">
         <div class="container">
@@ -151,18 +167,19 @@
                                     <div class="sherah-breadcrumb">
                                         <h2 class="sherah-breadcrumb__title">Purchase Order list</h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="">Home</a></li>
+                                            <li><a href="addpurchaseorder.jsp">Home</a></li>
                                             <li class="active"><a href="#">Purchase Order List</a></li>
                                         </ul>
                                     </div>
                                     <!-- End Sherah Breadcrumb -->
-                                    <a href="add" class="sherah-btn sherah-gbcolor">Add New Purchase Order</a>
+                                    <a href="addinfomationpo" class="sherah-btn sherah-gbcolor">Add New PurchaseOrder</a>
                                 </div>
                             </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
-                                <div class="search-container" >
+                                <div class="search-container">
                                     <form action="searchpurchaseorder" method="GET" class="search-form">
-                                        <input value="${txtS}" type="text" id="customSearch" name="txt" placeholder="Search PO ID, CreateDate, Supplier, CreateBy, TotalPrice,...">
+                                        <input value="${txtS}" type="text" id="customSearch" name="txt"
+                                               placeholder="Search PO ID, CreateDate, Supplier, CreateBy, TotalPrice, Status,...">
                                         <button type="submit" class="btn btn-secondary btn-number">
                                             <i class="fa fa-search"></i>
                                         </button>
@@ -186,7 +203,8 @@
                                             <td class="sherah-table__column-1 sherah-table__data-1">
                                                 <div class="sherah-language-form__input">
                                                     <p class="crany-table__product--number">
-                                                        <a href="purchaseorderdetail?poID=${listpo.poID}" class="sherah-color1">${listpo.poID}</a>
+                                                        <a href="purchaseorderdetail?poID=${listpo.poID}"
+                                                           class="sherah-color1">${listpo.poID}</a>
                                                     </p>
                                                 </div>
                                             </td>
@@ -201,7 +219,8 @@
                                             <td class="sherah-table__column-4 sherah-table__data-4">
                                                 <div class="sherah-table__product-content">
                                                     <div class="sherah-table__status sherah-color1 sherah-color1__bg--opactity">
-                                                        <a href="javascript:void(0);" class="sherah-color1" onclick="openPopup('popupCreatedBy', '${listpo.createdBy}')">
+                                                        <a href="javascript:void(0);" class="sherah-color1"
+                                                           onclick="openPopup('popupCreatedBy', '${listpo.createdBy}')">
                                                                 ${listpo.createdBy}
                                                         </a>
                                                     </div>
@@ -214,10 +233,14 @@
                                             </td>
                                             <td class="sherah-table__column-6 sherah-table__data-6">
                                                 <div class="sherah-table__product-content">
-                                                    <p class="sherah-table__product-desc">${listpo.totalPrice}</p>
+                                                    <p class="sherah-table__product-desc">
+                                                        <fmt:formatNumber value="${listpo.totalPrice}" type="number" groupingUsed="true" /> VNĐ
+                                                    </p>
                                                 </div>
                                             </td>
-                                        </tr> <!-- Đóng thẻ <tr> -->
+
+                                        </tr>
+                                        <!-- Đóng thẻ <tr> -->
                                     </c:forEach>
                                     </tbody>
 
@@ -228,15 +251,11 @@
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>
     <!-- End sherah Dashboard -->
-
 </div>
-
 
 <!-- sherah Scripts -->
 <script>
@@ -301,7 +320,5 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
-
-
 </body>
 </html>

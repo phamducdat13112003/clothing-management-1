@@ -6,49 +6,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.DeliveryOrder;
-import org.example.clothingmanagement.entity.PurchaseOrder;
 import org.example.clothingmanagement.entity.Supplier;
 import org.example.clothingmanagement.repository.DeliveryOrderDAO;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 
-@WebServlet(name = "DeliveryOrderServlet", value = "/DeliveryOrderServlet")
-public class DeliveryOrderServlet extends HttpServlet {
+@WebServlet(name = "DeliveryOrderConfirmServlet", value = "/DeliveryOrderConfirmServlet")
+public class DeliveryOrderConfirmServlet extends HttpServlet {
 
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        List<Supplier> suppliers = DeliveryOrderDAO.getAllSuppliers(); // Lấy danh sách từ DB
-        List<DeliveryOrder> deliveryOrders =  DeliveryOrderDAO.getAllDOs();
-
-        Map<String, String> createdByList = new HashMap<>();
-        Map<String, String> recipientList = new HashMap<>();
-
-        for (DeliveryOrder dos : deliveryOrders) {
-            String createdBy = dos.getCreatedBy();
-            String recipient = dos.getRecipient();
-
-            if (createdBy != null && !recipientList.containsKey(recipient)) {
-                recipientList.put(recipient, DeliveryOrderDAO.getEmployeeNameByEmployeeID(recipient));
-            }
-
-            if (createdBy != null && !createdByList.containsKey(createdBy)) {
-                createdByList.put(createdBy, DeliveryOrderDAO.getEmployeeNameByEmployeeID(createdBy));
-            }
-        }
-
-        request.setAttribute("deliveryOrders", deliveryOrders);
-        request.setAttribute("suppliers", suppliers);
-        request.setAttribute("createdByList", createdByList);
-        request.setAttribute("recipientList", recipientList);
-        request.getRequestDispatcher("ViewDOList.jsp").forward(request, response);
-
-    }
-
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, IOException {
         String action = request.getParameter("action"); // Kiểm tra người dùng chọn Filter hay Select All
         String supplierID = request.getParameter("supplier");
         String poID = request.getParameter("poID");
@@ -85,7 +55,10 @@ public class DeliveryOrderServlet extends HttpServlet {
         request.setAttribute("createdByList", createdByList);
         request.setAttribute("recipientList", recipientList);
         request.setAttribute("suppliers", suppliers);
-        request.getRequestDispatcher("ViewDOList.jsp").forward(request, response);
+        request.getRequestDispatcher("ViewDOListConfirm.jsp").forward(request, response);
+    }
+
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     }
 

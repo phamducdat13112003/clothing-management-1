@@ -34,9 +34,10 @@ public class ProductDetailService {
         return productDetailDAO.getProductIDByProductDetailID(productDetailID);
     }
 
-    public List<ProductDetail> getProductDetailByProductId(String productId, int page, int pageSize) {
-        return productDetailDAO.getProductDetailByProductId(productId, page, pageSize);
+    public List<ProductDetail> getProductDetailByProductDetailId(String productId, int page, int pageSize) {
+        return productDetailDAO.getProductDetailByProductDetailId(productId, page, pageSize);
     }
+
     public boolean deleteProductDetail(String id){
         return productDetailDAO.deleteProductDetail(id);
     }
@@ -60,20 +61,22 @@ public class ProductDetailService {
         return productDetailDAO.searchProductDetailsByID(id, page, pageSize);
     }
 
-    public List<ProductDetail> getAllProductDetailWithPagination(int page, int pageSize){
-        return productDetailDAO.getAllProductDetailWithPagination(page, pageSize);
-    }
-    public int getTotalProductCount() {
-        return productDetailDAO.getTotalProductCount();
-    }
-
     public boolean insertProductDetail(ProductDetail productDetail) {
         return productDetailDAO.insertProductDetail(productDetail);
+    }
+
+    public List<ProductDetail> getColorNSize(String productId) {
+        return productDetailDAO.getColorNSize(productId);
     }
 
     public Optional<ProductDetail> getLastProductDetail(String id){
         return productDetailDAO.getLastProductDetail(id);
     }
+
+    public boolean updateAllProductDetail(String productId) {
+        return productDetailDAO.updateAllProductDetail(productId);
+    }
+
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");

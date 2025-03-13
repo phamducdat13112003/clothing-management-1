@@ -4,6 +4,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Bin;
+import org.example.clothingmanagement.entity.BinDetail;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.service.BinService;
 import org.example.clothingmanagement.service.ProductService;
@@ -35,7 +36,6 @@ public class ViewBinInventoryServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String binID = request.getParameter("binID");
-        ProductService productService = new ProductService();
         BinService binService = new BinService();
         double maxCapacity =0.0;
         int page = 1;
@@ -47,21 +47,18 @@ public class ViewBinInventoryServlet extends HttpServlet {
             page = Integer.parseInt(pageParam);
         }
 
-        int totalProducts = 0;
+        int totalBin = 0;
 
-        List<Product> products;
+        List<BinDetail> list = null;
         if (binID != null && !binID.isEmpty()) {
             maxCapacity = binService.getMaxCapacityByBinID(binID);
-            totalProducts = productService.countProductsByBinID(binID);
-            products = productService.getProductsByBinID(binID, page, pageSize);
-        } else {
-            totalProducts =productService.countAllProducts();
-            products = productService.getAllProductsWithPagination(page, pageSize);
+            totalBin = binService.countBinDetailByBinID(binID);
+            list = binService.getBinDetailByBinID(binID, page, pageSize);
         }
-        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+        int totalPages = (int) Math.ceil((double) totalBin / pageSize);
         List<Bin> binList = binService.getAllBins();
         request.setAttribute("binList", binList);
-        request.setAttribute("list", products);
+        request.setAttribute("list", list);
         request.setAttribute("selectedBin", binID);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);

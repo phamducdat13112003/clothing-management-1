@@ -5,7 +5,6 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.service.ProductDetailService;
-import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -50,7 +49,7 @@ public class ViewProductBinDetail extends HttpServlet {
 
         if(productId != null) {
             totalProductDetails = productDetailService.getTotalProductDetails(productId);
-            list = productDetailService.getProductDetailByProductId(productId, page, pageSize);
+            list = productDetailService.getProductDetailByProductDetailId(productId, page, pageSize);
         }
         int totalPages = (int) Math.ceil((double) totalProductDetails / pageSize);
         request.setAttribute("productdetail", list);
