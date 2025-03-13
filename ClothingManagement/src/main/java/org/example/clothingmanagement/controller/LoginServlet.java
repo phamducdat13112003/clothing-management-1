@@ -47,7 +47,22 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("account", account);
                 session.setAttribute("role", account.getRoleId());
                 session.setAttribute("account_id", account.getId());
+                session.setAttribute("email", account.getEmployeeId());
+            System.out.println("role account id"+ account.getRoleId() + account.getId() + account.getEmployeeId());
                 session.setMaxInactiveInterval(60 * 60 * 24);
+
+            String employeeId = account.getEmployeeId();
+            System.out.println("employeeId: " + employeeId);
+
+            // Fetch the employee name based on the EmployeeID from Account
+            try {
+                String employeeName = accountDAO.getEmployeeNameById(account.getEmployeeId());
+                session.setAttribute("employeeID", account.getEmployeeId());
+                session.setAttribute("employeeName", employeeName); // Store employee name in session
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
                 if (remember != null && remember.equalsIgnoreCase("1")) {
                     cookie_email.setMaxAge(60 * 60);
                     cookie_password.setMaxAge(60 * 60);
