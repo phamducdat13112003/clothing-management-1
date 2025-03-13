@@ -60,6 +60,10 @@ public class AccountService {
         return AccountDAO.isAccountExists(accountId);
     }
 
+    public String getEmployeeNameById(String employeeId) throws SQLException {
+        return accountDAO.getEmployeeNameById(employeeId);
+    }
+
     public Account findAccount(String email, String password) throws SQLException{
         return accountDAO.findAccount(email, password);
     }
