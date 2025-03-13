@@ -15,7 +15,7 @@ import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
 
-@WebServlet(name = "TransferOrderUpdateServlet", value = "/transfer-order/update")
+@WebServlet(name = "TransferOrderUpdateServlet", value = "/TOUpdate")
 public class TransferOrderUpdateServlet extends HttpServlet {
 
     private TransferOrderDAO transferOrderDAO;

@@ -13,7 +13,7 @@ import org.example.clothingmanagement.repository.TransferOrderDAO;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "SearchProductDetailServlet", value = "/transfer-order/searchProductDetail")
+@WebServlet(name = "SearchProductDetailServlet", value = "/searchProductDetail")
 public class ProductSearchServlet extends HttpServlet {
     private TransferOrderDAO transferOrderDAO;
 

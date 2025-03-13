@@ -271,6 +271,25 @@ public class AccountDAO {
         return -1; // Return -1 if AccountID is not found or an error occurs
     }
 
+    public static String getEmployeeNameById(String employeeId) {
+        String sql = "SELECT EmployeeName FROM Employee WHERE EmployeeID = ?";
+        try (Connection connection = DBContext.getConnection(); // Use DBContext for connection
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setString(1, employeeId);
+
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    return resultSet.getString("EmployeeName"); // Return the EmployeeName if found
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace(); // Log the exception
+        }
+        return null; // Return null if EmployeeID is not found or an error occurs
+    }
+
+
     public Account findAccount(String email, String password) {
         String sql = "SELECT * FROM account WHERE email='" + email + "' AND password='" + password + "'";
         Account account = null;
@@ -284,6 +303,7 @@ public class AccountDAO {
                 account.setStatus(rs.getString("status"));
                 account.setPassword(rs.getString("password"));
                 account.setRoleId(rs.getInt("roleID"));
+                account.setEmployeeId(rs.getString("employeeId"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
