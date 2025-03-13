@@ -12,7 +12,7 @@ import org.example.clothingmanagement.repository.TransferOrderDAO;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "TransferOrderDetailsServlet", value = "/transfer-order/view")
+@WebServlet(name = "TransferOrderDetailsServlet", value = "/TODetail")
 public class TransferOrderDetailsServlet extends HttpServlet {
 
     private TransferOrderDAO transferOrderDAO;
@@ -44,6 +44,6 @@ public class TransferOrderDetailsServlet extends HttpServlet {
         request.setAttribute("toDetails", toDetails);
 
         // Forward the request to the JSP page to display the details
-        request.getRequestDispatcher("/test3.jsp").forward(request, response);
+        request.getRequestDispatcher("to-detail.jsp").forward(request, response);
     }
 }
