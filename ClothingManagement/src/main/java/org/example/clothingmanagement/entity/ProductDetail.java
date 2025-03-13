@@ -21,10 +21,9 @@ public class ProductDetail {
 
     private String productName;
 
-    public ProductDetail(String id,String image, Integer quantity, Double weight) {
+    public ProductDetail(String id,String image,Double weight) {
         this.id = id;
         this.image = image;
-        this.quantity = quantity;
         this.weight = weight;
     }
 

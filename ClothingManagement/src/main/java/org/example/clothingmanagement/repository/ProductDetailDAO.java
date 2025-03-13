@@ -155,13 +155,12 @@ public class ProductDetailDAO {
         try (Connection con = DBContext.getConnection()) {
             StringBuilder sql = new StringBuilder();
             sql.append(" UPDATE ProductDetail ");
-            sql.append(" SET Quantity = ?, Weight = ?, ProductImage = ? ");
+            sql.append(" SET Weight = ?, ProductImage = ? ");
             sql.append(" WHERE ProductDetailId = ?");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setInt(1, pd.getQuantity());
-            ps.setDouble(2, pd.getWeight());
-            ps.setString(3, pd.getImage());
-            ps.setString(4, pd.getId());
+            ps.setDouble(1, pd.getWeight());
+            ps.setString(2, pd.getImage());
+            ps.setString(3, pd.getId());
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
