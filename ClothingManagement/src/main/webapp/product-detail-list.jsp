@@ -81,7 +81,6 @@
                                     <c:if test="${not empty pdList}">
                                         <c:forEach var="pdList" items="${pdList}">
                                             <tr>
-                                            <td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">${pdList.id}</p>
@@ -120,7 +119,9 @@
                                                         <p class="sherah-table__product-desc">${pdList.status}</p>
                                                     </div>
                                                 </td>
-                                                    <c:if test="${pdList.status==1}">
+                                                <c:if test="${pdList.status==1}">
+
+                                                    <c:if test="${pdList.quantity==0}">
                                                         <td class="sherah-table__column-2 sherah-table__data-2">
                                                             <div class="sherah-table__product-content">
                                                                 <p class="sherah-table__product-desc">
@@ -132,6 +133,8 @@
                                                             </div>
                                                         </td>
                                                     </c:if>
+                                                </c:if>
+
                                                     <c:if test="${pdList.status==0}">
                                                         <td class="sherah-table__column-2 sherah-table__data-2">
                                                             <div class="sherah-table__product-content">
