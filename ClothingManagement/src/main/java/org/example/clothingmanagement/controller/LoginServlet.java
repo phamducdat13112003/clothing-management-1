@@ -1,4 +1,5 @@
 package org.example.clothingmanagement.controller;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -40,34 +41,35 @@ public class LoginServlet extends HttpServlet {
         } else if (account.getStatus().equals("Inactive")) {
             session.setAttribute("error_inactive", "Account is inactive!");
             response.sendRedirect("login.jsp");
-        }else {
-                session.removeAttribute("error_login");
-                response.addCookie(cookie_email);
+        } else {
+            session.removeAttribute("error_login");
+            response.addCookie(cookie_email);
+            response.addCookie(cookie_password);
+            session.setAttribute("account", account);
+            session.setAttribute("role", account.getRoleId());
+            session.setAttribute("account_id", account.getId());
+            session.setAttribute("employeeId", account.getEmployeeId());
+            session.setMaxInactiveInterval(60 * 60 * 24);
+            if (remember != null && remember.equalsIgnoreCase("1")) {
+                cookie_email.setMaxAge(60 * 60);
+                cookie_password.setMaxAge(60 * 60);
                 response.addCookie(cookie_password);
-                session.setAttribute("account", account);
-                session.setAttribute("role", account.getRoleId());
-                session.setAttribute("account_id", account.getId());
-                session.setMaxInactiveInterval(60 * 60 * 24);
-                if (remember != null && remember.equalsIgnoreCase("1")) {
-                    cookie_email.setMaxAge(60 * 60);
-                    cookie_password.setMaxAge(60 * 60);
-                    response.addCookie(cookie_password);
-                } else {
-                    cookie_email.setMaxAge(0);
-                    cookie_password.setMaxAge(0);
-                    response.addCookie(cookie_password);
-                }
-                if (account.getRoleId() == 1) {//Manager
-                    response.sendRedirect("Dashboard.jsp");
-                } else if (account.getRoleId() == 2) {// Purchase Order Staff
-                    response.sendRedirect("viewpurchaseorder");
-                } else if (account.getRoleId() == 4) {//Storage Staff
-                    response.sendRedirect("Dashboard.jsp");
-                } else if (account.getRoleId() == 3) {//Admin
-                    response.sendRedirect("account");
-                }
-                response.addCookie(cookie_email);
+            } else {
+                cookie_email.setMaxAge(0);
+                cookie_password.setMaxAge(0);
                 response.addCookie(cookie_password);
             }
+            if (account.getRoleId() == 1) {//Manager
+                response.sendRedirect("Dashboard.jsp");
+            } else if (account.getRoleId() == 2) {// Purchase Order Staff
+                response.sendRedirect("viewpurchaseorder");
+            } else if (account.getRoleId() == 4) {//Storage Staff
+                response.sendRedirect("Dashboard.jsp");
+            } else if (account.getRoleId() == 3) {//Admin
+                response.sendRedirect("account");
+            }
+            response.addCookie(cookie_email);
+            response.addCookie(cookie_password);
         }
     }
+}

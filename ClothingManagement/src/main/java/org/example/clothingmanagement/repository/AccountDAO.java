@@ -283,6 +283,7 @@ public class AccountDAO {
                 account.setEmail(rs.getString("email"));
                 account.setStatus(rs.getString("status"));
                 account.setPassword(rs.getString("password"));
+                account.setEmployeeId(rs.getString("employeeId"));
                 account.setRoleId(rs.getInt("roleID"));
             }
         } catch (SQLException e) {

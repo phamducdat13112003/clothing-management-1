@@ -216,8 +216,9 @@
                                     <ul class="menu-bar__one-dropdown">
                                         <li><a href="viewpurchaseorder"><span class="menu-bar__text"><span
                                                 class="menu-bar__name">View Purchase Order</span></span></a></li>
-                                        <li><a href="Createpurchaseorder"><span class="menu-bar__text"><span
+                                        <li><a href="addinfomationpo"><span class="menu-bar__text"><span
                                                 class="menu-bar__name">Create Purchase Order </span></span></a></li>
+
                                     </ul>
                                 </div>
                             </li>
