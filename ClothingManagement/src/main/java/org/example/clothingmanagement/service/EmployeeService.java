@@ -74,5 +74,10 @@ public class EmployeeService {
     public Employee getEmployeeByID(String employeeID) throws SQLException{
         return employeeDAO.getEmployeeByID(employeeID);
     }
-
+    public String getEmployeeIdByAccountId(String accountId) throws Exception{
+        return employeeDAO.getEmployeeIdByAccountId(accountId);
+    }
+    public Employee getEmployeeByEmployeeId(String employeeId) throws SQLException{
+        return employeeDAO.getEmployeeByEmployeeId(employeeId);
+    }
 }

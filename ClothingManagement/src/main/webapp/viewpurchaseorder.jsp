@@ -6,7 +6,7 @@
   To change this template use File | Settings | File Templates.
 --%>
 <!DOCTYPE html>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html class="no-js" lang="zxx">
@@ -145,6 +145,55 @@
             color: white;
             border-color: #007bff;
         }
+        /* Định dạng chung cho các thẻ <a> */
+        .sherah-table__product-content a {
+            font-weight: bold;
+            text-decoration: none;
+            padding: 4px 8px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+            display: inline-block;
+        }
+
+        /* Màu sắc theo trạng thái */
+        .status-pending a {
+            color: #f39c12; /* Cam vàng */
+            background: rgba(243, 156, 18, 0.1);
+            border: 1px solid #f39c12;
+        }
+
+        .status-confirmed a {
+            color: #3498db; /* Xanh dương */
+            background: rgba(52, 152, 219, 0.1);
+            border: 1px solid #3498db;
+        }
+
+        .status-processing a {
+            color: #e67e22; /* Cam */
+            background: rgba(230, 126, 34, 0.1);
+            border: 1px solid #e67e22;
+        }
+
+        .status-done a {
+            color: #2ecc71; /* Xanh lá */
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px solid #2ecc71;
+        }
+
+        .status-cancel a {
+            color: #e74c3c; /* Đỏ */
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid #e74c3c;
+        }
+
+        /* Hiệu ứng hover */
+        .sherah-table__product-content a:hover {
+            background: rgba(0, 0, 0, 0.1);
+            color: #000;
+            transform: scale(1.05);
+        }
+
+
 
     </style>
 
@@ -165,6 +214,7 @@
                                 <div class="col-12 sherah-flex-between">
                                     <!-- Sherah Breadcrumb -->
                                     <div class="sherah-breadcrumb">
+
                                         <h2 class="sherah-breadcrumb__title">Purchase Order list</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="addpurchaseorder.jsp">Home</a></li>
@@ -172,10 +222,23 @@
                                         </ul>
                                     </div>
                                     <!-- End Sherah Breadcrumb -->
-                                    <a href="addinfomationpo" class="sherah-btn sherah-gbcolor">Add New PurchaseOrder</a>
+                                    <a href="addinfomationpo" class="sherah-btn sherah-gbcolor">Add New
+                                        PurchaseOrder</a>
                                 </div>
                             </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
+                                <c:if test="${not empty addposuccessfully}">
+                                    <div class="alert" style="color: green">${addposuccessfully}</div>
+                                    <% session.removeAttribute("addposuccessfully"); %> <!-- Xóa sau khi hiển thị -->
+                                </c:if>
+                                <c:if test="${not empty updatepostatussuccessfully}">
+                                    <div class="alert" style="color: green">${updatepostatussuccessfully}</div>
+                                    <% session.removeAttribute("updatepostatussuccessfully"); %> <!-- Xóa sau khi hiển thị -->
+                                </c:if>
+                                <c:if test="${not empty updateposuccessfully}">
+                                    <div class="alert" style="color: green">${updateposuccessfully}</div>
+                                    <% session.removeAttribute("updateposuccessfully"); %> <!-- Xóa sau khi hiển thị -->
+                                </c:if>
                                 <div class="search-container">
                                     <form action="searchpurchaseorder" method="GET" class="search-form">
                                         <input value="${txtS}" type="text" id="customSearch" name="txt"
@@ -228,17 +291,26 @@
                                             </td>
                                             <td class="sherah-table__column-5 sherah-table__data-5">
                                                 <div class="sherah-table__product-content">
-                                                    <p class="sherah-table__product-desc">${listpo.status}</p>
+                                                    <p class="
+                                                    <c:choose>
+                                                    <c:when test="${listpo.status == 'Pending'}">status-pending</c:when>
+                                                    <c:when test="${listpo.status == 'Confirmed'}">status-confirmed</c:when>
+                                                    <c:when test="${listpo.status == 'Processing'}">status-processing</c:when>
+                                                    <c:when test="${listpo.status == 'Done'}">status-done</c:when>
+                                                    <c:when test="${listpo.status == 'Cancel'}">status-cancel</c:when>
+                                                    </c:choose>">
+                                                        <a href="purchaseorderdetail?poID=${listpo.poID}"> ${listpo.status}</a>
+                                                    </p>
                                                 </div>
                                             </td>
                                             <td class="sherah-table__column-6 sherah-table__data-6">
                                                 <div class="sherah-table__product-content">
                                                     <p class="sherah-table__product-desc">
-                                                        <fmt:formatNumber value="${listpo.totalPrice}" type="number" groupingUsed="true" /> VNĐ
+                                                        <fmt:formatNumber value="${listpo.totalPrice}" type="number"
+                                                                          groupingUsed="true"/> VNĐ
                                                     </p>
                                                 </div>
                                             </td>
-
                                         </tr>
                                         <!-- Đóng thẻ <tr> -->
                                     </c:forEach>

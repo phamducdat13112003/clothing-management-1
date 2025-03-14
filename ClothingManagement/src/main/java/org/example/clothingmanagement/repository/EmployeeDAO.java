@@ -495,7 +495,7 @@ public class EmployeeDAO {
         return employee;
     }
 
-    public static String getEmployeeIdByAccountId(String accountId) {
+    public String getEmployeeIdByAccountId(String accountId) {
         String sql = "SELECT EmployeeID FROM Account WHERE AccountID = ?";
 
         try (Connection conn = DBContext.getConnection();
@@ -513,7 +513,49 @@ public class EmployeeDAO {
         }
         return null; // Return null if no matching EmployeeID is found
     }
+    public String getEmployeeIdByAccountId(int accountId) {
+        String sql = "SELECT EmployeeID FROM Account WHERE AccountID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, accountId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("EmployeeID");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null; // Trả về null nếu không tìm thấy EmployeeID
+    }
 
+    public Employee getEmployeeByEmployeeId(String employeeId) {
+        Employee employee = null;
+        String sql = "SELECT * FROM employee WHERE EmployeeID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, employeeId);
+            try (ResultSet rs = pt.executeQuery()) {
+                if (rs.next()) {
+                    employee = new Employee();
+                    employee.setEmployeeID(rs.getString("EmployeeID"));
+                    employee.setEmployeeName(rs.getString("EmployeeName"));
+                    employee.setEmail(rs.getString("Email"));
+                    employee.setPhone(rs.getString("Phone"));
+                    employee.setAddress(rs.getString("Address"));
+                    employee.setGender(rs.getBoolean("Gender"));
+                    employee.setDob(rs.getDate("Dob").toLocalDate());
+                    employee.setStatus(rs.getString("Status"));
+                    employee.setWarehouseID(rs.getString("WarehouseID"));
+                    employee.setImage(rs.getString("Image"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employee;
+    }
 
     public static void main(String[] args) {
 

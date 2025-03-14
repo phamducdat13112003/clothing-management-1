@@ -300,9 +300,54 @@ public class ProductDAO {
         }
         return productDetails;
     }
-
+    public List<Map<String, Object>> getListPodetailByPoID(String poID) {
+        List<Map<String, Object>> podetailList = new ArrayList<>();
+        String sql = "SELECT pod.POID, pod.PODetailID, pod.ProductDetailID, pod.Quantity, pod.Price, pod.TotalPrice, " +
+                "p.ProductID, p.ProductName, p.Price AS ProductPrice, p.SupplierID AS ProductSupplierID, " +
+                "pd.ProductDetailID, pd.Quantity AS ProductDetailQuantity, pd.Color, pd.Size, pd.ProductImage " +
+                "FROM POdetail pod " +
+                "JOIN ProductDetail pd ON pod.ProductDetailID = pd.ProductDetailID " +
+                "JOIN Product p ON pd.ProductID = p.ProductID " +
+                "WHERE pod.POID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, poID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> podetailMap = new HashMap<>();
+                podetailMap.put("POID", rs.getString("POID"));
+                podetailMap.put("PODetailID", rs.getString("PODetailID"));
+                podetailMap.put("ProductDetailID", rs.getString("ProductDetailID"));
+                podetailMap.put("Quantity", rs.getInt("Quantity"));
+                podetailMap.put("Price", rs.getDouble("Price"));
+                podetailMap.put("TotalPrice", rs.getDouble("TotalPrice"));
+                podetailMap.put("ProductID", rs.getString("ProductID"));
+                podetailMap.put("ProductName", rs.getString("ProductName"));
+                podetailMap.put("ProductPrice", rs.getDouble("ProductPrice"));
+                podetailMap.put("ProductSupplierID", rs.getString("ProductSupplierID"));
+                podetailMap.put("ProductDetailQuantity", rs.getInt("ProductDetailQuantity"));
+                podetailMap.put("Color", rs.getString("Color"));
+                podetailMap.put("Size", rs.getString("Size"));
+                podetailMap.put("ProductImage", rs.getString("ProductImage"));
+                podetailList.add(podetailMap);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching PO details", e);
+        }
+        return podetailList;
+    }
     public static void main(String[] args) {
+        ProductDAO productDAO = new ProductDAO();
 
+        // POID 예제 (적절한 값을 넣으세요)
+        String poID = "PO2025030800001";
+
+        List<Map<String, Object>> podetailList = productDAO.getListPodetailByPoID(poID);
+
+        // 결과 출력
+        for (Map<String, Object> podetail : podetailList) {
+            System.out.println(podetail);
+        }
     }
 
 }

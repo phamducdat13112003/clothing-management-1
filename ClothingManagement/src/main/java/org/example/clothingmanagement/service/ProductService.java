@@ -63,6 +63,10 @@ public class ProductService {
         return pd.getAllProductProductDetail();
     }
 
+    public List<Map<String, Object>> getListPodetailByPoID(String poID) throws Exception {
+        return pd.getListPodetailByPoID(poID);
+    }
+
 
 }
 

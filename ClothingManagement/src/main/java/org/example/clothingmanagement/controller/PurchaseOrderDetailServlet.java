@@ -124,18 +124,18 @@ public class PurchaseOrderDetailServlet extends HttpServlet {
                 e.printStackTrace();
             }
         }
-        System.out.println("====== Liste des PurchaseOrderDetailDTO ======");
-        for (PurchaseOrderDetailDTO dto : purchaseOrderDetailDTOs) {
-            System.out.println("Image: " + dto.getImage());
-            System.out.println("Product Name: " + dto.getProductName());
-            System.out.println("Weight: " + dto.getWeight());
-            System.out.println("Color: " + dto.getColor());
-            System.out.println("Size: " + dto.getSize());
-            System.out.println("Quantity: " + dto.getQuantity());
-            System.out.println("Price: " + dto.getPrice());
-            System.out.println("Total Price: " + dto.getTotalPrice());
-            System.out.println("---------------------------------------------");
-        }
+//        System.out.println("====== Liste des PurchaseOrderDetailDTO ======");
+//        for (PurchaseOrderDetailDTO dto : purchaseOrderDetailDTOs) {
+//            System.out.println("Image: " + dto.getImage());
+//            System.out.println("Product Name: " + dto.getProductName());
+//            System.out.println("Weight: " + dto.getWeight());
+//            System.out.println("Color: " + dto.getColor());
+//            System.out.println("Size: " + dto.getSize());
+//            System.out.println("Quantity: " + dto.getQuantity());
+//            System.out.println("Price: " + dto.getPrice());
+//            System.out.println("Total Price: " + dto.getTotalPrice());
+//            System.out.println("---------------------------------------------");
+//        }
 
         //hết gửi lên JSP
         request.setAttribute("purchaseOrder", purchaseOrder);
