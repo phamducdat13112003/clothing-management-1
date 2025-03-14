@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Builder
-public class Section {
-    private String sectionID;
-    private String sectionName;
-    private int sectionTypeId;
-
-    //
-    private int numberOfBins;
+public class SectionType {
+    private Integer sectionTypeId;
+    private String sectionTypeName;
+    private String warehouseId;
+    private String description;
 }

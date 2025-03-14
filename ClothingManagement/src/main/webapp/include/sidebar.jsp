@@ -64,12 +64,12 @@
                                                 </g>
                                                 </svg>
                                             </span>
-                                            <span class="menu-bar__name">Bin</span></span> <span
+                                            <span class="menu-bar__name">Section</span></span> <span
                                 class="sherah__toggle"></span></a></span>
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item_vendors" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
-                                    <li><a href="${pageContext.request.contextPath}/list-bin"><span class="menu-bar__text"><span class="menu-bar__name">List Bin</span></span></a>
+                                    <li><a href="${pageContext.request.contextPath}/view-list-section-type"><span class="menu-bar__text"><span class="menu-bar__name">List SectionType</span></span></a>
                                     </li>
                                     <li><a href="vendor-list.html"><span class="menu-bar__text"><span
                                             class="menu-bar__name">Vendor List</span></span></a></li>

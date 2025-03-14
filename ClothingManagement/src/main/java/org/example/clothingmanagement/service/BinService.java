@@ -48,6 +48,10 @@ public class BinService {
         return binDAO.countBinDetail(nameSearch, binID);
     }
 
+    public List<Bin> getBinsBySectionId(String sectionId){
+        return binDAO.getBinsBySectionId(sectionId);
+    }
+
     public static void main(String[] args){
         BinService bs = new BinService();
         List<Bin> list = bs.getAllBin();

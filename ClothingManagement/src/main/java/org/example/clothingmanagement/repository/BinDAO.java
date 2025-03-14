@@ -226,6 +226,34 @@ public class BinDAO {
         return 0;
     }
 
+    public List<Bin> getBinsBySectionId(String sectionId){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
+            sql.append(" FROM Bin ");
+            sql.append(" WHERE SectionID = ? ");
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+            stmt.setString(1, sectionId);
+            ResultSet rs = stmt.executeQuery();
+            List<Bin> bins = new ArrayList<>();
+            while (rs.next()) {
+                Bin bin = Bin.builder()
+                        .binID(rs.getString("BinID"))
+                        .binName(rs.getString("BinName"))
+                        .maxCapacity(rs.getDouble("MaxCapacity"))
+                        .status(rs.getBoolean("Status"))
+                        .currentCapacity(0.0)
+                        .sectionID(rs.getString("SectionID"))
+                        .build();
+                bins.add(bin);
+            }
+            return bins;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         BinDAO dao = new BinDAO();
         List<BinDetail> list = dao.getBinDetailByBinID("B003", 1, 10);

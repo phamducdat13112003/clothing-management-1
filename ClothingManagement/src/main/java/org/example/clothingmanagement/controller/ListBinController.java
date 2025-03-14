@@ -27,7 +27,9 @@ public class ListBinController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Bin> bins = bs.getAllBin();
+        String sectionId = req.getParameter("id");
+
+        List<Bin> bins = bs.getBinsBySectionId(sectionId);
 
         for(Bin b : bins){
             List<BinDetail> list = bds.getAllBinDetailAndProductDetailByBinId(b.getBinID());
