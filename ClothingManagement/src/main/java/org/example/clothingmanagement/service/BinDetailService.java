@@ -17,7 +17,15 @@ public class BinDetailService {
         return bdd.getAllBinDetails();
     }
 
-    public List<BinDetail> getAllBinDetailAndProductDetail(){
-        return bdd.getAllBinDetailAndProductDetail();
+    public List<BinDetail> getAllBinDetailAndProductDetailByBinId(String binId) {
+        return bdd.getAllBinDetailAndProductDetailByBinId(binId);
+    }
+
+    public static void main(String[] args){
+        BinDetailService binDetailService = new BinDetailService();
+        List<BinDetail> list = binDetailService.getAllBinDetailAndProductDetailByBinId("B001");
+        for(BinDetail bd : list){
+            System.out.println(bd);
+        }
     }
 }

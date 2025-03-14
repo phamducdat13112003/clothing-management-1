@@ -16,6 +16,7 @@ public class BinDetail {
     private int quantity;
 
     // trong database không có
+    private int totalQuantity;
     private int status;
     private double weight;
     private String color;

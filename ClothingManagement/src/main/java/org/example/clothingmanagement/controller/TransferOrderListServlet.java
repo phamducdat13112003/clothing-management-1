@@ -11,7 +11,7 @@ import org.example.clothingmanagement.repository.TransferOrderDAO;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "TransferOrderListServlet", value = "/transfer-order/list")
+@WebServlet(name = "TransferOrderListServlet", value = "/TOList")
 public class TransferOrderListServlet extends HttpServlet {
 
     private TransferOrderDAO transferOrderDAO;
@@ -25,27 +25,27 @@ public class TransferOrderListServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if ("delete".equals(action)) {
+        if ("cancel".equals(action)) {
             String toID = request.getParameter("toID");
             if (toID != null && !toID.trim().isEmpty()) {
-                boolean isDeleted = transferOrderDAO.deleteTransferOrder(toID);
-                if (isDeleted) {
+                boolean isCanceled = transferOrderDAO.cancelTransferOrder(toID);
+                if (isCanceled) {
                     // Redirect to the list page after successful deletion
-                    response.sendRedirect("/ClothingManagement_war/transfer-order/list");
+                    response.sendRedirect("/ClothingManagement_war_exploded/TOList");
                 } else {
                     // If deletion failed, set an error message
-                    request.setAttribute("errorMessage", "Error deleting the transfer order.");
-                    request.getRequestDispatcher("/test.jsp").forward(request, response);
+                    request.setAttribute("errorMessage", "Error canceling the transfer order.");
+                    request.getRequestDispatcher("to-list.jsp").forward(request, response);
                 }
             } else {
                 request.setAttribute("errorMessage", "Invalid Transfer Order ID.");
-                request.getRequestDispatcher("/test.jsp").forward(request, response);
+                request.getRequestDispatcher("to-list.jsp").forward(request, response);
             }
         } else {
             // Default: Show all transfer orders
             List<TransferOrder> transferOrders = transferOrderDAO.getAllTransferOrders();
             request.setAttribute("transferOrders", transferOrders);
-            request.getRequestDispatcher("/test.jsp").forward(request, response);
+            request.getRequestDispatcher("to-list.jsp").forward(request, response);
         }
     }
 }

@@ -112,7 +112,7 @@ public class TransferOrderDAO {
     }
 
     public boolean cancelTransferOrder(String toID) {
-        String sql = "UPDATE TransferOrder SET Status = 'Inactive' WHERE TOID = ?";
+        String sql = "UPDATE TransferOrder SET Status = 'Cancelled' WHERE TOID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -124,23 +124,32 @@ public class TransferOrderDAO {
         return false;
     }
 
-    public boolean deleteTransferOrder(String toID) {
-        boolean isDeleted = false;
-        String sql = "DELETE FROM transferorder WHERE TOID = ?";
+    public String generateNextTOID() throws SQLException {
+        String sql = "SELECT TOP 1 toID FROM TransferOrder ORDER BY toID DESC";
+        String latestToID = null;
 
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        try (Connection connection = DBContext.getConnection(); // Make sure to use your connection logic
+             PreparedStatement preparedStatement = connection.prepareStatement(sql);
+             ResultSet resultSet = preparedStatement.executeQuery()) {
 
-            stmt.setString(1, toID);  // Set the TOID to be deleted
-            int rowsAffected = stmt.executeUpdate();
-            if (rowsAffected > 0) {
-                isDeleted = true;  // Successful deletion
+            if (resultSet.next()) {
+                latestToID = resultSet.getString("toID");
             }
-        } catch (SQLException e) {
-            e.printStackTrace();  // Log the error
         }
-        return isDeleted;  // Return whether the deletion was successful
+
+        // If no Transfer Order exists, start from TO001
+        if (latestToID == null) {
+            return "TO001";
+        }
+
+        // Extract the numeric part and increment it
+        String numericPart = latestToID.substring(2); // Get the part after "TO"
+        int nextNumber = Integer.parseInt(numericPart) + 1;
+
+        // Format the number to always have 3 digits
+        return "TO" + String.format("%03d", nextNumber);
     }
+
 
     public List<TODetail> getTODetailsByTransferOrderId(String toID) {
         List<TODetail> toDetails = new ArrayList<>();
@@ -165,6 +174,34 @@ public class TransferOrderDAO {
             e.printStackTrace();
         }
         return toDetails;
+    }
+
+    public String getNextToID() {
+        String nextToID = "TO001"; // Default first ID
+        String sql = "SELECT MAX(toID) FROM transferorder";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next() && rs.getString(1) != null) {
+                String lastToID = rs.getString(1);
+
+                // Extract the numeric part
+                String numericPart = lastToID.substring(2); // Remove "TO" prefix
+
+                // Parse to integer and increment
+                int nextNumber = Integer.parseInt(numericPart) + 1;
+
+                // Format with leading zeros (TO001, TO002, etc.)
+                nextToID = "TO" + String.format("%03d", nextNumber);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // If there's an error, use the default TO001
+        }
+
+        return nextToID;
     }
 
     public boolean isBinValid(String binID) {

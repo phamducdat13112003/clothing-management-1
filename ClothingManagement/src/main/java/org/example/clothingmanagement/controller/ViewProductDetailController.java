@@ -46,8 +46,7 @@ public class ViewProductDetailController extends HttpServlet {
 //        Part filePart = req.getPart("img"); // Lấy phần tệp tải lên từ input có name="img"
 //        String image = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Lấy tên tệp
         Double weight = Double.parseDouble(req.getParameter("weight"));
-        Integer quantity = Integer.parseInt(req.getParameter("quantity"));
-        ProductDetail pd = new ProductDetail(id,"image",quantity,weight);
+        ProductDetail pd = new ProductDetail(id,"image",weight);
         boolean check = pds.updateProductDetail(pd);
         if (check) {
             HttpSession session = req.getSession();
