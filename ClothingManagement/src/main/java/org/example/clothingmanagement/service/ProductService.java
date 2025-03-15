@@ -33,8 +33,12 @@ public class ProductService {
         return map;
     }
 
-    public HashMap<Product, String> searchProducts(String nameSearch, int page, int pageSize){
-        List<Product> products = pd.searchProducts(nameSearch, page, pageSize);
+    public List<Product> searchProductsByNameSearch(String nameSearch){
+        return pd.searchProductsByNameSearch(nameSearch);
+    }
+
+    public HashMap<Product, String> searchProductsWithPagination(String nameSearch, int page, int pageSize){
+        List<Product> products = pd.searchProductsWithPagination(nameSearch, page, pageSize);
         List<Category> categories = cs.selectAll();
         HashMap<Product, String> map = new HashMap<>();
         for (Product product : products) {
@@ -99,7 +103,8 @@ public class ProductService {
     public static void main (String[] args) {
         ProductService ps = new ProductService();
         HashMap<Product,String> products = ps.getAllProductsWithPagination(1,5);
-        for(Product product : products.keySet()){
+        List<Product> list = ps.searchProductsByNameSearch("P");
+        for(Product product : list){
             System.out.println(product);
         }
     }

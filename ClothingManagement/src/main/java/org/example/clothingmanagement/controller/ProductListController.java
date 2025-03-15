@@ -79,8 +79,8 @@ public class ProductListController extends HttpServlet {
                 }
             }
         }
-        list = ps.searchProducts(nameSearch,page,pageSize);
-        totalProducts = list.size();
+        list = ps.searchProductsWithPagination(nameSearch,page,pageSize);
+        totalProducts = ps.searchProductsByNameSearch(nameSearch).size();
         int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
         req.setAttribute("list", list);
         req.setAttribute("currentPage", page);
