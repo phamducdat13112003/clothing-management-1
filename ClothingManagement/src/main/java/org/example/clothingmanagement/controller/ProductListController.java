@@ -29,6 +29,7 @@ public class ProductListController extends HttpServlet {
         int page=1;
         int pageSize = 5; // Số dòng trên mỗi trang
 
+
         String pageParam = req.getParameter("page");
         if (pageParam != null) {
             page = Integer.parseInt(pageParam);
@@ -64,7 +65,6 @@ public class ProductListController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
         String pageParam = req.getParameter("page");
-        double maxCapacity =0.0;
 
         HashMap<Product,String> list= null;
         int page = 1;

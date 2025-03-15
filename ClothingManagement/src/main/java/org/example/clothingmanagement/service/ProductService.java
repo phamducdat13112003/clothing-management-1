@@ -79,6 +79,10 @@ public class ProductService {
         return pd.getProductByProductID(productID);
     }
 
+    public List<Product> getProductsWithPagination(int page, int pageSize) {
+        return pd.getProductsWithPagination(page, pageSize);
+    }
+
 
 //    public HashMap<Product, String> searchProducts(String txt) throws Exception {
 //        return pd.searchProducts(txt);
@@ -92,13 +96,13 @@ public class ProductService {
         return pd.getListPodetailByPoID(poID);
     }
 
-//    public static void main (String[] args) {
-//        ProductService ps = new ProductService();
-//        HashMap<Product> products = ps.searchProducts("spring",1,5);
-//        for (Product product : products) {
-//            System.out.println(product);
-//        }
-//    }
+    public static void main (String[] args) {
+        ProductService ps = new ProductService();
+        HashMap<Product,String> products = ps.getAllProductsWithPagination(1,5);
+        for(Product product : products.keySet()){
+            System.out.println(product);
+        }
+    }
 
 
 }

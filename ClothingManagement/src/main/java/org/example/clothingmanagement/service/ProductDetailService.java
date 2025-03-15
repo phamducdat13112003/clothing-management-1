@@ -1,6 +1,7 @@
 package org.example.clothingmanagement.service;
 
 import org.example.clothingmanagement.entity.ProductDetail;
+import org.example.clothingmanagement.repository.DBContext;
 import org.example.clothingmanagement.repository.ProductDetailDAO;
 
 import java.util.ArrayList;
@@ -16,6 +17,14 @@ public class ProductDetailService {
 
     public List<ProductDetail> getAllProductDetailByProductId(String productId) {
         return productDetailDAO.findByProductId(productId);
+    }
+
+    public List<ProductDetail> SearchProductDetailByProductIdWithPagination(String productId,String nameSearch,int page,int pageSize) {
+        return productDetailDAO.SearchProductDetailByProductIdWithPagination(productId,nameSearch,page,pageSize);
+    }
+
+    public List<ProductDetail> getProductDetailByProductIdWithPagination(String productId,int page,int pageSize) {
+        return productDetailDAO.getProductDetailByProductIdWithPagination(productId,page,pageSize);
     }
 
     public Optional<ProductDetail> findTheFirstProductDetailOfProductId(String productId) {
@@ -79,7 +88,7 @@ public class ProductDetailService {
 
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
-        List<ProductDetail> pdList = pds.getAllProductDetailByProductId("P001");
+        List<ProductDetail> pdList = pds.SearchProductDetailByProductIdWithPagination("P002","blue",1,5);
         for(ProductDetail pd : pdList){
             System.out.println(pd);
         }

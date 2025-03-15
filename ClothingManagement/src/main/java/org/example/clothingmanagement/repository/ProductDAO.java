@@ -416,6 +416,7 @@ public class ProductDAO {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product ");
+            sql.append(" ORDER BY ProductID ASC ");
             sql.append(" LIMIT ? OFFSET ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setInt(1, pageSize);
