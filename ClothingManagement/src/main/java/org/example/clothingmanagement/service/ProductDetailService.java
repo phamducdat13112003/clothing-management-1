@@ -19,6 +19,10 @@ public class ProductDetailService {
         return productDetailDAO.findByProductId(productId);
     }
 
+    public List<ProductDetail> SearchProductDetailByProductIdAndNameSearch(String productId,String nameSearch) {
+        return productDetailDAO.SearchProductDetailByProductIdAndNameSearch(productId,nameSearch);
+    }
+
     public List<ProductDetail> SearchProductDetailByProductIdWithPagination(String productId,String nameSearch,int page,int pageSize) {
         return productDetailDAO.SearchProductDetailByProductIdWithPagination(productId,nameSearch,page,pageSize);
     }
@@ -88,7 +92,7 @@ public class ProductDetailService {
 
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
-        List<ProductDetail> pdList = pds.SearchProductDetailByProductIdWithPagination("P002","blue",1,5);
+        List<ProductDetail> pdList = pds.SearchProductDetailByProductIdAndNameSearch("P002","blue");
         for(ProductDetail pd : pdList){
             System.out.println(pd);
         }

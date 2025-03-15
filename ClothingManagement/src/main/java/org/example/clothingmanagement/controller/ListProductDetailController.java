@@ -71,7 +71,7 @@ public class ListProductDetailController extends HttpServlet {
         }
 
         List<ProductDetail> list = pds.SearchProductDetailByProductIdWithPagination(productId,nameSearch,page,pageSize);
-        int totalProducts = list.size();
+        int totalProducts = pds.SearchProductDetailByProductIdAndNameSearch(productId,nameSearch).size();
         int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
         req.setAttribute("list", list);
         req.setAttribute("currentPage", page);
