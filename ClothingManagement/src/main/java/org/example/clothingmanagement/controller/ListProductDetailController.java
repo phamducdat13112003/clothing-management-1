@@ -54,9 +54,17 @@ public class ListProductDetailController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String productId = req.getParameter("productId");
+        String productId = req.getParameter("id");
         String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
         String pageParam = req.getParameter("page");
+
+        Product product = new Product();
+        if(ps.getProductById(productId).isPresent()){
+            product = ps.getProductById(productId).get();
+        }
+        else{
+            product = new Product();
+        }
 
         int page = 1;
         int pageSize = 5;
@@ -77,6 +85,7 @@ public class ListProductDetailController extends HttpServlet {
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
         req.setAttribute("search", nameSearch);
+        req.setAttribute("product", product);
         req.getRequestDispatcher("list-product-detail.jsp").forward(req, resp);
     }
 }

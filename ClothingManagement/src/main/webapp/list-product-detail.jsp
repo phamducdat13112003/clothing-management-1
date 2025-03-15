@@ -107,7 +107,7 @@
                                 <div class="col-6">
                                     <form action="list-product-detail" method="POST" class="search-form">
                                         <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
-                                        <input type="hidden" name="productId" value="${product.id}" />
+                                        <input type="hidden" name="id" value="${product.id}" />
                                         <button type="submit" class="search-button">Search</button>
                                     </form>
                                 </div>
