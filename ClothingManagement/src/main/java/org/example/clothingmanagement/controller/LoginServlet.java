@@ -5,7 +5,9 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.Encryption.MD5;
 import org.example.clothingmanagement.entity.Account;
+import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.service.AccountService;
+import org.example.clothingmanagement.service.EmployeeService;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -21,16 +23,25 @@ public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         AccountService accountDAO = new AccountService();
+        EmployeeService employeeService = new EmployeeService();
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         String hashedPassword = MD5.getMd5(password); // Mã hóa mật khẩu trước khi kiểm tra
         String remember = request.getParameter("remember");
+        Employee employee = null;
         Account account = null;
+
         try {
             account = accountDAO.findAccount(email, hashedPassword); // Kiểm tra với mật khẩu đã mã hóa
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        try {
+            employee = employeeService.getEmployeeByEmployeeId(account.getEmployeeId());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        System.out.println(employee);
         Cookie cookie_email = new Cookie("cookie_email", email);
         Cookie cookie_password = new Cookie("cookie_password", password);
         if (account == null) {
@@ -49,6 +60,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("role", account.getRoleId());
             session.setAttribute("account_id", account.getId());
             session.setAttribute("employeeId", account.getEmployeeId());
+            session.setAttribute("employeeName",employee.getEmployeeName());
             session.setMaxInactiveInterval(60 * 60 * 24);
             if (remember != null && remember.equalsIgnoreCase("1")) {
                 cookie_email.setMaxAge(60 * 60);

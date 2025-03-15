@@ -436,7 +436,7 @@
             totalAmount += total;
         });
 
-        document.getElementById("totalAmountPO").textContent = totalAmount.toLocaleString() + " VNĐ";
+        document.getElementById("totalAmountPO").textContent = totalAmount.toLocaleString();
         document.getElementById("hiddenTotalAmountPO").value = totalAmount;
     }
 
