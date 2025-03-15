@@ -39,10 +39,6 @@ public class UpdatePurchaseOrderServlet extends HttpServlet {
             forwardWithError(request, response, poid, "You must choose a product");
             return;
         }
-
-        System.out.println("Danh sách supplieridbyproduct: " + Arrays.toString(supplieridbyproduct));
-        System.out.println("Supplier ID đã chọn: " + supplierid);
-
         // Kiểm tra nếu tất cả sản phẩm có cùng supplier ID không
         HashSet<String> supplierSet = new HashSet<>(Arrays.asList(supplieridbyproduct));
         if (!supplierSet.contains(supplierid) || supplierSet.size() > 1) {
@@ -51,6 +47,13 @@ public class UpdatePurchaseOrderServlet extends HttpServlet {
         }
 
         try {
+            // Debug: In ra giá trị của các tham số
+            System.out.println("poid: " + poid);
+            System.out.println("priceinput: " + Arrays.toString(priceinput));
+            System.out.println("quantity: " + Arrays.toString(quantity));
+            System.out.println("totalpricepod: " + Arrays.toString(totalpricepod));
+            System.out.println("totalAmountPO: " + request.getParameter("totalAmountPO"));
+
             // Xóa bản cũ và cập nhật PO
             purchaseOrderDetailService.deletePoDetailByPoID(poid);
             float totalAmountPO = Float.parseFloat(request.getParameter("totalAmountPO"));
@@ -62,10 +65,10 @@ public class UpdatePurchaseOrderServlet extends HttpServlet {
             request.getSession().setAttribute("updateposuccessfully", "Update " + poid + " Success");
             request.setAttribute("purchaseOrderList", purchaseOrderList);
             request.getRequestDispatcher("viewpurchaseorder.jsp").forward(request, response);
-
         } catch (SQLException e) {
             throw new RuntimeException("Database error: " + e.getMessage(), e);
         }
+
     }
     private void forwardWithError(HttpServletRequest request, HttpServletResponse response, String poid, String errorMessage) throws ServletException, IOException {
         try {
