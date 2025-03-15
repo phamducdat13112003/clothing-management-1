@@ -12,8 +12,8 @@ public class ProductService {
     private final CategoryService cs = new CategoryService();
     private final ProductDetailService pds = new ProductDetailService();
 
-    public HashMap<Product, String> getAllProducts() {
-        List<Product> products = pd.getAllProducts();
+    public HashMap<Product, String> getAllProductsWithPagination(int page, int pageSize) {
+        List<Product> products = pd.getProductsWithPagination(page, pageSize);
         List<Category> categories = cs.selectAll();
         HashMap<Product, String> map = new HashMap<>();
         for (Product product : products) {
@@ -31,6 +31,31 @@ public class ProductService {
             }
         }
         return map;
+    }
+
+    public HashMap<Product, String> searchProducts(String nameSearch, int page, int pageSize){
+        List<Product> products = pd.searchProducts(nameSearch, page, pageSize);
+        List<Category> categories = cs.selectAll();
+        HashMap<Product, String> map = new HashMap<>();
+        for (Product product : products) {
+            // take the first productDetail of a product
+            if (pds.findTheFirstProductDetailOfProductId(product.getId()).isPresent()) {
+                ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId(product.getId()).get();
+                product.setUrlImage(productDetail.getImage());
+            } else {
+                product.setUrlImage("errorImage-NoDataFound");
+            }
+            for (Category category : categories) {
+                if (product.getCategoryId() == category.getCategoryID()) {
+                    map.put(product, category.getCategoryName());
+                }
+            }
+        }
+        return map;
+    }
+
+    public List<Product> getAllProducts() {
+        return pd.getAllProducts();
     }
 
     public boolean addProduct(Product product) {
@@ -66,6 +91,14 @@ public class ProductService {
     public List<Map<String, Object>> getListPodetailByPoID(String poID) throws Exception {
         return pd.getListPodetailByPoID(poID);
     }
+
+//    public static void main (String[] args) {
+//        ProductService ps = new ProductService();
+//        HashMap<Product> products = ps.searchProducts("spring",1,5);
+//        for (Product product : products) {
+//            System.out.println(product);
+//        }
+//    }
 
 
 }

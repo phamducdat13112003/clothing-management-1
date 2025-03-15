@@ -1,9 +1,6 @@
 package org.example.clothingmanagement.repository;
 
-import org.example.clothingmanagement.entity.BinDetail;
-import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.entity.Product;
-import org.example.clothingmanagement.entity.ProductDetail;
+import org.example.clothingmanagement.entity.*;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,6 +41,56 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public List<Product> searchProducts(String nameSearch, int page, int pageSize) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status ");
+            sql.append(" FROM Product ");
+            sql.append(" WHERE 1=1 ");
+            if(!nameSearch.isEmpty()){
+                sql.append(" AND (ProductId LIKE ? ");
+                sql.append(" OR ProductName LIKE ? ");
+                sql.append(" OR seasons LIKE ?) ");
+            }
+            sql.append(" ORDER BY ProductID ASC ");
+            sql.append(" LIMIT ? OFFSET ?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            int paramIndex = 1;
+
+            if (!nameSearch.isEmpty()) {
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+            ps.setInt(paramIndex++, pageSize);
+            ps.setInt(paramIndex++, (page - 1) * pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<Product> products = new ArrayList<>();
+            while (rs.next()) {
+                Product product = Product.builder()
+                        .id(rs.getString("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate"))
+                        .description(rs.getString("Description"))
+                        .createdBy(rs.getString("CreatedBy"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .Status(rs.getInt("Status"))
+                        .build();
+                products.add(product);
+            }
+            return products;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public boolean addProduct(Product product) {
@@ -336,6 +383,71 @@ public class ProductDAO {
         }
         return podetailList;
     }
+
+//    public List<Product> getProductsWithPagination(int page, int pageSize) {
+//        List<Product> products = new ArrayList<>();
+//        StringBuilder sql = new StringBuilder();
+//        sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product ");
+//        sql.append(" LIMIT ? OFFSET ? ");
+//        String sql = "SELECT * FROM Supplier WHERE Status = 1 LIMIT ? OFFSET ?";
+//        try (Connection conn = DBContext.getConnection();
+//             PreparedStatement pt = conn.prepareStatement(sql)) {
+//            pt.setInt(1, pageSize);
+//            pt.setInt(2, (page - 1) * pageSize);
+//            ResultSet rs = pt.executeQuery();
+//            while (rs.next()) {
+//                Supplier supplier = new Supplier();
+//                supplier.setSupplierId(rs.getString("SupplierID"));
+//                supplier.setSupplierName(rs.getString("SupplierName"));
+//                supplier.setEmail(rs.getString("ContactEmail"));
+//                supplier.setPhone(rs.getString("Phone"));
+//                supplier.setAddress(rs.getString("Address"));
+//                supplier.setStatus(rs.getBoolean("Status"));
+//                suppliers.add(supplier);
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return suppliers;
+//    }
+
+    public List<Product> getProductsWithPagination(int page, int pageSize) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product ");
+            sql.append(" LIMIT ? OFFSET ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setInt(1, pageSize);
+            ps.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<Product> productList = new ArrayList<>();
+            while (rs.next()) {
+                Product product = Product.builder()
+                        .id(rs.getString("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate"))
+                        .description(rs.getString("Description"))
+                        .createdBy(rs.getString("CreatedBy"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .Status(rs.getInt("Status"))
+                        .build();
+                productList.add(product);
+            }
+            return productList;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 
