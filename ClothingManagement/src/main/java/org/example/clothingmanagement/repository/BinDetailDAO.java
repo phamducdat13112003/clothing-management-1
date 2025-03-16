@@ -12,6 +12,67 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 public class BinDetailDAO {
+    public List<BinDetail> getBinDetailsWithPagination(String binId,int page, int pageSize){
+        try (Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT binDetailId, binId, productDetailId, quantity ");
+            sql.append(" FROM binDetail ");
+            sql.append(" WHERE binId = ? ");
+            sql.append(" ORDER BY binId ASC ");
+            sql.append(" LIMIT ? OFFSET ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, binId);
+            ps.setInt(2, pageSize);
+            ps.setInt(3, (page-1)*pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<BinDetail> binDetails = new ArrayList<>();
+            while (rs.next()) {
+                BinDetail bd = BinDetail.builder()
+                        .binDetailId(rs.getString("binDetailId"))
+                        .binId(rs.getString("binId"))
+                        .productDetailId(rs.getString("productDetailId"))
+                        .quantity(rs.getInt("quantity"))
+                        .build();
+                binDetails.add(bd);
+            }
+            return binDetails;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<BinDetail> searchBinDetailWithPagination(String binId,String nameSearch, int page, int pageSize){
+        try (Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT binDetailId, binId, productDetailId, quantity ");
+            sql.append(" FROM binDetail ");
+            sql.append(" WHERE binId = ? ");
+            if(!nameSearch.isEmpty()){
+
+            }
+            sql.append(" ORDER BY binId ASC ");
+            sql.append(" LIMIT ? OFFSET ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, binId);
+            ps.setInt(2, pageSize);
+            ps.setInt(3, (page-1)*pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<BinDetail> binDetails = new ArrayList<>();
+            while (rs.next()) {
+                BinDetail bd = BinDetail.builder()
+                        .binDetailId(rs.getString("binDetailId"))
+                        .binId(rs.getString("binId"))
+                        .productDetailId(rs.getString("productDetailId"))
+                        .quantity(rs.getInt("quantity"))
+                        .build();
+                binDetails.add(bd);
+            }
+            return binDetails;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<BinDetail> getAllBinDetails() {
         try (Connection con = DBContext.getConnection()) {
             StringBuilder sql = new StringBuilder();

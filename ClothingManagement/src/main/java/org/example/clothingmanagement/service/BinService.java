@@ -6,6 +6,7 @@ import org.example.clothingmanagement.repository.BinDAO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class BinService {
 
@@ -45,6 +46,10 @@ public class BinService {
 
     public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize){
         return binDAO.searchBinDetail(nameSearch, binID, page, pageSize);
+    }
+
+    public Optional<Bin> getBinByBinId(String binID){
+        return binDAO.getBinByBinId(binID);
     }
 
     public List<Bin> getAllBin(){

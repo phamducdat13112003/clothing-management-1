@@ -29,7 +29,6 @@ public class ProductListController extends HttpServlet {
         int page=1;
         int pageSize = 5; // Số dòng trên mỗi trang
 
-
         String pageParam = req.getParameter("page");
         if (pageParam != null) {
             page = Integer.parseInt(pageParam);

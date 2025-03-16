@@ -23,9 +23,14 @@ public class BinDetailService {
     public String getLastBinDetailId(String binId) throws Exception{
         return bdd.getLastBinDetailId(binId);
     }
+
+    public List<BinDetail> getBinDetailsWithPagination(String binId, int page, int pageSize) {
+        return bdd.getBinDetailsWithPagination(binId, page, pageSize);
+    }
+
     public static void main(String[] args){
         BinDetailService binDetailService = new BinDetailService();
-        List<BinDetail> list = binDetailService.getAllBinDetailAndProductDetailByBinId("B001");
+        List<BinDetail> list = binDetailService.getBinDetailsWithPagination("FW001-001",1,5);
         for(BinDetail bd : list){
             System.out.println(bd);
         }
