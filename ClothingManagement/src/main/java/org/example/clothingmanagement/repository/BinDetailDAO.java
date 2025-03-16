@@ -93,5 +93,23 @@ public class BinDetailDAO {
 
 
     }
+    public String getLastBinDetailId(String binId) {
+        String lastBinDetailId = null;
+        String sql = "SELECT binDetailId FROM binDetail WHERE binId = ? ORDER BY binDetailId DESC LIMIT 1";
+
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, binId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    lastBinDetailId = rs.getString("binDetailId");
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Lỗi khi lấy binDetailId cuối cùng: " + e.getMessage(), e);
+        }
+
+        return lastBinDetailId;
+    }
 }
 
