@@ -43,7 +43,54 @@ public class ProductDAO {
 
     }
 
-    public List<Product> searchProducts(String nameSearch, int page, int pageSize) {
+    public List<Product> searchProductsByNameSearch(String nameSearch){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status ");
+            sql.append(" FROM Product ");
+            sql.append(" WHERE 1=1 ");
+            if(!nameSearch.isEmpty()){
+                sql.append(" AND (ProductId LIKE ? ");
+                sql.append(" OR ProductName LIKE ? ");
+                sql.append(" OR seasons LIKE ?) ");
+            }
+            sql.append(" ORDER BY ProductID ASC ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            int paramIndex = 1;
+
+            if (!nameSearch.isEmpty()) {
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+            ResultSet rs = ps.executeQuery();
+            List<Product> products = new ArrayList<>();
+            while (rs.next()) {
+                Product product = Product.builder()
+                        .id(rs.getString("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate"))
+                        .description(rs.getString("Description"))
+                        .createdBy(rs.getString("CreatedBy"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .Status(rs.getInt("Status"))
+                        .build();
+                products.add(product);
+            }
+            return products;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Product> searchProductsWithPagination(String nameSearch, int page, int pageSize) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status ");
@@ -416,6 +463,7 @@ public class ProductDAO {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product ");
+            sql.append(" ORDER BY ProductID ASC ");
             sql.append(" LIMIT ? OFFSET ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setInt(1, pageSize);
@@ -447,7 +495,36 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
     }
-
+    public List<Map<String, Object>> getListProductByPoID(String poID) {
+        List<Map<String, Object>> productList = new ArrayList<>();
+        String sql = "SELECT p.ProductID, p.Price AS ProductPrice, pd.ProductDetailID, pd.Quantity AS ProductDetailQuantity, " +
+                "pd.Weight, pod.PODetailID, pod.Quantity AS PoDetailQuantity, po.POID " +
+                "FROM PO po " +
+                "JOIN PoDetail pod ON po.POID = pod.POID " +
+                "JOIN ProductDetail pd ON pod.ProductDetailID = pd.ProductDetailID " +
+                "JOIN Product p ON pd.ProductID = p.ProductID " +
+                "WHERE po.POID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, poID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> productMap = new HashMap<>();
+                productMap.put("ProductID", rs.getString("ProductID"));
+                productMap.put("ProductPrice", rs.getDouble("ProductPrice"));
+                productMap.put("ProductDetailID", rs.getString("ProductDetailID"));
+                productMap.put("ProductDetailQuantity", rs.getInt("ProductDetailQuantity"));
+                productMap.put("Weight", rs.getDouble("Weight"));
+                productMap.put("PODetailID", rs.getString("PODetailID"));
+                productMap.put("PoDetailQuantity", rs.getInt("PoDetailQuantity"));
+                productMap.put("POID", rs.getString("POID"));
+                productList.add(productMap);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching product list by POID", e);
+        }
+        return productList;
+    }
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 

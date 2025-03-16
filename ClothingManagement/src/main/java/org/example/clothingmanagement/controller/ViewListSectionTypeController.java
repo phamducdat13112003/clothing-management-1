@@ -5,6 +5,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.entity.SectionType;
 import org.example.clothingmanagement.service.SectionTypeService;
 
@@ -17,13 +18,47 @@ public class ViewListSectionTypeController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<SectionType> list = sts.getAllSectionTypes();
-        req.setAttribute("list", list);
+        int page = 1;
+        int pageSize = 5;
+        String pageParam = req.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        List<SectionType> sectionTypes = sts.getSectionTypesWithPagination(page,pageSize);
+        int totalProduct = sts.getAllSectionTypes().size();
+        int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
+
+        req.setAttribute("list", sectionTypes);
+        req.setAttribute("currentPage", page);
+        req.setAttribute("totalPages", totalPages);
         req.getRequestDispatcher("list-section-type.jsp").forward(req, resp);
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
+        String pageParam = req.getParameter("page");
 
+        int page = 1;
+        int pageSize = 5;
+        if(!nameSearch.isEmpty()){
+            if (pageParam != null) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+        }
+
+        List<SectionType> list = sts.searchSectionTypesWithPagination(nameSearch,page,pageSize);
+        int totalProducts = sts.searchSectionTypes(nameSearch).size();
+        int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
+        req.setAttribute("list", list);
+        req.setAttribute("currentPage", page);
+        req.setAttribute("totalPages", totalPages);
+        req.setAttribute("search", nameSearch);
+        req.getRequestDispatcher("list-section-type.jsp").forward(req, resp);
     }
 }

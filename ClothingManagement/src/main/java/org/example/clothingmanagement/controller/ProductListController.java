@@ -64,7 +64,6 @@ public class ProductListController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
         String pageParam = req.getParameter("page");
-        double maxCapacity =0.0;
 
         HashMap<Product,String> list= null;
         int page = 1;
@@ -79,8 +78,8 @@ public class ProductListController extends HttpServlet {
                 }
             }
         }
-        list = ps.searchProducts(nameSearch,page,pageSize);
-        totalProducts = list.size();
+        list = ps.searchProductsWithPagination(nameSearch,page,pageSize);
+        totalProducts = ps.searchProductsByNameSearch(nameSearch).size();
         int totalPages = (int) Math.ceil((double) totalProducts / pageSize);
         req.setAttribute("list", list);
         req.setAttribute("currentPage", page);

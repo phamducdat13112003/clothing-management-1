@@ -68,6 +68,128 @@ public class ProductDetailDAO {
 
     }
 
+    public List<ProductDetail> getProductDetailByProductIdWithPagination(String productId,int page,int pageSize) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status ");
+            sql.append(" FROM ProductDetail ");
+            sql.append(" WHERE ProductId = ? ");
+            sql.append(" ORDER BY ProductDetailId ");
+            sql.append(" LIMIT ? OFFSET ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, productId);
+            ps.setInt(2, pageSize);
+            ps.setInt(3, (page - 1) * pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<ProductDetail> list = new ArrayList<>();
+            while(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .id(rs.getString("ProductDetailId"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
+                        .build();
+                list.add(productDetail);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ProductDetail> SearchProductDetailByProductIdAndNameSearch(String productId,String nameSearch) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status ");
+            sql.append(" FROM ProductDetail ");
+            sql.append(" WHERE productId = ? ");
+            if(!nameSearch.isEmpty()){
+                sql.append(" AND (color LIKE ? ");
+                sql.append(" OR ProductId LIKE ? ");
+                sql.append(" OR size LIKE ?) ");
+            }
+            sql.append(" ORDER BY ProductDetailId ");
+
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            ps.setString(paramIndex++, productId);
+
+            if(!nameSearch.isEmpty()){
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+
+            ResultSet rs = ps.executeQuery();
+            List<ProductDetail> list = new ArrayList<>();
+            while(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .id(rs.getString("ProductDetailId"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
+                        .build();
+                list.add(productDetail);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<ProductDetail> SearchProductDetailByProductIdWithPagination(String productId,String nameSearch,int page,int pageSize) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId, Status ");
+            sql.append(" FROM ProductDetail ");
+            sql.append(" WHERE productId = ? ");
+            if(!nameSearch.isEmpty()){
+                sql.append(" AND (color LIKE ? ");
+                sql.append(" OR ProductId LIKE ? ");
+                sql.append(" OR size LIKE ?) ");
+            }
+            sql.append(" ORDER BY ProductDetailId ");
+            sql.append(" LIMIT ? OFFSET ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            ps.setString(paramIndex++, productId);
+
+            if(!nameSearch.isEmpty()){
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+            ps.setInt(paramIndex++, pageSize);
+            ps.setInt(paramIndex++, (page - 1) * pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<ProductDetail> list = new ArrayList<>();
+            while(rs.next()){
+                ProductDetail productDetail = ProductDetail.builder()
+                        .id(rs.getString("ProductDetailId"))
+                        .quantity(rs.getInt("Quantity"))
+                        .weight(rs.getDouble("Weight"))
+                        .color(rs.getString("Color"))
+                        .size(rs.getString("Size"))
+                        .image(rs.getString("ProductImage"))
+                        .productId(rs.getString("ProductId"))
+                        .status(rs.getInt("Status"))
+                        .build();
+                list.add(productDetail);
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Optional<ProductDetail> findTheFirstProductDetailOfProductId(String id) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();

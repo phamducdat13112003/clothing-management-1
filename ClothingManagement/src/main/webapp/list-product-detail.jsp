@@ -30,6 +30,54 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a:active {
+            background-color: #09ad95;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            width: 250px;
+        }
+
+        .search-button {
+            padding: 5px 15px;
+            background-color: #09ad95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #078c76;
+        }
+    </style>
 
 </head>
 <body id="sherah-dark-light">
@@ -45,14 +93,25 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <div class="sherah-breadcrumb mg-top-30">
-                                <h2 class="sherah-breadcrumb__title">${product.name}</h2>
-                                <a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}" class="sherah-breadcrumb__title-link">
-                                    <h2 class="sherah-breadcrumb__title">Add new product to ${product.name}</h2>
-                                </a>
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-6">
+                                    <div class="sherah-breadcrumb mg-top-30">
+                                        <h2 class="sherah-breadcrumb__title">Manage Product ${product.name}</h2>
+                                        <ul class="sherah-breadcrumb__list">
+                                            <li><a href="list-product-detail?id=${product.id}">Home</a></li>
+                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>
+                                        </ul>
+
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <form action="list-product-detail" method="POST" class="search-form">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <input type="hidden" name="id" value="${product.id}" />
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
+                                </div>
                             </div>
-                            <!-- End Sherah Breadcrumb -->
-                            <!-- Product List -->
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
@@ -68,54 +127,55 @@
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
-                                    <c:if test="${not empty productDetails}">
-                                        <c:forEach var="productDetail" items="${productDetails}">
+                                    <c:if test="${not empty list}">
+                                        <c:forEach var="list" items="${list}">
                                             <tr>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${productDetail.id}</p>
+                                                        <p class="sherah-table__product-desc">${list.id}</p>
                                                     </div>
                                                 </td>
+
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <img src="img/${productDetail.image}"
+                                                            <img src="img/${list.image}"
                                                                  alt="Product Detail Image" width="100" height="100">
                                                         </p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${productDetail.color}</p>
+                                                        <p class="sherah-table__product-desc">${list.color}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${productDetail.size}</p>
+                                                        <p class="sherah-table__product-desc">${list.size}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${productDetail.weight}</p>
+                                                        <p class="sherah-table__product-desc">${list.weight}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${productDetail.quantity}</p>
+                                                        <p class="sherah-table__product-desc">${list.quantity}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${productDetail.status}</p>
+                                                        <p class="sherah-table__product-desc">${list.status}</p>
                                                     </div>
                                                 </td>
-                                                <c:if test="${productDetail.status==1}">
-                                                    <c:if test="${productDetail.quantity==0}">
+                                                <c:if test="${list.status==1}">
+                                                    <c:if test="${list.quantity==0}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
                                                                 <a href="#"
-                                                                    onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${productDetail.id}&productid=${productDetail.productId}');">
+                                                                    onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${list.id}&productid=${list.productId}');">
 
                                                                     Delete
                                                                 </a>
@@ -125,12 +185,12 @@
                                                     </c:if>
                                                 </c:if>
 
-                                                <c:if test="${productDetail.status==0}">
+                                                <c:if test="${list.status==0}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
                                                                 <a href="#"
-                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${productDetail.id}&productid=${productDetail.productId}');">
+                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product-detail?id=${list.id}&productid=${list.productId}');">
                                                                     Recover
                                                                 </a>
                                                             </p>
@@ -141,7 +201,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/view-product-detail?id=${productDetail.id}">
+                                                            <a href="${pageContext.request.contextPath}/view-product-detail?id=${list.id}">
                                                                 Detail
                                                             </a>
                                                         </p>
@@ -152,13 +212,25 @@
                                         </c:forEach>
 
                                     </c:if>
-                                    <c:if test="${empty productDetails}">
+                                    <c:if test="${empty list}">
                                         <tr>
                                             <td colspan="4" class="text-center">No products available</td>
                                         </tr>
                                     </c:if>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <c:if test="${currentPage > 1}">
+                                        <a href="list-product-detail?id=${product.id}&page=${currentPage - 1}&search=${search}">Previous</a>
+                                    </c:if>
+
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <a href="list-product-detail?id=${product.id}&page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    </c:forEach>
+                                    <c:if test="${currentPage < totalPages}">
+                                        <a href="list-product-detail?id=${product.id}&page=${currentPage + 1}&search=${search}">Next</a>
+                                    </c:if>
+                                </div>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->

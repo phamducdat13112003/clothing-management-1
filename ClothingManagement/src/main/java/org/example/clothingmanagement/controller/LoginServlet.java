@@ -30,7 +30,6 @@ public class LoginServlet extends HttpServlet {
         String remember = request.getParameter("remember");
         Employee employee = null;
         Account account = null;
-
         try {
             account = accountDAO.findAccount(email, hashedPassword); // Kiểm tra với mật khẩu đã mã hóa
         } catch (SQLException e) {

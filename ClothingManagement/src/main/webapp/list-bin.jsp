@@ -29,6 +29,54 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a:active {
+            background-color: #09ad95;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            width: 250px;
+        }
+
+        .search-button {
+            padding: 5px 15px;
+            background-color: #09ad95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #078c76;
+        }
+    </style>
 
 </head>
 <body id="sherah-dark-light">
@@ -44,23 +92,25 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <!-- Sherah Breadcrumb -->
-                            <%--                            <form action="search-product" method="get">--%>
-                            <%--                                <div class="input-group mb-3">--%>
-                            <%--                                    <input type="text" class="form-control" placeholder="Search for a product..." name="searchQuery" id="searchQuery">--%>
-                            <%--                                    <button class="btn btn-primary" type="submit">Search</button>--%>
-                            <%--                                </div>--%>
-                            <%--                            </form>--%>
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-6">
+                                    <div class="sherah-breadcrumb mg-top-30">
+                                        <h2 class="sherah-breadcrumb__title">Manage Bin ${section.sectionName} </h2>
+                                        <ul class="sherah-breadcrumb__list">
+                                            <li><a href="list-bin?id=${section.sectionID}">Home</a></li>
+                                            <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
+                                        </ul>
 
-                            <div class="sherah-breadcrumb mg-top-30">
-                                <h2 class="sherah-breadcrumb__title">Bin</h2>
-                                <%--                                <ul class="sherah-breadcrumb__list">--%>
-                                <%--                                    <li><a href="#">Home</a></li>--%>
-                                <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
-                                <%--                                </ul>--%>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <form action="list-bin" method="POST" class="search-form">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <input type="hidden" name="id" value="${section.sectionID}" />
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
+                                </div>
                             </div>
-                            <!-- End Sherah Breadcrumb -->
-                            <!-- Product List -->
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
@@ -107,7 +157,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="">
+                                                            <a href="${pageContext.request.contextPath}/view-bin-detail?id=${bin.binID}">
                                                                 Detail
                                                             </a>
                                                         </p>
@@ -125,6 +175,18 @@
                                     </c:if>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <c:if test="${currentPage > 1}">
+                                        <a href="list-bin?id=${section.sectionID}&page=${currentPage - 1}&search=${search}">Previous</a>
+                                    </c:if>
+
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <a href="list-bin?id=${section.sectionID}&page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    </c:forEach>
+                                    <c:if test="${currentPage < totalPages}">
+                                        <a href="list-bin?id=${section.sectionID}&page=${currentPage + 1}&search=${search}">Next</a>
+                                    </c:if>
+                                </div>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->

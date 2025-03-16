@@ -95,18 +95,18 @@
                             <div class="row align-items-center justify-content-between">
                                 <div class="col-6">
                                     <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Manage Section ${sectionType.sectionTypeName} </h2>
+                                        <h2 class="sherah-breadcrumb__title">Manage Bin ${bin.binName} </h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="view-list-section?stid=${sectionType.sectionTypeId}">Home</a></li>
-<%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
+                                            <li><a href="view-bin-detail?id=${bin.binID}">Home</a></li>
+                                            <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
                                         </ul>
 
                                     </div>
                                 </div>
                                 <div class="col-6">
-                                    <form action="view-list-section" method="POST" class="search-form">
+                                    <form action="view-bin-detail" method="POST" class="search-form">
                                         <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
-                                        <input type="hidden" name="stid" value="${sectionType.sectionTypeId}" />
+                                        <input type="hidden" name="id" value="${bin.binID}" />
                                         <button type="submit" class="search-button">Search</button>
                                     </form>
                                 </div>
@@ -115,47 +115,64 @@
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
                                     <tr>
-                                        <th class="sherah-table__column-2 sherah-table__h2">SectionId</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Name</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Number of Bins</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Action</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Id</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">ProductDetail</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Size</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Color</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Weight</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
 
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
-                                    <c:if test="${not empty list}">
-                                        <c:forEach var="s" items="${list}">
+                                    <c:if test="${not empty map}">
+                                        <c:forEach var="entry" items="${map}">
                                             <tr>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${s.sectionID}</p>
+                                                        <p class="sherah-table__product-desc">${entry.key.binDetailId}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${s.sectionName}</p>
+                                                        <p class="sherah-table__product-desc">${entry.key.productDetailId}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${s.numberOfBins}</p>
+                                                        <p class="sherah-table__product-desc">${entry.value.size}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">
-                                                                Detail
-                                                            </a>
-                                                        </p>
+                                                        <p class="sherah-table__product-desc">${entry.value.color}</p>
                                                     </div>
                                                 </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${entry.value.weight}</p>
+                                                    </div>
+                                                </td>
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">${entry.key.quantity}</p>
+                                                    </div>
+                                                </td>
+<%--                                                <td class="sherah-table__column-2 sherah-table__data-2">--%>
+<%--                                                    <div class="sherah-table__product-content">--%>
+<%--                                                        <p class="sherah-table__product-desc">--%>
+<%--                                                            <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">--%>
+<%--                                                                Detail--%>
+<%--                                                            </a>--%>
+<%--                                                        </p>--%>
+<%--                                                    </div>--%>
+<%--                                                </td>--%>
 
                                             </tr>
                                         </c:forEach>
 
                                     </c:if>
-                                    <c:if test="${empty list}">
+                                    <c:if test="${empty map}">
                                         <tr>
                                             <td colspan="4" class="text-center">No bin available</td>
                                         </tr>
@@ -164,14 +181,14 @@
                                 </table>
                                 <div class="pagination">
                                     <c:if test="${currentPage > 1}">
-                                        <a href="view-list-section?stid=${sectionType.sectionTypeId}&page=${currentPage - 1}&search=${search}">Previous</a>
+                                        <a href="view-bin-detail?id=${bin.binID}&page=${currentPage - 1}&search=${search}">Previous</a>
                                     </c:if>
 
                                     <c:forEach var="i" begin="1" end="${totalPages}">
-                                        <a href="view-list-section?stid=${sectionType.sectionTypeId}&page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                        <a href="view-bin-detail?id=${bin.binID}&page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                                     </c:forEach>
                                     <c:if test="${currentPage < totalPages}">
-                                        <a href="view-list-section?stid=${sectionType.sectionTypeId}&page=${currentPage + 1}&search=${search}">Next</a>
+                                        <a href="view-bin-detail?id=${bin.binID}&page=${currentPage + 1}&search=${search}">Next</a>
                                     </c:if>
                                 </div>
                             </div>
