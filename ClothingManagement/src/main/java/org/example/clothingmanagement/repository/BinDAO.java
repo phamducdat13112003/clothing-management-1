@@ -254,6 +254,75 @@ public class BinDAO {
         }
     }
 
+    // Fetch all bins associated with a specific section ID
+    public List<Bin> getBinsBySection(String sectionID) {
+        List<Bin> bins = new ArrayList<>();
+        String query = "SELECT * FROM bin WHERE SectionID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, sectionID);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bin bin = new Bin();
+                bin.setBinID(rs.getString("BinID"));
+                bin.setBinName(rs.getString("BinName"));
+                bins.add(bin);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bins;
+    }
+
+    // Search for bins by query (name or ID) across all sections
+    public List<Bin> searchBinsByQuery(String query) {
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT * FROM bin WHERE BinName LIKE ? OR BinID LIKE ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + query + "%");
+            stmt.setString(2, "%" + query + "%");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bin bin = new Bin();
+                bin.setBinID(rs.getString("BinID"));
+                bin.setBinName(rs.getString("BinName"));
+                bins.add(bin);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bins;
+    }
+
+    // Search for bins by section ID and a search query (name or ID)
+    public List<Bin> searchBinsBySectionAndQuery(String query, String sectionID) {
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT * FROM bin WHERE SectionID = ? AND (BinName LIKE ? OR BinID LIKE ?)";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, sectionID);
+            stmt.setString(2, "%" + query + "%");
+            stmt.setString(3, "%" + query + "%");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bin bin = new Bin();
+                bin.setBinID(rs.getString("BinID"));
+                bin.setBinName(rs.getString("BinName"));
+                bins.add(bin);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bins;
+    }
+
     public static void main(String[] args) {
         BinDAO dao = new BinDAO();
         List<BinDetail> list = dao.getBinDetailByBinID("B003", 1, 10);
@@ -261,4 +330,6 @@ public class BinDAO {
             System.out.println(bin);
         }
     }
+
+
 }

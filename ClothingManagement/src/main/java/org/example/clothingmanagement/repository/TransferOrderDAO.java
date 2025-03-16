@@ -271,7 +271,6 @@ public class TransferOrderDAO {
     }
 
 
-
     // Method to insert a new TODetail into the database
     public boolean addTODetail(TODetail toDetail) {
         String sql = "INSERT INTO TODetail (TODetailID, ProductDetailID, Quantity, TOID, OriginBinID, FinalBinID) " +
@@ -298,41 +297,95 @@ public class TransferOrderDAO {
         return false; // Return false if an error occurred
     }
 
-    public boolean updateBinQuantity(String binID, String productDetailID, int quantity) {
-        // Check if the BinDetail record exists
+
+    // Method to update the quantity of a product in a bin or create a new bin detail if it doesn't exist
+    public boolean updateBinQuantity(Connection conn, String binID, String productDetailID, int quantity) throws SQLException {
+        System.out.println("Updating bin " + binID + " with product " + productDetailID + " by quantity " + quantity);
+
+        // First check if the bin detail record already exists
         String checkQuery = "SELECT * FROM bindetail WHERE BinID = ? AND ProductDetailID = ?";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement ps = conn.prepareStatement(checkQuery)) {
+
+        try (PreparedStatement ps = conn.prepareStatement(checkQuery)) {
             ps.setString(1, binID);
             ps.setString(2, productDetailID);
-            ResultSet rs = ps.executeQuery();
 
-            // If record exists, update the quantity
-            if (rs.next()) {
-                String updateQuery = "UPDATE bindetail SET Quantity = Quantity + ? WHERE BinID = ? AND ProductDetailID = ?";
-                try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
-                    updatePs.setInt(1, quantity);  // Add quantity (either positive or negative)
-                    updatePs.setString(2, binID);
-                    updatePs.setString(3, productDetailID);
-                    int updatedRows = updatePs.executeUpdate();
+            try (ResultSet rs = ps.executeQuery()) {
+                // If the record exists, update the quantity
+                if (rs.next()) {
+                    System.out.println("Record exists. Current quantity: " + rs.getInt("Quantity"));
+                    String updateQuery = "UPDATE bindetail SET Quantity = Quantity + ? WHERE BinID = ? AND ProductDetailID = ?";
 
-                    return updatedRows > 0;
-                }
-            } else {
-                // If no record exists, insert a new row
-                String insertQuery = "INSERT INTO bindetail (BinID, ProductDetailID, Quantity) VALUES (?, ?, ?)";
-                try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
-                    insertPs.setString(1, binID);
-                    insertPs.setString(2, productDetailID);
-                    insertPs.setInt(3, quantity);
-                    int insertedRows = insertPs.executeUpdate();
+                    try (PreparedStatement updatePs = conn.prepareStatement(updateQuery)) {
+                        updatePs.setInt(1, quantity);  // Add quantity (either positive or negative)
+                        updatePs.setString(2, binID);
+                        updatePs.setString(3, productDetailID);
 
-                    return insertedRows > 0;
+                        int updatedRows = updatePs.executeUpdate();
+                        System.out.println("Update result: " + (updatedRows > 0 ? "Success" : "Failed"));
+
+                        return updatedRows > 0;
+                    }
+                } else {
+                    // If no record exists, generate a new bin detail ID
+                    String binDetailID = generateNewBinDetailID(conn, binID);
+                    System.out.println("Record doesn't exist. Creating new record with ID: " + binDetailID + " and quantity: " + quantity);
+
+                    // Insert a new bin detail record
+                    String insertQuery = "INSERT INTO bindetail (BinDetailID, BinID, ProductDetailID, Quantity) VALUES (?, ?, ?, ?)";
+
+                    try (PreparedStatement insertPs = conn.prepareStatement(insertQuery)) {
+                        insertPs.setString(1, binDetailID);
+                        insertPs.setString(2, binID);
+                        insertPs.setString(3, productDetailID);
+                        insertPs.setInt(4, quantity);
+
+                        int insertedRows = insertPs.executeUpdate();
+                        System.out.println("Insert result: " + (insertedRows > 0 ? "Success" : "Failed"));
+
+                        return insertedRows > 0;
+                    }
                 }
             }
         } catch (SQLException e) {
+            System.err.println("Database error updating bin quantity: " + e.getMessage());
             e.printStackTrace();
-            return false;
+            throw e; // Re-throw the exception to be handled by the calling method
+        }
+    }
+
+    // Method to generate a new BinDetailID based on the highest existing ID for the bin
+    private String generateNewBinDetailID(Connection conn, String binID) throws SQLException {
+        String query = "SELECT BinDetailID FROM bindetail WHERE BinID = ? ORDER BY BinDetailID DESC LIMIT 1";
+
+        try (PreparedStatement ps = conn.prepareStatement(query)) {
+            // Set the BinID parameter
+            ps.setString(1, binID);
+
+            // Execute the query
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String highestID = rs.getString("BinDetailID");
+
+                    // Extract the sequential number part after the last dash
+                    int lastDashIndex = highestID.lastIndexOf("-");
+                    if (lastDashIndex != -1 && lastDashIndex < highestID.length() - 1) {
+                        String sequentialPart = highestID.substring(lastDashIndex + 1);
+
+                        try {
+                            // Parse the sequential number and increment it
+                            int sequentialNumber = Integer.parseInt(sequentialPart);
+                            // Format with leading zeros (01, 02, etc.)
+                            return binID + "-" + String.format("%02d", sequentialNumber + 1);
+                        } catch (NumberFormatException e) {
+                            // If parsing fails, default to starting with 01
+                            return binID + "-01";
+                        }
+                    }
+                }
+
+                // If no existing records found or format is unexpected, start with 01
+                return binID + "-01";
+            }
         }
     }
 
@@ -366,8 +419,62 @@ public class TransferOrderDAO {
     }
 
 
+    public double getCurrentBinWeight(String binID) {
+        double totalWeight = 0.0;
+        String query = "SELECT bd.ProductDetailId, bd.quantity, pd.Weight " +
+                "FROM bindetail bd " +
+                "JOIN productdetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
+                "WHERE bd.binId = ?";
 
+        System.out.println("Checking weight for bin: " + binID);
 
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, binID);
+            System.out.println("Executing query: " + query.replace("?", "'" + binID + "'"));
+
+            ResultSet rs = stmt.executeQuery();
+            int productCount = 0;
+
+            while (rs.next()) {
+                productCount++;
+                String productId = rs.getString("ProductDetailId");
+                double weight = rs.getDouble("Weight");
+                int quantity = rs.getInt("quantity");
+                double productTotalWeight = weight * quantity;
+
+                System.out.println("Product: " + productId +
+                        ", Weight: " + weight +
+                        " kg, Quantity: " + quantity +
+                        ", Total: " + productTotalWeight + " kg");
+
+                totalWeight += productTotalWeight;
+            }
+
+            System.out.println("Found " + productCount + " products in bin");
+
+            if (productCount == 0) {
+                // Try a simpler query to see if the bin exists
+                String checkBinQuery = "SELECT COUNT(*) FROM bindetail WHERE binId = ?";
+                try (PreparedStatement checkStmt = conn.prepareStatement(checkBinQuery)) {
+                    checkStmt.setString(1, binID);
+                    ResultSet checkRs = checkStmt.executeQuery();
+                    if (checkRs.next()) {
+                        int count = checkRs.getInt(1);
+                        System.out.println("Bin detail count from direct query: " + count);
+                    }
+                }
+            }
+
+        } catch (SQLException e) {
+            System.out.println("SQL Error: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.out.println("Final total weight: " + totalWeight + " kg");
+        return totalWeight;
+    }
 
 
     public boolean updateTODetail(TODetail toDetail) {
@@ -428,7 +535,6 @@ public class TransferOrderDAO {
     }
 
 
-
     public boolean addQuantityToFinalBin(String binID, int quantity) {
         String sql = "UPDATE bin SET Quantity = Quantity + ? WHERE BinID = ?";
 
@@ -447,13 +553,51 @@ public class TransferOrderDAO {
         return false;
     }
 
+    public List<ProductDetail> searchProductDetailsByBin(String query, String binID) {
+        List<ProductDetail> productDetailList = new ArrayList<>();
+
+        // Query to get products that match the search query and are in the specified bin
+        String sql = "SELECT pd.ProductDetailID, p.ProductName, pd.Weight, bd.quantity " +
+                "FROM productdetail pd " +
+                "JOIN product p ON pd.ProductID = p.ProductID " +
+                "JOIN bindetail bd ON pd.ProductDetailID = bd.ProductDetailId " +
+                "WHERE bd.binId = ? AND " +
+                "(pd.ProductDetailID LIKE ? OR p.ProductName LIKE ?) " +
+                "AND pd.Status = 1";  // Assuming Status = 1 means active products
+
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setString(1, binID);
+            statement.setString(2, "%" + query + "%");
+            statement.setString(3, "%" + query + "%");
+
+            ResultSet resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                ProductDetail product = new ProductDetail();
+                product.setId(resultSet.getString("ProductDetailID"));
+                product.setProductName(resultSet.getString("ProductName"));
+                product.setWeight(resultSet.getDouble("Weight"));
+                product.setQuantity(resultSet.getInt("quantity"));  // Get quantity from bindetail
+
+                productDetailList.add(product);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            // Handle exception (you could throw it or log it)
+        }
+
+        return productDetailList;
+    }
 
 
     public List<ProductDetail> searchProductDetails(String query) {
         System.out.println("Searching with query: '" + query + "'");
         List<ProductDetail> productDetailsList = new ArrayList<>();
 
-        String sql = "SELECT pd.ProductDetailID, pd.Weight, p.ProductName " +
+        String sql = "SELECT pd.ProductDetailID, pd.Weight, p.ProductName, pd.ProductImage " +
                 "FROM productdetail pd " +
                 "JOIN product p ON pd.ProductID = p.ProductID " +
                 "WHERE pd.ProductDetailID LIKE ? OR p.ProductName LIKE ?";
@@ -475,8 +619,9 @@ public class TransferOrderDAO {
                 ProductDetail productDetail = new ProductDetail();
                 String id = rs.getString("ProductDetailID");
                 String name = rs.getString("ProductName");
+                String image = rs.getString("ProductImage");
 
-                System.out.println("Found product: ID=" + id + ", Name=" + name);
+                System.out.println("Found product: ID=" + id + ", Name=" + name + ", Image=" + image);
 
                 productDetail.setId(id);
                 productDetail.setWeight(rs.getDouble("Weight"));
@@ -625,5 +770,182 @@ public class TransferOrderDAO {
             System.err.println("Error updating bin capacity: " + e.getMessage());
             return false;
         }
+    }
+
+    public TransferOrder getTransferOrderByID(String toID) {
+        TransferOrder transferOrder = null;
+        String sql = "SELECT * FROM transferorder WHERE toID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, toID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    transferOrder = new TransferOrder();
+                    transferOrder.setToID(rs.getString("toID"));
+                    transferOrder.setCreatedDate(rs.getDate("createdDate").toLocalDate());
+                    transferOrder.setCreatedBy(rs.getString("createdBy"));
+                    transferOrder.setStatus(rs.getString("status"));
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return transferOrder;
+    }
+
+    public List<TODetail> getTODetailsByTOID(String toID) {
+        List<TODetail> details = new ArrayList<>();
+        String sql = "SELECT * FROM todetail WHERE toID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, toID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    TODetail detail = new TODetail();
+                    detail.setToDetailID(rs.getString("toDetailID"));
+                    detail.setToID(rs.getString("toID"));
+                    detail.setProductDetailID(rs.getString("productDetailID"));
+                    detail.setQuantity(rs.getInt("quantity"));
+                    detail.setOriginBinID(rs.getString("originBinID"));
+                    detail.setFinalBinID(rs.getString("finalBinID"));
+                    details.add(detail);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return details;
+    }
+
+    public boolean updateBinStatus(Connection conn, String binID, int status) throws SQLException {
+        String sql = "UPDATE Bin SET Status = ? WHERE BinID = ?";
+
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, status);
+            stmt.setString(2, binID);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e; // Re-throw to allow for transaction rollback
+        }
+    }
+
+    public boolean updateTransferOrderStatus(String toID, String status) {
+        String sql = "UPDATE transferorder SET status = ? WHERE toID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status);
+            stmt.setString(2, toID);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    public boolean isProductInBin(String binID, String productDetailID) {
+        String query = "SELECT COUNT(*) FROM bindetail WHERE binId = ? AND productDetailId = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, binID);
+            stmt.setString(2, productDetailID);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // If count is greater than 0, product exists
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+//    public boolean addProductToBin(String binID, String productDetailID, int quantity) {
+//        String maxBinDetailIdQuery = "SELECT MAX(binDetailId) FROM bindetail WHERE binId = ?";
+//        String insertQuery = "INSERT INTO bindetail (binDetailId, binId, productDetailId, quantity) VALUES (?, ?, ?, ?)";
+//
+//        try (Connection conn = DBContext.getConnection();
+//             PreparedStatement maxStmt = conn.prepareStatement(maxBinDetailIdQuery)) {
+//
+//            // Retrieve the maximum binDetailId for the given binID
+//            maxStmt.setString(1, binID);
+//            ResultSet rs = maxStmt.executeQuery();
+//
+//            String newBinDetailId;
+//            if (rs.next()) {
+//                String maxBinDetailId = rs.getString(1);
+//
+//                // If no existing binDetailId, set newBinDetailId to binID + "001"
+//                if (maxBinDetailId == null) {
+//                    newBinDetailId = binID + "-001"; // Start with the first ID in the format
+//                } else {
+//                    // Extract the numeric part and increment it by 1
+//                    String[] parts = maxBinDetailId.split("-"); // Assuming format "FW001-001-01"
+//                    String numericPart = parts[parts.length - 1]; // Extract "01"
+//
+//                    int newNumericPart = Integer.parseInt(numericPart) + 1; // Increment by 1
+//                    String newNumericPartStr = String.format("%03d", newNumericPart); // Format to 3 digits
+//                    newBinDetailId = binID + "-" + newNumericPartStr; // Create the new binDetailId
+//                }
+//            } else {
+//                // In case no result was returned, generate the first binDetailId
+//                newBinDetailId = binID + "-01"; // Start with the first ID
+//            }
+//
+//            // Insert the new product into the bindetail table
+//            try (PreparedStatement stmt = conn.prepareStatement(insertQuery)) {
+//                stmt.setString(1, newBinDetailId);
+//                stmt.setString(2, binID);
+//                stmt.setString(3, productDetailID);
+//                stmt.setInt(4, quantity);
+//
+//                int rowsAffected = stmt.executeUpdate();
+//                return rowsAffected > 0; // Return true if the insertion was successful
+//            }
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//
+//        return false; // Return false in case of error
+//    }
+
+
+    public static void main(String[] args) {
+        // Create an instance of your DAO class
+        TransferOrderDAO transferOrderDAO = new TransferOrderDAO();
+
+        // Test bin IDs - replace these with actual bin IDs from your database
+        String[] testBinIds = {"FW001-002"};
+
+        // Test the getCurrentBinWeight method for each bin
+        for (String binId : testBinIds) {
+            try {
+                double weight = transferOrderDAO.getCurrentBinWeight(binId);
+                System.out.println("Bin ID: " + binId);
+                System.out.println("Total Weight: " + weight + " kg");
+                System.out.println("------------------------------");
+            } catch (Exception e) {
+                System.out.println("Error testing bin " + binId + ": " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
     }
 }
