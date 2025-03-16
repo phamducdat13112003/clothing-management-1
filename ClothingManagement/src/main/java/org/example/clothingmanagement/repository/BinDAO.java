@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.example.clothingmanagement.repository.DBContext.getConnection;
 
@@ -359,6 +360,33 @@ public class BinDAO {
                 bins.add(bin);
             }
             return bins;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<Bin> getBinByBinId(String binId){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
+            sql.append(" FROM Bin ");
+            sql.append(" WHERE binId = ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, binId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Bin bin = Bin.builder()
+                        .binID(rs.getString("BinID"))
+                        .binName(rs.getString("BinName"))
+                        .maxCapacity(rs.getDouble("MaxCapacity"))
+                        .status(rs.getBoolean("Status"))
+                        .currentCapacity(0.0)
+                        .sectionID(rs.getString("SectionID"))
+                        .build();
+                return Optional.of(bin);
+            }
+            return Optional.empty();
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
