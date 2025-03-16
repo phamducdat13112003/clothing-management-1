@@ -5,6 +5,7 @@ import org.example.clothingmanagement.repository.DBContext;
 import org.example.clothingmanagement.repository.SectionDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SectionService {
     private final SectionDAO sd = new SectionDAO();
@@ -15,6 +16,10 @@ public class SectionService {
 
     public List<Section> getSectionsBySectionTypeId(int sectionTypeId){
         return sd.getSectionsBySectionTypeId(sectionTypeId);
+    }
+
+    public Optional<Section> getSectionById(String sectionId){
+        return sd.getSectionById(sectionId);
     }
 
     public List<Section> getSectionsWithPagination(int sectionTypeId,int page, int pageSize){

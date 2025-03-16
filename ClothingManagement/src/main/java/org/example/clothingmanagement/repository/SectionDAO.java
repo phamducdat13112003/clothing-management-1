@@ -9,6 +9,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SectionDAO {
     public List<Section> getAllSection(){
@@ -129,6 +130,31 @@ public class SectionDAO {
                 sections.add(section);
             }
             return sections;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Optional<Section> getSectionById(String sectionId){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" Select sectionId, sectionName, sectionTypeId ");
+            sql.append(" From section ");
+            sql.append(" Where sectionId = ? ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, sectionId);
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()){
+                Section section = Section.builder()
+                        .sectionID(rs.getString("sectionId"))
+                        .sectionName(rs.getString("sectionName"))
+                        .sectionTypeId(rs.getInt("sectionTypeId"))
+                        .build();
+                return Optional.of(section);
+
+            }
+            return Optional.empty();
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

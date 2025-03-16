@@ -23,6 +23,18 @@ public class BinService {
         return binDAO.getBinDetailByBinID(binID, page, pageSize);
     }
 
+    public List<Bin> getBinsWithPagination(String sectionId, int page, int pageSize){
+        return binDAO.getBinsWithPagination(sectionId, page, pageSize);
+    }
+
+    public List<Bin> searchBinWithPagination(String sectionId, String nameSearch, int page, int pageSize){
+        return binDAO.searchBinWithPagination(sectionId, nameSearch, page, pageSize);
+    }
+
+    public List<Bin> searchBinWithoutPagination(String sectionId, String nameSearch){
+        return binDAO.searchBinWithoutPagination(sectionId, nameSearch);
+    }
+
     public int countBinDetailByBinID(String binID){
         return binDAO.countBinDetailByBinID(binID);
     }
@@ -54,7 +66,7 @@ public class BinService {
 
     public static void main(String[] args){
         BinService bs = new BinService();
-        List<Bin> list = bs.getAllBin();
+        List<Bin> list = bs.searchBinWithPagination("RP001","002",1,5);
         for(Bin b : list){
             System.out.println(b);
         }
