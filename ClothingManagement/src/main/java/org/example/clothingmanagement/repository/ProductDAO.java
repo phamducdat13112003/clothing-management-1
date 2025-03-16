@@ -495,7 +495,36 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
     }
-
+    public List<Map<String, Object>> getListProductByPoID(String poID) {
+        List<Map<String, Object>> productList = new ArrayList<>();
+        String sql = "SELECT p.ProductID, p.Price AS ProductPrice, pd.ProductDetailID, pd.Quantity AS ProductDetailQuantity, " +
+                "pd.Weight, pod.PODetailID, pod.Quantity AS PoDetailQuantity, po.POID " +
+                "FROM PO po " +
+                "JOIN PoDetail pod ON po.POID = pod.POID " +
+                "JOIN ProductDetail pd ON pod.ProductDetailID = pd.ProductDetailID " +
+                "JOIN Product p ON pd.ProductID = p.ProductID " +
+                "WHERE po.POID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, poID);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Map<String, Object> productMap = new HashMap<>();
+                productMap.put("ProductID", rs.getString("ProductID"));
+                productMap.put("ProductPrice", rs.getDouble("ProductPrice"));
+                productMap.put("ProductDetailID", rs.getString("ProductDetailID"));
+                productMap.put("ProductDetailQuantity", rs.getInt("ProductDetailQuantity"));
+                productMap.put("Weight", rs.getDouble("Weight"));
+                productMap.put("PODetailID", rs.getString("PODetailID"));
+                productMap.put("PoDetailQuantity", rs.getInt("PoDetailQuantity"));
+                productMap.put("POID", rs.getString("POID"));
+                productList.add(productMap);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching product list by POID", e);
+        }
+        return productList;
+    }
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 

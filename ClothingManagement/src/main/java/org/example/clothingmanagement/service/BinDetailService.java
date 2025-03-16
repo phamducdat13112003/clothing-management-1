@@ -20,7 +20,9 @@ public class BinDetailService {
     public List<BinDetail> getAllBinDetailAndProductDetailByBinId(String binId) {
         return bdd.getAllBinDetailAndProductDetailByBinId(binId);
     }
-
+    public String getLastBinDetailId(String binId) throws Exception{
+        return bdd.getLastBinDetailId(binId);
+    }
     public static void main(String[] args){
         BinDetailService binDetailService = new BinDetailService();
         List<BinDetail> list = binDetailService.getAllBinDetailAndProductDetailByBinId("B001");
