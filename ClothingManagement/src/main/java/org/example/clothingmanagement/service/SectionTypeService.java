@@ -4,6 +4,7 @@ import org.example.clothingmanagement.entity.SectionType;
 import org.example.clothingmanagement.repository.SectionTypeDAO;
 
 import java.util.List;
+import java.util.Optional;
 
 public class SectionTypeService {
     private final SectionTypeDAO std = new SectionTypeDAO();
@@ -20,6 +21,9 @@ public class SectionTypeService {
 
     public List<SectionType> searchSectionTypesWithPagination(String search, int page, int pageSize) {
         return std.searchSectionTypesWithPagination(search, page, pageSize);
+    }
+    public Optional<SectionType> getSectionTypeById(int sectionTypeId) {
+        return std.getSectionTypeById(sectionTypeId);
     }
 
     public static void main(String[] args){
