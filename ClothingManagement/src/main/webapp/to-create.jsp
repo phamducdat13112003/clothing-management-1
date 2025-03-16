@@ -189,7 +189,7 @@
                 <!-- Transfer Order ID -->
                 <div class="form-row">
                     <label for="toID">Transfer Order ID:</label>
-                    <input type="text" id="toID" name="toID" value="${nextToID}" required>
+                    <input type="text" id="toID" name="toID" value="${nextToID}" readonly>
                 </div>
 
                 <!-- Created Date -->
@@ -202,7 +202,7 @@
                 <div class="form-row">
                     <label for="createdBy">Created By:</label>
                     <input type="text" id="createdByName" name="Name" value="${sessionScope.employeeName}" readonly>
-                    <input type="hidden" id="createdBy" name="createdBy" value="${sessionScope.employeeID}">
+                    <input type="hidden" id="createdBy" name="createdBy" value="${sessionScope.employeeId}">
                 </div>
 
 
@@ -244,7 +244,7 @@
                         <th>#</th>
                         <th>Product Detail ID</th>
                         <th>Product Name</th>
-                        <th>Weight(Gam)</th>
+                        <th>Weight</th>
                         <th>Quantity</th>
                         <th>Action</th>
                     </tr>
@@ -283,8 +283,8 @@
                 <c:if test="${not empty errorBin}">
                     <p class="error-message">${errorBin}</p>
                 </c:if>
-                <c:if test="${not empty errorWeight}">
-                    <p class="error-message">${errorWeight}</p>
+                <c:if test="${not empty errorCapacity}">
+                    <p class="error-message">${errorCapacity}</p>
                 </c:if>
 
             </form>
@@ -293,11 +293,22 @@
     </div>
 </section>
 <script>
+    // Access the hidden input field with the employee ID
+    var employeeID = document.getElementById('createdBy').value;
+    var employeeName = document.getElementById('createdByName').value;
+    console.log("employee Name: " + employeeName)
+
+    // Log the employee ID to the console
+    console.log("Employee ID: " + employeeID);
+</script>
+<script>
     let rowCount = 1;  // Start row number from 1
 
     document.addEventListener("DOMContentLoaded", function () {
         const originBinSelect = document.getElementById("originBinID");
         const finalBinSelect = document.getElementById("finalBinID");
+        const searchInput = document.getElementById("productDetailSearch");
+        const suggestionBox = document.getElementById("suggestionBox");
 
         // Function to update the available options in Final Bin dropdown
         function updateBinSelections() {
@@ -328,16 +339,32 @@
         originBinSelect.addEventListener("change", updateBinSelections);
         finalBinSelect.addEventListener("change", updateBinSelections);
 
-        // Product search functionality
-        const searchInput = document.getElementById("productDetailSearch");
-        const suggestionBox = document.getElementById("suggestionBox");
+        // Add an error message div after the search input
+        const searchRow = searchInput.parentElement;
+        const errorDiv = document.createElement("div");
+        errorDiv.className = "error-message";
+        errorDiv.id = "searchError";
+        errorDiv.style.display = "none";
+        searchRow.appendChild(errorDiv);
 
-        // Function to fetch and display product suggestions based on search input
         function searchProductDetails() {
             const searchValue = searchInput.value.trim();
+            const originBinID = originBinSelect.value;
+
+            // Check if origin bin is selected
+            if (originBinID === "") {
+                errorDiv.textContent = "You must choose an Origin Bin first.";
+                errorDiv.style.display = "block";
+                suggestionBox.style.display = "none";
+                return;
+            } else {
+                errorDiv.style.display = "none";
+            }
+
             if (searchValue.length > 0) {
                 const url = new URL("/ClothingManagement_war/searchProductDetail", window.location.origin);
                 url.searchParams.append("query", searchValue);
+                url.searchParams.append("binID", originBinID); // Pass the selected bin ID
 
                 fetch(url.toString())
                     .then(response => {
@@ -352,23 +379,58 @@
                         if (data.success && data.suggestions && data.suggestions.length > 0) {
                             suggestionBox.style.display = "block";
                             data.suggestions.forEach(suggestion => {
+                                console.log("Full suggestion object:", JSON.stringify(suggestion));
+
                                 const div = document.createElement("div");
                                 div.classList.add("suggestion-item");
 
-                                const productDetailID = suggestion.productDetailID || "No ID";
-                                const productName = suggestion.productName || "No name";
-                                const weight = suggestion.weight || "No weight";
+                                // Extract raw values
+                                const productDetailID = suggestion.productDetailID;
+                                const productName = suggestion.productName;
+                                const weight = suggestion.weight;
+                                const quantity = suggestion.quantity;
 
-                                div.textContent = [productDetailID, productName, weight].filter(Boolean).join(' - ');
+                                console.log("Raw productDetailID:", productDetailID, typeof productDetailID);
+                                console.log("Raw productName:", productName, typeof productName);
+                                console.log("Raw weight:", weight, typeof weight);
+                                console.log("Raw quantity:", quantity, typeof quantity);
+
+                                // Create display values with explicit checking
+                                let displayID = "No ID";
+                                if (productDetailID !== undefined && productDetailID !== null && productDetailID !== "") {
+                                    displayID = productDetailID;
+                                }
+
+                                let displayName = "No Name";
+                                if (productName !== undefined && productName !== null && productName !== "") {
+                                    displayName = productName;
+                                }
+
+                                let displayWeight = "No Weight";
+                                if (weight !== undefined && weight !== null) {
+                                    displayWeight = weight.toString() + " kg";
+                                }
+
+                                // Create display value for quantity
+                                let displayQuantity = "No Quantity";
+                                if (quantity !== undefined && quantity !== null) {
+                                    displayQuantity = quantity.toString();
+                                }
+
+
+                                // Set text content using plain string concatenation
+                                div.textContent = displayID + " - " + displayName + " - " + displayWeight + " - Quantity: " + displayQuantity;
+
                                 div.onclick = () => selectSuggestion(suggestion);
-
                                 suggestionBox.appendChild(div);
                             });
                         } else {
-                            suggestionBox.style.display = "none";
+                            suggestionBox.innerHTML = "<div class='suggestion-item'>No products found in this bin</div>";
+                            suggestionBox.style.display = "block";
                         }
                     })
                     .catch(error => {
+                        console.error("Error fetching suggestions:", error);
                         suggestionBox.innerHTML = `<div class="error-message">Unable to fetch results. Please try again.</div>`;
                         suggestionBox.style.display = "block";
                     });
@@ -377,45 +439,39 @@
             }
         }
 
+        // Prevent searching if no origin bin is selected
+        searchInput.addEventListener("focus", function() {
+            const originBinID = originBinSelect.value;
+            if (originBinID === "") {
+                errorDiv.textContent = "You must choose an Origin Bin first.";
+                errorDiv.style.display = "block";
+                this.blur(); // Remove focus from the search input
+            } else {
+                errorDiv.style.display = "none";
+            }
+        });
+
         // Attach event listener for the search input
         searchInput.addEventListener("input", searchProductDetails);
 
-        // Select product suggestion
+
         function selectSuggestion(suggestion) {
             const tableBody = document.getElementById("productDetailsBody");
-
-            // Add a new row with product details
-            addProductRow();
-
-            const lastRow = tableBody.lastElementChild;
-
-            // Fill the product details in the last row
-            lastRow.querySelector('input[name="productDetailID[]"]').value = suggestion.productDetailID;
-            lastRow.querySelector(`#productName${rowCount}`).innerText = suggestion.productName;
-            lastRow.querySelector(`#productWeight${rowCount}`).innerText = suggestion.weight;
-
-            // Hide the suggestion box
-            suggestionBox.style.display = "none";
-        }
-
-        function addProductRow() {
-            const tableBody = document.getElementById("productDetailsBody");
-
-            // Get the product ID or product name you want to check for duplicates
-            const productId = `productDetailID${rowCount}`;  // Example: generate product ID for comparison
 
             // Check if this product already exists in the table
             const existingProduct = Array.from(tableBody.getElementsByTagName("tr")).some(row => {
                 const productDetailInput = row.querySelector('input[name="productDetailID[]"]');
-                return productDetailInput && productDetailInput.value === productId;  // Check product ID
+                return productDetailInput && productDetailInput.value === suggestion.productDetailID;
             });
 
             // If the product is already in the table, don't add a new row
             if (existingProduct) {
                 alert("This product is already added.");
+                searchInput.value = "";
                 return;
             }
 
+            // Add a new row with product details
             const newRow = document.createElement("tr");
 
             const cell1 = document.createElement("td");
@@ -426,32 +482,69 @@
             productDetailInput.setAttribute("type", "text");
             productDetailInput.setAttribute("name", "productDetailID[]");
             productDetailInput.setAttribute("readonly", true);
+            productDetailInput.value = suggestion.productDetailID;
             cell2.appendChild(productDetailInput);
 
             const cell3 = document.createElement("td");
             const productNameSpan = document.createElement("span");
             productNameSpan.setAttribute("id", `productName${rowCount}`);
+            productNameSpan.textContent = suggestion.productName;
             cell3.appendChild(productNameSpan);
 
             const cell4 = document.createElement("td");
             const productWeightSpan = document.createElement("span");
             productWeightSpan.setAttribute("id", `productWeight${rowCount}`);
+            productWeightSpan.textContent = suggestion.weight;
             cell4.appendChild(productWeightSpan);
-
-
 
             const cell5 = document.createElement("td");
             const quantityInput = document.createElement("input");
             quantityInput.setAttribute("type", "number");
             quantityInput.setAttribute("name", "quantity[]");
-            quantityInput.setAttribute("value", 0);  // Set initial quantity to 0
+            quantityInput.setAttribute("value", 1);  // Set initial quantity to 1
+            quantityInput.setAttribute("min", 1);    // Minimum quantity is 1
             quantityInput.setAttribute("required", true);
+
+            // Store available quantity as a data attribute
+            quantityInput.dataset.availableQuantity = suggestion.quantity || 0;
+
+            console.log(`display: ${displayQuantity}, qty: ${quantity}, suggest: ${suggest.quantity}`);
+
+            // Store available quantity as a data attribute
+            quantityInput.dataset.availableQuantity = suggestion.quantity || 0;
+
+            // Define displayQuantity from the suggestion
+            const displayQuantity = suggestion.quantity || 0;
+
+            // Add error message element
+            const errorSpan = document.createElement("span");
+            errorSpan.className = "quantity-error";
+            errorSpan.style.color = "red";
+            errorSpan.style.display = "none";
+            errorSpan.textContent = `Maximum available quantity: ${displayQuantity}`;
+
+            // Add input event listener to validate quantity
+            quantityInput.addEventListener("input", function() {
+                const inputValue = parseInt(this.value) || 0;
+                const availableQty = parseInt(this.dataset.availableQuantity) || 0;
+
+                if (inputValue > availableQty) {
+                    errorSpan.style.display = "block";
+                    this.setCustomValidity(`Maximum available quantity is ${availableQty}`);
+                } else {
+                    errorSpan.style.display = "none";
+                    this.setCustomValidity("");
+                }
+            });
+
             cell5.appendChild(quantityInput);
+            cell5.appendChild(errorSpan);
 
             const cell6 = document.createElement("td");
             const deleteButton = document.createElement("button");
             deleteButton.textContent = "Remove";
             deleteButton.classList.add("delete-btn");
+            deleteButton.type = "button"; // Prevent form submission
 
             // Add event listener to delete button
             deleteButton.onclick = function () {
@@ -467,14 +560,17 @@
             newRow.appendChild(cell3);
             newRow.appendChild(cell4);
             newRow.appendChild(cell5);
-            newRow.appendChild(cell6);  // Append the delete button column
+            newRow.appendChild(cell6);
 
             // Append the new row to the table body
             tableBody.appendChild(newRow);
 
             rowCount++;
-        }
 
+            // Clear search input and hide suggestion box
+            searchInput.value = "";
+            suggestionBox.style.display = "none";
+        }
 
         // Function to update row numbers after adding/removing a product
         function updateRowNumbers() {
@@ -485,23 +581,61 @@
             rowCount = rows.length + 1;  // Update rowCount to next available row number
         }
 
-
-
         // Validation before form submission
         const form = document.querySelector('form');
         form.addEventListener('submit', function (event) {
             const productDetailsBody = document.getElementById("productDetailsBody");
             const rows = productDetailsBody.querySelectorAll('tr');
+            const originBinID = originBinSelect.value;
+            const finalBinID = finalBinSelect.value;
+
+            // Check if origin bin is selected
+            if (originBinID === "") {
+                event.preventDefault();
+                alert("Please select an Origin Bin.");
+                return;
+            }
+
+            // Check if final bin is selected
+            if (finalBinID === "") {
+                event.preventDefault();
+                alert("Please select a Final Bin.");
+                return;
+            }
 
             // If there are no rows (products) in the table, prevent form submission
             if (rows.length === 0) {
                 event.preventDefault(); // Prevent the form from submitting
                 alert("Please add at least one product to the transfer order.");
+                return;
+            }
+
+            // Validate quantities
+            let hasInvalidQuantity = false;
+            let errorMessage = "";
+
+            rows.forEach(row => {
+                const quantityInput = row.querySelector('input[name="quantity[]"]');
+                const productName = row.querySelector('[id^="productName"]').textContent;
+                const inputValue = parseInt(quantityInput.value) || 0;
+                const availableQty = parseInt(quantityInput.dataset.availableQuantity) || 0;
+
+                if (inputValue <= 0) {
+                    hasInvalidQuantity = true;
+                    errorMessage = "All product quantities must be greater than 0.";
+                } else if (inputValue > availableQty) {
+                    hasInvalidQuantity = true;
+                    errorMessage = `Cannot transfer ${inputValue} units of ${productName}. Maximum available: ${availableQty}`;
+                }
+            });
+
+            if (hasInvalidQuantity) {
+                event.preventDefault();
+                alert(errorMessage);
+                return;
             }
         });
     });
-
-
 </script>
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>

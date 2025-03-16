@@ -74,7 +74,7 @@
                     <tr>
                       <td class="sherah-table__column-2 sherah-table__data-2">
                         <div class="sherah-table__product-content">
-                          <p class="sherah-table__product-desc">${order.toID}</p>
+                          <a href="/ClothingManagement_war/TODetail?toID=${order.toID}">${order.toID}</a>
                         </div>
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2">
@@ -93,17 +93,22 @@
                         </div>
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2">
-                        <div class="sherah-table__product-content">
-                          <!-- Link to view the transfer order details -->
-                          <a href="/ClothingManagement_war/TODetail?toID=${order.toID}">View</a>
+                        <a href="/ClothingManagement_war/TODetail?toID=${order.toID}">View</a>
 
-                          <!-- Link to edit the transfer order -->
-                          <a href="/ClothingManagement_war/TOUpdate?toID=${order.toID}">Edit</a>
+                        <!-- Link to edit the transfer order -->
+                        <a href="/ClothingManagement_war/TOUpdate?toID=${order.toID}">Edit</a>
 
-                          <!-- Link to delete the transfer order -->
-                          <a href="/ClothingManagement_war/TOList?action=cancel&toID=${order.toID}"
-                             onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>
-                        </div>
+                        <!-- Complete button - only show if status is not already COMPLETED -->
+                        <c:if test="${order.status != 'done'}">
+                        <a href="/ClothingManagement_war/TOList?action=done&toID=${order.toID}"
+                           onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
+                        </c:if>
+
+
+                        <!-- Link to delete the transfer order -->
+                        <a href="/ClothingManagement_war/TOList?action=cancel&toID=${order.toID}"
+                           onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>
+            </div>
                       </td>
 
                     </tr>
