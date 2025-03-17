@@ -184,6 +184,27 @@ public class SectionDAO {
         }
     }
 
+    public String getSectionByBin(String binID) {
+        String sql = "SELECT sectionID FROM bin WHERE binID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, binID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getString("sectionID");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+        return null;
+    }
+
+
     public static void main(String[] args) {
         SectionDAO sd = new SectionDAO();
         List<Section> list = sd.searchSectionWithPagination(2,"",1,5);

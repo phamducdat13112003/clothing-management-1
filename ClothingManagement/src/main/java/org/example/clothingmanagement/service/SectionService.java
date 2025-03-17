@@ -31,6 +31,9 @@ public class SectionService {
     public List<Section> searchSectionWithoutPagination(int sectionTypeId,String nameSearch){
         return sd.searchSectionWithoutPagination(sectionTypeId,nameSearch);
     }
+    public String getSectionByBin(String binID) {
+        return sd.getSectionByBin(binID);
+    }
 
     public static void main(String[] args){
         SectionService ss = new SectionService();
