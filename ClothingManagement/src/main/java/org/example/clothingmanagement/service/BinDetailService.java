@@ -28,9 +28,17 @@ public class BinDetailService {
         return bdd.getBinDetailsWithPagination(binId, page, pageSize);
     }
 
+    public List<BinDetail> searchBinDetailWithPagination(String binId,String nameSearch, int page, int pageSize){
+        return bdd.searchBinDetailWithPagination(binId, nameSearch, page, pageSize);
+    }
+
+    public List<BinDetail> searchBinDetailWithoutPagination(String binId,String nameSearch){
+        return bdd.searchBinDetailWithoutPagination(binId, nameSearch);
+    }
+
     public static void main(String[] args){
         BinDetailService binDetailService = new BinDetailService();
-        List<BinDetail> list = binDetailService.getBinDetailsWithPagination("FW001-001",1,5);
+        List<BinDetail> list = binDetailService.searchBinDetailWithPagination("RP001-001","blue",1,5);
         for(BinDetail bd : list){
             System.out.println(bd);
         }

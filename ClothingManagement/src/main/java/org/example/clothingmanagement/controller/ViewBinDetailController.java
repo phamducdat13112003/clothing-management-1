@@ -34,14 +34,13 @@ public class ViewBinDetailController extends HttpServlet {
             page = Integer.parseInt(pageParam);
         }
 
-        HashMap<BinDetail, ProductDetail> map = new HashMap<>();
 
         List<BinDetail> list = bds.getBinDetailsWithPagination(binId,page,pageSize);
         List<ProductDetail> productDetails = pds.getAllProductDetails();
         for(BinDetail bd : list) {
             for(ProductDetail pd : productDetails) {
                 if(bd.getProductDetailId().equalsIgnoreCase(pd.getId())){
-                    map.put(bd, pd);
+                    bd.setProductDetail(pd);
                 }
             }
         }
@@ -54,7 +53,7 @@ public class ViewBinDetailController extends HttpServlet {
         }
 
 
-        req.setAttribute("map", map);
+        req.setAttribute("list", list);
         req.setAttribute("bin", bin);
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
@@ -64,5 +63,44 @@ public class ViewBinDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         //TODO sửa lại doget lấy dữ liệu của product detail truyền vào các thuộc tính phụ của bindetail chứ không gửi hashmap nữa ( lí do là vì ko muốn hiển thị quá nhiều id, thay bằng name)
+        String binId = req.getParameter("id");
+        String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
+        String pageParam = req.getParameter("page");
+
+        int page = 1;
+        int pageSize = 5;
+        if(!nameSearch.isEmpty()){
+            if (pageParam != null) {
+                try {
+                    page = Integer.parseInt(pageParam);
+                } catch (NumberFormatException e) {
+                    page = 1;
+                }
+            }
+        }
+
+        List<BinDetail> list = bds.searchBinDetailWithPagination(binId,nameSearch,page,pageSize);
+        List<ProductDetail> productDetails = pds.getAllProductDetails();
+        for(BinDetail bd : list) {
+            for(ProductDetail pd : productDetails) {
+                if(bd.getProductDetailId().equalsIgnoreCase(pd.getId())){
+                    bd.setProductDetail(pd);
+                }
+            }
+        }
+
+        int totalProduct = bds.searchBinDetailWithoutPagination(binId,nameSearch).size();
+        int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
+        Bin bin = null;
+        if(bs.getBinByBinId(binId).isPresent()){
+            bin = bs.getBinByBinId(binId).get();
+        }
+
+        req.setAttribute("list", list);
+        req.setAttribute("bin", bin);
+        req.setAttribute("currentPage", page);
+        req.setAttribute("totalPages", totalPages);
+        req.getRequestDispatcher("view-bin-detail.jsp").forward(req, resp);
+
     }
 }

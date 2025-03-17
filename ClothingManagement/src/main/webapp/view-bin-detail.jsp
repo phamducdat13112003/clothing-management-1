@@ -115,8 +115,8 @@
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
                                     <tr>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Id</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">ProductDetail</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">ProductDetailID</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Image</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Size</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Color</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Weight</th>
@@ -125,37 +125,37 @@
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
-                                    <c:if test="${not empty map}">
-                                        <c:forEach var="entry" items="${map}">
+                                    <c:if test="${not empty list}">
+                                        <c:forEach var="entry" items="${list}">
                                             <tr>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.binDetailId}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetailId}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.productDetailId}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.image}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value.size}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.size}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value.color}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.color}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value.weight}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.weight}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.quantity}</p>
+                                                        <p class="sherah-table__product-desc">${entry.quantity}</p>
                                                     </div>
                                                 </td>
 <%--                                                <td class="sherah-table__column-2 sherah-table__data-2">--%>
@@ -172,7 +172,7 @@
                                         </c:forEach>
 
                                     </c:if>
-                                    <c:if test="${empty map}">
+                                    <c:if test="${empty list}">
                                         <tr>
                                             <td colspan="4" class="text-center">No bin available</td>
                                         </tr>

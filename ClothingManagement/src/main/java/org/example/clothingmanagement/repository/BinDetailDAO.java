@@ -2,6 +2,7 @@ package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
+import org.example.clothingmanagement.service.BinDetailService;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -44,18 +45,69 @@ public class BinDetailDAO {
     public List<BinDetail> searchBinDetailWithPagination(String binId,String nameSearch, int page, int pageSize){
         try (Connection con = DBContext.getConnection()) {
             StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT binDetailId, binId, productDetailId, quantity ");
-            sql.append(" FROM binDetail ");
-            sql.append(" WHERE binId = ? ");
+            sql.append(" SELECT b.binDetailId, b.binId, b.quantity, b.ProductDetailId, p.Color, p.size");
+            sql.append(" FROM binDetail b ");
+            sql.append(" JOIN productDetail p ON b.ProductDetailId = p.ProductDetailID ");
+            sql.append(" WHERE b.binId = ? ");
             if(!nameSearch.isEmpty()){
-
+                sql.append(" AND (b.binDetailId LIKE ? ");
+                sql.append(" OR b.ProductDetailId LIKE ? ");
+                sql.append(" OR p.color LIKE ? ");
+                sql.append(" OR p.size LIKE ? )");
             }
-            sql.append(" ORDER BY binId ASC ");
+            sql.append(" ORDER BY binDetailId ASC ");
             sql.append(" LIMIT ? OFFSET ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setString(1, binId);
-            ps.setInt(2, pageSize);
-            ps.setInt(3, (page-1)*pageSize);
+            int paramIndex = 1;
+            ps.setString(paramIndex++, binId);
+            if(!nameSearch.isEmpty()){
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+            }
+            ps.setInt(paramIndex++, pageSize);
+            ps.setInt(paramIndex++, (page-1)*pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<BinDetail> binDetails = new ArrayList<>();
+            while (rs.next()) {
+                BinDetail bd = BinDetail.builder()
+                        .binDetailId(rs.getString("binDetailId"))
+                        .binId(rs.getString("binId"))
+                        .productDetailId(rs.getString("productDetailId"))
+                        .quantity(rs.getInt("quantity"))
+                        .build();
+                binDetails.add(bd);
+            }
+            return binDetails;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<BinDetail> searchBinDetailWithoutPagination(String binId,String nameSearch){
+        try (Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT b.binDetailId, b.binId, b.quantity, b.ProductDetailId, p.Color, p.size");
+            sql.append(" FROM binDetail b ");
+            sql.append(" JOIN productDetail p ON b.ProductDetailId = p.ProductDetailID ");
+            sql.append(" WHERE b.binId = ? ");
+            if(!nameSearch.isEmpty()){
+                sql.append(" AND (b.binDetailId LIKE ? ");
+                sql.append(" OR b.productDetailId LIKE ? ");
+                sql.append(" OR p.Color = ? ");
+                sql.append(" OR p.size = ? )");
+            }
+            sql.append(" ORDER BY binDetailId ASC ");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            int paramIndex = 1;
+            ps.setString(paramIndex++, binId);
+            if(!nameSearch.isEmpty()){
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+                ps.setString(paramIndex++, "%" + nameSearch + "%");
+            }
             ResultSet rs = ps.executeQuery();
             List<BinDetail> binDetails = new ArrayList<>();
             while (rs.next()) {
@@ -171,6 +223,14 @@ public class BinDetailDAO {
         }
 
         return lastBinDetailId;
+    }
+
+    public static void main(String[] args){
+        BinDetailService binDetailService = new BinDetailService();
+        List<BinDetail> list = binDetailService.searchBinDetailWithPagination("RP001-001","blue",1,5);
+        for(BinDetail bd : list){
+            System.out.println(bd);
+        }
     }
 }
 
