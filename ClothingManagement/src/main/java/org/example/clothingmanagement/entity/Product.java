@@ -32,7 +32,24 @@ public class Product {
     private Integer totalQuantity;
     private String urlImage;
 
-    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String createdBy) {
+    private Category category;
+    private Supplier supplier;
+    private Employee employee;
+
+    public Product(Integer categoryId, String description, String gender, String madeIn, String material, Integer minQuantity, String name, Double price, String seasons,String id) {
+        this.categoryId = categoryId;
+        this.description = description;
+        this.gender = gender;
+        this.madeIn = madeIn;
+        this.material = material;
+        this.minQuantity = minQuantity;
+        this.name = name;
+        this.price = price;
+        this.seasons = seasons;
+        this.id = id;
+    }
+
+    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity, String createdBy) {
         this.name = name;
         this.price = price;
         this.seasons = seasons;

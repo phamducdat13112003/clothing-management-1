@@ -43,6 +43,40 @@ public class ProductDAO {
 
     }
 
+    public boolean updateProduct(Product product) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" UPDATE Product ");
+            sql.append(" SET ");
+            sql.append(" ProductName = ?");
+            sql.append(", Price = ?");
+            sql.append(", Material = ?");
+            sql.append(", Gender = ?");
+            sql.append(", Seasons = ?");
+            sql.append(", CategoryID = ?");
+            sql.append(", MinQuantity = ?");
+            sql.append(", MadeIn = ?");
+            sql.append(", Description = ?");
+            sql.append(" WHERE ProductID = ?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setString(3, product.getMaterial());
+            ps.setString(4, product.getGender());
+            ps.setString(5, product.getSeasons());
+            ps.setInt(6, product.getCategoryId());
+            ps.setInt(7, product.getMinQuantity());
+            ps.setString(8, product.getMadeIn());
+            ps.setString(9, product.getDescription());
+            ps.setString(10, product.getId());
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Product> searchProductsByNameSearch(String nameSearch){
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();

@@ -58,6 +58,10 @@ public class ProductService {
         return map;
     }
 
+    public boolean updateProduct(Product product) {
+        return pd.updateProduct(product);
+    }
+
     public List<Product> getAllProducts() {
         return pd.getAllProducts();
     }
