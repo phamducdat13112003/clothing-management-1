@@ -10,8 +10,6 @@
     <meta name="description" content="#">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-
-
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
           rel="stylesheet">
@@ -30,8 +28,6 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
-
-
         h1 {
             text-align: center;
             color: #333;
@@ -164,7 +160,6 @@
             font-weight: bold;  /* Optional: make the error message bold */
             margin-top: 10px;  /* Optional: add some spacing */
         }
-
     </style>
 </head>
 <body id="sherah-dark-light">
@@ -205,35 +200,48 @@
                     <input type="hidden" id="createdBy" name="createdBy" value="${sessionScope.employeeId}">
                 </div>
 
+                <!-- Origin Section -->
+                <div class="form-row">
+                    <label for="originSectionID">Origin Section:</label>
+                    <select name="originSectionID" id="originSectionID">
+                        <option value="">Select Origin Section</option>
+                        <c:forEach var="section" items="${sections}">
+                            <option value="${section.sectionID}">${section.sectionName}</option>
+                        </c:forEach>
+                    </select>
+                </div>
 
                 <!-- Origin Bin -->
                 <div class="form-row">
                     <label for="originBinID">Origin Bin:</label>
-                    <select name="originBinID" id="originBinID">
+                    <select name="originBinID" id="originBinID" disabled>
                         <option value="">Select Origin Bin</option>
-                        <c:forEach var="binId" items="${binIds}">
-                            <option value="${binId}">${binId}</option>
+                    </select>
+                </div>
+
+                <!-- Final Section -->
+                <div class="form-row">
+                    <label for="finalSectionID">Final Section:</label>
+                    <select name="finalSectionID" id="finalSectionID">
+                        <option value="">Select Final Section</option>
+                        <c:forEach var="section" items="${sections}">
+                            <option value="${section.sectionID}">${section.sectionName}</option>
                         </c:forEach>
                     </select>
-
                 </div>
 
                 <!-- Final Bin -->
                 <div class="form-row">
                     <label for="finalBinID">Final Bin:</label>
-                    <select name="finalBinID" id="finalBinID">
+                    <select name="finalBinID" id="finalBinID" disabled>
                         <option value="">Select Final Bin</option>
-                        <c:forEach var="binId" items="${binIds}">
-                            <option value="${binId}">${binId}</option>
-                        </c:forEach>
                     </select>
-
                 </div>
 
                 <!-- Product Detail Search and Table -->
                 <div class="form-row">
                     <label for="productDetailSearch">Search Product Detail ID:</label>
-                    <input type="text" id="productDetailSearch" name="productDetailSearch" autocomplete="off">
+                    <input type="text" id="productDetailSearch" name="productDetailSearch" autocomplete="off" disabled>
                     <div id="suggestionBox" class="suggestion-box" style="display: none;"></div>
                 </div>
 
@@ -286,6 +294,9 @@
                 <c:if test="${not empty errorCapacity}">
                     <p class="error-message">${errorCapacity}</p>
                 </c:if>
+                <c:if test="${not empty errorSection}">
+                    <p class="error-message">${errorSection}</p>
+                </c:if>
 
             </form>
         </div>
@@ -305,66 +316,228 @@
     let rowCount = 1;  // Start row number from 1
 
     document.addEventListener("DOMContentLoaded", function () {
+        const originSectionSelect = document.getElementById("originSectionID");
+        const finalSectionSelect = document.getElementById("finalSectionID");
         const originBinSelect = document.getElementById("originBinID");
         const finalBinSelect = document.getElementById("finalBinID");
         const searchInput = document.getElementById("productDetailSearch");
         const suggestionBox = document.getElementById("suggestionBox");
 
-        // Function to update the available options in Final Bin dropdown
+        // Add event listeners for section selection
+        originSectionSelect.addEventListener("change", function() {
+            console.log("Origin section selected:", this.value);
+            console.log("Selected option text:", this.options[this.selectedIndex].text);
+            console.log("All options:", Array.from(this.options).map(opt => ({ value: opt.value, text: opt.text })));
+            loadBins(this.value, originBinSelect);
+
+            // Disable product search until origin bin is selected
+            searchInput.disabled = true;
+            searchInput.value = "";
+
+            // Reset origin bin selection
+            originBinSelect.innerHTML = '<option value="">Select Origin Bin</option>';
+            originBinSelect.disabled = this.value === "";
+        });
+
+        finalSectionSelect.addEventListener("change", function() {
+            loadBins(this.value, finalBinSelect);
+
+            // Reset final bin selection
+            finalBinSelect.innerHTML = '<option value="">Select Final Bin</option>';
+            finalBinSelect.disabled = this.value === "";
+        });
+
+        function loadBins(sectionID, binSelect) {
+            console.log("loadBins called with sectionID:", sectionID, "Type:", typeof sectionID);
+
+            if (!sectionID) {
+                console.log("No sectionID provided, disabling bin select");
+                binSelect.innerHTML = '<option value="">Select Bin</option>';
+                binSelect.disabled = true;
+                return;
+            }
+
+            // Enable the bin select
+            binSelect.disabled = false;
+
+            // Create URL object using the same approach as searchProductDetails
+            const url = new URL("/ClothingManagement_war/getBinsBySection", window.location.origin);
+            url.searchParams.append("sectionID", sectionID);
+
+            console.log("Fetching bins from URL:", url.toString());
+
+            // Fetch bins for the selected section
+            fetch(url.toString())
+                .then(response => {
+                    console.log("Response status:", response.status);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Full API response:", JSON.stringify(data));
+
+                    // Clear current options
+                    binSelect.innerHTML = '<option value="">Select Bin</option>';
+
+                    if (data.success && data.bins && data.bins.length > 0) {
+                        // Add new options
+                        data.bins.forEach(bin => {
+                            const option = document.createElement('option');
+                            option.value = bin.id || bin.binID;
+                            option.textContent = bin.name || bin.binName || bin.id || bin.binID;
+                            binSelect.appendChild(option);
+                        });
+                    } else {
+                        console.log("No bins found or API error:", data.message || "Unknown error");
+                        binSelect.innerHTML = '<option value="">No bins available</option>';
+                    }
+
+                    // Update bin selections after loading new bins
+                    updateBinSelections();
+                })
+                .catch(error => {
+                    console.error("Error fetching bins:", error);
+                    binSelect.innerHTML = '<option value="">Error loading bins</option>';
+                });
+        }
+
+        // Add this function to disable matching bins in the other dropdown
         function updateBinSelections() {
+            const originSectionID = originSectionSelect.value;
+            const finalSectionID = finalSectionSelect.value;
             const originBinID = originBinSelect.value;
             const finalBinID = finalBinSelect.value;
 
-            // If Origin Bin is selected, disable that option in Final Bin
-            Array.from(finalBinSelect.options).forEach(option => {
-                if (originBinID === option.value && originBinID !== "") {
-                    option.disabled = true;
-                } else {
-                    option.disabled = false;
-                }
-            });
+            // Enable product search only when origin bin is selected
+            searchInput.disabled = originBinID === "";
 
-            // If "Select Origin Bin" is selected, enable all options in Final Bin
-            if (originBinID === "") {
-                Array.from(finalBinSelect.options).forEach(option => {
-                    option.disabled = false;
-                });
+            // Add an error message div after the search input if it doesn't exist
+            let errorDiv = document.getElementById("searchError");
+            if (!errorDiv) {
+                const searchRow = searchInput.parentElement;
+                errorDiv = document.createElement("div");
+                errorDiv.className = "error-message";
+                errorDiv.id = "searchError";
+                errorDiv.style.display = "none";
+                searchRow.appendChild(errorDiv);
+            }
+
+            if (originBinID === "" && searchInput.value.trim() !== "") {
+                errorDiv.textContent = "You must choose an Origin Bin first.";
+                errorDiv.style.display = "block";
+                searchInput.value = "";
+                suggestionBox.style.display = "none";
+            }
+
+            // Disable matching bins in the other dropdown
+            if (originSectionID && finalSectionID) {
+                // If sections are the same, check bins to disable
+                if (originSectionID === finalSectionID) {
+                    // Disable the selected origin bin in the final bin dropdown
+                    if (originBinID) {
+                        Array.from(finalBinSelect.options).forEach(option => {
+                            if (option.value === originBinID) {
+                                option.disabled = true;
+                            } else {
+                                option.disabled = false;
+                            }
+                        });
+                    }
+
+                    // Disable the selected final bin in the origin bin dropdown
+                    if (finalBinID) {
+                        Array.from(originBinSelect.options).forEach(option => {
+                            if (option.value === finalBinID) {
+                                option.disabled = true;
+                            } else {
+                                option.disabled = false;
+                            }
+                        });
+                    }
+                } else {
+                    // If sections are different, enable all bins
+                    Array.from(finalBinSelect.options).forEach(option => {
+                        option.disabled = false;
+                    });
+
+                    Array.from(originBinSelect.options).forEach(option => {
+                        option.disabled = false;
+                    });
+                }
             }
         }
 
-        // Call the function initially to set the disabled states correctly when page loads
-        updateBinSelections();
+        // Modify the section change event listeners to also update bin selections
+        originSectionSelect.addEventListener("change", function() {
+            console.log("Origin section selected:", this.value);
+            console.log("Selected option text:", this.options[this.selectedIndex].text);
+            console.log("All options:", Array.from(this.options).map(opt => ({ value: opt.value, text: opt.text })));
+            loadBins(this.value, originBinSelect);
 
-        // Add event listeners for changes in both bin selects
-        originBinSelect.addEventListener("change", updateBinSelections);
-        finalBinSelect.addEventListener("change", updateBinSelections);
+            // Disable product search until origin bin is selected
+            searchInput.disabled = true;
+            searchInput.value = "";
 
-        // Add an error message div after the search input
-        const searchRow = searchInput.parentElement;
-        const errorDiv = document.createElement("div");
-        errorDiv.className = "error-message";
-        errorDiv.id = "searchError";
-        errorDiv.style.display = "none";
-        searchRow.appendChild(errorDiv);
+            // Reset origin bin selection
+            originBinSelect.innerHTML = '<option value="">Select Origin Bin</option>';
+            originBinSelect.disabled = this.value === "";
 
+            // Update bin selections after loading bins
+            setTimeout(updateBinSelections, 500); // Add a small delay to ensure bins are loaded
+        });
+
+        finalSectionSelect.addEventListener("change", function() {
+            loadBins(this.value, finalBinSelect);
+
+            // Reset final bin selection
+            finalBinSelect.innerHTML = '<option value="">Select Final Bin</option>';
+            finalBinSelect.disabled = this.value === "";
+
+            // Update bin selections after loading bins
+            setTimeout(updateBinSelections, 500); // Add a small delay to ensure bins are loaded
+        });
+
+        // Prevent searching if no origin bin is selected
+        searchInput.addEventListener("focus", function() {
+            const originBinID = originBinSelect.value;
+            const errorDiv = document.getElementById("searchError");
+
+            if (originBinID === "") {
+                if (errorDiv) {
+                    errorDiv.textContent = "You must choose an Origin Bin first.";
+                    errorDiv.style.display = "block";
+                }
+                this.blur(); // Remove focus from the search input
+            } else if (errorDiv) {
+                errorDiv.style.display = "none";
+            }
+        });
+
+        // Function to search product details
         function searchProductDetails() {
             const searchValue = searchInput.value.trim();
             const originBinID = originBinSelect.value;
+            const errorDiv = document.getElementById("searchError");
 
             // Check if origin bin is selected
             if (originBinID === "") {
-                errorDiv.textContent = "You must choose an Origin Bin first.";
-                errorDiv.style.display = "block";
+                if (errorDiv) {
+                    errorDiv.textContent = "You must choose an Origin Bin first.";
+                    errorDiv.style.display = "block";
+                }
                 suggestionBox.style.display = "none";
                 return;
-            } else {
+            } else if (errorDiv) {
                 errorDiv.style.display = "none";
             }
 
-            if (searchValue.length > 0) {
+            if (searchValue.length > 2) {
+                // Call search API
                 const url = new URL("/ClothingManagement_war/searchProductDetail", window.location.origin);
                 url.searchParams.append("query", searchValue);
-                url.searchParams.append("binID", originBinID); // Pass the selected bin ID
+                url.searchParams.append("binID", originBinID);
 
                 fetch(url.toString())
                     .then(response => {
@@ -411,16 +584,15 @@
                                     displayWeight = weight.toString() + " kg";
                                 }
 
-                                // Create display value for quantity
                                 let displayQuantity = "No Quantity";
                                 if (quantity !== undefined && quantity !== null) {
                                     displayQuantity = quantity.toString();
                                 }
 
-
-                                // Set text content using plain string concatenation
+                                // Set content for search suggestion
                                 div.textContent = displayID + " - " + displayName + " - " + displayWeight + " - Quantity: " + displayQuantity;
 
+                                // If click on a search suggestion, call select suggestion function
                                 div.onclick = () => selectSuggestion(suggestion);
                                 suggestionBox.appendChild(div);
                             });
@@ -439,39 +611,27 @@
             }
         }
 
-        // Prevent searching if no origin bin is selected
-        searchInput.addEventListener("focus", function() {
-            const originBinID = originBinSelect.value;
-            if (originBinID === "") {
-                errorDiv.textContent = "You must choose an Origin Bin first.";
-                errorDiv.style.display = "block";
-                this.blur(); // Remove focus from the search input
-            } else {
-                errorDiv.style.display = "none";
-            }
-        });
-
         // Attach event listener for the search input
         searchInput.addEventListener("input", searchProductDetails);
 
-
+        // Function to add row to table when selecting a product from search suggestion
         function selectSuggestion(suggestion) {
             const tableBody = document.getElementById("productDetailsBody");
 
-            // Check if this product already exists in the table
+            // Check for duplicate product detail id in table
             const existingProduct = Array.from(tableBody.getElementsByTagName("tr")).some(row => {
                 const productDetailInput = row.querySelector('input[name="productDetailID[]"]');
                 return productDetailInput && productDetailInput.value === suggestion.productDetailID;
             });
 
-            // If the product is already in the table, don't add a new row
+            // If product exists, show error
             if (existingProduct) {
                 alert("This product is already added.");
                 searchInput.value = "";
                 return;
             }
 
-            // Add a new row with product details
+            // If product doesn't exist, create new row in the table
             const newRow = document.createElement("tr");
 
             const cell1 = document.createElement("td");
@@ -501,22 +661,17 @@
             const quantityInput = document.createElement("input");
             quantityInput.setAttribute("type", "number");
             quantityInput.setAttribute("name", "quantity[]");
-            quantityInput.setAttribute("value", 1);  // Set initial quantity to 1
-            quantityInput.setAttribute("min", 1);    // Minimum quantity is 1
+            quantityInput.setAttribute("value", 1);  // Set default value = 1
+            quantityInput.setAttribute("min", 1);    // Set min value = 1
             quantityInput.setAttribute("required", true);
 
             // Store available quantity as a data attribute
             quantityInput.dataset.availableQuantity = suggestion.quantity || 0;
 
-            console.log(`display: ${displayQuantity}, qty: ${quantity}, suggest: ${suggest.quantity}`);
-
-            // Store available quantity as a data attribute
-            quantityInput.dataset.availableQuantity = suggestion.quantity || 0;
-
-            // Define displayQuantity from the suggestion
+            // Get available quantity from search suggestion
             const displayQuantity = suggestion.quantity || 0;
 
-            // Add error message element
+            // Error message for quantity exceeding available quantity
             const errorSpan = document.createElement("span");
             errorSpan.className = "quantity-error";
             errorSpan.style.color = "red";
@@ -548,8 +703,8 @@
 
             // Add event listener to delete button
             deleteButton.onclick = function () {
-                tableBody.removeChild(newRow);  // Remove the row from the table
-                updateRowNumbers();  // Reassign row numbers after deletion
+                tableBody.removeChild(newRow);  // Remove row from table
+                updateRowNumbers();  // Reset row numbers
             };
 
             cell6.appendChild(deleteButton);
@@ -572,13 +727,13 @@
             suggestionBox.style.display = "none";
         }
 
-        // Function to update row numbers after adding/removing a product
+        // Update row numbers if adding or removing products from table
         function updateRowNumbers() {
             const rows = document.querySelectorAll("#productDetailsBody tr");
             rows.forEach((row, index) => {
-                row.querySelector('td').textContent = index + 1;  // Update row number starting from 1
+                row.querySelector('td').textContent = index + 1;
             });
-            rowCount = rows.length + 1;  // Update rowCount to next available row number
+            rowCount = rows.length + 1;
         }
 
         // Validation before form submission
@@ -586,8 +741,24 @@
         form.addEventListener('submit', function (event) {
             const productDetailsBody = document.getElementById("productDetailsBody");
             const rows = productDetailsBody.querySelectorAll('tr');
+            const originSectionID = originSectionSelect.value;
+            const finalSectionID = finalSectionSelect.value;
             const originBinID = originBinSelect.value;
             const finalBinID = finalBinSelect.value;
+
+            // Check if origin section is selected
+            if (originSectionID === "") {
+                event.preventDefault();
+                alert("Please select an Origin Section.");
+                return;
+            }
+
+            // Check if final section is selected
+            if (finalSectionID === "") {
+                event.preventDefault();
+                alert("Please select a Final Section.");
+                return;
+            }
 
             // Check if origin bin is selected
             if (originBinID === "") {
@@ -603,7 +774,14 @@
                 return;
             }
 
-            // If there are no rows (products) in the table, prevent form submission
+            // Check if origin and final bins are the same
+            if (originBinID === finalBinID) {
+                event.preventDefault();
+                alert("Origin Bin and Final Bin cannot be the same.");
+                return;
+            }
+
+            // If no products in table, don't allow creation
             if (rows.length === 0) {
                 event.preventDefault(); // Prevent the form from submitting
                 alert("Please add at least one product to the transfer order.");
