@@ -14,6 +14,64 @@ import java.util.Optional;
 import static org.example.clothingmanagement.repository.DBContext.getConnection;
 
 public class BinDAO {
+    // Add this method to the existing BinDAO class
+    public boolean addBin(Bin bin) {
+        try(Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" INSERT INTO Bin (BinID, BinName, MaxCapacity, Status, SectionID) ");
+            sql.append(" VALUES (?, ?, ?, ?, ?) ");
+
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, bin.getBinID());
+            ps.setString(2, bin.getBinName());
+            ps.setDouble(3, bin.getMaxCapacity());
+            ps.setBoolean(4, bin.isStatus());
+            ps.setString(5, bin.getSectionID());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public String getNextBinId(String sectionId) {
+        int nextSequence = 1;
+
+        try (Connection conn = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT BinID ");
+            sql.append(" FROM Bin ");
+            sql.append(" WHERE BinID LIKE ? ");
+            sql.append(" ORDER BY BinID DESC ");
+            sql.append(" LIMIT 1 ");
+
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, sectionId + "-%");
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String lastBinId = rs.getString("BinID");
+                String sequenceStr = lastBinId.substring(lastBinId.lastIndexOf("-") + 1);
+                try {
+                    nextSequence = Integer.parseInt(sequenceStr) + 1;
+                } catch (NumberFormatException e) {
+                    // If we can't parse the number for some reason, default to 1
+                    nextSequence = 1;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Format the sequence number with leading zeros (e.g., 001, 002, etc.)
+        return sectionId + "-" + String.format("%03d", nextSequence);
+    }
+
     public List<Bin> getBinsWithPagination(String sectionId,int page, int pageSize){
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
@@ -380,7 +438,11 @@ public class BinDAO {
                 Bin bin = new Bin();
                 bin.setBinID(rs.getString("BinID"));
                 bin.setBinName(rs.getString("BinName"));
+                bin.setMaxCapacity(rs.getDouble("MaxCapacity"));
+                bin.setStatus(rs.getBoolean("Status"));
+                System.out.println("Found bin: " + bin.getBinID() + " - " + bin.getBinName());
                 bins.add(bin);
+
             }
         } catch (SQLException e) {
             e.printStackTrace();
