@@ -134,7 +134,7 @@
                                         <button type="submit" class="search-button">Search</button>
                                     </form>
                                 </div>
-                                
+
                             </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">

@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class Product {
     private String gender;
     private String seasons;
     private Integer minQuantity;
-    private Date createdDate;
+    private LocalDate createdDate;
     private String description;
     private String madeIn;
     private Integer categoryId;
@@ -62,7 +64,8 @@ public class Product {
         this.minQuantity = minQuantity;
         this.createdBy = createdBy;
     }
-    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String createdBy, int Status) {
+    public Product(String id,String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String createdBy, int Status,LocalDate createdDate) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.seasons = seasons;
@@ -75,5 +78,6 @@ public class Product {
         this.minQuantity = minQuantity;
         this.createdBy = createdBy;
         this.Status = Status;
+        this.createdDate = createdDate;
     }
 }

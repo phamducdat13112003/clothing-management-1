@@ -12,6 +12,10 @@ public class ProductService {
     private final CategoryService cs = new CategoryService();
     private final ProductDetailService pds = new ProductDetailService();
 
+    public Optional<Product> getTheLastProduct() {
+        return pd.getTheLastProduct();
+    }
+
     public HashMap<Product, String> getAllProductsWithPagination(int page, int pageSize) {
         List<Product> products = pd.getProductsWithPagination(page, pageSize);
         List<Category> categories = cs.selectAll();
