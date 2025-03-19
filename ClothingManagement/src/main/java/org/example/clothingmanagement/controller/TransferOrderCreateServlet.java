@@ -39,6 +39,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
         String nextToID = transferOrderDAO.getNextToID();
         request.setAttribute("nextToID", nextToID);
 
+        // Lâý section -> bin -> product
         List<Section> sections = sectionDAO.getAllSection();
         request.setAttribute("sections", sections);
 
@@ -53,17 +54,19 @@ public class TransferOrderCreateServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         try {
+            //lấy all bin id
             List<String> binIds = transferOrderDAO.getAllBinIds();
             request.setAttribute("binIds", binIds);
 
-            // validate
+            // goi phương thức validate
             if (!validateTransferOrderCreation(request)) {
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
 
-            // get to ID
+            // lấy to id từ jsp
             String toID = request.getParameter("toID");
+            // check null to id
             if (toID == null || toID.trim().isEmpty()) {
                 request.setAttribute("errorToID", "Transfer Order ID không được để trống.");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
@@ -77,11 +80,9 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 return;
             }
 
-            // Lấy thông tin người tạo và trạng thái
+            // Lấy thông tin người tạo và trạng thái khi tạo auto create = pending
             String createdBy = request.getParameter("createdBy");
             String createdName = request.getParameter("createdByName");
-            System.out.println("name: " + createdName);
-            System.out.println("createdBy: " + createdBy);
             String status = "Pending";
 
             // Xác thực ngày tạo
@@ -90,6 +91,26 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 createdDate = LocalDate.parse(request.getParameter("createdDate"));
             } catch (DateTimeParseException e) {
                 request.setAttribute("errorDate", "Định dạng ngày không hợp lệ.");
+                request.getRequestDispatcher("to-create.jsp").forward(request, response);
+                return;
+            }
+
+            // In the doPost method, add section validation at the beginning
+            String originSectionID = request.getParameter("originSectionID");
+            String finalSectionID = request.getParameter("finalSectionID");
+
+            // Check if origin section is selected
+            if (originSectionID == null || originSectionID.trim().isEmpty()) {
+                request.setAttribute("errorSection", "Origin Section must be selected.");
+                preserveFormData(request);
+                request.getRequestDispatcher("to-create.jsp").forward(request, response);
+                return;
+            }
+
+            // Check if final section is selected
+            if (finalSectionID == null || finalSectionID.trim().isEmpty()) {
+                request.setAttribute("errorSection", "Final Section must be selected.");
+                preserveFormData(request);
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
@@ -130,6 +151,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
             // Kiểm tra sức chứa của bin đích
             double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
             double currentBinWeight = transferOrderDAO.getCurrentBinWeight(finalBinID);
+            // tính tổng trọng lượng nếu chuyển products từ đơn TO vào
             double totalWeightAfterTransfer = currentBinWeight + totalWeight;
 
             System.out.println("Final Bin Max Capacity: " + binMaxCapacity);
@@ -137,11 +159,14 @@ public class TransferOrderCreateServlet extends HttpServlet {
             System.out.println("Total Transfer Order Weight: " + totalWeight);
             System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
 
+            //so sánh max capacity của bin với tổng trọng lượng sau khi chuyển vào
+            // > -> fail / < -> success
             if (totalWeightAfterTransfer > binMaxCapacity) {
                 request.setAttribute("errorCapacity", "Bin đích không đủ sức chứa cho số lượng sản phẩm này. " +
                         "Sức chứa tối đa: " + binMaxCapacity + " kg. " +
                         "Trọng lượng hiện tại: " + currentBinWeight + " kg. " +
                         "Trọng lượng cần chuyển: " + totalWeight + " kg.");
+                //lấy lại thông tin để hiển thị
                 preserveFormData(request);
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
@@ -206,7 +231,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                             // Start transaction
                             conn.setAutoCommit(false);
 
-                            // Update origin bin - decrement quantity
+                            // Update origin bin
                             boolean isOriginBinUpdated = transferOrderDAO.updateBinQuantity(conn, originBinID, productDetailID, -quantity);
                             if (!isOriginBinUpdated) {
                                 conn.rollback();
@@ -282,6 +307,21 @@ public class TransferOrderCreateServlet extends HttpServlet {
             request.setAttribute("errorDate", "Định dạng ngày không hợp lệ.");
             return false;
         }
+
+        // Add to validateTransferOrderCreation method
+        String originSectionID = request.getParameter("originSectionID");
+        String finalSectionID = request.getParameter("finalSectionID");
+
+        if (originSectionID == null || originSectionID.trim().isEmpty()) {
+            request.setAttribute("errorSection", "Origin Section must be selected.");
+            return false;
+        }
+
+        if (finalSectionID == null || finalSectionID.trim().isEmpty()) {
+            request.setAttribute("errorSection", "Final Section must be selected.");
+            return false;
+        }
+
 
         // Xác thực Bin
         String originBinID = request.getParameter("originBinID");
@@ -362,6 +402,9 @@ public class TransferOrderCreateServlet extends HttpServlet {
         request.setAttribute("createdBy", request.getParameter("createdBy"));
         request.setAttribute("createdByName", request.getParameter("createdByName"));
         request.setAttribute("createdDate", request.getParameter("createdDate"));
+        // Add to preserveFormData method
+        request.setAttribute("originSectionID", request.getParameter("originSectionID"));
+        request.setAttribute("finalSectionID", request.getParameter("finalSectionID"));
         request.setAttribute("originBinID", request.getParameter("originBinID"));
         request.setAttribute("finalBinID", request.getParameter("finalBinID"));
 
