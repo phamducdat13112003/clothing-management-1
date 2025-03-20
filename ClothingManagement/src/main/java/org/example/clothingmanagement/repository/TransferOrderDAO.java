@@ -153,7 +153,12 @@ public class TransferOrderDAO {
 
     public List<TODetail> getTODetailsByTransferOrderId(String toID) {
         List<TODetail> toDetails = new ArrayList<>();
-        String sql = "SELECT * FROM TODetail WHERE TOID = ?";
+        // SQL query to join TODetail, ProductDetail, and Product to get product name
+        String sql = "SELECT td.*, p.ProductName, pd.Weight " +
+                "FROM TODetail td " +
+                "JOIN ProductDetail pd ON td.ProductDetailID = pd.ProductDetailID " +
+                "JOIN Product p ON pd.ProductID = p.ProductID " +  // Join Product to get ProductName
+                "WHERE td.TOID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -168,6 +173,13 @@ public class TransferOrderDAO {
                 toDetail.setToID(rs.getString("TOID"));
                 toDetail.setOriginBinID(rs.getString("OriginBinID"));
                 toDetail.setFinalBinID(rs.getString("FinalBinID"));
+
+                // Retrieve the ProductName from the join
+                String productName = rs.getString("ProductName");
+                toDetail.setProductName(productName);  // Set the product name in TODetail
+                double weight = rs.getDouble("Weight");
+                toDetail.setWeight(weight);
+
                 toDetails.add(toDetail);
             }
         } catch (SQLException e) {
@@ -175,6 +187,7 @@ public class TransferOrderDAO {
         }
         return toDetails;
     }
+
 
     public String getNextToID() {
         String nextToID = "TO001"; // Default first ID
@@ -711,6 +724,23 @@ public class TransferOrderDAO {
         return currentCapacity;
     }
 
+    public String getEmployeeNameByID(String employeeID) throws SQLException {
+        String employeeName = "";
+        String query = "SELECT EmployeeName FROM Employee WHERE EmployeeID = ?";
+
+        try(Connection connection = DBContext.getConnection();
+        PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setString(1, employeeID);
+            ResultSet resultSet = statement.executeQuery();
+            if (resultSet.next()) {
+                employeeName = resultSet.getString("EmployeeName");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeeName;
+    }
+
 
     public double getProductWeight(String productDetailID) {
         double weight = 0.0;
@@ -821,6 +851,34 @@ public class TransferOrderDAO {
         }
 
         return details;
+    }
+
+    public double getPendingTransferTotalWeight(String finalBinID) {
+        double totalPendingWeight = 0.0;
+        String sql = "SELECT td.quantity, pd.weight " +
+                "FROM TODetail td " +
+                "JOIN TransferOrder t ON td.toID = t.toID " +
+                "JOIN ProductDetail pd ON td.productDetailID = pd.productDetailID " +
+                "WHERE td.finalBinID = ? AND t.status = 'Pending'";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, finalBinID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    int quantity = rs.getInt("quantity");
+                    double weight = rs.getDouble("weight");
+                    totalPendingWeight += quantity * weight;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error calculating pending transfer weight: " + e.getMessage());
+        }
+
+        return totalPendingWeight;
     }
 
     public boolean updateBinStatus(Connection conn, String binID, int status) throws SQLException {
@@ -948,4 +1006,23 @@ public class TransferOrderDAO {
         }
 
     }
+
+
+
+
+    public boolean removeTODetail(String toDetailID) {
+        // SQL to delete a TODetail record
+        String sql = "DELETE FROM TODetail WHERE toDetailID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, toDetailID);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }
