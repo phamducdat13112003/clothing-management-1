@@ -28,12 +28,9 @@ public class Product {
     private String createdBy;
     private String supplierId;
     private int Status;
-
-
     //attributes not exist in database
     private Integer totalQuantity;
     private String urlImage;
-
     private Category category;
     private Supplier supplier;
     private Employee employee;

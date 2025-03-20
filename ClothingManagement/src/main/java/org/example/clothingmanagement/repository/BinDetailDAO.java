@@ -2,6 +2,7 @@ package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
+import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.service.BinDetailService;
 
 import java.sql.Connection;
@@ -225,10 +226,70 @@ public class BinDetailDAO {
         return lastBinDetailId;
     }
 
+    public boolean deleteProductFromBin(String binId, String productDetailId) {
+        String sql = "DELETE FROM binDetail WHERE binId = ? AND productDetailId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binId);
+            stmt.setString(2, productDetailId);
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean canDeleteProduct(String binId, String productDetailId) {
+        String sql = "SELECT quantity FROM binDetail WHERE binId = ? AND productDetailId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binId);
+            stmt.setString(2, productDetailId);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("quantity") == 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<ProductDetail> getProductsInBin(String binId) {
+        List<ProductDetail> productList = new ArrayList<>();
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT bd.ProductDetailId, bd.quantity, " +
+                    "pd.size, pd.color, pd.weight, pd.productImage " +
+                    "FROM BinDetail bd " +
+                    "JOIN ProductDetail pd ON bd.ProductDetailId = pd.ProductDetailId " +
+                    "WHERE bd.binId = ?";
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, binId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                ProductDetail product = new ProductDetail();
+                product.setId(rs.getString("ProductDetailId"));
+                product.setQuantity(rs.getInt("quantity"));
+                product.setSize(rs.getString("size"));
+                product.setColor(rs.getString("color"));
+                product.setWeight(rs.getDouble("weight"));
+                product.setImage(rs.getString("ProductImage"));
+                productList.add(product);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productList;
+    }
+
+
     public static void main(String[] args){
         BinDetailService binDetailService = new BinDetailService();
         List<BinDetail> list = binDetailService.searchBinDetailWithPagination("RP001-001","blue",1,5);
-        for(BinDetail bd : list){
+        List<ProductDetail> listP = binDetailService.getProductsInBin("RP001-001");
+        for(ProductDetail bd : listP){
             System.out.println(bd);
         }
     }
