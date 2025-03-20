@@ -16,6 +16,8 @@ public class BinDetail {
     private int quantity;
 
     // trong database không có
+    private ProductDetail productDetail;
+
     private int totalQuantity;
     private int status;
     private double weight;

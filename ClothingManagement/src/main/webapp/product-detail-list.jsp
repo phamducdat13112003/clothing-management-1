@@ -30,6 +30,73 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            margin: 0 5px;
+            border: 1px solid #ddd;
+            text-decoration: none;
+            color: #333;
+        }
+        .pagination a:active {
+            background-color: #09ad95;
+            color: white;
+            font-weight: bold;
+        }
+        .pagination a:hover {
+            background-color: #ddd;
+        }
+        .search-form {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 5px;
+            width: 250px;
+        }
+
+        .search-button {
+            padding: 5px 15px;
+            background-color: #09ad95;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .search-button:hover {
+            background-color: #078c76;
+        }
+        .sherah-table__actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .delete-link {
+            color: red ;/* Làm cho Delete có màu đỏ */
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .message{
+            color: green;
+            font-size: 12px;
+        }
+    </style>
 
 </head>
 <body id="sherah-dark-light">
@@ -45,24 +112,30 @@
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
-                            <!-- Sherah Breadcrumb -->
-                            <%--                            <form action="search-product" method="get">--%>
-                            <%--                                <div class="input-group mb-3">--%>
-                            <%--                                    <input type="text" class="form-control" placeholder="Search for a product..." name="searchQuery" id="searchQuery">--%>
-                            <%--                                    <button class="btn btn-primary" type="submit">Search</button>--%>
-                            <%--                                </div>--%>
-                            <%--                            </form>--%>
+                            <div class="row align-items-center justify-content-between">
+                                <div class="col-6">
+                                    <div class="sherah-breadcrumb mg-top-30">
+                                        <h2 class="sherah-breadcrumb__title">Manage Product Details </h2>
+<%--                                        <ul class="sherah-breadcrumb__list">--%>
+<%--                                            <li><a href="list-bin?id=${section.sectionID}">Home</a></li>--%>
+<%--                                            &lt;%&ndash;                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>&ndash;%&gt;--%>
+<%--                                        </ul>--%>
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
+                                        <c:if test="${not empty messageSuccess}">
+                                            <span class="message">${messageSuccess}</span>
+                                        </c:if>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <form action="product-detail-list" method="POST" class="search-form">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <button type="submit" class="search-button">Search</button>
+                                    </form>
+                                </div>
 
-                            <div class="sherah-breadcrumb mg-top-30">
-                                <h2 class="sherah-breadcrumb__title">${product.name}</h2>
-                                <%--                                <ul class="sherah-breadcrumb__list">--%>
-                                <%--                                    <li><a href="#">Home</a></li>--%>
-                                <%--                                    <li class="active"><a href="profile-info.html">Personal Information</a></li>--%>
-                                <%--                                </ul>--%>
-                                <button class="btn btn-primary" onclick="window.location.href='${pageContext.request.contextPath}/product-detail?id=${product.id}'">Back</button>
                             </div>
-                            <!-- End Sherah Breadcrumb -->
-                            <!-- Product List -->
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
@@ -120,7 +193,6 @@
                                                     </div>
                                                 </td>
                                                 <c:if test="${pdList.status==1}">
-
                                                     <c:if test="${pdList.quantity==0}">
                                                         <td class="sherah-table__column-2 sherah-table__data-2">
                                                             <div class="sherah-table__product-content">
@@ -134,7 +206,6 @@
                                                         </td>
                                                     </c:if>
                                                 </c:if>
-
                                                     <c:if test="${pdList.status==0}">
                                                         <td class="sherah-table__column-2 sherah-table__data-2">
                                                             <div class="sherah-table__product-content">
@@ -167,6 +238,18 @@
                                     </c:if>
                                     </tbody>
                                 </table>
+                                <div class="pagination">
+                                    <c:if test="${currentPage > 1}">
+                                        <a href="product-detail-list?page=${currentPage - 1}&search=${search}">Previous</a>
+                                    </c:if>
+
+                                    <c:forEach var="i" begin="1" end="${totalPages}">
+                                        <a href="product-detail-list?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    </c:forEach>
+                                    <c:if test="${currentPage < totalPages}">
+                                        <a href="product-detail-list?page=${currentPage + 1}&search=${search}">Next</a>
+                                    </c:if>
+                                </div>
                             </div>
                         </div>
                         <!-- End Dashboard Inner -->

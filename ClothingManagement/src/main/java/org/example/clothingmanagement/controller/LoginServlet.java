@@ -71,11 +71,11 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(cookie_password);
             }
             if (account.getRoleId() == 1) {//Manager
-                response.sendRedirect("Dashboard.jsp");
+                response.sendRedirect("dashboard");
             } else if (account.getRoleId() == 2) {// Purchase Order Staff
                 response.sendRedirect("viewpurchaseorder");
             } else if (account.getRoleId() == 4) {//Storage Staff
-                response.sendRedirect("Dashboard.jsp");
+                response.sendRedirect("dashboard");
             } else if (account.getRoleId() == 3) {//Admin
                 response.sendRedirect("account");
             }

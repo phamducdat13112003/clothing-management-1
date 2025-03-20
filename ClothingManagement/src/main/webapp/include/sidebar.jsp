@@ -9,7 +9,7 @@
 
             <!-- Logo -->
             <div class="logo sherah-sidebar-padding">
-                <a href="index.html">
+                <a href="#!">
                     <img class="sherah-logo__main" src="img/logo.png" alt="#">
                 </a>
                 <div class="sherah__sicon close-icon d-xl-none">
@@ -23,10 +23,10 @@
                 <!-- Nav Menu -->
                 <div class="menu-bar">
                     <ul class="menu-bar__one sherah-dashboard-menu" id="sherahMenu">
-                        <li><a href="#!" data-bs-toggle="collapse" data-bs-target="#menu-item_home"><span
-                                class="menu-bar__text">
+                        <c:if test="${account.getRoleId() == 1}">
+                            <li><a href="dashboard" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
-                                                <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"
+                                                <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"--%>
                                                      width="18.075" height="18.075" viewBox="0 0 18.075 18.075">
                                                 <g id="Icon" transform="translate(0 0)">
                                                 <path id="Path_29" data-name="Path 29"
@@ -43,9 +43,9 @@
                                                 </g>
                                                 </svg>
                                             </span>
-                                            <span class="menu-bar__name">Dashboard</span></span></a></span>
-
-                        </li>
+                                            <span class="menu-bar__name">DashBoard</span></span></a></span>
+                            </li>
+                        </c:if>
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse"
                                data-bs-target="#menu-item_vendors"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">

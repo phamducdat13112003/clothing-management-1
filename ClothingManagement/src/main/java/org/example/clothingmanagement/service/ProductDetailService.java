@@ -90,6 +90,18 @@ public class ProductDetailService {
         return productDetailDAO.updateAllProductDetail(productId);
     }
 
+    public List<ProductDetail> findAllWithPagination(int page, int pageSize) {
+        return productDetailDAO.findAllWithPagination(page, pageSize);
+    }
+
+    public List<ProductDetail> searchAllWithPagination(String nameSearch, int page, int pageSize) {
+        return productDetailDAO.searchAllWithPagination(nameSearch, page, pageSize);
+    }
+
+    public List<ProductDetail> searchAllWithoutPagination(String nameSearch) {
+        return productDetailDAO.searchAllWithoutPagination(nameSearch);
+    }
+
     public static void main(String[] args){
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetails();

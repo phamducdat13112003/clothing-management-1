@@ -150,7 +150,6 @@
                                                         </p>
                                                     </div>
                                                 </td>
-
                                             </tr>
                                         </c:forEach>
 

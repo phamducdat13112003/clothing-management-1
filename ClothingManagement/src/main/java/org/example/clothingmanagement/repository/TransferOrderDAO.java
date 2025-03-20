@@ -1025,4 +1025,24 @@ public class TransferOrderDAO {
         }
     }
 
+
+    public boolean hasProcessingTO(String binID) {
+        String sql = "SELECT COUNT(*) AS count " +
+                "FROM TODetail td " +
+                "JOIN TransferOrder to1 ON td.TOID = to1.TOID " +
+                "WHERE (td.OriginBinId = ? OR td.FinalBinId = ?) " +
+                "AND to1.Status = 'Processing'";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binID);
+            stmt.setString(2, binID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") > 0;  // Nếu có đơn TO processing → không xóa duoc bin
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
 }

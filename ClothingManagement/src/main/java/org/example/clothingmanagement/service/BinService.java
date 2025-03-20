@@ -3,6 +3,7 @@ package org.example.clothingmanagement.service;
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
 import org.example.clothingmanagement.repository.BinDAO;
+import org.example.clothingmanagement.repository.SectionDAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +25,13 @@ public class BinService {
         return binDAO.getBinDetailByBinID(binID, page, pageSize);
     }
 
+    public boolean canDeleteBin(String binID) {
+        return binDAO.canDeleteBin(binID);
+    }
+    public int getTotalBinsBySection(String sectionId){
+        return binDAO.getTotalBinsBySection(sectionId);
+    }
+
     public List<Bin> getBinsWithPagination(String sectionId, int page, int pageSize){
         return binDAO.getBinsWithPagination(sectionId, page, pageSize);
     }
@@ -34,6 +42,10 @@ public class BinService {
 
     public List<Bin> searchBinWithoutPagination(String sectionId, String nameSearch){
         return binDAO.searchBinWithoutPagination(sectionId, nameSearch);
+    }
+
+    public List<Bin> getBinsBySectionId(String sectionId, int page, int pageSize){
+        return binDAO.getBinsBySectionId(sectionId, page, pageSize);
     }
 
     public int countBinDetailByBinID(String binID){
@@ -61,13 +73,14 @@ public class BinService {
         return bins;
     }
 
+    public boolean deleteBin(String binId) {
+        return binDAO.deleteBin(binId);
+    }
+
     public int countBinDetail(String nameSearch, String binID){
         return binDAO.countBinDetail(nameSearch, binID);
     }
 
-    public List<Bin> getBinsBySectionId(String sectionId){
-        return binDAO.getBinsBySectionId(sectionId);
-    }
 
     public static void main(String[] args){
         BinService bs = new BinService();

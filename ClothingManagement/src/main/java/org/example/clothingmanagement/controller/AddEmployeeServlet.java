@@ -143,7 +143,7 @@ public class AddEmployeeServlet extends HttpServlet {
                     } catch (SQLException e) {
                         request.setAttribute("message", "Can't create filename.");
                     }
-                    if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
+                    if (!Files.exists(Path.of(realPath))) { // check folder /images/Employee is existed
                         Files.createDirectories(Path.of(realPath));
                     }
                     part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.

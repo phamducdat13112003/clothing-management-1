@@ -8,29 +8,29 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.Category;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.Supplier;
-import org.example.clothingmanagement.repository.CategoryDAO;
 import org.example.clothingmanagement.service.CategoryService;
 import org.example.clothingmanagement.service.ProductService;
 import org.example.clothingmanagement.service.SupplierService;
 
 import java.io.IOException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @WebServlet(name="AddProduct", urlPatterns = "/add-product")
 public class AddProductController extends HttpServlet {
     private final SupplierService ss = new SupplierService();
-    private final ProductService productService = new ProductService();
+    private final ProductService ps = new ProductService();
     private final CategoryService cs = new CategoryService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Category> categories = null;
-        categories = cs.selectAll();
+        List<Category> categories = cs.selectAll();
 
         List<Supplier> suppliers = ss.getAllSuppliers();
         req.setAttribute("categories", categories);
         req.setAttribute("suppliers", suppliers);
-        req.getRequestDispatcher("/add-product.jsp").forward(req, resp);
+        req.getRequestDispatcher("add-product.jsp").forward(req, resp);
     }
 
     @Override
@@ -45,15 +45,41 @@ public class AddProductController extends HttpServlet {
         String description = req.getParameter("description");
         String supplierID = req.getParameter("supplierID");
         String madeIn = req.getParameter("madeIn");
+//        Date createdDate = new Date();
+        String createdBy = req.getParameter("employeeId");
+        LocalDate createdDate = LocalDate.parse(req.getParameter("createdDate"));
+        // TODO chưa khởi tạo và tính toán biến id
+        Product p = new Product();
+        if(ps.getTheLastProduct().isPresent()){
+            p = ps.getTheLastProduct().get();
+            String id = p.getId();
+            String prefix = id.substring(0, 1); // 'P'
+            String numberPart = id.substring(1); // '001'
 
-        Product product = new Product(productName,price,seasons,supplierID,material,madeIn,gender,description,categoryID,minQuantity,"",1);
-        boolean check = productService.addProduct(product);
-        if (check) {
-            resp.sendRedirect(req.getContextPath()+ "/add-product?abc=1");
+            // Chuyển phần số sang dạng số nguyên và tăng lên 1
+            int number = Integer.parseInt(numberPart);
+            number++;
+
+            // Chuyển lại thành chuỗi với số đã tăng, bổ sung số không nếu cần thiết
+            String nextNumberPart = String.format("%03d", number);
+
+            // Kết hợp lại phần chữ 'P' và phần số
+            String finalId = prefix + nextNumberPart;
+            Product product = new Product(finalId,productName,price,seasons,supplierID,material,madeIn,gender,description,categoryID,minQuantity,createdBy,1,createdDate);
+            boolean check = ps.addProduct(product);
+            if (check) {
+                resp.sendRedirect(req.getContextPath()+ "/add-product?abc=1");
+            }
+            else{
+                resp.sendRedirect(req.getContextPath()+ "/add-product?abc=2");
+            }
         }
         else{
             resp.sendRedirect(req.getContextPath()+ "/add-product?abc=2");
+
         }
+
+
 
     }
 }

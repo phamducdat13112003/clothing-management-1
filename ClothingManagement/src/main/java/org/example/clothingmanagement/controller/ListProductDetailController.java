@@ -5,10 +5,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.example.clothingmanagement.entity.Product;
-import org.example.clothingmanagement.entity.ProductDetail;
-import org.example.clothingmanagement.service.ProductDetailService;
-import org.example.clothingmanagement.service.ProductService;
+import org.example.clothingmanagement.entity.*;
+import org.example.clothingmanagement.service.*;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -18,6 +16,9 @@ import java.util.List;
 public class ListProductDetailController extends HttpServlet {
     private final ProductService ps = new ProductService();
     private final ProductDetailService pds = new ProductDetailService();
+    private final CategoryService cs = new CategoryService();
+    private final SupplierService ss = new SupplierService();
+    private final EmployeeService es = new EmployeeService();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -30,6 +31,25 @@ public class ListProductDetailController extends HttpServlet {
         else{
             product = new Product();
         }
+        List<Category> categories = cs.selectAll();
+        List<Supplier> suppliers = ss.getAllSuppliers();
+        List<Employee> employees = es.getAllEmployee();
+        for(Category c : categories){
+            if(product.getCategoryId().equals(c.getCategoryID())){
+                product.setCategory(c);
+            }
+        }
+        for(Supplier s : suppliers){
+            if(product.getSupplierId().equalsIgnoreCase(s.getSupplierId())){
+                product.setSupplier(s);
+            }
+        }
+        for(Employee e : employees){
+            if(product.getCreatedBy().equalsIgnoreCase(e.getEmployeeID())){
+                product.setEmployee(e);
+            }
+        }
+
 
         // pagination
         int page = 1;
@@ -46,6 +66,7 @@ public class ListProductDetailController extends HttpServlet {
         int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
 
         req.setAttribute("product", product);
+        req.setAttribute("categories", categories);
         req.setAttribute("list", productDetails);
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
@@ -64,6 +85,24 @@ public class ListProductDetailController extends HttpServlet {
         }
         else{
             product = new Product();
+        }
+        List<Category> categories = cs.selectAll();
+        List<Supplier> suppliers = ss.getAllSuppliers();
+        List<Employee> employees = es.getAllEmployee();
+        for(Category c : categories){
+            if(product.getCategoryId().equals(c.getCategoryID())){
+                product.setCategory(c);
+            }
+        }
+        for(Supplier s : suppliers){
+            if(product.getSupplierId().equalsIgnoreCase(s.getSupplierId())){
+                product.setSupplier(s);
+            }
+        }
+        for(Employee e : employees){
+            if(product.getCreatedBy().equalsIgnoreCase(e.getEmployeeID())){
+                product.setEmployee(e);
+            }
         }
 
         int page = 1;

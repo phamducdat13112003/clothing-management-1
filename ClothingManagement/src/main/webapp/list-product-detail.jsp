@@ -112,6 +112,146 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
+                                <form class="sherah-wc__form-main" action="update-product" method="post">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <!-- Basic Information -->
+                                            <div class="product-form-box sherah-border mg-top-30">
+                                                <h4 class="form-title m-0">Basic Information</h4>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="ProductId" type="hidden" name="productId" value="${product.id}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" type="text" name="name" required value="${product.name}">
+<%--                                                                <c:if test="${not empty errorName}">--%>
+<%--                                                                    <span class="error-message">${errorName}</span>--%>
+<%--                                                                </c:if>--%>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Price <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="VND" type="number" min="0" name="price" value="${product.price}" required>
+<%--                                                                <c:if test="${not empty errorEmail}">--%>
+<%--                                                                    <span class="error-message">${errorEmail}</span>--%>
+<%--                                                                </c:if>--%>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Material <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" required>
+<%--                                                                <c:if test="${not empty errorPhone}">--%>
+<%--                                                                    <span class="error-message">${errorPhone}</span>--%>
+<%--                                                                </c:if>--%>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <select class="sherah-wc__form-input" name="gender" required>
+                                                                    <option value="Male" ${product.gender == "Male" ? "selected" : ""}>Male</option>
+                                                                    <option value="Female" ${product.gender == "Female" ? "selected" : ""}>Female</option>
+                                                                    <option value="Unisex" ${product.gender == "Unisex" ? "selected" : ""}>Unisex</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Season <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <select class="sherah-wc__form-input" name="season" required>
+                                                                    <option value="Spring/Summer" ${product.seasons == "Spring/Summer" ? "selected" : ""}>Spring/Summer</option>
+                                                                    <option value="Fall/Winter" ${product.seasons == "Fall/Winter" ? "selected" : ""}>Fall/Winter</option>
+                                                                    <option value="Pre-Fall" ${product.seasons == "Pre-Fall" ? "selected" : ""}>Pre-Fall</option>
+                                                                    <option value="Others" ${product.seasons == "Others" ? "selected" : ""}>Others</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Category<span class="required">*</span></label>
+                                                            <select class="sherah-wc__form-input" name="categoryID" required>
+                                                                <c:forEach var="category" items="${categories}">
+                                                                    <tr>
+                                                                        <option value="${category.categoryID}" ${product.category.categoryName == "${category.categoryName}" ? "selected" : ""}>${category.categoryName}</option>
+                                                                    </tr>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Minimum Quantity<span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 step=1 name="minQuantity" value="${product.minQuantity}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Made In<span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Created By<span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Created by" type="text" name="createdBy" value="${product.employee.employeeName}" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-6 col-md-6 col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Supplier<span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <input class="sherah-wc__form-input" placeholder="Supplier" type="text" name="supplier" value="${product.supplier.supplierName}" readonly>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <div class="form-group">
+                                                            <label class="sherah-wc__form-label">Description <span class="required">*</span></label>
+                                                            <div class="form-group__input">
+                                                                <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50">${product.description}</textarea>
+
+                                                            <%--                                                                <c:if test="${not empty errorName}">--%>
+                                                                <%--                                                                    <span class="error-message">${errorName}</span>--%>
+                                                                <%--                                                                </c:if>--%>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- End Basic Information -->
+                                            </div>
+                                            <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30">
+                                                <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
+                                                <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
                             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">

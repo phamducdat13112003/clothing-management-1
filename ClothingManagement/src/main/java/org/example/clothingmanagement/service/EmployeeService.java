@@ -13,6 +13,10 @@ public class EmployeeService {
         return employeeDAO.getAllEmployees();
     }
 
+    public List<Employee> getAllEmployee(){
+        return employeeDAO.getAllEmployee();
+    }
+
     public List<Employee> getEmployeesWithPagination(int page, int pageSize) throws SQLException {
         return employeeDAO.getEmployeesWithPagination(page, pageSize);
     }

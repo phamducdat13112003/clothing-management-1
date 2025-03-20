@@ -76,6 +76,25 @@
         .search-button:hover {
             background-color: #078c76;
         }
+        .sherah-table__actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .delete-link {
+            color: red ;/* Làm cho Delete có màu đỏ */
+            font-weight: bold;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .message{
+            color: green;
+            font-size: 12px;
+        }
     </style>
 
 </head>
@@ -100,7 +119,12 @@
                                             <li><a href="list-bin?id=${section.sectionID}">Home</a></li>
                                             <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
                                         </ul>
-
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
+                                        <c:if test="${not empty messageSuccess}">
+                                            <span class="message">${messageSuccess}</span>
+                                        </c:if>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -121,7 +145,6 @@
                                         <th class="sherah-table__column-2 sherah-table__h2">SectionId</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Action</th>
-
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
@@ -155,15 +178,19 @@
                                                 </td>
 
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
-                                                    <div class="sherah-table__product-content">
+                                                    <div class="sherah-table__actions">
                                                         <p class="sherah-table__product-desc">
                                                             <a href="${pageContext.request.contextPath}/view-bin-detail?id=${bin.binID}">
                                                                 Detail
                                                             </a>
                                                         </p>
+                                                        <p class="sherah-table__product-desc">
+                                                            <a href="javascript:void(0);" onclick="confirmDeleteBin('${bin.binID}')" class="delete-link">
+                                                                Delete
+                                                            </a>
+                                                        </p>
                                                     </div>
                                                 </td>
-
                                             </tr>
                                         </c:forEach>
 
@@ -192,15 +219,12 @@
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>
     <!-- End sherah Dashboard -->
 
 </div>
-
 <!-- sherah Scripts -->
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>
@@ -237,6 +261,11 @@
             window.location.href = url;
         }
         return false;
+    }
+    function confirmDeleteBin(binId) {
+        if (confirm("Are you sure want to delete this bin?")) {
+            window.location = "deletebin?binId=" + binId;
+        }
     }
 
     function confirmRecovery(url) {

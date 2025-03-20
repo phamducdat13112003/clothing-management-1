@@ -3,12 +3,47 @@ package org.example.clothingmanagement.repository;
 import org.example.clothingmanagement.entity.*;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
 public class ProductDAO {
+    public Optional<Product> getTheLastProduct() {
+        try(Connection conn = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT ProductID, ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, CreatedDate, Description, CreatedBy, SupplierID, MadeIn, Status FROM Product  ");
+            sql.append(" ORDER BY ProductID DESC ");
+            sql.append(" LIMIT 1");
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            while(rs.next()) {
+                Product product = Product.builder()
+                        .id(rs.getString("ProductID"))
+                        .name(rs.getString("ProductName"))
+                        .price(rs.getDouble("Price"))
+                        .categoryId(rs.getInt("CategoryID"))
+                        .material(rs.getString("Material"))
+                        .gender(rs.getString("Gender"))
+                        .seasons(rs.getString("Seasons"))
+                        .minQuantity(rs.getInt("MinQuantity"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
+                        .description(rs.getString("Description"))
+                        .createdBy(rs.getString("CreatedBy"))
+                        .supplierId(rs.getString("SupplierID"))
+                        .madeIn(rs.getString("MadeIn"))
+                        .Status(rs.getInt("Status"))
+                        .build();
+                return Optional.of(product);
+            }
+            return Optional.empty();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<Product> getAllProducts() {
         try(Connection conn = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
@@ -26,7 +61,7 @@ public class ProductDAO {
                         .gender(rs.getString("Gender"))
                         .seasons(rs.getString("Seasons"))
                         .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
                         .description(rs.getString("Description"))
                         .createdBy(rs.getString("CreatedBy"))
                         .supplierId(rs.getString("SupplierID"))
@@ -41,6 +76,40 @@ public class ProductDAO {
             throw new RuntimeException(e);
         }
 
+    }
+
+    public boolean updateProduct(Product product) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" UPDATE Product ");
+            sql.append(" SET ");
+            sql.append(" ProductName = ?");
+            sql.append(", Price = ?");
+            sql.append(", Material = ?");
+            sql.append(", Gender = ?");
+            sql.append(", Seasons = ?");
+            sql.append(", CategoryID = ?");
+            sql.append(", MinQuantity = ?");
+            sql.append(", MadeIn = ?");
+            sql.append(", Description = ?");
+            sql.append(" WHERE ProductID = ?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, product.getName());
+            ps.setDouble(2, product.getPrice());
+            ps.setString(3, product.getMaterial());
+            ps.setString(4, product.getGender());
+            ps.setString(5, product.getSeasons());
+            ps.setInt(6, product.getCategoryId());
+            ps.setInt(7, product.getMinQuantity());
+            ps.setString(8, product.getMadeIn());
+            ps.setString(9, product.getDescription());
+            ps.setString(10, product.getId());
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Product> searchProductsByNameSearch(String nameSearch){
@@ -75,7 +144,7 @@ public class ProductDAO {
                         .gender(rs.getString("Gender"))
                         .seasons(rs.getString("Seasons"))
                         .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
                         .description(rs.getString("Description"))
                         .createdBy(rs.getString("CreatedBy"))
                         .supplierId(rs.getString("SupplierID"))
@@ -125,7 +194,7 @@ public class ProductDAO {
                         .gender(rs.getString("Gender"))
                         .seasons(rs.getString("Seasons"))
                         .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
                         .description(rs.getString("Description"))
                         .createdBy(rs.getString("CreatedBy"))
                         .supplierId(rs.getString("SupplierID"))
@@ -143,20 +212,26 @@ public class ProductDAO {
     public boolean addProduct(Product product) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
-            sql.append(" INSERT INTO Product (ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, Description, CreatedBy, SupplierID, MadeIn) ");
-            sql.append(" VALUES (?,?,?,?,?,?,?,?,?,?,?)");
+            sql.append(" INSERT INTO Product (productId,ProductName, Price, CategoryID, Material, Gender, Seasons, MinQuantity, Description, CreatedBy, SupplierID, MadeIn,createdDate,status) ");
+            sql.append(" VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
             PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setString(1, product.getName());
-            ps.setDouble(2, product.getPrice());
-            ps.setInt(3, product.getCategoryId());
-            ps.setString(4, product.getMaterial());
-            ps.setString(5, product.getGender());
-            ps.setString(6, product.getSeasons());
-            ps.setInt(7, product.getMinQuantity());
-            ps.setString(8, product.getDescription());
-            ps.setString(9, product.getCreatedBy());
-            ps.setString(10, product.getSupplierId());
-            ps.setString(11, product.getMadeIn());
+            ps.setString(1, product.getId());
+            ps.setString(2, product.getName());
+            ps.setDouble(3, product.getPrice());
+            ps.setInt(4, product.getCategoryId());
+            ps.setString(5, product.getMaterial());
+            ps.setString(6, product.getGender());
+            ps.setString(7, product.getSeasons());
+            ps.setInt(8, product.getMinQuantity());
+            ps.setString(9, product.getDescription());
+            ps.setString(10, product.getCreatedBy());
+            ps.setString(11, product.getSupplierId());
+            ps.setString(12, product.getMadeIn());
+            java.util.Date utilDate = new java.util.Date();
+            java.sql.Date sqlDate = new java.sql.Date(utilDate.getTime());
+
+            ps.setDate(13, sqlDate);
+            ps.setInt(14, product.getStatus());
             ps.executeUpdate();
             return true;
 
@@ -214,7 +289,7 @@ public class ProductDAO {
                         .gender(rs.getString("Gender"))
                         .seasons(rs.getString("Seasons"))
                         .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
                         .description(rs.getString("Description"))
                         .createdBy(rs.getString("CreatedBy"))
                         .supplierId(rs.getString("SupplierID"))
@@ -243,7 +318,7 @@ public class ProductDAO {
                         .gender(rs.getString("Gender"))
                         .seasons(rs.getString("Seasons"))
                         .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
                         .description(rs.getString("Description"))
                         .madeIn(rs.getString("MadeIn"))
                         .categoryId(rs.getInt("CategoryID"))
@@ -340,7 +415,7 @@ public class ProductDAO {
                         .gender(resultSet.getString("Gender"))
                         .seasons(resultSet.getString("Seasons"))
                         .minQuantity(resultSet.getInt("MinQuantity"))
-                        .createdDate(resultSet.getDate("CreatedDate"))
+                        .createdDate(resultSet.getDate("CreatedDate").toLocalDate())
                         .description(resultSet.getString("Description"))
                         .createdBy(resultSet.getString("CreatedBy"))
                         .supplierId(resultSet.getString("SupplierID"))
@@ -480,7 +555,7 @@ public class ProductDAO {
                         .gender(rs.getString("Gender"))
                         .seasons(rs.getString("Seasons"))
                         .minQuantity(rs.getInt("MinQuantity"))
-                        .createdDate(rs.getDate("CreatedDate"))
+                        .createdDate(rs.getDate("CreatedDate").toLocalDate())
                         .description(rs.getString("Description"))
                         .createdBy(rs.getString("CreatedBy"))
                         .supplierId(rs.getString("SupplierID"))

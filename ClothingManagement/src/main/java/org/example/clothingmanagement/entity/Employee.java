@@ -1,15 +1,13 @@
 package org.example.clothingmanagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 @ToString
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Employee {
     private String employeeID;
     private String employeeName;
@@ -22,6 +20,7 @@ public class Employee {
     private String warehouseID;
     private String image;
     private String warehouseName;
+
 
     public Employee(String employeeID,String email, String phone) {
         this.employeeID = employeeID;
