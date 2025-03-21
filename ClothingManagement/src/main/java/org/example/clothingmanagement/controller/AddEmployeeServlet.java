@@ -133,7 +133,7 @@ public class AddEmployeeServlet extends HttpServlet {
             }else if (fileSize > 2 * 1024 * 1024) { // Kiem tra nếu lớn hơn 2MB
                 request.setAttribute("message", "Image size must not exceed 2MB.");
             } else {
-                String realPath = request.getServletContext().getRealPath("/img/Employee"); //where the photo is saved
+                String realPath = request.getServletContext().getRealPath("img/Employee"); //where the photo is saved
                 String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
                 // convert it to a string, get just the filename without including the full path.
                 if (!source.isEmpty()) {
@@ -147,7 +147,7 @@ public class AddEmployeeServlet extends HttpServlet {
                         Files.createDirectories(Path.of(realPath));
                     }
                     part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
-                    employee.setImage("/img/Employee/" + filename); //Set the path to the image file
+                    employee.setImage("img/Employee/" + filename); //Set the path to the image file
                 }
             }
             boolean success = false;
