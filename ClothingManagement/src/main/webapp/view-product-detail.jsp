@@ -22,7 +22,8 @@
     <title>View Product Detail</title>
 
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
 
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
@@ -42,10 +43,12 @@
             color: red;
             font-weight: bold;
         }
+
         .error-message {
             color: red;
             font-size: 12px;
         }
+
         .choose-file-label {
             display: inline-block;
             padding: 10px 20px;
@@ -68,15 +71,16 @@
         .choose-file-label:active {
             background-color: #003f7f;
         }
+
         #image {
-            margin-top: 10px;            /* Khoảng cách giữa ảnh và nút */
-            max-width: 200px;            /* Giới hạn chiều rộng tối đa của ảnh */
-            height: auto;                /* Giữ tỷ lệ cho ảnh */
-            border-radius: 8px;          /* Bo góc cho ảnh */
-            border: 2px solid #ddd;     /* Viền cho ảnh */
-            display: block;              /* Đảm bảo ảnh không bị kéo giãn */
-            margin-left: auto;           /* Căn giữa ảnh */
-            margin-right: auto;          /* Căn giữa ảnh */
+            margin-top: 10px; /* Khoảng cách giữa ảnh và nút */
+            max-width: 200px; /* Giới hạn chiều rộng tối đa của ảnh */
+            height: auto; /* Giữ tỷ lệ cho ảnh */
+            border-radius: 8px; /* Bo góc cho ảnh */
+            border: 2px solid #ddd; /* Viền cho ảnh */
+            display: block; /* Đảm bảo ảnh không bị kéo giãn */
+            margin-left: auto; /* Căn giữa ảnh */
+            margin-right: auto; /* Căn giữa ảnh */
         }
     </style>
 </head>
@@ -103,7 +107,9 @@
                             </div>
                         </div>
                         <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
-                            <form class="sherah-wc__form-main" action="${pageContext.request.contextPath}/view-product-detail" method="post" enctype="multipart/form-data" >
+                            <form class="sherah-wc__form-main"
+                                  action="${pageContext.request.contextPath}/view-product-detail" method="post"
+                                   >
                                 <div class="row">
                                     <div class="col-lg-6 col-12">
                                         <!-- Organization -->
@@ -111,36 +117,45 @@
                                             <h4 class="form-title m-0"></h4>
                                             <div class="col-lg-6 col-md-6 col-12">
                                                 <div class="form-group">
-                                                    <img src="img/${pd.image}" alt="Product Image">
+                                                    <img src="${pd.image}" alt="Product Image">
                                                 </div>
-
                                             </div>
-                                            <!-- End Organization -->
-
                                         </div>
                                     </div>
+
                                     <div class="col-lg-6 col-12">
                                         <!-- Basic Information -->
                                         <div class="product-form-box sherah-border mg-top-30">
                                             <h4 class="form-title m-0">Basic Information Of ${p.name}</h4>
                                             <div class="row">
-                                                <input type="hidden" name="id" value="${pd.id}" />
+                                                <input type="hidden" name="id" value="${pd.id}"/>
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Product Image Upload <span class="required">*</span></label>
+                                                        <label class="sherah-wc__form-label">Product Image Upload <span
+                                                                class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                                            <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
-                                                            <img src="img/${pd.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${pd.image}">
+                                                            <input type="file" name="img" class="form-control d-none"
+                                                                   id="inputGroupFile04" onchange="chooseFile(this)"
+                                                                   accept="image/gif,image/jpeg,image/png"
+                                                                   aria-describedby="inputGroupFileAddon04"
+                                                                   aria-label="Upload">
+                                                            <label for="inputGroupFile04" class="choose-file-label">Choose
+                                                                file</label>
+                                                            <img src="img/${pd.image}" id="image"
+                                                                 class="img-thumbnail rounded-5" width="100%"
+                                                                 alt="${pd.image}">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
+                                                        <label class="sherah-wc__form-label">Weight <span
+                                                                class="required">*</span></label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" min="0.1" step="0.1" value="${pd.weight}" required>
+                                                            <input class="sherah-wc__form-input" placeholder="Kilogram"
+                                                                   type="number" name="weight" min="0.1" step="0.1"
+                                                                   value="${pd.weight}" required>
 
                                                         </div>
                                                     </div>
