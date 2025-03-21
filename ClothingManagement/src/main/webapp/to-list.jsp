@@ -57,6 +57,11 @@
 <%--                </form>--%>
 <%--              </div>--%>
             </div>
+            <c:if test="${not empty sessionScope.successMessage}">
+              <p style="color:green;">${sessionScope.successMessage}</p>
+              <c:remove var="successMessage" scope="session"/>
+            </c:if>
+
             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
               <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                 <thead class="sherah-table__head">
@@ -74,7 +79,7 @@
                     <tr>
                       <td class="sherah-table__column-2 sherah-table__data-2">
                         <div class="sherah-table__product-content">
-                          <a href="/ClothingManagement_war/TODetail?toID=${order.toID}">${order.toID}</a>
+                          <a href="${pageContext.request.contextPath}/TODetail?toID=${order.toID}">${order.toID}</a>
                         </div>
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2">
@@ -93,20 +98,20 @@
                         </div>
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2">
-                        <a href="/ClothingManagement_war/TODetail?toID=${order.toID}">View</a>
+                        <a href="${pageContext.request.contextPath}/TODetail?toID=${order.toID}">View</a>
 
                         <!-- Link to edit the transfer order -->
-                        <a href="/ClothingManagement_war/TOUpdate?toID=${order.toID}">Edit</a>
+                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}">Edit</a>
 
                         <!-- Complete button - only show if status is not already COMPLETED -->
                         <c:if test="${order.status != 'done'}">
-                        <a href="/ClothingManagement_war/TOList?action=done&toID=${order.toID}"
+                        <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}"
                            onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
                         </c:if>
 
 
                         <!-- Link to delete the transfer order -->
-                        <a href="/ClothingManagement_war/TOList?action=cancel&toID=${order.toID}"
+                        <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}"
                            onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>
             </div>
                       </td>

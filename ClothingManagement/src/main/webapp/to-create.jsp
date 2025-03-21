@@ -179,9 +179,9 @@
             </div>
         </div>
         <div style="margin-top: 50px;">
-            <form action="/ClothingManagement_war/TOCreate" method="post">
+            <form action="${pageContext.request.contextPath}/TOCreate" method="post">
 
-                <!-- Transfer Order ID -->
+            <!-- Transfer Order ID -->
                 <div class="form-row">
                     <label for="toID">Transfer Order ID:</label>
                     <input type="text" id="toID" name="toID" value="${nextToID}" readonly>
@@ -269,6 +269,9 @@
                 <c:if test="${not empty errorGeneral}">
                     <p class="error-message">${errorGeneral}</p>
                 </c:if>
+                <c:if test="${not empty errorProduct}">
+                    <p class="error-message">${errorProduct}</p>
+                </c:if>
 
                 <c:if test="${not empty successMessage}">
                     <p style="color:green;">${successMessage}</p>
@@ -314,6 +317,7 @@
 </script>
 <script>
     let rowCount = 1;  // Start row number from 1
+    const contextPath = "${pageContext.request.contextPath}";
 
     document.addEventListener("DOMContentLoaded", function () {
         const originSectionSelect = document.getElementById("originSectionID");
@@ -361,7 +365,7 @@
             binSelect.disabled = false;
 
             // Create URL object using the same approach as searchProductDetails
-            const url = new URL("/ClothingManagement_war/getBinsBySection", window.location.origin);
+            const url = new URL(contextPath + "/getBinsBySection", window.location.origin);
             url.searchParams.append("sectionID", sectionID);
 
             console.log("Fetching bins from URL:", url.toString());
@@ -410,7 +414,7 @@
             const originBinID = originBinSelect.value;
             const finalBinID = finalBinSelect.value;
 
-            // Enable product search only when origin bin is selected
+            // disable product search input khi original bin chưa được select
             searchInput.disabled = originBinID === "";
 
             // Add an error message div after the search input if it doesn't exist
@@ -431,11 +435,9 @@
                 suggestionBox.style.display = "none";
             }
 
-            // Disable matching bins in the other dropdown
+            // disable option đã được select ở origin bin ở final bin
             if (originSectionID && finalSectionID) {
-                // If sections are the same, check bins to disable
                 if (originSectionID === finalSectionID) {
-                    // Disable the selected origin bin in the final bin dropdown
                     if (originBinID) {
                         Array.from(finalBinSelect.options).forEach(option => {
                             if (option.value === originBinID) {
@@ -446,7 +448,7 @@
                         });
                     }
 
-                    // Disable the selected final bin in the origin bin dropdown
+                    // disable option đã select ở origin bin
                     if (finalBinID) {
                         Array.from(originBinSelect.options).forEach(option => {
                             if (option.value === finalBinID) {
@@ -457,7 +459,7 @@
                         });
                     }
                 } else {
-                    // If sections are different, enable all bins
+                    // selected option khác nhau, enable all bin selection
                     Array.from(finalBinSelect.options).forEach(option => {
                         option.disabled = false;
                     });
@@ -476,7 +478,7 @@
             console.log("All options:", Array.from(this.options).map(opt => ({ value: opt.value, text: opt.text })));
             loadBins(this.value, originBinSelect);
 
-            // Disable product search until origin bin is selected
+            // disable search input khi chưa select origin bin
             searchInput.disabled = true;
             searchInput.value = "";
 
@@ -533,9 +535,9 @@
                 errorDiv.style.display = "none";
             }
 
-            if (searchValue.length > 2) {
+            if (searchValue.length > 1) {
                 // Call search API
-                const url = new URL("/ClothingManagement_war/searchProductDetail", window.location.origin);
+                const url = new URL(contextPath + "/searchProductDetail", window.location.origin);
                 url.searchParams.append("query", searchValue);
                 url.searchParams.append("binID", originBinID);
 

@@ -179,7 +179,7 @@
       </div>
     </div>
     <div style="margin-top: 50px;">
-      <form action="/ClothingManagement_war/transfer-order/update" method="post">
+      <form action="${pageContext.request.contextPath}/transfer-order/update" method="post">
 
         <!-- Transfer Order ID -->
         <div class="form-row">
@@ -247,6 +247,7 @@
           </thead>
           <tbody id="productDetailsBody">
           <c:forEach var="toDetail" items="${toDetails}" varStatus="status">
+            <p>Debug - ProductID: ${toDetail.productDetailID}, Quantity: ${toDetail.quantity}</p>
             <tr>
               <td>${status.index + 1}</td>
               <td>
