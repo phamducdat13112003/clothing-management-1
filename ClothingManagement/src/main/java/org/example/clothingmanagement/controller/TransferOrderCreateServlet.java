@@ -275,7 +275,8 @@ public class TransferOrderCreateServlet extends HttpServlet {
 
             // Chuyển hướng sau khi tạo thành công
             request.getSession().setAttribute("successMessage", "Transfer Order đã được tạo thành công.");
-            response.sendRedirect("/ClothingManagement_war_exploded/TOList");
+            response.sendRedirect(request.getContextPath() + "/TOList");
+
 
         } catch (Exception e) {
             e.printStackTrace();
