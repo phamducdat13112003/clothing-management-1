@@ -17,11 +17,18 @@ public class BinDetail {
 
     // trong database không có
     private ProductDetail productDetail;
-
+    private double maxCapacity;
+    private double binFullPercentage;
+    private double binRemainingPercentage;
     private int totalQuantity;
     private int status;
     private double weight;
     private String color;
     private String size;
     private String image;
+
+    public BinDetail(String binDetailId, int quantity) {
+        this.binDetailId = binDetailId;
+        this.totalQuantity = quantity;
+    }
 }
