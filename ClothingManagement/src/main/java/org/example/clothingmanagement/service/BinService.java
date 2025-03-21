@@ -73,6 +73,10 @@ public class BinService {
         return bins;
     }
 
+    public List<Bin> getBinsBySectionIdWithoutPagination(String sectionId){
+        return binDAO.getBinsBySectionIdWithoutPagination(sectionId);
+    }
+
     public boolean deleteBin(String binId) {
         return binDAO.deleteBin(binId);
     }

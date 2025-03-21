@@ -542,18 +542,6 @@ public class BinDAO {
         }
     }
 
-<<<<<<< HEAD
-    public List<Bin> getBinAndWeightBySectionId(String sectionId) {
-        List<Bin> bins = new ArrayList<>();
-        String sql = "SELECT bd.binId, b.BinName, COALESCE(SUM(bd.quantity * pd.Weight), 0) AS TotalWeightBins " +
-                "FROM BinDetail bd " +
-                "JOIN ProductDetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
-                "JOIN bin b ON bd.binId = b.BinID " +
-                "JOIN section s ON b.SectionID = s.SectionID " +
-                "JOIN sectiontype st ON s.SectionTypeID = st.SectionTypeID " +
-                "WHERE s.SectionID = ? " +
-                "GROUP BY bd.binId, b.BinName";
-=======
     public boolean deleteBin(String binId){
         String sql= "UPDATE bin SET status = 0 WHERE binID = ?";
         try (Connection conn = DBContext.getConnection();
@@ -565,7 +553,6 @@ public class BinDAO {
             throw new RuntimeException(e);
         }
     }
->>>>>>> 679f4c7d6836750b2e3effec080113dc46b0877c
 
     public int getTotalBinsBySection(String sectionId) {
         String sql = "SELECT COUNT(*) FROM Bin WHERE SectionID = ?";
