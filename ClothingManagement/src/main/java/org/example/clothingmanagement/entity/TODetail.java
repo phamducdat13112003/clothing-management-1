@@ -2,10 +2,9 @@ package org.example.clothingmanagement.entity;
 
 
 import jakarta.servlet.annotation.WebServlet;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
+@Setter
+@Getter
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,4 +15,8 @@ public class TODetail {
     private String toID;
     private String originBinID;
     private String finalBinID;
+
+
+    private String productName;
+    private double weight;
 }
