@@ -15,6 +15,8 @@ public class Section {
     private int sectionTypeId;
     private int numberOfBins;
 
+
+
     public Section(String sectionID, String sectionName, int sectionTypeId) {
         this.sectionID = sectionID;
         this.sectionName = sectionName;
