@@ -109,7 +109,7 @@
                         <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
                             <form class="sherah-wc__form-main"
                                   action="${pageContext.request.contextPath}/view-product-detail" method="post"
-                                   >
+                                  enctype="multipart/form-data" >
                                 <div class="row">
                                     <div class="col-lg-6 col-12">
                                         <!-- Organization -->
@@ -141,7 +141,7 @@
                                                                    aria-label="Upload">
                                                             <label for="inputGroupFile04" class="choose-file-label">Choose
                                                                 file</label>
-                                                            <img src="img/${pd.image}" id="image"
+                                                            <img src="${pd.image}" id="image"
                                                                  class="img-thumbnail rounded-5" width="100%"
                                                                  alt="${pd.image}">
                                                         </div>

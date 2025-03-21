@@ -1,6 +1,7 @@
 package org.example.clothingmanagement.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import org.example.clothingmanagement.entity.Product;
@@ -9,11 +10,14 @@ import org.example.clothingmanagement.service.ProductDetailService;
 import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 2 * 1024 * 1024,   // 2MB
+        maxRequestSize = 4 * 1024 * 1024 // 4MB
+)
 @WebServlet(name="ViewProductDetail",urlPatterns = "/view-product-detail")
 public class ViewProductDetailController extends HttpServlet {
     ProductDetailService pds = new ProductDetailService();
@@ -73,7 +77,7 @@ public class ViewProductDetailController extends HttpServlet {
         }
 
         Double weight = Double.parseDouble(req.getParameter("weight"));
-        ProductDetail pd = new ProductDetail(id,"image",weight);
+        ProductDetail pd = new ProductDetail(id,urlImage,weight);
         boolean check = pds.updateProductDetail(pd);
         if (check) {
             HttpSession session = req.getSession();
