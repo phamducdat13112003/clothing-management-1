@@ -260,7 +260,10 @@ public class SectionDAO {
 
     public List<Section> getAllSections() {
         try(Connection con = DBContext.getConnection()){
-            String sql = "SELECT sectionID, sectionName, sectionTypeID FROM section";
+            String sql = "SELECT s.sectionID, s.sectionName, s.sectionTypeID, " +
+                    "st.sectionTypeName, st.description " +
+                    "FROM section s " +
+                    "JOIN sectiontype st ON s.sectionTypeID = st.sectionTypeID";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
@@ -270,6 +273,8 @@ public class SectionDAO {
                         .sectionID(rs.getString("sectionID"))
                         .sectionName(rs.getString("sectionName"))
                         .sectionTypeId(rs.getInt("sectionTypeID"))
+                        .sectionTypeName(rs.getString("sectionTypeName"))
+                        .description(rs.getString("description"))
                         .build();
                 sections.add(section);
             }
