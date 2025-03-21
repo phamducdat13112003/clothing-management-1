@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @NoArgsConstructor
@@ -19,20 +21,34 @@ public class Product {
     private String gender;
     private String seasons;
     private Integer minQuantity;
-    private Date createdDate;
+    private LocalDate createdDate;
     private String description;
     private String madeIn;
     private Integer categoryId;
     private String createdBy;
     private String supplierId;
     private int Status;
-
-
     //attributes not exist in database
     private Integer totalQuantity;
     private String urlImage;
+    private Category category;
+    private Supplier supplier;
+    private Employee employee;
 
-    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String createdBy) {
+    public Product(Integer categoryId, String description, String gender, String madeIn, String material, Integer minQuantity, String name, Double price, String seasons,String id) {
+        this.categoryId = categoryId;
+        this.description = description;
+        this.gender = gender;
+        this.madeIn = madeIn;
+        this.material = material;
+        this.minQuantity = minQuantity;
+        this.name = name;
+        this.price = price;
+        this.seasons = seasons;
+        this.id = id;
+    }
+
+    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity, String createdBy) {
         this.name = name;
         this.price = price;
         this.seasons = seasons;
@@ -45,7 +61,8 @@ public class Product {
         this.minQuantity = minQuantity;
         this.createdBy = createdBy;
     }
-    public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String createdBy, int Status) {
+    public Product(String id,String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity,String createdBy, int Status,LocalDate createdDate) {
+        this.id = id;
         this.name = name;
         this.price = price;
         this.seasons = seasons;
@@ -58,5 +75,6 @@ public class Product {
         this.minQuantity = minQuantity;
         this.createdBy = createdBy;
         this.Status = Status;
+        this.createdDate = createdDate;
     }
 }

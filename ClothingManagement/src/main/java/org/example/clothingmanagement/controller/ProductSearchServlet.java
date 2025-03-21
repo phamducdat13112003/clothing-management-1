@@ -25,14 +25,17 @@ public class ProductSearchServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String query = request.getParameter("query");
-        System.out.println("Received query: " + query);  // Improved logging
+        String binID = request.getParameter("binID"); // Get the bin ID parameter
+
+        System.out.println("Received query: " + query);
+        System.out.println("Received bin ID: " + binID);
 
         // Create JsonObject at the start of the method
         JsonObject responseJson = new JsonObject();
 
         try {
-            // Get product details matching the search query
-            List<ProductDetail> suggestions = transferOrderDAO.searchProductDetails(query);
+            // Get product details matching the search query AND located in the specified bin
+            List<ProductDetail> suggestions = transferOrderDAO.searchProductDetailsByBin(query, binID);
 
             if (suggestions != null && !suggestions.isEmpty()) {
                 // Explicitly set success to true
@@ -50,6 +53,11 @@ public class ProductSearchServlet extends HttpServlet {
                     suggestionObj.addProperty("weight",
                             suggestion.getWeight() != null ? suggestion.getWeight() : 0.0);
 
+                    // Include the quantity in the response
+                    if (binID != null && !binID.isEmpty()) {
+                        suggestionObj.addProperty("quantity", suggestion.getQuantity());
+                    }
+
                     suggestionArray.add(suggestionObj);
                 }
 
@@ -60,7 +68,7 @@ public class ProductSearchServlet extends HttpServlet {
                 System.out.println("Response JSON: " + responseJson.toString());
             } else {
                 responseJson.addProperty("success", false);
-                responseJson.addProperty("message", "No products found.");
+                responseJson.addProperty("message", "No products found in this bin.");
             }
 
         } catch (Exception e) {
@@ -77,6 +85,4 @@ public class ProductSearchServlet extends HttpServlet {
         // Additional debug logging
         System.out.println("Final Response JSON: " + responseJson.toString());
     }
-
-
 }

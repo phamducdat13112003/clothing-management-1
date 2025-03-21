@@ -31,6 +31,12 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .required {
+            color: red; /* Makes the asterisk red */
+            font-weight: bold;
+        }
+    </style>
 
 </head>
 <body id="sherah-dark-light">
@@ -61,7 +67,7 @@
                                                 <div class="tab-content" id="nav-tabContent">
                                                     <!--  Features Single Tab -->
                                                     <div class="tab-pane fade show active" id="id1" role="tabpanel">
-                                                        <form action="add-product" method="post">
+                                                        <form action="${pageContext.request.contextPath}/add-product" method="post">
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     <div class="sherah-ptabs__separate">
@@ -76,14 +82,14 @@
                                                                                         <h2>Add New Product</h2>
 
                                                                                         <!-- Product Name -->
-                                                                                        <label for="productName">Product Name:</label>
+                                                                                        <label for="productName">Product Name <span class="required">*</span></label>
                                                                                         <input type="text" id="productName" name="productName" required>
 
 <%--                                                                                        <label for="urlImage">Upload Image:</label>--%>
 <%--                                                                                        <input type="file" id="urlImage" name="image" accept="image/*" required>--%>
 
                                                                                         <!-- Price -->
-                                                                                        <label for="price">Price:</label>
+                                                                                        <label for="price">Price <span class="required">*</span></label>
                                                                                         <input type="number" id="price" name="price" step="10000" min="10000" required>
 
 <%--                                                                                        <!-- Bin ID -->--%>
@@ -91,7 +97,7 @@
 <%--                                                                                        <input type="number" id="binID" name="binID" required>--%>
 
                                                                                         <!-- Category -->
-                                                                                        <label for="categoryID">Category:</label>
+                                                                                        <label for="categoryID">Category <span class="required">*</span></label>
                                                                                         <select id="categoryID" name="categoryID">
                                                                                             <c:forEach var="category" items="${categories}">
                                                                                                 <option value="${category.categoryID}">${category.categoryName}</option>
@@ -99,11 +105,11 @@
                                                                                         </select>
 
                                                                                         <!-- Material -->
-                                                                                        <label for="material">Material:</label>
+                                                                                        <label for="material">Material <span class="required">*</span></label>
                                                                                         <input type="text" id="material" name="material" required>
 
                                                                                         <!-- Gender -->
-                                                                                        <label for="gender">Gender:</label>
+                                                                                        <label for="gender">Gender <span class="required">*</span></label>
                                                                                         <select id="gender" name="gender">
                                                                                             <option value="male">Male</option>
                                                                                             <option value="female">Female</option>
@@ -111,7 +117,7 @@
                                                                                         </select>
 
                                                                                         <!-- Seasons -->
-                                                                                        <label for="seasons">Seasons:</label>
+                                                                                        <label for="seasons">Seasons <span class="required">*</span></label>
                                                                                         <select id="seasons" name="seasons">
                                                                                             <option value="Spring/Summer">Spring/Summer</option>
                                                                                             <option value="Fall/Winter">Fall/Winter</option>
@@ -120,7 +126,7 @@
                                                                                         </select>
 
                                                                                         <!-- Min Quantity -->
-                                                                                        <label for="minQuantity">Minimum Quantity:</label>
+                                                                                        <label for="minQuantity">Minimum Quantity <span class="required">*</span></label>
                                                                                         <input type="number" id="minQuantity" name="minQuantity"  min="1" required>
 
                                                                                         <!-- Description -->
@@ -129,20 +135,23 @@
 
 
                                                                                         <!-- Supplier ID -->
-                                                                                        <label for="supplierID">Supplier:</label>
+                                                                                        <label for="supplierID">Supplier <span class="required">*</span></label>
                                                                                         <select id="supplierID" name="supplierID">
                                                                                             <c:forEach var="supplier" items="${suppliers}">
-                                                                                                <option value="${supplier.id}">${supplier.name}</option>
+                                                                                                <option value="${supplier.supplierId}">${supplier.supplierName}</option>
                                                                                             </c:forEach>
                                                                                         </select>
 
                                                                                         <!-- Made In -->
                                                                                         <label for="madeIn">Made In:</label>
                                                                                         <input type="text" id="madeIn" name="madeIn">
+                                                                                        <input type="hidden" name=employeeId value="${sessionScope.employeeId}" />
+                                                                                        <input type="hidden" id="createdDate" name="createdDate" value="<%= java.time.LocalDate.now() %>">
 
 
 
-                                                                                        <!-- Submit Button -->
+
+                                                                                    <!-- Submit Button -->
                                                                                         <button type="submit">Add Product</button>
 
                                                                                 </div>

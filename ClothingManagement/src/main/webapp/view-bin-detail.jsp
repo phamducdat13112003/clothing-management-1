@@ -30,6 +30,14 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .message{
+            color: green;
+            font-size: 12px;
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -100,7 +108,12 @@
                                             <li><a href="view-bin-detail?id=${bin.binID}">Home</a></li>
                                             <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
                                         </ul>
-
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
+                                        <c:if test="${not empty messageSuccess}">
+                                            <span class="message">${messageSuccess}</span>
+                                        </c:if>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -115,66 +128,65 @@
                                 <table id="sherah-table__vendor" class="sherah-table__main sherah-table__main-v3">
                                     <thead class="sherah-table__head">
                                     <tr>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Id</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">ProductDetail</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">ProductDetailID</th>
+                                        <th class="sherah-table__column-2 sherah-table__h2">Image</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Size</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Color</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Weight</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
-
+                                        <th class="sherah-table__column-2 sherah-table__h2">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
-                                    <c:if test="${not empty map}">
-                                        <c:forEach var="entry" items="${map}">
+                                    <c:if test="${not empty list}">
+                                        <c:forEach var="entry" items="${list}">
                                             <tr>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.binDetailId}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetailId}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.productDetailId}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.image}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value.size}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.size}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value.color}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.color}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.value.weight}</p>
+                                                        <p class="sherah-table__product-desc">${entry.productDetail.weight}</p>
                                                     </div>
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.quantity}</p>
+                                                        <p class="sherah-table__product-desc">${entry.quantity}</p>
                                                     </div>
                                                 </td>
-<%--                                                <td class="sherah-table__column-2 sherah-table__data-2">--%>
-<%--                                                    <div class="sherah-table__product-content">--%>
-<%--                                                        <p class="sherah-table__product-desc">--%>
-<%--                                                            <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">--%>
-<%--                                                                Detail--%>
-<%--                                                            </a>--%>
-<%--                                                        </p>--%>
-<%--                                                    </div>--%>
-<%--                                                </td>--%>
-
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
+                                                    <div class="sherah-table__product-content">
+                                                        <p class="sherah-table__product-desc">
+                                                            <a href="javascript:void(0);" onclick="confirmDeleteProduct('${bin.binID}', '${entry.productDetailId}')" class="delete-link">
+                                                                Delete
+                                                            </a>
+                                                        </p>
+                                                    </div>
+                                                </td>
                                             </tr>
                                         </c:forEach>
 
                                     </c:if>
-                                    <c:if test="${empty map}">
+                                    <c:if test="${empty list}">
                                         <tr>
-                                            <td colspan="4" class="text-center">No bin available</td>
+                                            <td colspan="4" class="text-center">No product available</td>
                                         </tr>
                                     </c:if>
                                     </tbody>
@@ -235,6 +247,11 @@
             session.removeAttribute("alertType");
         %>
     };
+    function confirmDeleteProduct(binId, productDetailId) {
+        if (confirm("Are you sure you want to delete this product from the bin?")) {
+            window.location = "deleteproductinbin?binId=" + binId + "&productDetailId=" + productDetailId;
+        }
+    }
 
     function confirmDelete(url) {
         if (confirm("Are you sure you want to delete this product?")) {

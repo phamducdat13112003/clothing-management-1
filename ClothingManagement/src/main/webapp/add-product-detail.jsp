@@ -16,7 +16,8 @@
     <title>Add Product Detail</title>
 
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
 
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
@@ -31,6 +32,40 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .choose-file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .choose-file-label:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .choose-file-label:active {
+            background-color: #003f7f;
+        }
+        #image {
+            margin-top: 10px;            /* Khoảng cách giữa ảnh và nút */
+            max-width: 200px;            /* Giới hạn chiều rộng tối đa của ảnh */
+            height: auto;                /* Giữ tỷ lệ cho ảnh */
+            border-radius: 8px;          /* Bo góc cho ảnh */
+            border: 2px solid #ddd;     /* Viền cho ảnh */
+            display: block;              /* Đảm bảo ảnh không bị kéo giãn */
+            margin-left: auto;           /* Căn giữa ảnh */
+            margin-right: auto;          /* Căn giữa ảnh */
+        }
+    </style>
 
 </head>
 <body id="sherah-dark-light">
@@ -61,89 +96,132 @@
                                             <div class="tab-content" id="nav-tabContent">
                                                 <!--  Features Single Tab -->
                                                 <div class="tab-pane fade show active" id="id1" role="tabpanel">
-                                                        <div class="row">
-                                                            <div class="col-12">
-                                                                <div class="sherah-ptabs__separate">
-                                                                    <div class="sherah-ptabs__form-main">
-                                                                        <div class="sherah__item-group sherah-default-bg sherah-border">
-                                                                            <!-- End Profile Cover Info -->
+                                                    <div class="row">
+                                                        <div class="col-12">
+                                                            <div class="sherah-ptabs__separate">
+                                                                <div class="sherah-ptabs__form-main">
+                                                                    <div class="sherah__item-group sherah-default-bg sherah-border">
+                                                                        <!-- End Profile Cover Info -->
 
-                                                                            <div class="sherah-profile-info__v2 mg-top-30">
-                                                                                <h3 class="sherah-profile-info__heading mg-btm-30">Personal Information</h3>
+                                                                        <div class="sherah-profile-info__v2 mg-top-30">
+                                                                            <h3 class="sherah-profile-info__heading mg-btm-30">
+                                                                                Personal Information</h3>
 
 
-                                                                                <h2>Add New Product</h2>
+                                                                            <h2>Add New Product</h2>
 
-                                                                                <div class="col-lg-6 col-12">
-                                                                                    <!-- Basic Information -->
-                                                                                    <div class="product-form-box sherah-border mg-top-30">
-                                                                                        <h4 class="form-title m-0">Basic Information Of ${product.name}</h4>
-                                                                                        <form class="sherah-wc__form-main" action="${pageContext.request.contextPath}/add-product-detail" method="post" onsubmit="return validateForm()">
+                                                                            <div class="col-lg-6 col-12">
+                                                                                <!-- Basic Information -->
+                                                                                <div class="product-form-box sherah-border mg-top-30">
+                                                                                    <h4 class="form-title m-0">Basic
+                                                                                        Information
+                                                                                        Of ${product.name}</h4>
+                                                                                    <form class="sherah-wc__form-main"
+                                                                                          action="${pageContext.request.contextPath}/add-product-detail"
+                                                                                          method="post"
+                                                                                          onsubmit="return validateForm()"
+                                                                                          enctype="multipart/form-data"
+                                                                                    >
 
-                                                                                            <div class="row">
-                                                                                                    <input type="hidden" name="id" value="${product.id}" />
-                                                                                                    <div class="col-12">
-                                                                                                        <div class="form-group">
-                                                                                                            <label class="sherah-wc__form-label">Product Image Upload <span class="required">*</span></label>
-                                                                                                            <div class="form-group__input">
-                                                                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                                                                                                <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
-                                                                                                            </div>
-                                                                                                        </div>
+                                                                                        <div class="row">
+                                                                                            <input type="hidden"
+                                                                                                   name="id"
+                                                                                                   value="${product.id}"/>
+                                                                                            <div class="col-12">
+                                                                                                <div class="form-group">
+                                                                                                    <label class="sherah-wc__form-label">Image </label>
+                                                                                                    <div class="form-group__input">
+                                                                                                        <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                                                                                        <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
+<%--                                                                                                        <img src="${product.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">--%>
                                                                                                     </div>
+                                                                                                </div>
+                                                                                            </div>
 
-                                                                                                        <div class="form-group">
-                                                                                                            <label class="sherah-wc__form-label">Weight <span class="required">*</span></label>
-                                                                                                            <div class="form-group__input">
-                                                                                                                <input class="sherah-wc__form-input" placeholder="Kilogram" type="number" name="weight" min="0.1" step="0.1" required>
-                                                                                                                <small class="error-message" style="color: red;"></small>
-                                                                                                            </div>
-                                                                                                        </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="sherah-wc__form-label">Weight
+                                                                                                    <span class="required">*</span></label>
+                                                                                                <div class="form-group__input">
+                                                                                                    <input class="sherah-wc__form-input"
+                                                                                                           placeholder="Kilogram"
+                                                                                                           type="number"
+                                                                                                           name="weight"
+                                                                                                           min="0.1"
+                                                                                                           step="0.1"
+                                                                                                           required>
+                                                                                                    <small class="error-message"
+                                                                                                           style="color: red;"></small>
+                                                                                                </div>
+                                                                                            </div>
 
-                                                                                                        <div class="form-group">
-                                                                                                            <label class="sherah-wc__form-label">Size <span class="required">*</span></label>
-                                                                                                            <div class="form-group__input">
-                                                                                                                <select class="sherah-wc__form-input" id="size" name="size">
-                                                                                                                    <option value="XS">XS</option>
-                                                                                                                    <option value="S">S</option>
-                                                                                                                    <option value="M">M</option>
-                                                                                                                    <option value="L">L</option>
-                                                                                                                    <option value="XL">XL</option>
-                                                                                                                    <option value="XXL">XXL</option>
+                                                                                            <div class="form-group">
+                                                                                                <label class="sherah-wc__form-label">Size
+                                                                                                    <span class="required">*</span></label>
+                                                                                                <div class="form-group__input">
+                                                                                                    <select class="sherah-wc__form-input"
+                                                                                                            id="size"
+                                                                                                            name="size">
+                                                                                                        <option value="XS">
+                                                                                                            XS
+                                                                                                        </option>
+                                                                                                        <option value="S">
+                                                                                                            S
+                                                                                                        </option>
+                                                                                                        <option value="M">
+                                                                                                            M
+                                                                                                        </option>
+                                                                                                        <option value="L">
+                                                                                                            L
+                                                                                                        </option>
+                                                                                                        <option value="XL">
+                                                                                                            XL
+                                                                                                        </option>
+                                                                                                        <option value="XXL">
+                                                                                                            XXL
+                                                                                                        </option>
 
-                                                                                                                </select>
-                                                                                                            </div>
-                                                                                                        </div>
+                                                                                                    </select>
+                                                                                                </div>
+                                                                                            </div>
 
-                                                                                                        <div class="form-group">
-                                                                                                            <label class="sherah-wc__form-label">Color <span class="required">*</span></label>
-                                                                                                            <div class="form-group__input">
-                                                                                                                <input class="sherah-wc__form-input" type="text" name="color" required>
-                                                                                                                <small class="error-message" style="color: red;"></small>
-
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    <div>
-                                                                                                        <button type="submit" class="btn btn-primary">Save</button>
-                                                                                                        <button type="reset" class="btn btn-secondary">Reset</button>
-                                                                                                    </div>
+                                                                                            <div class="form-group">
+                                                                                                <label class="sherah-wc__form-label">Color
+                                                                                                    <span class="required">*</span></label>
+                                                                                                <div class="form-group__input">
+                                                                                                    <input class="sherah-wc__form-input"
+                                                                                                           type="text"
+                                                                                                           name="color"
+                                                                                                           required>
+                                                                                                    <small class="error-message"
+                                                                                                           style="color: red;"></small>
 
                                                                                                 </div>
-                                                                                        </form>
-                                                                                    </div>
-                                                                                    <!-- End Basic Information -->
+                                                                                            </div>
+
+                                                                                            <div>
+                                                                                                <button type="submit"
+                                                                                                        class="btn btn-primary">
+                                                                                                    Save
+                                                                                                </button>
+                                                                                                <button type="reset"
+                                                                                                        class="btn btn-secondary">
+                                                                                                    Reset
+                                                                                                </button>
+                                                                                            </div>
+
+                                                                                        </div>
+                                                                                    </form>
                                                                                 </div>
-
-
-
-
-
+                                                                                <!-- End Basic Information -->
                                                                             </div>
+
+
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -180,6 +258,28 @@
 <script src="js/main.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+    function chooseFile(fileInput) {
+        if (fileInput.files && fileInput.files[0]) {
+            var file = fileInput.files[0];
+            var fileType = file.type;
+            var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+
+            if (!validImageTypes.includes(fileType)) {
+                alert("Only image files (JPG, PNG, GIF) are allowed.");
+                fileInput.value = ""; // Clear the input
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file); // đọc nội dung tệp dưới dạng url
+        }
+    }
+</script>
 <script>
     window.onload = function () {
         const alertMessage = '<%= request.getAttribute("alertMessage") != null ? request.getAttribute("alertMessage") : "" %>';
@@ -208,10 +308,10 @@
         if (quantity === "") {
             document.querySelector("#quantity + .error-message").textContent = "Quantity is required.";
             isValid = false;
-        } else if (quantity < 0 ) {
+        } else if (quantity < 0) {
             document.querySelector("#quantity + .error-message").textContent = "Quantity cannot be negative.";
             isValid = false;
-        } else if (quantity > 999){
+        } else if (quantity > 999) {
             document.querySelector("#quantity + .error-message").textContent = "Quantity must be less than 999.";
             isValid = false;
         }
@@ -220,10 +320,10 @@
         if (weight === "") {
             document.querySelector("#weight + .error-message").textContent = "Weight is required.";
             isValid = false;
-        } else if (weight < 0.1 ) {
+        } else if (weight < 0.1) {
             document.querySelector("#weight + .error-message").textContent = "Weight must be greater than 0.1kg";
             isValid = false;
-        } else if (weight > 5){
+        } else if (weight > 5) {
             document.querySelector("#weight + .error-message").textContent = "Weight must be less than 5kg";
             isValid = false;
         }
@@ -240,8 +340,6 @@
         } else if (color.length < 3) {
             document.querySelector("#weight + .error-message").textContent = "Color must be greater than 2 characters.";
         }
-
-
 
 
         return isValid;

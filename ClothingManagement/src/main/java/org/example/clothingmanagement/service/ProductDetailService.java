@@ -91,6 +91,7 @@ public class ProductDetailService {
         return productDetailDAO.updateAllProductDetail(productId);
     }
 
+
     public boolean updateQuantityProduct(String productDetailId, int quantity) throws Exception {
         return productDetailDAO.updateQuantityProduct(productDetailId, quantity);
     }
@@ -99,7 +100,22 @@ public class ProductDetailService {
         return productDetailDAO.getTotalQuantityByProductID(productId);
     }
 
-    public static void main(String[] args) {
+   
+
+    public List<ProductDetail> findAllWithPagination(int page, int pageSize) {
+        return productDetailDAO.findAllWithPagination(page, pageSize);
+    }
+
+    public List<ProductDetail> searchAllWithPagination(String nameSearch, int page, int pageSize) {
+        return productDetailDAO.searchAllWithPagination(nameSearch, page, pageSize);
+    }
+
+    public List<ProductDetail> searchAllWithoutPagination(String nameSearch) {
+        return productDetailDAO.searchAllWithoutPagination(nameSearch);
+    }
+
+    public static void main(String[] args){
+
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetails();
         for (ProductDetail pd : pdList) {

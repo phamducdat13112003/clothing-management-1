@@ -5,6 +5,7 @@ import org.example.clothingmanagement.entity.Employee;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -203,6 +204,36 @@ public class EmployeeDAO {
             e.printStackTrace();
         }
         return employees;
+    }
+
+    public List<Employee> getAllEmployee(){
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT employeeId, employeeName, email, phone, address, gender,dob,status,image,warehouseId FROM employee ");
+            sql.append(" WHERE warehouseId = 'W001' ");
+            sql.append(" ORDER BY employeeId");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            List<Employee> employees = new ArrayList<>();
+            while (rs.next()) {
+                Employee employee = Employee.builder()
+                        .employeeID(rs.getString("EmployeeID"))
+                        .employeeName(rs.getString("EmployeeName"))
+                        .email(rs.getString("Email"))
+                        .phone(rs.getString("Phone"))
+                        .address(rs.getString("Address"))
+                        .gender(rs.getBoolean("Gender"))
+                        .dob(LocalDate.parse(rs.getString("Dob")))
+                        .status(rs.getString("Status"))
+                        .warehouseID(rs.getString("WarehouseID"))
+                        .image(rs.getString("Image"))
+                        .build();
+                employees.add(employee);
+            }
+            return employees;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Employee> searchEmployee(String keyword, int page, int pageSize) {

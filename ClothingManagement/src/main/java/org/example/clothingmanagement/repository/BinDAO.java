@@ -189,6 +189,21 @@ public class BinDAO {
         return 0.0; // Nếu không có dữ liệu, trả về 0.0
     }
 
+    public boolean canDeleteBin(String binID) {
+        String sql = "SELECT COUNT(*) AS count FROM bindetail WHERE binId = ? AND quantity > 0";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binID);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("count") == 0; // Nếu count == 0 thì bin không chứa sản phẩm nào có quantity > 0 → có thể xóa
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
     public List<BinDetail> getBinDetailByBinID(String binID, int page, int pageSize) {
         List<BinDetail> list = new ArrayList<>();
         String sql = "SELECT bd.BinDetailID, bd.BinID, bd.ProductDetailID, bd.Quantity, " +
@@ -346,8 +361,9 @@ public class BinDAO {
             sql.append(" WHERE SectionID = ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setString(1, sectionId);
+            ps.setInt(2, (page - 1) * pageSize); // Offset
+            ps.setInt(3, pageSize); // Limit
             ResultSet rs = ps.executeQuery();
-            List<Bin> bins = new ArrayList<>();
             while (rs.next()) {
                 Bin bin = Bin.builder()
                         .binID(rs.getString("BinID"))
@@ -359,11 +375,10 @@ public class BinDAO {
                         .build();
                 bins.add(bin);
             }
-            return bins;
-
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return bins;
     }
 
     public Optional<Bin> getBinByBinId(String binId) {
@@ -454,4 +469,6 @@ public class BinDAO {
             System.out.println(bin);
         }
     }
+
+
 }

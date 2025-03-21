@@ -14,6 +14,8 @@ public class Section {
     private String sectionName;
     private int sectionTypeId;
 
-    //
-    private int numberOfBins;
+
+    public void setNumberOfBins(int size) {
+
+    }
 }
