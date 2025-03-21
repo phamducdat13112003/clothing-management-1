@@ -569,7 +569,84 @@ public class BinDAO {
         return 0;
     }
 
+    public List<Bin> getBinsBySectionIdWithoutPagination(String sectionId){
+        try(Connection con= DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
+            sql.append(" FROM Bin ");
+            sql.append(" WHERE SectionID = ?");
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, sectionId);
+            ResultSet rs = ps.executeQuery();
+            List<Bin> bins = new ArrayList<>();
+            while (rs.next()) {
+                Bin bin = Bin.builder()
+                        .binID(rs.getString("BinID"))
+                        .binName(rs.getString("BinName"))
+                        .maxCapacity(rs.getDouble("MaxCapacity"))
+                        .status(rs.getBoolean("Status"))
+                        .currentCapacity(0.0)
+                        .sectionID(rs.getString("SectionID"))
+                        .build();
+                bins.add(bin);
+            }
+            return bins;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public List<Bin> getBinAndWeightBySectionId(String sectionId) {
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT \n" +
+                "    b.BinID, \n" +
+                "    b.BinName, \n" +
+                "    COALESCE(SUM(bd.Quantity * pd.Weight), 0) AS TotalWeightBins\n" +
+                "FROM bin b \n" +
+                "LEFT JOIN BinDetail bd ON b.BinID = bd.BinID\n" +
+                "LEFT JOIN ProductDetail pd ON bd.ProductDetailID = pd.ProductDetailID\n" +
+                "JOIN section s ON b.SectionID = s.SectionID\n" +
+                "JOIN sectiontype st ON s.SectionTypeID = st.SectionTypeID\n" +
+                "WHERE s.SectionID = ?\n" +
+                "GROUP BY b.BinID, b.BinName;\n";
 
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, sectionId);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Bin bin = Bin.builder()
+                        .binID(rs.getString("binId"))
+                        .binName(rs.getString("BinName"))
+                        .currentCapacity(rs.getDouble("TotalWeightBins"))
+                        .build();
+                bins.add(bin);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return bins;
+    }
+    public double getWeightOfBinByBinID(String binID) {
+        String sql = "SELECT COALESCE(SUM(bd.quantity * pd.Weight), 0) AS TotalWeightBins " +
+                "FROM BinDetail bd " +
+                "JOIN ProductDetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
+                "JOIN bin b ON bd.binId = b.BinID " +
+                "WHERE b.BinID = ? ";
+
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, binID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("TotalWeightBins");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Lỗi khi truy vấn getWeightOfBinByBinID: " + e.getMessage());
+        }
+        return 0.0;  // Trả về 0 nếu không có dữ liệu
+    }
     public static void main(String[] args) {
         BinDAO dao = new BinDAO();
         List<Bin> list = dao.searchBinWithPagination("RP001","002",1,5);

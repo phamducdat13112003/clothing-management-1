@@ -35,6 +35,10 @@ public class SectionService {
         return sd.getSectionByBin(binID);
     }
 
+    public List<Section> getSectionsBySectionTypeIsReceiptStorage() {
+        return sd.getSectionsBySectionTypeIsReceiptStorage();
+    }
+
     public static void main(String[] args){
         SectionService ss = new SectionService();
         List<Section> list = ss.SearchSectionWithPagination(2,"b",1,5);

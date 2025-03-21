@@ -1,18 +1,25 @@
 package org.example.clothingmanagement.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.service.ProductDetailService;
 import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.List;
+
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 2 * 1024 * 1024,   // 2MB
+        maxRequestSize = 4 * 1024 * 1024 // 4MB
+)
 
 @WebServlet(name = "AddProductDetail", urlPatterns = "/add-product-detail")
 public class AddProductDetailController extends HttpServlet {
@@ -38,7 +45,7 @@ public class AddProductDetailController extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productId = req.getParameter("id");
         Integer quantity = 0;
-        String productDetailId="";
+        String productDetailId = "";
         Double weight = Double.parseDouble(req.getParameter("weight"));
         String color = req.getParameter("color");
         if (color.matches("^[a-zA-Z]+$")) {
@@ -47,11 +54,11 @@ public class AddProductDetailController extends HttpServlet {
         } else {
             color = "XXX";
         }
-        String size = req.getParameter("size");
-//        String urlImage = req.getParameter("image");
-        String urlImage = "";
-        int status = 1;
 
+        String size = req.getParameter("size");
+
+
+        // auto generate productDetailId
         ProductDetail pd = new ProductDetail();
         if (pds.getLastProductDetail(productId).isPresent()) {
             pd = pds.getLastProductDetail(productId).get();
@@ -62,10 +69,37 @@ public class AddProductDetailController extends HttpServlet {
             num += 1; // Tăng số lên 1
             String newStr = String.format("%03d", num); // Đảm bảo số có 3 chữ số
             productDetailId = code + "-" + newStr; // Nối chuỗi code và newStr
-        }
-        else{
+        } else {
             productDetailId = productId + "-" + "001";
         }
+        int status = 1;
+
+        // get image
+        String urlImage = "";
+        Part part = req.getPart("img");
+        String contentType = part.getContentType();
+        long fileSize = part.getSize(); // Kích thước tệp ảnh (bytes)
+        if (!isImageFile(contentType)) {
+            req.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
+        } else if (fileSize > 2 * 1024 * 1024) { // Kiem tra nếu lớn hơn 2MB
+            req.setAttribute("message", "Image size must not exceed 2MB.");
+        } else {
+            String realPath = req.getServletContext().getRealPath("img/ProductDetail"); //where the photo is saved
+            String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
+            // convert it to a string, get just the filename without including the full path.
+            if (!source.isEmpty()) {
+                String filename = null;
+
+                filename = productDetailId + ".png";
+
+                if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
+                    Files.createDirectories(Path.of(realPath));
+                }
+                part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
+                urlImage = ("img/ProductDetail/" + filename); //Set the path to the image file
+            }
+        }
+
         boolean checkExists = true;
         List<ProductDetail> listPd = pds.getColorNSize(productId);
         for (ProductDetail productDetailPd : listPd) {
@@ -93,5 +127,15 @@ public class AddProductDetailController extends HttpServlet {
         }
 
 
+    }
+
+    private boolean isImageFile(String contentType) {
+        String[] validImageTypes = {"image/jpeg", "image/png", "image/gif"};
+        for (String validType : validImageTypes) {
+            if (validType.equals(contentType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

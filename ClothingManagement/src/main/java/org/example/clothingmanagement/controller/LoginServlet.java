@@ -75,7 +75,7 @@ public class LoginServlet extends HttpServlet {
             } else if (account.getRoleId() == 2) {// Purchase Order Staff
                 response.sendRedirect("viewpurchaseorder");
             } else if (account.getRoleId() == 4) {//Storage Staff
-                response.sendRedirect("dashboard");
+                response.sendRedirect("viewdeliveryorder");
             } else if (account.getRoleId() == 3) {//Admin
                 response.sendRedirect("account");
             }

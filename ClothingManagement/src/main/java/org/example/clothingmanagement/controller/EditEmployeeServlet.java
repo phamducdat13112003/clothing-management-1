@@ -142,7 +142,7 @@ public class EditEmployeeServlet extends HttpServlet {
                         request.getRequestDispatcher("editemployee").include(request, response);
                         return;
                     }
-                    String realPath = request.getServletContext().getRealPath("/img/Employee"); //where the photo is saved
+                    String realPath = request.getServletContext().getRealPath("img/Employee"); //where the photo is saved
                     String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
                     // convert it to a string, get just the filename without including the full path
 
@@ -152,7 +152,7 @@ public class EditEmployeeServlet extends HttpServlet {
                             Files.createDirectories(Path.of(realPath));
                         }
                     part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
-                    editEmployee.setImage("/img/Employee/" + filename+ "?" +System.currentTimeMillis()); //Set the path to the image file
+                    editEmployee.setImage("img/Employee/" + filename+ "?" +System.currentTimeMillis()); //Set the path to the image file
                     }
                 } else {
                     Employee existEmployee = null;

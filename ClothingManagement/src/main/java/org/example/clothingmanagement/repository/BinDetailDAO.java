@@ -226,6 +226,25 @@ public class BinDetailDAO {
         return lastBinDetailId;
     }
 
+    public boolean addBinDetail(String binDetailId, String binId, String productDetailId, int quantity) {
+        String sql = "INSERT INTO binDetail (binDetailId, binId, productDetailId, quantity) VALUES (?, ?, ?, ?)";
+
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, binDetailId);
+            ps.setString(2, binId);
+            ps.setString(3, productDetailId);
+            ps.setInt(4, quantity);
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu chèn thành công
+        } catch (SQLException e) {
+            throw new RuntimeException("Lỗi khi thêm binDetail: " + e.getMessage(), e);
+        }
+    }
+
+
+
     public boolean deleteProductFromBin(String binId, String productDetailId) {
         String sql = "DELETE FROM binDetail WHERE binId = ? AND productDetailId = ?";
         try (Connection conn = DBContext.getConnection();
@@ -293,5 +312,6 @@ public class BinDetailDAO {
             System.out.println(bd);
         }
     }
+
 }
 

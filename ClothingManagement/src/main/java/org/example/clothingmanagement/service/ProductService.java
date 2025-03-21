@@ -37,11 +37,11 @@ public class ProductService {
         return map;
     }
 
-    public List<Product> searchProductsByNameSearch(String nameSearch){
+    public List<Product> searchProductsByNameSearch(String nameSearch) {
         return pd.searchProductsByNameSearch(nameSearch);
     }
 
-    public HashMap<Product, String> searchProductsWithPagination(String nameSearch, int page, int pageSize){
+    public HashMap<Product, String> searchProductsWithPagination(String nameSearch, int page, int pageSize) {
         List<Product> products = pd.searchProductsWithPagination(nameSearch, page, pageSize);
         List<Category> categories = cs.selectAll();
         HashMap<Product, String> map = new HashMap<>();
@@ -108,11 +108,19 @@ public class ProductService {
         return pd.getListPodetailByPoID(poID);
     }
 
-    public static void main (String[] args) {
+    public List<Map<String, Object>> getListProductByPoID(String poID) throws Exception {
+        return pd.getListProductByPoID(poID);
+    }
+
+    public boolean updatePriceOfProductByProductID(String productID, double price) throws Exception {
+        return pd.updatePriceOfProductByProductID(productID, price);
+    }
+
+    public static void main(String[] args) {
         ProductService ps = new ProductService();
-        HashMap<Product,String> products = ps.getAllProductsWithPagination(1,5);
+        HashMap<Product, String> products = ps.getAllProductsWithPagination(1, 5);
         List<Product> list = ps.searchProductsByNameSearch("P");
-        for(Product product : list){
+        for (Product product : list) {
             System.out.println(product);
         }
     }
