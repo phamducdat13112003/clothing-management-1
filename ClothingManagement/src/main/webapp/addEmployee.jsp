@@ -1,4 +1,3 @@
-
 <%--
   Created by IntelliJ IDEA.
   User: LENOVO
@@ -23,7 +22,8 @@
     <title>Add Employee</title>
 
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
 
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
@@ -43,10 +43,12 @@
             color: red;
             font-weight: bold;
         }
+
         .error-message {
             color: red;
             font-size: 12px;
         }
+
         .choose-file-label {
             display: inline-block;
             padding: 10px 20px;
@@ -69,15 +71,16 @@
         .choose-file-label:active {
             background-color: #003f7f;
         }
+
         #image {
-            margin-top: 10px;            /* Khoảng cách giữa ảnh và nút */
-            max-width: 200px;            /* Giới hạn chiều rộng tối đa của ảnh */
-            height: auto;                /* Giữ tỷ lệ cho ảnh */
-            border-radius: 8px;          /* Bo góc cho ảnh */
-            border: 2px solid #ddd;     /* Viền cho ảnh */
-            display: block;              /* Đảm bảo ảnh không bị kéo giãn */
-            margin-left: auto;           /* Căn giữa ảnh */
-            margin-right: auto;          /* Căn giữa ảnh */
+            margin-top: 10px; /* Khoảng cách giữa ảnh và nút */
+            max-width: 200px; /* Giới hạn chiều rộng tối đa của ảnh */
+            height: auto; /* Giữ tỷ lệ cho ảnh */
+            border-radius: 8px; /* Bo góc cho ảnh */
+            border: 2px solid #ddd; /* Viền cho ảnh */
+            display: block; /* Đảm bảo ảnh không bị kéo giãn */
+            margin-left: auto; /* Căn giữa ảnh */
+            margin-right: auto; /* Căn giữa ảnh */
         }
     </style>
 </head>
@@ -85,145 +88,169 @@
 <jsp:include page="include/sidebar.jsp"></jsp:include>
 <jsp:include page="include/header.jsp"></jsp:include>
 
-    <!-- sherah Dashboard -->
-    <section class="sherah-adashboard sherah-show">
-        <div class="container">
-            <div class="row">
-                <div class="col-12">
-                    <div class="sherah-body">
-                        <!-- Dashboard Inner -->
-                        <div class="sherah-dsinner">
-                            <div class="row">
-                                <div class="col-12">
-                                    <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Add Employee</h2>
-                                        <ul class="sherah-breadcrumb__list">
-                                            <li><a href="manageemployee">Home</a></li>
-                                        </ul>
-                                        <c:if test="${not empty message}">
-                                            <span class="error-message">${message}</span>
-                                        </c:if>
-                                    </div>
+<!-- sherah Dashboard -->
+<section class="sherah-adashboard sherah-show">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="sherah-body">
+                    <!-- Dashboard Inner -->
+                    <div class="sherah-dsinner">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="sherah-breadcrumb mg-top-30">
+                                    <h2 class="sherah-breadcrumb__title">Add Employee</h2>
+                                    <ul class="sherah-breadcrumb__list">
+                                        <li><a href="manageemployee">Home</a></li>
+                                    </ul>
+                                    <c:if test="${not empty message}">
+                                        <span class="error-message">${message}</span>
+                                    </c:if>
                                 </div>
                             </div>
-                            <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
-                                <form class="sherah-wc__form-main" action="addemployee" method="post" enctype="multipart/form-data">
-                                    <div class="row">
-                                        <div class="col-lg-6 col-12">
-                                            <!-- Basic Information -->
-                                            <div class="product-form-box sherah-border mg-top-30">
-                                                <h4 class="form-title m-0">Basic Information</h4>
-                                                <div class="row">
-                                                    <div class="col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Employee Name <span class="required">*</span></label>
-                                                            <div class="form-group__input">
-                                                                <input value="${name}" class="sherah-wc__form-input" type="text" name="name" required>
-                                                                <c:if test="${not empty errorName}">
-                                                                    <span class="error-message">${errorName}</span>
-                                                                </c:if>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Employee Image </label>
-                                                            <div class="form-group__input">
-                                                                <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
-                                                                <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
-                                                                <img src="${employee.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Email <span class="required">*</span></label>
-                                                            <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Email" type="email" name="email" value="${email}" required>
-                                                                <c:if test="${not empty errorEmail}">
-                                                                    <span class="error-message">${errorEmail}</span>
-                                                                </c:if>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Phone <span class="required">*</span></label>
-                                                            <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Phone" type="text" name="phone" value="${phone}" required>
-                                                                <c:if test="${not empty errorPhone}">
-                                                                    <span class="error-message">${errorPhone}</span>
-                                                                </c:if>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Address <span class="required">*</span></label>
-                                                            <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Address" type="text" name="address" value="${address}" required>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
-                                                            <select class="form-group__input" name="gender" aria-label="Default select example" required>
-                                                                <option value="1" selected>Nam</option>
-                                                                <option value="0">Nữ</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6 col-md-6 col-12">
-                                                        <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Date of birth <span class="required">*</span></label>
-                                                            <div class="form-group__input">
-                                                                <input value="${dateOfBirth}" class="sherah-wc__form-input" placeholder="Date of birth" type="date" name="dob" required>
-                                                                <c:if test="${not empty errorDateofBirth}">
-                                                                    <span class="error-message">${errorDateofBirth}</span>
-                                                                </c:if>
-                                                            </div>
+                        </div>
+                        <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
+                            <form class="sherah-wc__form-main" action="addemployee" method="post"
+                                  enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-lg-6 col-12">
+                                        <!-- Basic Information -->
+                                        <div class="product-form-box sherah-border mg-top-30">
+                                            <h4 class="form-title m-0">Basic Information</h4>
+                                            <div class="row">
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Employee Name <span
+                                                                class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input value="${name}" class="sherah-wc__form-input"
+                                                                   type="text" name="name" required>
+                                                            <c:if test="${not empty errorName}">
+                                                                <span class="error-message">${errorName}</span>
+                                                            </c:if>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- End Basic Information -->
-                                        </div>
-                                        <div class="col-lg-6 col-12">
-                                            <!-- Organization -->
-                                            <div class="product-form-box sherah-border mg-top-30">
-                                                <h4 class="form-title m-0">Organization</h4>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Employee Image </label>
+                                                        <div class="form-group__input">
+                                                            <input type="file" name="img" class="form-control d-none"
+                                                                   id="inputGroupFile04" onchange="chooseFile(this)"
+                                                                   accept="image/gif,image/jpeg,image/png"
+                                                                   aria-describedby="inputGroupFileAddon04"
+                                                                   aria-label="Upload">
+                                                            <label for="inputGroupFile04" class="choose-file-label">Choose
+                                                                file</label>
+                                                            <img src="${employee.image}" id="image"
+                                                                 class="img-thumbnail rounded-5" width="100%"
+                                                                 alt="${employee.image}">
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
-                                                        <select class="form-group__input" name="warehouse" aria-label="Default select example" required>
-                                                            <c:forEach items="${listWarehouse}" var="ware">
-                                                                <option value="${ware.warehouseId}">${ware.warehouseName}</option>
-                                                            </c:forEach>
+                                                        <label class="sherah-wc__form-label">Email <span
+                                                                class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Email"
+                                                                   type="email" name="email" value="${email}" required>
+                                                            <c:if test="${not empty errorEmail}">
+                                                                <span class="error-message">${errorEmail}</span>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Phone <span
+                                                                class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Phone"
+                                                                   type="text" name="phone" value="${phone}" required>
+                                                            <c:if test="${not empty errorPhone}">
+                                                                <span class="error-message">${errorPhone}</span>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Address <span
+                                                                class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="Address"
+                                                                   type="text" name="address" value="${address}"
+                                                                   required>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Gender <span
+                                                                class="required">*</span></label>
+                                                        <select class="form-group__input" name="gender"
+                                                                aria-label="Default select example" required>
+                                                            <option value="1" selected>Nam</option>
+                                                            <option value="0">Nữ</option>
                                                         </select>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <!-- End Organization -->
-
-                                            <!-- Dịch 2 nút "Add" và "Cancel" lên ngay sau phần Organization -->
-                                            <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end">
-                                                <button type="submit" class="sherah-btn sherah-btn__primary">Add</button>
-                                                <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
+                                                <div class="col-lg-6 col-md-6 col-12">
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Date of birth <span
+                                                                class="required">*</span></label>
+                                                        <div class="form-group__input">
+                                                            <input value="${dateOfBirth}" class="sherah-wc__form-input"
+                                                                   placeholder="Date of birth" type="date" name="dob"
+                                                                   required>
+                                                            <c:if test="${not empty errorDateofBirth}">
+                                                                <span class="error-message">${errorDateofBirth}</span>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+                                        <!-- End Basic Information -->
                                     </div>
-                                </form>
-                            </div>
+                                    <div class="col-lg-6 col-12">
+                                        <!-- Organization -->
+                                        <div class="product-form-box sherah-border mg-top-30">
+                                            <h4 class="form-title m-0">Organization</h4>
+                                            <div class="col-lg-6 col-md-6 col-12">
+                                                <div class="form-group">
+                                                    <label class="sherah-wc__form-label">Warehouse: <span
+                                                            class="required">*</span></label>
+                                                    <select class="form-group__input" name="warehouse"
+                                                            aria-label="Default select example" required>
+                                                        <c:forEach items="${listWarehouse}" var="ware">
+                                                            <option value="${ware.warehouseId}">${ware.warehouseName}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- End Organization -->
+
+                                        <!-- Dịch 2 nút "Add" và "Cancel" lên ngay sau phần Organization -->
+                                        <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30 justify-content-end">
+                                            <button type="submit" class="sherah-btn sherah-btn__primary">Add</button>
+                                            <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
-                        <!-- End Dashboard Inner -->
                     </div>
+                    <!-- End Dashboard Inner -->
                 </div>
             </div>
         </div>
-    </section>
+    </div>
+</section>
 
-    <!-- End sherah Dashboard -->
+<!-- End sherah Dashboard -->
 
 <!-- sherah Scripts -->
 <script src="js/jquery.min.js"></script>
@@ -263,10 +290,10 @@
     }
 </script>
 <script>
-    jQuery(document).ready(function($) {
-        $('[data-countdown]').each(function() {
+    jQuery(document).ready(function ($) {
+        $('[data-countdown]').each(function () {
             var $this = $(this), finalDate = $(this).data('countdown');
-            $this.countdown(finalDate, function(event) {
+            $this.countdown(finalDate, function (event) {
                 $this.html(event.strftime(' %H : %M : %S'));
             });
         });
@@ -325,14 +352,14 @@
                 label: 'Visitor',
                 data: [40, 90, 10],
                 backgroundColor: '#D8D8FE',
-                borderColor:'#5356FB',
+                borderColor: '#5356FB',
                 pointRadius: 3,
                 pointBackgroundColor: '#5356FB',
                 pointBorderColor: '#5356FB',
-                borderWidth:4,
+                borderWidth: 4,
                 tension: 0.9,
-                fill:true,
-                fillColor:'#fff',
+                fill: true,
+                fillColor: '#fff',
 
             }]
         },
@@ -340,20 +367,20 @@
         options: {
             responsive: true,
             scales: {
-                x:{
-                    grid:{
-                        display:false,
+                x: {
+                    grid: {
+                        display: false,
                         drawBorder: false,
                     },
 
                 },
-                y:{
-                    grid:{
-                        display:false,
+                y: {
+                    grid: {
+                        display: false,
                         drawBorder: false,
                     },
-                    ticks:{
-                        display:false
+                    ticks: {
+                        display: false
                     }
                 },
             },
