@@ -69,7 +69,7 @@ public class AddAccountServlet extends HttpServlet {
             request.setAttribute("message", "Cannot create accountID. Please check again.");
         }
         List<Role> list = null;
-        List<Employee> employees =null;
+        List<Employee> employees = null;
         boolean hasError = false;
         int page = 1;
         int pageSize = 5;
@@ -95,11 +95,11 @@ public class AddAccountServlet extends HttpServlet {
         String password = generateRandomPassword();
         String encryptedPassword = MD5.getMd5(password);
 
-        Account account = new Account(accountId, email, encryptedPassword, Integer.parseInt(roleId), lastUpdate ,"Active", employeeId);
+        Account account = new Account(accountId, email, encryptedPassword, Integer.parseInt(roleId), lastUpdate, "Active", employeeId);
         try {
             try {
                 accountService.createAccount(account);
-            } catch(SQLException e) {
+            } catch (SQLException e) {
                 request.setAttribute("message", "Cannot create account. Please check again.");
                 request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
             }

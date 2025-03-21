@@ -18,52 +18,63 @@
             margin: auto;
             padding: 20px;
         }
+
         .back-home {
             margin-bottom: 15px;
         }
+
         .row {
             display: flex;
             flex-wrap: wrap;
         }
+
         .col-md-6 {
             flex: 1;
             padding: 10px;
         }
+
         .form-container {
             background: #f8f9fa;
             padding: 20px;
             border-radius: 10px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
+
         .form-buttons {
             display: flex;
             gap: 10px;
         }
+
         .btn {
             padding: 8px 16px;
             font-size: 16px;
             border-radius: 5px;
         }
+
         .btn-success {
             background-color: #28a745;
             color: white;
             border: none;
         }
+
         .btn-secondary {
             background-color: #6c757d;
             color: white;
             border: none;
         }
+
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
         }
+
         .table th, .table td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         .table th {
             background-color: #f8f9fa;
         }
@@ -81,7 +92,8 @@
             <form id="addAccountForm" action="addaccount" method="post">
                 <div class="mb-3">
                     <label for="employeeId" class="form-label">Employee ID: <span class="required">*</span></label>
-                    <select id="employeeId" name="employeeId" class="form-select" required onchange="updateEmployeeInfo()">
+                    <select id="employeeId" name="employeeId" class="form-select" required
+                            onchange="updateEmployeeInfo()">
                         <option value="">Select EmployeeID</option>
                         <c:forEach var="employee" items="${employees}">
                             <option value="${employee.employeeID}"
