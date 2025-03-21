@@ -14,8 +14,66 @@ import java.util.Optional;
 import static org.example.clothingmanagement.repository.DBContext.getConnection;
 
 public class BinDAO {
-    public List<Bin> getBinsWithPagination(String sectionId, int page, int pageSize) {
-        try (Connection con = DBContext.getConnection()) {
+    // Add this method to the existing BinDAO class
+    public boolean addBin(Bin bin) {
+        try(Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" INSERT INTO Bin (BinID, BinName, MaxCapacity, Status, SectionID) ");
+            sql.append(" VALUES (?, ?, ?, ?, ?) ");
+
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, bin.getBinID());
+            ps.setString(2, bin.getBinName());
+            ps.setDouble(3, bin.getMaxCapacity());
+            ps.setBoolean(4, bin.isStatus());
+            ps.setString(5, bin.getSectionID());
+
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public String getNextBinId(String sectionId) {
+        int nextSequence = 1;
+
+        try (Connection conn = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT BinID ");
+            sql.append(" FROM Bin ");
+            sql.append(" WHERE BinID LIKE ? ");
+            sql.append(" ORDER BY BinID DESC ");
+            sql.append(" LIMIT 1 ");
+
+            PreparedStatement ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, sectionId + "-%");
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String lastBinId = rs.getString("BinID");
+                String sequenceStr = lastBinId.substring(lastBinId.lastIndexOf("-") + 1);
+                try {
+                    nextSequence = Integer.parseInt(sequenceStr) + 1;
+                } catch (NumberFormatException e) {
+                    // If we can't parse the number for some reason, default to 1
+                    nextSequence = 1;
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        // Format the sequence number with leading zeros (e.g., 001, 002, etc.)
+        return sectionId + "-" + String.format("%03d", nextSequence);
+    }
+
+    public List<Bin> getBinsWithPagination(String sectionId,int page, int pageSize){
+        try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
             sql.append(" FROM Bin ");
@@ -25,7 +83,7 @@ public class BinDAO {
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setString(1, sectionId);
             ps.setInt(2, pageSize);
-            ps.setInt(3, (page - 1) * pageSize);
+            ps.setInt(3, (page-1)*pageSize);
             ResultSet rs = ps.executeQuery();
             List<Bin> bins = new ArrayList<>();
             while (rs.next()) {
@@ -46,13 +104,13 @@ public class BinDAO {
         }
     }
 
-    public List<Bin> searchBinWithPagination(String sectionId, String nameSearch, int page, int pageSize) {
-        try (Connection con = DBContext.getConnection()) {
+    public List<Bin> searchBinWithPagination(String sectionId,String nameSearch,int page, int pageSize){
+        try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
             sql.append(" FROM Bin ");
             sql.append(" WHERE SectionID = ? ");
-            if (!nameSearch.isEmpty()) {
+            if(!nameSearch.isEmpty()){
                 sql.append(" AND (BinName LIKE ? ");
                 sql.append(" OR BinId LIKE ? ) ");
             }
@@ -61,12 +119,12 @@ public class BinDAO {
             PreparedStatement ps = con.prepareStatement(sql.toString());
             int paramIndex = 1;
             ps.setString(paramIndex++, sectionId);
-            if (!nameSearch.isEmpty()) {
+            if(!nameSearch.isEmpty()){
                 ps.setString(paramIndex++, "%" + nameSearch + "%");
                 ps.setString(paramIndex++, "%" + nameSearch + "%");
             }
             ps.setInt(paramIndex++, pageSize);
-            ps.setInt(paramIndex++, (page - 1) * pageSize);
+            ps.setInt(paramIndex++, (page-1)*pageSize);
             ResultSet rs = ps.executeQuery();
             List<Bin> bins = new ArrayList<>();
             while (rs.next()) {
@@ -87,13 +145,13 @@ public class BinDAO {
         }
     }
 
-    public List<Bin> searchBinWithoutPagination(String sectionId, String nameSearch) {
-        try (Connection con = DBContext.getConnection()) {
+    public List<Bin> searchBinWithoutPagination(String sectionId,String nameSearch){
+        try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
             sql.append(" FROM Bin ");
             sql.append(" WHERE SectionID = ? ");
-            if (!nameSearch.isEmpty()) {
+            if(!nameSearch.isEmpty()){
                 sql.append(" AND (BinName LIKE ? ");
                 sql.append(" OR BinId LIKE ? ) ");
             }
@@ -101,7 +159,7 @@ public class BinDAO {
             PreparedStatement ps = con.prepareStatement(sql.toString());
             int paramIndex = 1;
             ps.setString(paramIndex++, sectionId);
-            if (!nameSearch.isEmpty()) {
+            if(!nameSearch.isEmpty()){
                 ps.setString(paramIndex++, "%" + nameSearch + "%");
                 ps.setString(paramIndex++, "%" + nameSearch + "%");
             }
@@ -149,8 +207,8 @@ public class BinDAO {
         return bins;
     }
 
-    public List<Bin> getAllBin() {
-        try (Connection con = DBContext.getConnection()) {
+    public List<Bin> getAllBin(){
+        try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" Select BinId, BinName, MaxCapacity, Status, SectionID ");
             sql.append(" FROM Bin");
@@ -353,13 +411,15 @@ public class BinDAO {
         return 0;
     }
 
-    public List<Bin> getBinsBySectionId(String sectionId) {
-        try (Connection con = DBContext.getConnection()) {
-            StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
-            sql.append(" FROM Bin ");
-            sql.append(" WHERE SectionID = ? ");
-            PreparedStatement ps = con.prepareStatement(sql.toString());
+    public List<Bin> getBinsBySectionId(String sectionId, int page, int pageSize) {
+        List<Bin> bins = new ArrayList<>();
+        String sql = """
+        SELECT BinId, BinName, MaxCapacity, Status, SectionId 
+        FROM Bin 
+        WHERE SectionID = ? 
+        LIMIT ?, ? """;
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, sectionId);
             ps.setInt(2, (page - 1) * pageSize); // Offset
             ps.setInt(3, pageSize); // Limit
@@ -381,8 +441,82 @@ public class BinDAO {
         return bins;
     }
 
-    public Optional<Bin> getBinByBinId(String binId) {
-        try (Connection con = DBContext.getConnection()) {
+    // Fetch all bins associated with a specific section ID
+    public List<Bin> getBinsBySection(String sectionID) {
+        List<Bin> bins = new ArrayList<>();
+        String query = "SELECT * FROM bin WHERE SectionID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, sectionID);
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bin bin = new Bin();
+                bin.setBinID(rs.getString("BinID"));
+                bin.setBinName(rs.getString("BinName"));
+                bin.setMaxCapacity(rs.getDouble("MaxCapacity"));
+                bin.setStatus(rs.getBoolean("Status"));
+                System.out.println("Found bin: " + bin.getBinID() + " - " + bin.getBinName());
+                bins.add(bin);
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bins;
+    }
+
+    // Search for bins by query (name or ID) across all sections
+    public List<Bin> searchBinsByQuery(String query) {
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT * FROM bin WHERE BinName LIKE ? OR BinID LIKE ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + query + "%");
+            stmt.setString(2, "%" + query + "%");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bin bin = new Bin();
+                bin.setBinID(rs.getString("BinID"));
+                bin.setBinName(rs.getString("BinName"));
+                bins.add(bin);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bins;
+    }
+
+    // Search for bins by section ID and a search query (name or ID)
+    public List<Bin> searchBinsBySectionAndQuery(String query, String sectionID) {
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT * FROM bin WHERE SectionID = ? AND (BinName LIKE ? OR BinID LIKE ?)";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, sectionID);
+            stmt.setString(2, "%" + query + "%");
+            stmt.setString(3, "%" + query + "%");
+
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Bin bin = new Bin();
+                bin.setBinID(rs.getString("BinID"));
+                bin.setBinName(rs.getString("BinName"));
+                bins.add(bin);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return bins;
+    }
+
+
+    public Optional<Bin> getBinByBinId(String binId){
+        try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT BinId, BinName, MaxCapacity, Status, SectionId ");
             sql.append(" FROM Bin ");
@@ -408,63 +542,50 @@ public class BinDAO {
         }
     }
 
+<<<<<<< HEAD
     public List<Bin> getBinAndWeightBySectionId(String sectionId) {
         List<Bin> bins = new ArrayList<>();
-        String sql = "SELECT \n" +
-                "    b.BinID, \n" +
-                "    b.BinName, \n" +
-                "    COALESCE(SUM(bd.Quantity * pd.Weight), 0) AS TotalWeightBins\n" +
-                "FROM bin b \n" +
-                "LEFT JOIN BinDetail bd ON b.BinID = bd.BinID\n" +
-                "LEFT JOIN ProductDetail pd ON bd.ProductDetailID = pd.ProductDetailID\n" +
-                "JOIN section s ON b.SectionID = s.SectionID\n" +
-                "JOIN sectiontype st ON s.SectionTypeID = st.SectionTypeID\n" +
-                "WHERE s.SectionID = ?\n" +
-                "GROUP BY b.BinID, b.BinName;\n";
+        String sql = "SELECT bd.binId, b.BinName, COALESCE(SUM(bd.quantity * pd.Weight), 0) AS TotalWeightBins " +
+                "FROM BinDetail bd " +
+                "JOIN ProductDetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
+                "JOIN bin b ON bd.binId = b.BinID " +
+                "JOIN section s ON b.SectionID = s.SectionID " +
+                "JOIN sectiontype st ON s.SectionTypeID = st.SectionTypeID " +
+                "WHERE s.SectionID = ? " +
+                "GROUP BY bd.binId, b.BinName";
+=======
+    public boolean deleteBin(String binId){
+        String sql= "UPDATE bin SET status = 0 WHERE binID = ?";
+        try (Connection conn = DBContext.getConnection();
+        PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binId);
+            int rowsUpdated = stmt.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+>>>>>>> 679f4c7d6836750b2e3effec080113dc46b0877c
 
+    public int getTotalBinsBySection(String sectionId) {
+        String sql = "SELECT COUNT(*) FROM Bin WHERE SectionID = ?";
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, sectionId);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Bin bin = Bin.builder()
-                        .binID(rs.getString("binId"))
-                        .binName(rs.getString("BinName"))
-                        .currentCapacity(rs.getDouble("TotalWeightBins"))
-                        .build();
-                bins.add(bin);
+            if (rs.next()) {
+                return rs.getInt(1);
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        return bins;
+        return 0;
     }
 
-    public double getWeightOfBinByBinID(String binID) {
-        String sql = "SELECT COALESCE(SUM(bd.quantity * pd.Weight), 0) AS TotalWeightBins " +
-                "FROM BinDetail bd " +
-                "JOIN ProductDetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
-                "JOIN bin b ON bd.binId = b.BinID " +
-                "WHERE b.BinID = ? ";
-
-        try (Connection con = DBContext.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, binID);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getDouble("TotalWeightBins");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Lỗi khi truy vấn getWeightOfBinByBinID: " + e.getMessage());
-        }
-        return 0.0;  // Trả về 0 nếu không có dữ liệu
-    }
 
     public static void main(String[] args) {
         BinDAO dao = new BinDAO();
-        List<Bin> list = dao.searchBinWithPagination("RP001", "002", 1, 5);
+        List<Bin> list = dao.searchBinWithPagination("RP001","002",1,5);
         for (Bin bin : list) {
             System.out.println(bin);
         }
