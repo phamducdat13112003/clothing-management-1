@@ -32,6 +32,40 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
+    <style>
+        .choose-file-label {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .choose-file-label:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .choose-file-label:active {
+            background-color: #003f7f;
+        }
+        #image {
+            margin-top: 10px;            /* Khoảng cách giữa ảnh và nút */
+            max-width: 200px;            /* Giới hạn chiều rộng tối đa của ảnh */
+            height: auto;                /* Giữ tỷ lệ cho ảnh */
+            border-radius: 8px;          /* Bo góc cho ảnh */
+            border: 2px solid #ddd;     /* Viền cho ảnh */
+            display: block;              /* Đảm bảo ảnh không bị kéo giãn */
+            margin-left: auto;           /* Căn giữa ảnh */
+            margin-right: auto;          /* Căn giữa ảnh */
+        }
+    </style>
 
 </head>
 <body id="sherah-dark-light">
@@ -85,7 +119,9 @@
                                                                                     <form class="sherah-wc__form-main"
                                                                                           action="${pageContext.request.contextPath}/add-product-detail"
                                                                                           method="post"
-                                                                                          onsubmit="return validateForm()">
+                                                                                          onsubmit="return validateForm()"
+                                                                                          enctype="multipart/form-data"
+                                                                                    >
 
                                                                                         <div class="row">
                                                                                             <input type="hidden"
@@ -93,21 +129,11 @@
                                                                                                    value="${product.id}"/>
                                                                                             <div class="col-12">
                                                                                                 <div class="form-group">
-                                                                                                    <label class="sherah-wc__form-label">Product
-                                                                                                        Image Upload
-                                                                                                        <span class="required">*</span></label>
+                                                                                                    <label class="sherah-wc__form-label">Image </label>
                                                                                                     <div class="form-group__input">
-                                                                                                        <input type="file"
-                                                                                                               name="img"
-                                                                                                               class="form-control d-none"
-                                                                                                               id="inputGroupFile04"
-                                                                                                               onchange="chooseFile(this)"
-                                                                                                               accept="image/gif,image/jpeg,image/png"
-                                                                                                               aria-describedby="inputGroupFileAddon04"
-                                                                                                               aria-label="Upload">
-                                                                                                        <label for="inputGroupFile04"
-                                                                                                               class="choose-file-label">Choose
-                                                                                                            file</label>
+                                                                                                        <input type="file" name="img" class="form-control d-none" id="inputGroupFile04" onchange="chooseFile(this)" accept="image/gif,image/jpeg,image/png" aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+                                                                                                        <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
+<%--                                                                                                        <img src="${product.image}" id="image" class="img-thumbnail rounded-5" width="100%" alt="${employee.image}">--%>
                                                                                                     </div>
                                                                                                 </div>
                                                                                             </div>
@@ -171,6 +197,7 @@
 
                                                                                                 </div>
                                                                                             </div>
+
                                                                                             <div>
                                                                                                 <button type="submit"
                                                                                                         class="btn btn-primary">
@@ -231,6 +258,28 @@
 <script src="js/main.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script type="text/javascript">
+    function chooseFile(fileInput) {
+        if (fileInput.files && fileInput.files[0]) {
+            var file = fileInput.files[0];
+            var fileType = file.type;
+            var validImageTypes = ["image/gif", "image/jpeg", "image/png"];
+
+            if (!validImageTypes.includes(fileType)) {
+                alert("Only image files (JPG, PNG, GIF) are allowed.");
+                fileInput.value = ""; // Clear the input
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#image').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(file); // đọc nội dung tệp dưới dạng url
+        }
+    }
+</script>
 <script>
     window.onload = function () {
         const alertMessage = '<%= request.getAttribute("alertMessage") != null ? request.getAttribute("alertMessage") : "" %>';

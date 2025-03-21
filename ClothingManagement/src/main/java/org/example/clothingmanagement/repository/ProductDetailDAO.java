@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 public class ProductDetailDAO {
+
+
     public List<ProductDetail> findAll() {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();

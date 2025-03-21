@@ -142,7 +142,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Price <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="VND" type="number" min="0" name="price" value="${product.price}" required>
+                                                                <input class="sherah-wc__form-input" placeholder="VND" type="number" min="0" max="9999999" name="price" value="${product.price}" required>
 <%--                                                                <c:if test="${not empty errorEmail}">--%>
 <%--                                                                    <span class="error-message">${errorEmail}</span>--%>
 <%--                                                                </c:if>--%>
@@ -201,7 +201,7 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Minimum Quantity<span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 step=1 name="minQuantity" value="${product.minQuantity}" required>
+                                                                <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 max="9999" step=1 name="minQuantity" value="${product.minQuantity}" required>
                                                             </div>
                                                         </div>
                                                     </div>
