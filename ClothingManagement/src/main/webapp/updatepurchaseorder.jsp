@@ -395,7 +395,7 @@
                                 placeholder="Price" value="` + product.productPrice + `" style="width: 100px;">
 
                                 <input type="number" name="quantity[]" class="form-control text-center me-2"
-    placeholder="1" value="` + (product.productQuantity > 0 ? product.productQuantity : 1) + `" min="1" style="width: 80px;">
+    placeholder="1" value="` + (product.productQuantity > 0 ? product.productQuantity : 1) + `" min="1" max="1000" style="width: 80px;">
 
 
 

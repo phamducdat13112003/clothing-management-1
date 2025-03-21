@@ -28,6 +28,9 @@ public class BinDetailService {
     public List<BinDetail> getBinDetailsWithPagination(String binId, int page, int pageSize) {
         return bdd.getBinDetailsWithPagination(binId, page, pageSize);
     }
+    public boolean addBinDetail(String binDetailId, String binId, String productDetailId, int quantity) throws Exception{
+        return bdd.addBinDetail(binDetailId, binId, productDetailId, quantity);
+    }
 
     public List<BinDetail> searchBinDetailWithPagination(String binId,String nameSearch, int page, int pageSize){
         return bdd.searchBinDetailWithPagination(binId, nameSearch, page, pageSize);

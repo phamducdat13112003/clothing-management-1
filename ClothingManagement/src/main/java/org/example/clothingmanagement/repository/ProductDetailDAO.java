@@ -671,6 +671,32 @@ public class ProductDetailDAO {
         }
     }
 
+    public boolean updateQuantityProduct(String productDetailId, int quantity) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "UPDATE `productdetail` SET `Quantity`=? WHERE ProductDetailID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, quantity);
+            ps.setString(2, productDetailId);
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    public int getTotalQuantityByProductID(String productId) {
+        String sql = "SELECT SUM(Quantity) AS TotalQuantity FROM ProductDetail WHERE ProductID = ?";
+        try (Connection con = DBContext.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, productId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("TotalQuantity");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching total quantity by ProductID", e);
+        }
+        return 0;
+    }
     public static void main(String[] args){
         final ProductDetailDAO productDetailDAO = new ProductDetailDAO();
         List<ProductDetail> list = productDetailDAO.searchAllWithPagination("m",1,5);
