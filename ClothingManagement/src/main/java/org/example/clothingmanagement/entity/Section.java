@@ -24,14 +24,6 @@ public class Section {
         this.sectionTypeId = sectionTypeId;
     }
 
-
-////
-//    public Section(String sectionID, String sectionName, int sectionTypeId) {
-        this.sectionID = sectionID;
-        this.sectionName = sectionName;
-        this.sectionTypeId = sectionTypeId;
-    }
-
 //    public void setNumberOfBins(int size) {
 //
 //    }
