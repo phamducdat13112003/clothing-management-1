@@ -81,10 +81,13 @@ public class BinService {
         return binDAO.countBinDetail(nameSearch, binID);
     }
 
+    public List<Bin> getBinsBySectionIdWithoutPagination(String sectionId){
+        return binDAO.getBinsBySectionIdWithoutPagination(sectionId);
+    }
 
     public static void main(String[] args){
         BinService bs = new BinService();
-        List<Bin> list = bs.searchBinWithPagination("RP001","002",1,5);
+        List<Bin> list = bs.getBinsBySectionId("RP001",1,5);
         for(Bin b : list){
             System.out.println(b);
         }

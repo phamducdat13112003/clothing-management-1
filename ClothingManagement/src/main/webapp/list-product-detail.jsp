@@ -279,7 +279,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <img src="img/${list.image}"
+                                                            <img src="${list.image}"
                                                                  alt="Product Detail Image" width="100" height="100">
                                                         </p>
                                                     </div>
