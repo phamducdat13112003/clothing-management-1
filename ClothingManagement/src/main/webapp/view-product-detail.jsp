@@ -44,10 +44,6 @@
             font-weight: bold;
         }
 
-        .error-message {
-            color: red;
-            font-size: 12px;
-        }
 
         .choose-file-label {
             display: inline-block;
@@ -131,8 +127,7 @@
                                                 <input type="hidden" name="id" value="${pd.id}"/>
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Product Image Upload <span
-                                                                class="required">*</span></label>
+                                                        <label class="sherah-wc__form-label">Product Image Upload </label>
                                                         <div class="form-group__input">
                                                             <input type="file" name="img" class="form-control d-none"
                                                                    id="inputGroupFile04" onchange="chooseFile(this)"
@@ -150,8 +145,7 @@
 
                                                 <div class="col-lg-6 col-md-6 col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Weight <span
-                                                                class="required">*</span></label>
+                                                        <label class="sherah-wc__form-label">Weight</label>
                                                         <div class="form-group__input">
                                                             <input class="sherah-wc__form-input" placeholder="Kilogram"
                                                                    type="number" name="weight" min="0.1" step="0.1"

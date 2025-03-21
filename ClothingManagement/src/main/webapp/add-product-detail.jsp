@@ -33,6 +33,11 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        .required {
+            color: red;
+            font-weight: bold;
+        }
+
         .choose-file-label {
             display: inline-block;
             padding: 10px 20px;

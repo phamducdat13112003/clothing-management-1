@@ -38,9 +38,6 @@ public class ViewListSectionController extends HttpServlet {
             section.setNumberOfBins(bs.getBinsBySectionIdWithoutPagination(section.getSectionID()).size());
         }
 
-//        for(Section section : list){
-//            section.setNumberOfBins(bs.getBinsBySectionId(section.getSectionID(), page, pageSize).size());
-//        }
         SectionType sectionType = null;
         if(sts.getSectionTypeById(sectionTypeId).isPresent()){
             sectionType = sts.getSectionTypeById(sectionTypeId).get();
@@ -73,12 +70,11 @@ public class ViewListSectionController extends HttpServlet {
         }
 
         List<Section> list = ss.SearchSectionWithPagination(sectionTypeId,nameSearch, page, pageSize);
-//        for(Section section : list){
-//            section.setNumberOfBins(bs.getBinsBySectionId(section.getSectionID()).size());
-//        }
+
         for(Section section : list){
-            section.setNumberOfBins(bs.getBinsBySectionId(section.getSectionID(), page, pageSize).size());
+            section.setNumberOfBins(bs.getBinsBySectionIdWithoutPagination(section.getSectionID()).size());
         }
+
         SectionType sectionType = null;
         if(sts.getSectionTypeById(sectionTypeId).isPresent()){
             sectionType = sts.getSectionTypeById(sectionTypeId).get();
