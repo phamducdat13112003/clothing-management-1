@@ -14,8 +14,17 @@ public class Section {
     private String sectionName;
     private int sectionTypeId;
 
+    private String sectionTypeName;
+    private String description;
 
-    public void setNumberOfBins(int size) {
-
+    public Section(String sectionID, String sectionName, int sectionTypeId) {
+        this.sectionID = sectionID;
+        this.sectionName = sectionName;
+        this.sectionTypeId = sectionTypeId;
     }
+
+
+//    public void setNumberOfBins(int size) {
+//
+//    }
 }
