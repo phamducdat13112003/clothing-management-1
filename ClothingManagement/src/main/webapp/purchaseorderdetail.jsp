@@ -111,6 +111,11 @@
                                                     ${purchaseOrder.poID} a has Cancel
                                             </div>
                                         </c:if>
+                                        <c:if test='${purchaseOrder.status == "Processing"}'>
+                                            <div class="alert alert-warning" role="alert">
+                                                    ${purchaseOrder.poID} a has Processing
+                                            </div>
+                                        </c:if>
                                         <c:if test='${purchaseOrder.status == "Done"}'>
                                             <div class="alert alert-success" role="alert">
                                                     ${purchaseOrder.poID} a has Done

@@ -12,23 +12,23 @@ public class ProductDetailService {
     private final ProductDetailDAO productDetailDAO = new ProductDetailDAO();
 
     public List<ProductDetail> getAllProductDetails() {
-        return  productDetailDAO.findAll();
+        return productDetailDAO.findAll();
     }
 
     public List<ProductDetail> getAllProductDetailByProductId(String productId) {
         return productDetailDAO.findByProductId(productId);
     }
 
-    public List<ProductDetail> SearchProductDetailByProductIdAndNameSearch(String productId,String nameSearch) {
-        return productDetailDAO.SearchProductDetailByProductIdAndNameSearch(productId,nameSearch);
+    public List<ProductDetail> SearchProductDetailByProductIdAndNameSearch(String productId, String nameSearch) {
+        return productDetailDAO.SearchProductDetailByProductIdAndNameSearch(productId, nameSearch);
     }
 
-    public List<ProductDetail> SearchProductDetailByProductIdWithPagination(String productId,String nameSearch,int page,int pageSize) {
-        return productDetailDAO.SearchProductDetailByProductIdWithPagination(productId,nameSearch,page,pageSize);
+    public List<ProductDetail> SearchProductDetailByProductIdWithPagination(String productId, String nameSearch, int page, int pageSize) {
+        return productDetailDAO.SearchProductDetailByProductIdWithPagination(productId, nameSearch, page, pageSize);
     }
 
-    public List<ProductDetail> getProductDetailByProductIdWithPagination(String productId,int page,int pageSize) {
-        return productDetailDAO.getProductDetailByProductIdWithPagination(productId,page,pageSize);
+    public List<ProductDetail> getProductDetailByProductIdWithPagination(String productId, int page, int pageSize) {
+        return productDetailDAO.getProductDetailByProductIdWithPagination(productId, page, pageSize);
     }
 
     public Optional<ProductDetail> findTheFirstProductDetailOfProductId(String productId) {
@@ -39,7 +39,7 @@ public class ProductDetailService {
         return productDetailDAO.getProductDetailByProductDetailID(productDetailID);
     }
 
-    public Optional<ProductDetail> getOptionalProductDetailByProductDetailId(String productDetailId){
+    public Optional<ProductDetail> getOptionalProductDetailByProductDetailId(String productDetailId) {
         return productDetailDAO.getOptionalProductDetailByProductDetailID(productDetailId);
     }
 
@@ -51,11 +51,11 @@ public class ProductDetailService {
         return productDetailDAO.getProductDetailByProductDetailId(productId, page, pageSize);
     }
 
-    public boolean deleteProductDetail(String id){
+    public boolean deleteProductDetail(String id) {
         return productDetailDAO.deleteProductDetail(id);
     }
 
-    public boolean recoverProductDetail(String id){
+    public boolean recoverProductDetail(String id) {
         return productDetailDAO.recoverProductDetail(id);
     }
 
@@ -70,7 +70,8 @@ public class ProductDetailService {
     public int getTotalProductDetailCount(String code) {
         return productDetailDAO.getTotalProductDetailCount(code);
     }
-    public List<ProductDetail> searchProductDetailsByID(String id, int page, int pageSize){
+
+    public List<ProductDetail> searchProductDetailsByID(String id, int page, int pageSize) {
         return productDetailDAO.searchProductDetailsByID(id, page, pageSize);
     }
 
@@ -82,7 +83,7 @@ public class ProductDetailService {
         return productDetailDAO.getColorNSize(productId);
     }
 
-    public Optional<ProductDetail> getLastProductDetail(String id){
+    public Optional<ProductDetail> getLastProductDetail(String id) {
         return productDetailDAO.getLastProductDetail(id);
     }
 
@@ -90,10 +91,18 @@ public class ProductDetailService {
         return productDetailDAO.updateAllProductDetail(productId);
     }
 
-    public static void main(String[] args){
+    public boolean updateQuantityProduct(String productDetailId, int quantity) throws Exception {
+        return productDetailDAO.updateQuantityProduct(productDetailId, quantity);
+    }
+
+    public int getTotalQuantityByProductID(String productId) throws Exception {
+        return productDetailDAO.getTotalQuantityByProductID(productId);
+    }
+
+    public static void main(String[] args) {
         ProductDetailService pds = new ProductDetailService();
         List<ProductDetail> pdList = pds.getAllProductDetails();
-        for(ProductDetail pd : pdList){
+        for (ProductDetail pd : pdList) {
             System.out.println(pd);
         }
     }

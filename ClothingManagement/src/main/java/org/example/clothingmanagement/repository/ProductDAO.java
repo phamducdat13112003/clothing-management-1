@@ -498,7 +498,7 @@ public class ProductDAO {
     public List<Map<String, Object>> getListProductByPoID(String poID) {
         List<Map<String, Object>> productList = new ArrayList<>();
         String sql = "SELECT p.ProductID, p.Price AS ProductPrice, pd.ProductDetailID, pd.Quantity AS ProductDetailQuantity, " +
-                "pd.Weight, pod.PODetailID, pod.Quantity AS PoDetailQuantity, po.POID " +
+                "pod.Quantity AS PoDetailQuantity, pod.Price AS PoDetailPrice, pd.Weight, pod.PODetailID, po.POID " +
                 "FROM PO po " +
                 "JOIN PoDetail pod ON po.POID = pod.POID " +
                 "JOIN ProductDetail pd ON pod.ProductDetailID = pd.ProductDetailID " +
@@ -514,9 +514,10 @@ public class ProductDAO {
                 productMap.put("ProductPrice", rs.getDouble("ProductPrice"));
                 productMap.put("ProductDetailID", rs.getString("ProductDetailID"));
                 productMap.put("ProductDetailQuantity", rs.getInt("ProductDetailQuantity"));
+                productMap.put("PoDetailQuantity", rs.getInt("PoDetailQuantity"));
+                productMap.put("PoDetailPrice", rs.getDouble("PoDetailPrice"));
                 productMap.put("Weight", rs.getDouble("Weight"));
                 productMap.put("PODetailID", rs.getString("PODetailID"));
-                productMap.put("PoDetailQuantity", rs.getInt("PoDetailQuantity"));
                 productMap.put("POID", rs.getString("POID"));
                 productList.add(productMap);
             }
@@ -525,6 +526,19 @@ public class ProductDAO {
         }
         return productList;
     }
+    public boolean updatePriceOfProductByProductID(String productID, double price) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "UPDATE `product` SET `Price`= ? WHERE ProductID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setDouble(1, price);
+            ps.setString(2, productID);
+            int rowsUpdated = ps.executeUpdate();
+            return rowsUpdated > 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error updating product price", e);
+        }
+    }
+
     public static void main(String[] args) {
         ProductDAO productDAO = new ProductDAO();
 

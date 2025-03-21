@@ -183,7 +183,25 @@ public class SectionDAO {
             throw new RuntimeException(e);
         }
     }
-
+    public List<Section> getSectionsBySectionTypeIsReceiptStorage(){
+        try(Connection con = DBContext.getConnection()){
+            String sql = "SELECT * FROM section WHERE SectionTypeID = '1'";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            List<Section> sections = new ArrayList<>();
+            while(rs.next()){
+                Section section = Section.builder()
+                        .sectionID(rs.getString("sectionId"))
+                        .sectionName(rs.getString("sectionName"))
+                        .sectionTypeId(rs.getInt("sectionTypeId"))
+                        .build();
+                sections.add(section);
+            }
+            return sections;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
     public static void main(String[] args) {
         SectionDAO sd = new SectionDAO();
         List<Section> list = sd.searchSectionWithPagination(2,"",1,5);

@@ -13,6 +13,10 @@ public class PurchaseOrderService {
         return purchaseorderDAO.getAllPurchaseOrder();
     }
 
+    public List<PurchaseOrder> getAllPurchaseOrderHaveStatusProcessingAndConfirmed() throws SQLException {
+        return purchaseorderDAO.getAllPurchaseOrderHaveStatusProcessingAndConfirmed();
+    }
+
     public String getSupplierIDByPoID(String poID) throws SQLException {
         return purchaseorderDAO.getSupplierIDByPoID(poID);
     }
@@ -23,6 +27,10 @@ public class PurchaseOrderService {
 
     public List<PurchaseOrder> searchPO(String searchQuery) throws SQLException {
         return purchaseorderDAO.searchPO(searchQuery);
+    }
+
+    public List<PurchaseOrder> searchDO(String searchQuery) throws SQLException {
+        return purchaseorderDAO.searchDO(searchQuery);
     }
 
     public String generateUniquePoId(String date) throws SQLException {

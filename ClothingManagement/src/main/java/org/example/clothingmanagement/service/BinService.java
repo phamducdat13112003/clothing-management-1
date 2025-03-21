@@ -6,13 +6,14 @@ import org.example.clothingmanagement.repository.BinDAO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class BinService {
 
     private final BinDAO binDAO = new BinDAO();
 
-    public List<Bin> getAllBins(){
+    public List<Bin> getAllBins() {
         return binDAO.getAllBins();
     }
 
@@ -20,59 +21,67 @@ public class BinService {
         return binDAO.getMaxCapacityByBinID(binID);
     }
 
-    public List<BinDetail> getBinDetailByBinID(String binID, int page, int pageSize){
+    public List<BinDetail> getBinDetailByBinID(String binID, int page, int pageSize) {
         return binDAO.getBinDetailByBinID(binID, page, pageSize);
     }
 
-    public List<Bin> getBinsWithPagination(String sectionId, int page, int pageSize){
+    public List<Bin> getBinsWithPagination(String sectionId, int page, int pageSize) {
         return binDAO.getBinsWithPagination(sectionId, page, pageSize);
     }
 
-    public List<Bin> searchBinWithPagination(String sectionId, String nameSearch, int page, int pageSize){
+    public List<Bin> searchBinWithPagination(String sectionId, String nameSearch, int page, int pageSize) {
         return binDAO.searchBinWithPagination(sectionId, nameSearch, page, pageSize);
     }
 
-    public List<Bin> searchBinWithoutPagination(String sectionId, String nameSearch){
+    public List<Bin> searchBinWithoutPagination(String sectionId, String nameSearch) {
         return binDAO.searchBinWithoutPagination(sectionId, nameSearch);
     }
 
-    public int countBinDetailByBinID(String binID){
+    public int countBinDetailByBinID(String binID) {
         return binDAO.countBinDetailByBinID(binID);
     }
 
-    public int countAllBins(){
+    public int countAllBins() {
         return binDAO.countAllBins();
     }
 
-    public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize){
+    public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize) {
         return binDAO.searchBinDetail(nameSearch, binID, page, pageSize);
     }
 
-    public Optional<Bin> getBinByBinId(String binID){
+    public Optional<Bin> getBinByBinId(String binID) {
         return binDAO.getBinByBinId(binID);
     }
 
-    public List<Bin> getAllBin(){
+    public List<Bin> getAllBin() {
         List<Bin> bins = binDAO.getAllBin();
-        for(Bin bin : bins){
+        for (Bin bin : bins) {
             bin.setCurrentCapacity(0.0);
             bin.setAvailableCapacity(bin.getMaxCapacity());
         }
         return bins;
     }
 
-    public int countBinDetail(String nameSearch, String binID){
+    public int countBinDetail(String nameSearch, String binID) {
         return binDAO.countBinDetail(nameSearch, binID);
     }
 
-    public List<Bin> getBinsBySectionId(String sectionId){
+    public List<Bin> getBinsBySectionId(String sectionId) {
         return binDAO.getBinsBySectionId(sectionId);
     }
 
-    public static void main(String[] args){
+    public List<Bin> getBinAndWeightBySectionId(String sectionId) throws Exception {
+        return binDAO.getBinAndWeightBySectionId(sectionId);
+    }
+
+    public double getWeightOfBinByBinID(String binID) throws Exception {
+        return binDAO.getWeightOfBinByBinID(binID);
+    }
+
+    public static void main(String[] args) {
         BinService bs = new BinService();
-        List<Bin> list = bs.searchBinWithPagination("RP001","002",1,5);
-        for(Bin b : list){
+        List<Bin> list = bs.searchBinWithPagination("RP001", "002", 1, 5);
+        for (Bin b : list) {
             System.out.println(b);
         }
     }

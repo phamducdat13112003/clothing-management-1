@@ -27,7 +27,9 @@ public class BinDetailService {
     public List<BinDetail> getBinDetailsWithPagination(String binId, int page, int pageSize) {
         return bdd.getBinDetailsWithPagination(binId, page, pageSize);
     }
-
+    public boolean addBinDetail(String binDetailId, String binId, String productDetailId, int quantity) throws Exception{
+        return bdd.addBinDetail(binDetailId, binId, productDetailId, quantity);
+    }
     public static void main(String[] args){
         BinDetailService binDetailService = new BinDetailService();
         List<BinDetail> list = binDetailService.getBinDetailsWithPagination("FW001-001",1,5);
