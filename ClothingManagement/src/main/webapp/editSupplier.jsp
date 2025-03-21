@@ -5,21 +5,6 @@
   Time: 12:32 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%--
-  Created by IntelliJ IDEA.
-  User: LENOVO
-  Date: 2/28/2025
-  Time: 8:39 AM
-  To change this template use File | Settings | File Templates.
---%>
-
-<%--
-  Created by IntelliJ IDEA.
-  User: LENOVO
-  Date: 1/28/2025
-  Time: 3:07 PM
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@ page isELIgnored="false" %>
@@ -34,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>Add Supplier</title>
+    <title>Edit Supplier</title>
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">

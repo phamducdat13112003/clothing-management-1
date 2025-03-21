@@ -2,6 +2,7 @@ package org.example.clothingmanagement.service;
 
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
+import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.repository.BinDetailDAO;
 
 import java.util.List;
@@ -34,6 +35,16 @@ public class BinDetailService {
 
     public List<BinDetail> searchBinDetailWithoutPagination(String binId,String nameSearch){
         return bdd.searchBinDetailWithoutPagination(binId, nameSearch);
+    }
+
+    public boolean deleteProductFromBin(String binId, String productDetailId){
+        return bdd.deleteProductFromBin(binId, productDetailId);
+    }
+    public boolean canDeleteProduct(String binId, String productDetailId){
+        return bdd.canDeleteProduct(binId, productDetailId);
+    }
+    public List<ProductDetail> getProductsInBin(String binId){
+        return bdd.getProductsInBin(binId);
     }
 
     public static void main(String[] args){

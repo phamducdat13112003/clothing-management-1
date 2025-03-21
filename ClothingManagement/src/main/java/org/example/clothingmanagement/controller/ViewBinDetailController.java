@@ -33,8 +33,6 @@ public class ViewBinDetailController extends HttpServlet {
         if (pageParam != null) {
             page = Integer.parseInt(pageParam);
         }
-
-
         List<BinDetail> list = bds.getBinDetailsWithPagination(binId,page,pageSize);
         List<ProductDetail> productDetails = pds.getAllProductDetails();
         for(BinDetail bd : list) {

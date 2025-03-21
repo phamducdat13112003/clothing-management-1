@@ -19,6 +19,12 @@ public class ProductDetail {
     private String productId;
     private int status;
 
+    // don't existed in database
+    private String binId;
+    private String sectionId;
+    private int totalQuantity;
+    private int availableQuantity;
+    private int blockedQuantity;
     private String productName;
 
     public ProductDetail(String id,String image,Double weight) {

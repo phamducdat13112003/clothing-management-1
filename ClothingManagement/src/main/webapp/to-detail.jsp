@@ -59,7 +59,7 @@
                         </div>
 
                         <h3>Transfer Order ID: ${transferOrder.toID}</h3>
-                        <p>Created By: ${transferOrder.createdBy}</p>
+                        <p>Created By: ${employeeName}</p>
                         <p>Status: ${transferOrder.status}</p>
 
                         <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
