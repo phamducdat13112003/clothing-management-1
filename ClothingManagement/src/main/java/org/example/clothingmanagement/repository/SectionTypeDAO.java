@@ -11,6 +11,10 @@ import java.util.List;
 import java.util.Optional;
 
 public class SectionTypeDAO {
+
+
+
+
     public List<SectionType> getAllSectionTypes() {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
@@ -138,26 +142,53 @@ public class SectionTypeDAO {
         }
     }
 
-    public Optional<SectionType> getSectionTypeById(int sectionTypeId){
+//    public Optional<SectionType> getSectionTypeById(int sectionTypeId){
+//        try(Connection con = DBContext.getConnection()){
+//            StringBuilder sql = new StringBuilder();
+//            sql.append(" SELECT SectionTypeID, SectionTypeName, WarehouseID, Description ");
+//            sql.append(" FROM SectionType ");
+//            sql.append(" WHERE 1=1 ");
+//            sql.append(" AND SectionTypeID=? ");
+//            PreparedStatement ps = con.prepareStatement(sql.toString());
+//            ps.setInt(1, sectionTypeId);
+//            ResultSet rs = ps.executeQuery();
+//            if(rs.next()) {
+//                SectionType sectionType = SectionType.builder()
+//                        .sectionTypeId(rs.getInt("SectionTypeID"))
+//                        .sectionTypeName(rs.getString("SectionTypeName"))
+//                        .warehouseId(rs.getString("WarehouseID"))
+//                        .description(rs.getString("Description"))
+//                        .build();
+//                return Optional.of(sectionType);
+//            }
+//            return Optional.empty();
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    public SectionType getSectionTypeById(int sectionTypeId) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT SectionTypeID, SectionTypeName, WarehouseID, Description ");
             sql.append(" FROM SectionType ");
-            sql.append(" WHERE 1=1 ");
-            sql.append(" AND SectionTypeID=? ");
+            sql.append(" WHERE SectionTypeID = ? ");
+
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setInt(1, sectionTypeId);
+
             ResultSet rs = ps.executeQuery();
-            if(rs.next()) {
+            if (rs.next()) {
                 SectionType sectionType = SectionType.builder()
                         .sectionTypeId(rs.getInt("SectionTypeID"))
                         .sectionTypeName(rs.getString("SectionTypeName"))
                         .warehouseId(rs.getString("WarehouseID"))
                         .description(rs.getString("Description"))
                         .build();
-                return Optional.of(sectionType);
+                return sectionType;
             }
-            return Optional.empty();
+            return null;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

@@ -1,14 +1,12 @@
 package org.example.clothingmanagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
 @Builder
+@Getter
 public class Section {
     private String sectionID;
     private String sectionName;
@@ -18,13 +16,15 @@ public class Section {
     private String sectionTypeName;
     private String description;
 
-    public Section(String sectionID, String sectionName, int sectionTypeId) {
+    @Setter
+    private int totalBins;
+
+
+    public Section(String sectionID, String sectionName, int sectionTypeID) {
         this.sectionID = sectionID;
         this.sectionName = sectionName;
-        this.sectionTypeId = sectionTypeId;
+        this.sectionTypeId = sectionTypeID;
     }
 
-//    public void setNumberOfBins(int size) {
-//
-//    }
+
 }

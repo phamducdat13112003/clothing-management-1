@@ -31,6 +31,8 @@
       <th>Section ID</th>
       <th>Section Name</th>
       <th>Section Type</th>
+      <th>Description</th>
+      <th>Total Bins</th>
       <th>Thao tác</th>
     </tr>
     </thead>
@@ -39,9 +41,13 @@
       <tr>
         <td>${section.sectionID}</td>
         <td>${section.sectionName}</td>
-<%--        <td>${section.sectionTypeName}</td>--%>
+        <td>${section.sectionTypeName}</td>
+        <td>${section.description}</td>
         <td>
-          <a href="bin?sectionID=${section.sectionID}" class="btn btn-info btn-sm">Chi tiết</a>
+          <span class="badge bg-primary">${section.totalBins}</span>
+        </td>
+        <td>
+          <a href="section?action=view&id=${section.sectionID}" class="btn btn-info btn-sm">Chi tiết</a>
           <a href="section?action=showEdit&id=${section.sectionID}" class="btn btn-warning btn-sm">Sửa</a>
           <a href="#" onclick="confirmDelete('${section.sectionID}')" class="btn btn-danger btn-sm">Xóa</a>
         </td>

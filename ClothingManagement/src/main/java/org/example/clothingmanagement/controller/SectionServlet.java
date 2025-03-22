@@ -5,8 +5,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.Section;
 import org.example.clothingmanagement.entity.SectionType;
+import org.example.clothingmanagement.repository.BinDAO;
 import org.example.clothingmanagement.repository.SectionDAO;
 import org.example.clothingmanagement.repository.SectionTypeDAO;
 
@@ -17,11 +19,14 @@ import java.util.List;
 public class SectionServlet extends HttpServlet {
     private SectionDAO sectionDAO;
     private SectionTypeDAO sectionTypeDAO;
+    private BinDAO binDAO;
 
     @Override
     public void init() {
         sectionDAO = new SectionDAO();
         sectionTypeDAO = new SectionTypeDAO();
+        binDAO = new BinDAO();
+
     }
 
     @Override
@@ -36,6 +41,9 @@ public class SectionServlet extends HttpServlet {
         switch (action) {
             case "list":
                 listSections(request, response);
+                break;
+            case "view":
+                viewSection(request, response);
                 break;
             case "showAdd":
                 showAddForm(request, response);
@@ -64,6 +72,9 @@ public class SectionServlet extends HttpServlet {
             case "add":
                 addSection(request, response);
                 break;
+            case "view":
+                viewSection(request, response);
+                break;
             case "edit":
                 updateSection(request, response);
                 break;
@@ -72,10 +83,32 @@ public class SectionServlet extends HttpServlet {
         }
     }
 
+    private void viewSection(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String sectionID = request.getParameter("id");
+        Section section = sectionDAO.getSectionByID(sectionID);
+
+        // Get the section type details for this section
+        SectionType sectionType = sectionTypeDAO.getSectionTypeById(section.getSectionTypeId());
+
+
+        List<Bin> bins = binDAO.getBinsBySection(sectionID);
+
+        request.setAttribute("sectionType", sectionType);
+        request.setAttribute("section", section);
+        request.setAttribute("bins", bins);
+        request.getRequestDispatcher("/section-detail.jsp").forward(request, response);
+    }
+
     private void listSections(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         List<Section> sections = sectionDAO.getAllSections();
+        for (Section section : sections) {
+            int totalBins = binDAO.countBinsBySectionId(section.getSectionID());
+            section.setTotalBins(totalBins);
+        }
+
         request.setAttribute("sections", sections);
         request.getRequestDispatcher("/section-list.jsp").forward(request, response);
     }

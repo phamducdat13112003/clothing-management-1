@@ -522,6 +522,23 @@ public class TransferOrderDAO {
         }
     }
 
+    public boolean updateTODetailFinalBin(TODetail toDetail) {
+        String sql = "UPDATE TODetail SET finalBinID = ? WHERE toDetailID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, toDetail.getFinalBinID());
+            stmt.setString(2, toDetail.getToDetailID());
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public TODetail getTODetailByProductDetailID(String toID, String productDetailID) {
         TODetail toDetail = null;
         String sql = "SELECT * FROM todetail WHERE TOID = ? AND ProductDetailID = ?";
@@ -1041,5 +1058,27 @@ public class TransferOrderDAO {
             throw new RuntimeException(e);
         }
         return false;
+    }
+
+    public String getSectionByBinID(String binID) {
+        String sectionID = null;
+        String sql = "SELECT sectionID FROM bin WHERE binID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, binID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    sectionID = rs.getString("sectionID");
+                }
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error getting section by bin ID: " + e.getMessage());
+        }
+
+        return sectionID;
     }
 }
