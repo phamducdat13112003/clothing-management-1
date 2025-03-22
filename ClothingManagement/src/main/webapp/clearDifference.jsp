@@ -142,12 +142,20 @@
             <input type="hidden" name="binId" value="${binId}">
 
             <label>Select Action:</label>
+            <c:set var="hasRecountId" value="false"/>
+            <c:forEach var="detail" items="${listInvenDoc}">
+                <c:if test="${detail.recounterId != null}">
+                    <c:set var="hasRecountId" value="true"/>
+                </c:if>
+            </c:forEach>
+            <label>Select Action:</label>
             <select id="actionSelect" onchange="handleSelectionChange()">
                 <option value="">-- Select --</option>
                 <option value="clearDifference">Clear Difference</option>
-                <option value="recount">Recount</option>
+                <c:if test="${!hasRecountId}">
+                    <option value="recount">Recount</option>
+                </c:if>
                 <option value="cancel">Cancel</option>
-
             </select>
 
             <!-- Ô nhập nhân viên (ẩn mặc định) -->
