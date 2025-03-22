@@ -53,6 +53,18 @@ public class SupplierService {
         return supplierDAO.getTotalSupplierCount(keyword);
     }
 
+    public static void main(String[] args){
+        SupplierService ss = new SupplierService();
+        String supplierId="";
+        List<Supplier> suppliers = ss.getAllSuppliers();
+        for(Supplier s : suppliers) {
+            if(s.getSupplierName().equalsIgnoreCase("Hanesbrands")) {
+                supplierId = s.getSupplierId();
+            }
+        }
+        System.out.println(supplierId);
+    }
+
 
 
 }

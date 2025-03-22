@@ -35,7 +35,7 @@ public class Product {
     private Supplier supplier;
     private Employee employee;
 
-    public Product(Integer categoryId, String description, String gender, String madeIn, String material, Integer minQuantity, String name, Double price, String seasons,String id) {
+    public Product(Integer categoryId, String description, String gender, String madeIn, String material, Integer minQuantity, String name, Double price, String seasons,String id,String supplierId) {
         this.categoryId = categoryId;
         this.description = description;
         this.gender = gender;
@@ -46,6 +46,7 @@ public class Product {
         this.price = price;
         this.seasons = seasons;
         this.id = id;
+        this.supplierId = supplierId;
     }
 
     public Product(String name, Integer categoryId, String seasons, String supplierId) {
