@@ -76,7 +76,7 @@ public class AddProductController extends HttpServlet {
                 HttpSession session = req.getSession();
                 session.setAttribute("alertMessage", "Successfully.");
                 session.setAttribute("alertType", "success");
-                resp.sendRedirect(req.getContextPath() + "/add-product");
+                resp.sendRedirect(req.getContextPath() + "/product-list");
             } else {
                 req.setAttribute("alertMessage", "Failed.");
                 req.setAttribute("alertType", "error");
