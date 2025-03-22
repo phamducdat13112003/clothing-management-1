@@ -195,6 +195,7 @@
 <script src="js/jquery-jvectormap.js"></script>
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     window.onload = () => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -207,6 +208,21 @@
                 window.alert('Something went wrong');
                 break;
         }
+    };
+</script>
+<script>
+    window.onload = function () {
+        const alertMessage = '<%= request.getAttribute("alertMessage") != null ? request.getAttribute("alertMessage") : "" %>';
+        const alertType = '<%= request.getAttribute("alertType") != null ? request.getAttribute("alertType") : "" %>';
+        if (alertMessage.trim() !== "" && alertType.trim() !== "") {
+            Swal.fire({
+                icon: alertType,
+                title: alertMessage,
+                showConfirmButton: false,
+                timer: 2000
+            });
+        }
+
     };
 </script>
 </body>

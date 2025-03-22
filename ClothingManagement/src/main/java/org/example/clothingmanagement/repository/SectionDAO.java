@@ -206,7 +206,25 @@ public class SectionDAO {
         }
     }
 
-
+    public List<Section> getSectionsBySectionTypeIsReceiptStorage(){
+        try(Connection con = DBContext.getConnection()){
+            String sql = "SELECT * FROM section WHERE SectionTypeID = '1'";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            List<Section> sections = new ArrayList<>();
+            while(rs.next()){
+                Section section = Section.builder()
+                        .sectionID(rs.getString("sectionId"))
+                        .sectionName(rs.getString("sectionName"))
+                        .sectionTypeId(rs.getInt("sectionTypeId"))
+                        .build();
+                sections.add(section);
+            }
+            return sections;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public String getSectionByBin(String binID) {
         String sql = "SELECT sectionID FROM bin WHERE binID = ?";
@@ -227,7 +245,6 @@ public class SectionDAO {
 
         return null;
     }
-
 
     public static void main(String[] args) {
         SectionDAO sd = new SectionDAO();
@@ -260,7 +277,10 @@ public class SectionDAO {
 
     public List<Section> getAllSections() {
         try(Connection con = DBContext.getConnection()){
-            String sql = "SELECT sectionID, sectionName, sectionTypeID FROM section";
+            String sql = "SELECT s.sectionID, s.sectionName, s.sectionTypeID, " +
+                    "st.sectionTypeName, st.description " +
+                    "FROM section s " +
+                    "JOIN sectiontype st ON s.sectionTypeID = st.sectionTypeID";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
@@ -270,6 +290,8 @@ public class SectionDAO {
                         .sectionID(rs.getString("sectionID"))
                         .sectionName(rs.getString("sectionName"))
                         .sectionTypeId(rs.getInt("sectionTypeID"))
+                        .sectionTypeName(rs.getString("sectionTypeName"))
+                        .description(rs.getString("description"))
                         .build();
                 sections.add(section);
             }
@@ -351,6 +373,55 @@ public class SectionDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Section> getSectionsWithBinCount(int page, int pageSize, String sectionId) {
+        List<Section> sections = new ArrayList<>();
+        try (Connection con = DBContext.getConnection()) {
+            String sql = """
+            SELECT s.SectionID, s.SectionName, COUNT(b.BinID) AS NumberOfBins
+            FROM Section s
+            LEFT JOIN Bin b ON s.SectionID = b.SectionID
+            WHERE s.SectionID = ?
+            GROUP BY s.SectionID, s.SectionName
+            LIMIT ? OFFSET ?
+        """;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+            ps.setInt(2, pageSize);
+            ps.setInt(3, (page - 1) * pageSize);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Section section = Section.builder()
+                        .sectionID(rs.getString("SectionID"))
+                        .sectionName(rs.getString("SectionName"))
+                        .numberOfBins(rs.getInt("NumberOfBins"))
+                        .build();
+                sections.add(section);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sections;
+    }
+
+
+    public int getTotalSections() {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT COUNT(*) FROM Section";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+
+
 
 
 }

@@ -3,8 +3,13 @@ package org.example.clothingmanagement.service;
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
 import org.example.clothingmanagement.repository.BinDAO;
+import org.example.clothingmanagement.repository.DBContext;
 import org.example.clothingmanagement.repository.SectionDAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -73,6 +78,10 @@ public class BinService {
         return bins;
     }
 
+    public List<Bin> getBinsBySectionIdWithoutPagination(String sectionId){
+        return binDAO.getBinsBySectionIdWithoutPagination(sectionId);
+    }
+
     public boolean deleteBin(String binId) {
         return binDAO.deleteBin(binId);
     }
@@ -81,6 +90,20 @@ public class BinService {
         return binDAO.countBinDetail(nameSearch, binID);
     }
 
+    public List<Bin> getBinAndWeightBySectionId(String sectionId) throws SQLException{
+        return binDAO.getBinAndWeightBySectionId(sectionId);
+    }
+
+    public double getWeightOfBinByBinID(String binID) throws SQLException{
+        return binDAO.getWeightOfBinByBinID(binID);
+    }
+
+    public int countBinsBySectionId(String sectionId){
+        return binDAO.countBinsBySectionId(sectionId);
+    }
+    public boolean updateSectionStatus(String sectionId) {
+        return binDAO.updateSectionStatus(sectionId);
+    }
 
     public static void main(String[] args){
         BinService bs = new BinService();

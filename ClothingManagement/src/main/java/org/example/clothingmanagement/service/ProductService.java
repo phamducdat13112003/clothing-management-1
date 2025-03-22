@@ -37,11 +37,11 @@ public class ProductService {
         return map;
     }
 
-    public List<Product> searchProductsByNameSearch(String nameSearch){
+    public List<Product> searchProductsByNameSearch(String nameSearch) {
         return pd.searchProductsByNameSearch(nameSearch);
     }
 
-    public HashMap<Product, String> searchProductsWithPagination(String nameSearch, int page, int pageSize){
+    public HashMap<Product, String> searchProductsWithPagination(String nameSearch, int page, int pageSize) {
         List<Product> products = pd.searchProductsWithPagination(nameSearch, page, pageSize);
         List<Category> categories = cs.selectAll();
         HashMap<Product, String> map = new HashMap<>();
@@ -60,6 +60,35 @@ public class ProductService {
             }
         }
         return map;
+    }
+
+    /**
+     *
+     * @param product
+     * @return true = duplicated, false = good to go
+     */
+    public boolean checkDup(Product product){
+        List<Product> list = pd.getAllProducts();
+        for(Product p : list){
+            if(product.getName().equalsIgnoreCase(p.getName())
+                    && product.getSeasons().equalsIgnoreCase(p.getSeasons())
+                    && Objects.equals(product.getCategoryId(), p.getCategoryId())
+                    && Objects.equals(product.getSupplierId(), p.getSupplierId()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean testDup(String name){
+        List<Product> list = pd.getAllProducts();
+        for(Product p : list){
+            if(p.getName().equalsIgnoreCase(name)){
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean updateProduct(Product product) {
@@ -108,12 +137,23 @@ public class ProductService {
         return pd.getListPodetailByPoID(poID);
     }
 
-    public static void main (String[] args) {
-        ProductService ps = new ProductService();
-        HashMap<Product,String> products = ps.getAllProductsWithPagination(1,5);
-        List<Product> list = ps.searchProductsByNameSearch("P");
-        for(Product product : list){
-            System.out.println(product);
+    public List<Map<String, Object>> getListProductByPoID(String poID) throws Exception {
+        return pd.getListProductByPoID(poID);
+    }
+
+    public boolean updatePriceOfProductByProductID(String productID, double price) throws Exception {
+        return pd.updatePriceOfProductByProductID(productID, price);
+    }
+
+    public static void main(String[] args) {
+        Product product = new Product("Product 1",1,"Spring/Summer","SP001");
+        ProductService productService = new ProductService();
+        boolean check = productService.checkDup(product);
+        if(check){
+            System.out.println("duplicated");
+        }
+        else{
+            System.out.println("not duplicated");
         }
     }
 

@@ -21,7 +21,8 @@ public class BinDetailService {
     public List<BinDetail> getAllBinDetailAndProductDetailByBinId(String binId) {
         return bdd.getAllBinDetailAndProductDetailByBinId(binId);
     }
-    public String getLastBinDetailId(String binId) throws Exception{
+
+    public String getLastBinDetailId(String binId) throws Exception {
         return bdd.getLastBinDetailId(binId);
     }
 
@@ -29,28 +30,41 @@ public class BinDetailService {
         return bdd.getBinDetailsWithPagination(binId, page, pageSize);
     }
 
-    public List<BinDetail> searchBinDetailWithPagination(String binId,String nameSearch, int page, int pageSize){
+    public boolean addBinDetail(String binDetailId, String binId, String productDetailId, int quantity) throws Exception {
+        return bdd.addBinDetail(binDetailId, binId, productDetailId, quantity);
+    }
+
+    public List<BinDetail> searchBinDetailWithPagination(String binId, String nameSearch, int page, int pageSize) {
         return bdd.searchBinDetailWithPagination(binId, nameSearch, page, pageSize);
     }
 
-    public List<BinDetail> searchBinDetailWithoutPagination(String binId,String nameSearch){
+    public List<BinDetail> searchBinDetailWithoutPagination(String binId, String nameSearch) {
         return bdd.searchBinDetailWithoutPagination(binId, nameSearch);
     }
 
-    public boolean deleteProductFromBin(String binId, String productDetailId){
+    public boolean deleteProductFromBin(String binId, String productDetailId) {
         return bdd.deleteProductFromBin(binId, productDetailId);
     }
-    public boolean canDeleteProduct(String binId, String productDetailId){
+
+    public boolean canDeleteProduct(String binId, String productDetailId) {
         return bdd.canDeleteProduct(binId, productDetailId);
     }
-    public List<ProductDetail> getProductsInBin(String binId){
+
+    public List<ProductDetail> getProductsInBin(String binId) {
         return bdd.getProductsInBin(binId);
     }
 
-    public static void main(String[] args){
+    public String findBinDetailIdByBinAndProduct(String binId, String productDetailId) throws Exception {
+        return bdd.findBinDetailIdByBinAndProduct(binId, productDetailId);
+    }
+
+    public void updateBinDetailQuantity(String binDetailId, int additionalQuantity) throws Exception {
+        bdd.updateBinDetailQuantity(binDetailId, additionalQuantity);
+    }
+    public static void main(String[] args) {
         BinDetailService binDetailService = new BinDetailService();
-        List<BinDetail> list = binDetailService.searchBinDetailWithPagination("RP001-001","blue",1,5);
-        for(BinDetail bd : list){
+        List<BinDetail> list = binDetailService.searchBinDetailWithPagination("RP001-001", "blue", 1, 5);
+        for (BinDetail bd : list) {
             System.out.println(bd);
         }
     }

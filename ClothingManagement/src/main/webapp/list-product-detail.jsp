@@ -31,6 +31,10 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        .required {
+            color: red;
+            font-weight: bold;
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -129,7 +133,7 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Product Name</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" type="text" name="name" required value="${product.name}">
 <%--                                                                <c:if test="${not empty errorName}">--%>
@@ -140,7 +144,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Price <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Price</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="VND" type="number" min="0" max="9999999" name="price" value="${product.price}" required>
 <%--                                                                <c:if test="${not empty errorEmail}">--%>
@@ -151,7 +155,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Material <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Material</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" required>
 <%--                                                                <c:if test="${not empty errorPhone}">--%>
@@ -162,7 +166,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Gender</label>
                                                             <div class="form-group__input">
                                                                 <select class="sherah-wc__form-input" name="gender" required>
                                                                     <option value="Male" ${product.gender == "Male" ? "selected" : ""}>Male</option>
@@ -174,7 +178,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Season <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Season</label>
                                                             <div class="form-group__input">
                                                                 <select class="sherah-wc__form-input" name="season" required>
                                                                     <option value="Spring/Summer" ${product.seasons == "Spring/Summer" ? "selected" : ""}>Spring/Summer</option>
@@ -187,7 +191,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Category<span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Category</label>
                                                             <select class="sherah-wc__form-input" name="categoryID" required>
                                                                 <c:forEach var="category" items="${categories}">
                                                                     <tr>
@@ -199,7 +203,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Minimum Quantity<span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Minimum Quantity</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 max="9999" step=1 name="minQuantity" value="${product.minQuantity}" required>
                                                             </div>
@@ -207,7 +211,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Made In<span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Made In</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" required>
                                                             </div>
@@ -215,7 +219,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Created By<span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Created By</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Created by" type="text" name="createdBy" value="${product.employee.employeeName}" readonly>
                                                             </div>
@@ -223,7 +227,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Supplier<span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Supplier</label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Supplier" type="text" name="supplier" value="${product.supplier.supplierName}" readonly>
                                                             </div>
@@ -231,7 +235,7 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Description <span class="required">*</span></label>
+                                                            <label class="sherah-wc__form-label">Description</label>
                                                             <div class="form-group__input">
                                                                 <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50">${product.description}</textarea>
 
@@ -279,7 +283,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <img src="img/${list.image}"
+                                                            <img src="${list.image}"
                                                                  alt="Product Detail Image" width="100" height="100">
                                                         </p>
                                                     </div>

@@ -84,7 +84,7 @@ public class AddProductDetailController extends HttpServlet {
         } else if (fileSize > 2 * 1024 * 1024) { // Kiem tra nếu lớn hơn 2MB
             req.setAttribute("message", "Image size must not exceed 2MB.");
         } else {
-            String realPath = req.getServletContext().getRealPath("/img/ProductDetail"); //where the photo is saved
+            String realPath = req.getServletContext().getRealPath("img/ProductDetail"); //where the photo is saved
             String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
             // convert it to a string, get just the filename without including the full path.
             if (!source.isEmpty()) {
@@ -96,7 +96,7 @@ public class AddProductDetailController extends HttpServlet {
                     Files.createDirectories(Path.of(realPath));
                 }
                 part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
-                urlImage = ("/img/ProductDetail/" + filename); //Set the path to the image file
+                urlImage = ("img/ProductDetail/" + filename); //Set the path to the image file
             }
         }
 

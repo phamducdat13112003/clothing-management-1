@@ -13,10 +13,16 @@ public class Section {
     private String sectionID;
     private String sectionName;
     private int sectionTypeId;
+    private int numberOfBins;
 
+    private String sectionTypeName;
+    private String description;
 
 
     public void setNumberOfBins(int size) {
-
     }
+
+//    public void setNumberOfBins(int size) {
+//
+//    }
 }

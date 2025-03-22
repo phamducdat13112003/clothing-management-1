@@ -14,7 +14,8 @@
     <title>Product List</title>
 
     <!-- Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
+          rel="stylesheet">
 
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
@@ -35,6 +36,7 @@
             justify-content: center;
             margin-top: 20px;
         }
+
         .pagination a {
             padding: 8px 12px;
             margin: 0 5px;
@@ -42,14 +44,17 @@
             text-decoration: none;
             color: #333;
         }
+
         .pagination a:active {
             background-color: #09ad95;
             color: white;
             font-weight: bold;
         }
+
         .pagination a:hover {
             background-color: #ddd;
         }
+
         .search-form {
             display: flex;
             justify-content: flex-end;
@@ -105,7 +110,8 @@
                                 </div>
                                 <div class="col-6">
                                     <form action="product-list" method="post" class="search-form">
-                                        <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                                        <input type="text" name="search" placeholder="Search..." value="${search}"
+                                               class="search-input">
                                         <button type="submit" class="search-button">Search</button>
                                     </form>
                                 </div>
@@ -141,7 +147,8 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <img src="img/${entry.key.urlImage}" alt="Product Image" width="100" height="100">
+                                                            <img src="${entry.key.urlImage}" alt="Product Image"
+                                                                 width="100" height="100">
                                                         </p>
                                                     </div>
                                                 </td>
@@ -167,15 +174,16 @@
                                                 </td>
                                                 <c:if test="${entry.key.status==1}">
                                                     <c:if test="${entry.key.totalQuantity==0}">
-                                                    <td class="sherah-table__column-2 sherah-table__data-2">
-                                                        <div class="sherah-table__product-content">
-                                                            <p class="sherah-table__product-desc">
-                                                                <a href="#" onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product?id=${entry.key.id}');">
-                                                                    Delete
-                                                                </a>
-                                                            </p>
-                                                        </div>
-                                                    </td>
+                                                        <td class="sherah-table__column-2 sherah-table__data-2">
+                                                            <div class="sherah-table__product-content">
+                                                                <p class="sherah-table__product-desc">
+                                                                    <a href="#"
+                                                                       onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product?id=${entry.key.id}');">
+                                                                        Delete
+                                                                    </a>
+                                                                </p>
+                                                            </div>
+                                                        </td>
                                                     </c:if>
                                                 </c:if>
 
@@ -183,7 +191,8 @@
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
-                                                                <a href="#" onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product?id=${entry.key.id}');">
+                                                                <a href="#"
+                                                                   onclick="return confirmRecovery('${pageContext.request.contextPath}/recover-product?id=${entry.key.id}');">
                                                                     Recover
                                                                 </a>
                                                             </p>
@@ -218,7 +227,8 @@
                                     </c:if>
 
                                     <c:forEach var="i" begin="1" end="${totalPages}">
-                                        <a href="product-list?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                        <a href="product-list?page=${i}&search=${search}"
+                                           class="${i == currentPage ? 'active' : ''}">${i}</a>
                                     </c:forEach>
                                     <c:if test="${currentPage < totalPages}">
                                         <a href="product-list?page=${currentPage + 1}&search=${search}">Next</a>

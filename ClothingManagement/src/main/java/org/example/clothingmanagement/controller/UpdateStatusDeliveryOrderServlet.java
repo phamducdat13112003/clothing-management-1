@@ -10,14 +10,13 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 
-@WebServlet(name = "UpdateStatusPurchaseOrderServlet", value = "/updatestatuspurchaseorder")
-public class UpdateStatusPurchaseOrderServlet extends HttpServlet {
+@WebServlet(name = "UpdateStatusDeliveryOrderServlet", value = "/updatestatusdeliveryorder")
+public class UpdateStatusDeliveryOrderServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         PurchaseOrderService purchaseOrderService = new PurchaseOrderService();
         String status = request.getParameter("status");
         String poid = request.getParameter("poid");
-        System.out.println(poid);
         if ("Processing".equals(status)) {
             try {
                 purchaseOrderService.updateStatusPO(poid, status);
@@ -47,7 +46,7 @@ public class UpdateStatusPurchaseOrderServlet extends HttpServlet {
             }
             request.getSession().setAttribute("updatepostatussuccessfully", "Update PO status success have poid " + poid);
             request.setAttribute("purchaseOrderList", purchaseOrderList);
-            request.getRequestDispatcher("viewpurchaseorder.jsp").forward(request, response);
+            request.getRequestDispatcher("viewdeliveryorder.jsp").forward(request, response);
         }
     }
 

@@ -382,7 +382,7 @@
                                 placeholder="Price" value="` + product.productPrice + `" style="width: 100px;">
 
                                 <input type="number" name="quantity[]" class="form-control text-center me-2"
-                                placeholder="Qty" value="1" min="1" style="width: 80px;">
+                                placeholder="Qty" value="1" min="1" max="1000" style="width: 80px;">
 
                                 <input type="text" name="totalpricepod[]" class="form-control text-center"
                                 placeholder="Total" value="` + product.productPrice + `" readonly style="width: 120px;">

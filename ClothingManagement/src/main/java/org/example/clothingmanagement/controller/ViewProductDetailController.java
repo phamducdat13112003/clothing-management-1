@@ -1,6 +1,7 @@
 package org.example.clothingmanagement.controller;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import org.example.clothingmanagement.entity.Product;
@@ -9,9 +10,14 @@ import org.example.clothingmanagement.service.ProductDetailService;
 import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.Paths;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024, // 1MB
+        maxFileSize = 2 * 1024 * 1024,   // 2MB
+        maxRequestSize = 4 * 1024 * 1024 // 4MB
+)
 @WebServlet(name="ViewProductDetail",urlPatterns = "/view-product-detail")
 public class ViewProductDetailController extends HttpServlet {
     ProductDetailService pds = new ProductDetailService();
@@ -43,10 +49,35 @@ public class ViewProductDetailController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String id = req.getParameter("id");
-//        Part filePart = req.getPart("img"); // Lấy phần tệp tải lên từ input có name="img"
-//        String image = Paths.get(filePart.getSubmittedFileName()).getFileName().toString(); // Lấy tên tệp
+
+        // get image
+        String urlImage = "";
+        Part part = req.getPart("img");
+        String contentType = part.getContentType();
+        long fileSize = part.getSize(); // Kích thước tệp ảnh (bytes)
+        if (!isImageFile(contentType)) {
+            req.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
+        } else if (fileSize > 2 * 1024 * 1024) { // Kiem tra nếu lớn hơn 2MB
+            req.setAttribute("message", "Image size must not exceed 2MB.");
+        } else {
+            String realPath = req.getServletContext().getRealPath("img/ProductDetail"); //where the photo is saved
+            String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
+            // convert it to a string, get just the filename without including the full path.
+            if (!source.isEmpty()) {
+                String filename = null;
+
+                filename = id + ".png";
+
+                if (!Files.exists(Path.of(realPath))) { // check folder /images/Equipment is existed
+                    Files.createDirectories(Path.of(realPath));
+                }
+                part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
+                urlImage = ("img/ProductDetail/" + filename); //Set the path to the image file
+            }
+        }
+
         Double weight = Double.parseDouble(req.getParameter("weight"));
-        ProductDetail pd = new ProductDetail(id,"image",weight);
+        ProductDetail pd = new ProductDetail(id,urlImage,weight);
         boolean check = pds.updateProductDetail(pd);
         if (check) {
             HttpSession session = req.getSession();
@@ -59,5 +90,14 @@ public class ViewProductDetailController extends HttpServlet {
             req.getRequestDispatcher("/view-product-detail.jsp").forward(req, resp);
         }
 
+    }
+    private boolean isImageFile(String contentType) {
+        String[] validImageTypes = {"image/jpeg", "image/png", "image/gif"};
+        for (String validType : validImageTypes) {
+            if (validType.equals(contentType)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
