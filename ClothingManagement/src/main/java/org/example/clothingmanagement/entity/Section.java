@@ -19,6 +19,9 @@ public class Section {
     private String description;
 
     public Section(String sectionID, String sectionName, int sectionTypeID) {
+        this.sectionID = sectionID;
+        this.sectionName = sectionName;
+        this.sectionTypeId = sectionTypeID;
     }
 
 
