@@ -248,10 +248,10 @@
                                         <li><a href="viewdeliveryorder"><span class="menu-bar__text"><span
                                                 class="menu-bar__name">View Delivery Order</span></span></a></li>
                                     </ul>
-                                    <ul class="menu-bar__one-dropdown">
-                                        <li><a href="#"><span class="menu-bar__text"><span
-                                                class="menu-bar__name">View Delivery</span></span></a></li>
-                                    </ul>
+<%--                                    <ul class="menu-bar__one-dropdown">--%>
+<%--                                        <li><a href="#"><span class="menu-bar__text"><span--%>
+<%--                                                class="menu-bar__name">View Delivery</span></span></a></li>--%>
+<%--                                    </ul>--%>
                                 </div>
                             </li>
                         </c:if>
