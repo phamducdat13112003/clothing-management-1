@@ -98,10 +98,9 @@
                         </div>
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2">
-                        <a href="${pageContext.request.contextPath}/TODetail?toID=${order.toID}">View</a>
 
                         <!-- Link to edit the transfer order -->
-                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}">Edit</a>
+                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}">Update</a>
 
                         <!-- Complete button - only show if status is not already COMPLETED -->
                         <c:if test="${order.status != 'done'}">
