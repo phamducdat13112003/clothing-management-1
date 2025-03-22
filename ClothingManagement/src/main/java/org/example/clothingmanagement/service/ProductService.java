@@ -62,14 +62,29 @@ public class ProductService {
         return map;
     }
 
+    /**
+     *
+     * @param product
+     * @return true = duplicated, false = good to go
+     */
     public boolean checkDup(Product product){
         List<Product> list = pd.getAllProducts();
         for(Product p : list){
             if(product.getName().equalsIgnoreCase(p.getName())
                     && product.getSeasons().equalsIgnoreCase(p.getSeasons())
                     && Objects.equals(product.getCategoryId(), p.getCategoryId())
-                    && Objects.equals(product.getSupplierId(), p.getSupplierId())
-            ){
+                    && Objects.equals(product.getSupplierId(), p.getSupplierId()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean testDup(String name){
+        List<Product> list = pd.getAllProducts();
+        for(Product p : list){
+            if(p.getName().equalsIgnoreCase(name)){
                 return true;
             }
         }
