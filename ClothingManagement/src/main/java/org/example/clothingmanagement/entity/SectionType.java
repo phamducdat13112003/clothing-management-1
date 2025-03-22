@@ -14,4 +14,5 @@ public class SectionType {
     private String sectionTypeName;
     private String warehouseId;
     private String description;
+
 }

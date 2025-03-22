@@ -15,6 +15,7 @@ public class Section {
     private int sectionTypeId;
 
 
+
     public void setNumberOfBins(int size) {
 
     }
