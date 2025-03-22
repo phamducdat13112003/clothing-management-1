@@ -81,16 +81,12 @@ public class AddProductController extends HttpServlet {
                 req.setAttribute("alertMessage", "Failed.");
                 req.setAttribute("alertType", "error");
                 req.getRequestDispatcher("/add-product.jsp").forward(req, resp);
-
-
             }
         }
         else{
             req.setAttribute("alertMessage", "Duplicated.");
             req.setAttribute("alertType", "error");
             req.getRequestDispatcher("/add-product.jsp").forward(req, resp);
-
-
         }
 
 

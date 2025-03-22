@@ -31,7 +31,7 @@ public class ViewListSectionController extends HttpServlet {
             page = Integer.parseInt(pageParam);
         }
 
-        int sectionTypeId = Integer.parseInt(req.getParameter("id"));
+        int sectionTypeId = Integer.parseInt(req.getParameter("stid"));
         List<Section> list = ss.getSectionsWithPagination(sectionTypeId, page, pageSize);
 
         for(Section section : list){

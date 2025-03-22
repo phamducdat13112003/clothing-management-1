@@ -143,7 +143,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/view-list-section?id=${st.sectionTypeId}">
+                                                            <a href="${pageContext.request.contextPath}/view-list-section?stid=${st.sectionTypeId}">
                                                                 Detail
                                                             </a>
                                                         </p>
