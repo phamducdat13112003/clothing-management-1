@@ -22,9 +22,9 @@ public class SectionTypeService {
     public List<SectionType> searchSectionTypesWithPagination(String search, int page, int pageSize) {
         return std.searchSectionTypesWithPagination(search, page, pageSize);
     }
-//    public Optional<SectionType> getSectionTypeById(int sectionTypeId) {
-//        return std.getSectionTypeById(sectionTypeId);
-//    }
+    public Optional<SectionType> getSectionTypeById(int sectionTypeId) {
+        return Optional.ofNullable(std.getSectionTypeById(sectionTypeId));
+    }
 
     public SectionType getSectionTypeBySectionId(String sectionId){
         return std.getSectionTypeBySectionId(sectionId);

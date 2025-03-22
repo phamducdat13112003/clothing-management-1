@@ -297,6 +297,26 @@ public class BinDAO {
         return list;
     }
 
+    public int countBinsBySectionId(String sectionId) {
+        try (Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT COUNT(*) AS totalBins ");
+            sql.append(" FROM Bin ");
+            sql.append(" WHERE SectionID = ? ");
+
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, sectionId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("totalBins");
+            }
+            return 0;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize) {
         List<BinDetail> binDetails = new ArrayList<>();
         String sql = "SELECT bd.BinDetailID, bd.BinID, bd.ProductDetailID, bd.Quantity, " +
@@ -682,5 +702,15 @@ public class BinDAO {
         }
     }
 
-
+    public boolean updateSectionStatus(String sectionId) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "UPDATE Section SET Status = 0 WHERE SectionID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
