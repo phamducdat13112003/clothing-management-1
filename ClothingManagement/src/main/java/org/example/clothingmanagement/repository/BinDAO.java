@@ -647,6 +647,36 @@ public class BinDAO {
         }
         return 0.0;  // Trả về 0 nếu không có dữ liệu
     }
+
+    public int countBinsBySectionId(String sectionId) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT COUNT(*) AS BinCount FROM Bin WHERE SectionID = ? AND Status = 0";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("BinCount");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+    public boolean updateSectionStatus(String sectionId) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "UPDATE Section SET Status = 0 WHERE SectionID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Trả về true nếu cập nhật thành công
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
     public static void main(String[] args) {
         BinDAO dao = new BinDAO();
         List<Bin> list = dao.searchBinWithPagination("RP001","002",1,5);

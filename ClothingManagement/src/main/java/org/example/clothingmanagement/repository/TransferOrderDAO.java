@@ -176,9 +176,9 @@ public class TransferOrderDAO {
 
                 // Retrieve the ProductName from the join
                 String productName = rs.getString("ProductName");
-                toDetail.setProductName(productName);  // Set the product name in TODetail
+                //toDetail.setProductName(productName);  // Set the product name in TODetail
                 double weight = rs.getDouble("Weight");
-                toDetail.setWeight(weight);
+                //toDetail.setWeight(weight);
 
                 toDetails.add(toDetail);
             }
@@ -1007,9 +1007,6 @@ public class TransferOrderDAO {
 
     }
 
-
-
-
     public boolean removeTODetail(String toDetailID) {
         // SQL to delete a TODetail record
         String sql = "DELETE FROM TODetail WHERE toDetailID = ?";
@@ -1031,7 +1028,7 @@ public class TransferOrderDAO {
                 "FROM TODetail td " +
                 "JOIN TransferOrder to1 ON td.TOID = to1.TOID " +
                 "WHERE (td.OriginBinId = ? OR td.FinalBinId = ?) " +
-                "AND to1.Status = 'Processing'";
+                "AND (to1.Status != 'Done' OR to1.Status != 'Cancel')";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, binID);

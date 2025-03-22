@@ -55,7 +55,7 @@ public class DeleteBinServlet extends HttpServlet {
         } else if (!binService.canDeleteBin(binId)) {
             request.setAttribute("message", "Cannot delete bin because product still exists in bin.");
         } else if (toService.hasProcessingTO(binId)) {
-            request.setAttribute("message", "Cannot delete bin because bin is in shipping status.");
+            request.setAttribute("message", "Cannot delete bin because bin is in processing time status.");
         } else {
             boolean isDeletedBin = binService.deleteBin(binId);
             if (isDeletedBin) {

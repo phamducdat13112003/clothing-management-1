@@ -277,6 +277,11 @@
                                     <li><a href="${pageContext.request.contextPath}/TOCreate"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    <c:if test="${account.getRoleId() == 1}">
+                                    <li><a href="${pageContext.request.contextPath}/confirmTO"><span
+                                            class="menu-bar__text"><span
+                                            class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    </c:if>
                                 </ul>
                             </div>
                         </li>

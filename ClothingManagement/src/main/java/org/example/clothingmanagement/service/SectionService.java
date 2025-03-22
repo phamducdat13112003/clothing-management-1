@@ -39,6 +39,14 @@ public class SectionService {
         return sd.getSectionsBySectionTypeIsReceiptStorage();
     }
 
+    public List<Section> getSectionsWithBinCount(int page, int pageSize, String sectionId){
+        return sd.getSectionsWithBinCount(page,pageSize, sectionId);
+    }
+
+    public int getTotalSections(){
+        return sd.getTotalSections();
+    }
+
     public static void main(String[] args){
         SectionService ss = new SectionService();
         List<Section> list = ss.SearchSectionWithPagination(2,"b",1,5);

@@ -26,6 +26,10 @@ public class SectionTypeService {
         return std.getSectionTypeById(sectionTypeId);
     }
 
+    public SectionType getSectionTypeBySectionId(String sectionId){
+        return std.getSectionTypeBySectionId(sectionId);
+    }
+
     public static void main(String[] args){
         SectionTypeService sts = new SectionTypeService();
         List<SectionType> list = sts.searchSectionTypesWithPagination("ss",1,5);

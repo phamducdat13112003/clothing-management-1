@@ -30,6 +30,14 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <style>
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .message{
+            color: green;
+            font-size: 12px;
+        }
         .pagination {
             display: flex;
             justify-content: center;
@@ -100,7 +108,12 @@
                                             <li><a href="view-list-section?stid=${sectionType.sectionTypeId}">Home</a></li>
 <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
                                         </ul>
-
+                                        <c:if test="${not empty message}">
+                                            <span class="error-message">${message}</span>
+                                        </c:if>
+                                        <c:if test="${not empty messageSuccess}">
+                                            <span class="message">${messageSuccess}</span>
+                                        </c:if>
                                     </div>
                                 </div>
                                 <div class="col-6">
@@ -119,7 +132,6 @@
                                         <th class="sherah-table__column-2 sherah-table__h2">Name</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Number of Bins</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Action</th>
-
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
@@ -143,10 +155,11 @@
                                                 </td>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">
-                                                                Detail
-                                                            </a>
+                                                        <p class="sherah-table__product-desc" style="display: inline-block; margin-right: 10px;">
+                                                            <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">Detail</a>
+                                                        </p>
+                                                        <p class="sherah-table__product-desc" style="display: inline-block;">
+                                                            <a href="javascript:void(0);" onclick="confirmDeleteSection('${s.sectionID}')" class="delete-link">Delete</a>
                                                         </p>
                                                     </div>
                                                 </td>
@@ -156,7 +169,7 @@
                                     </c:if>
                                     <c:if test="${empty list}">
                                         <tr>
-                                            <td colspan="4" class="text-center">No bin available</td>
+                                            <td colspan="4" class="text-center">No section available</td>
                                         </tr>
                                     </c:if>
                                     </tbody>
@@ -223,6 +236,11 @@
             window.location.href = url;
         }
         return false;
+    }
+    function confirmDeleteSection(sectionID) {
+        if (confirm("Are you sure want to delete this section?")) {
+            window.location = "deletesection?sectionId=" + sectionID;
+        }
     }
 
     function confirmRecovery(url) {

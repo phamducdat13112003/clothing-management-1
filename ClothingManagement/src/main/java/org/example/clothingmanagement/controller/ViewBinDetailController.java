@@ -49,8 +49,6 @@ public class ViewBinDetailController extends HttpServlet {
         if(bs.getBinByBinId(binId).isPresent()){
             bin = bs.getBinByBinId(binId).get();
         }
-
-
         req.setAttribute("list", list);
         req.setAttribute("bin", bin);
         req.setAttribute("currentPage", page);
