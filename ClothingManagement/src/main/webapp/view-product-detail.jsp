@@ -68,16 +68,28 @@
             background-color: #003f7f;
         }
 
-        #image {
-            margin-top: 10px; /* Khoảng cách giữa ảnh và nút */
-            max-width: 200px; /* Giới hạn chiều rộng tối đa của ảnh */
-            height: auto; /* Giữ tỷ lệ cho ảnh */
-            border-radius: 8px; /* Bo góc cho ảnh */
-            border: 2px solid #ddd; /* Viền cho ảnh */
-            display: block; /* Đảm bảo ảnh không bị kéo giãn */
-            margin-left: auto; /* Căn giữa ảnh */
-            margin-right: auto; /* Căn giữa ảnh */
+
+
+        /* Căn chỉnh ảnh vào giữa */
+        .product-image {
+            margin: 0 auto;
+            max-width: 100%;  /* Đảm bảo ảnh không vượt quá chiều rộng của container */
+            height: 250px;
+            width: 250px;
+            display: block;
+            justify-content: center;  /* Căn giữa theo chiều ngang */
+            align-items: center;
+
+            border-radius: 10px; /* Thêm bo góc cho ảnh */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Thêm bóng cho ảnh */
         }
+
+        /* Thêm hiệu ứng khi di chuột qua */
+        .product-image:hover {
+            transform: scale(1.05); /* Phóng to ảnh khi di chuột qua */
+            transition: transform 0.3s ease-in-out; /* Thêm hiệu ứng mượt mà */
+        }
+
     </style>
 </head>
 <body id="sherah-dark-light">
@@ -111,11 +123,11 @@
                                         <!-- Organization -->
                                         <div class="product-form-box sherah-border mg-top-30">
                                             <h4 class="form-title m-0"></h4>
-                                            <div class="col-lg-6 col-md-6 col-12">
+
                                                 <div class="form-group">
-                                                    <img src="${pd.image}" alt="Product Image">
+                                                    <img src="${pd.image}" class="product-image" alt="Product Image">
                                                 </div>
-                                            </div>
+
                                         </div>
                                     </div>
 
@@ -136,9 +148,6 @@
                                                                    aria-label="Upload">
                                                             <label for="inputGroupFile04" class="choose-file-label">Choose
                                                                 file</label>
-                                                            <img src="${pd.image}" id="image"
-                                                                 class="img-thumbnail rounded-5" width="100%"
-                                                                 alt="${pd.image}">
                                                         </div>
                                                     </div>
                                                 </div>
