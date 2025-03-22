@@ -27,8 +27,4 @@ public class Section {
     }
 
 
-    public void setNumberOfBins(int size) {
-    }
-
-
 }
