@@ -157,7 +157,7 @@
                                                         <label class="sherah-wc__form-label">Weight</label>
                                                         <div class="form-group__input">
                                                             <input class="sherah-wc__form-input" placeholder="Kilogram"
-                                                                   type="number" name="weight" min="0.1" step="0.1"
+                                                                   type="number" name="weight" min="0.1" step="0.1" max="10.0"
                                                                    value="${pd.weight}" required>
 
                                                         </div>
