@@ -108,8 +108,6 @@
                         <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}"
                            onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
                         </c:if>
-
-
                         <!-- Link to delete the transfer order -->
                         <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}"
                            onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>

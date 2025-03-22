@@ -5,9 +5,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
-import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.service.BinService;
-import org.example.clothingmanagement.service.ProductService;
 
 import java.io.IOException;
 import java.io.PrintWriter;
