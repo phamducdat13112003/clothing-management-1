@@ -48,6 +48,13 @@ public class Product {
         this.id = id;
     }
 
+    public Product(String name, Integer categoryId, String seasons, String supplierId) {
+        this.name = name;
+        this.categoryId = categoryId;
+        this.seasons = seasons;
+        this.supplierId = supplierId;
+    }
+
     public Product(String name, Double price, String seasons, String supplierId, String material, String madeIn, String gender, String description, Integer categoryId, Integer minQuantity, String createdBy) {
         this.name = name;
         this.price = price;
