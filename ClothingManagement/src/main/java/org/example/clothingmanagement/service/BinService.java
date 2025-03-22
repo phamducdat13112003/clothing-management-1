@@ -97,6 +97,14 @@ public class BinService {
     public double getWeightOfBinByBinID(String binID) throws SQLException{
         return binDAO.getWeightOfBinByBinID(binID);
     }
+
+    public int countBinsBySectionId(String sectionId){
+        return binDAO.countBinsBySectionId(sectionId);
+    }
+    public boolean updateSectionStatus(String sectionId) {
+        return binDAO.updateSectionStatus(sectionId);
+    }
+
     public static void main(String[] args){
         BinService bs = new BinService();
         List<Bin> list = bs.searchBinWithPagination("RP001","002",1,5);

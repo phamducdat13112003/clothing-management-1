@@ -277,10 +277,15 @@
                                     <li><a href="${pageContext.request.contextPath}/TOCreate"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    <c:if test="${account.getRoleId() == 1}">
+                                    <li><a href="${pageContext.request.contextPath}/confirmTO"><span
+                                            class="menu-bar__text"><span
+                                            class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    </c:if>
                                 </ul>
                             </div>
                         </li>
-                        <li><a href="history.html" class="collapsed"><span class="menu-bar__text">
+                        <li><a href="ViewInventoryDocList" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"
                                                      width="19.527" height="19.582" viewBox="0 0 19.527 19.582">
@@ -297,7 +302,7 @@
                                                 </g>
                                                 </svg>
                                             </span>
-                                            <span class="menu-bar__name">History</span></span></a></span>
+                                            <span class="menu-bar__name">Inventory</span></span></a></span>
                         </li>
                         <li><a class="collapsed" href="profile-info.html"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">

@@ -194,5 +194,32 @@ public class SectionTypeDAO {
         }
     }
 
+    public SectionType getSectionTypeBySectionId(String sectionId) {
+        try (Connection con = DBContext.getConnection()) {
+            // Truy vấn trực tiếp thông tin của SectionType từ SectionID
+            String sql = "SELECT st.SectionTypeID, st.SectionTypeName, st.WarehouseID, st.Description " +
+                    "FROM Section s " +
+                    "JOIN SectionType st ON s.SectionTypeID = st.SectionTypeID " +
+                    "WHERE s.SectionID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return new SectionType(
+                        rs.getInt("SectionTypeID"),
+                        rs.getString("SectionTypeName"),
+                        rs.getString("WarehouseID"),
+                        rs.getString("Description")
+                );
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null; // Trả về null nếu không tìm thấy SectionType
+    }
+
+
+
 
 }

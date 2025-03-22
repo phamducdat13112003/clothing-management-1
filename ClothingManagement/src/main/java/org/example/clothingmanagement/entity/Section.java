@@ -19,14 +19,16 @@ public class Section {
     @Setter
     private int totalBins;
 
-    public Section(String sectionID, String sectionName, int sectionTypeId) {
+
+    public Section(String sectionID, String sectionName, int sectionTypeID) {
         this.sectionID = sectionID;
         this.sectionName = sectionName;
-        this.sectionTypeId = sectionTypeId;
+        this.sectionTypeId = sectionTypeID;
     }
 
 
-//    public void setNumberOfBins(int size) {
-//
-//    }
+    public void setNumberOfBins(int size) {
+    }
+
+
 }

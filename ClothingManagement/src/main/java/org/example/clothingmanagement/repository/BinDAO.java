@@ -674,27 +674,6 @@ public class BinDAO {
         }
         return 0.0;  // Trả về 0 nếu không có dữ liệu
     }
-
-    public int countBinsBySectionId(String sectionId) {
-        try (Connection con = DBContext.getConnection()) {
-            StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT COUNT(*) AS totalBins ");
-            sql.append(" FROM Bin ");
-            sql.append(" WHERE SectionID = ? ");
-
-            PreparedStatement ps = con.prepareStatement(sql.toString());
-            ps.setString(1, sectionId);
-
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                return rs.getInt("totalBins");
-            }
-            return 0;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static void main(String[] args) {
         BinDAO dao = new BinDAO();
         List<Bin> list = dao.searchBinWithPagination("RP001","002",1,5);

@@ -45,8 +45,8 @@ public class AddSupplierServlet extends HttpServlet {
         StringBuilder message = new StringBuilder();
         int page = 1;
         int pageSize = 5;
-        int totalSuppliers= 0;
-        String supplierId= null;
+        int totalSuppliers = 0;
+        String supplierId = null;
         try {
             supplierId = generateNewSupplierId();
         } catch (SQLException e) {
@@ -70,35 +70,35 @@ public class AddSupplierServlet extends HttpServlet {
             request.setAttribute("errorPhone", "Invalid phone number. The telephone number have 10 digits");
         }
         try {
-            if(supplierService.isSupplierExistedWhenAdd(email, phone)){
+            if (supplierService.isSupplierExistedWhenAdd(email, phone)) {
                 message.append("Supplier already existed.\n");
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-        if(supplierId == null || !message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone)){
+        if (supplierId == null || !message.isEmpty() || !isValidName(name) || !isValidEmail(email) || !isValidPhone(phone)) {
             request.setAttribute("message", message.toString());
             request.setAttribute("name", name);
             request.setAttribute("email", email);
             request.setAttribute("phone", phone);
             request.setAttribute("address", address);
             request.getRequestDispatcher("./addSupplier.jsp").forward(request, response);
-        }else{
+        } else {
             Supplier supplier = new Supplier(supplierId, name, address, email, phone, true);
             boolean success = false;
             try {
-                success= supplierService.createSupplier(supplier);
+                success = supplierService.createSupplier(supplier);
             } catch (Exception e) {
                 request.setAttribute("message", "Can't add employee.");
             }
             if (success) {
                 request.setAttribute("messageSuccess", "Supplier added successfully");
-            }else{
+            } else {
                 request.setAttribute("message", "Failed to add supplier");
             }
-            List<Supplier> list= null;
+            List<Supplier> list = null;
             try {
-                list= supplierService.getSuppliersWithPagination(page, pageSize);
+                list = supplierService.getSuppliersWithPagination(page, pageSize);
                 totalSuppliers = supplierService.getTotalSupplierCount();
             } catch (Exception e) {
                 throw new RuntimeException(e);

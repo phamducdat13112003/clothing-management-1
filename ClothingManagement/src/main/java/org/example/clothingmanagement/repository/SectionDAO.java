@@ -399,5 +399,54 @@ public class SectionDAO {
         }
     }
 
+    public List<Section> getSectionsWithBinCount(int page, int pageSize, String sectionId) {
+        List<Section> sections = new ArrayList<>();
+        try (Connection con = DBContext.getConnection()) {
+            String sql = """
+            SELECT s.SectionID, s.SectionName, COUNT(b.BinID) AS NumberOfBins
+            FROM Section s
+            LEFT JOIN Bin b ON s.SectionID = b.SectionID
+            WHERE s.SectionID = ?
+            GROUP BY s.SectionID, s.SectionName
+            LIMIT ? OFFSET ?
+        """;
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+            ps.setInt(2, pageSize);
+            ps.setInt(3, (page - 1) * pageSize);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Section section = Section.builder()
+                        .sectionID(rs.getString("SectionID"))
+                        .sectionName(rs.getString("SectionName"))
+                        .numberOfBins(rs.getInt("NumberOfBins"))
+                        .build();
+                sections.add(section);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return sections;
+    }
+
+
+    public int getTotalSections() {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT COUNT(*) FROM Section";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0;
+    }
+
+
+
+
 
 }
