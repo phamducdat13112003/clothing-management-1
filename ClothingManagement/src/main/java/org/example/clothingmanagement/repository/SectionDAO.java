@@ -157,6 +157,31 @@ public class SectionDAO {
         }
     }
 
+    public Section getSectionsById(String sectionId) {
+        try(Connection con = DBContext.getConnection()){
+            StringBuilder sql = new StringBuilder();
+            sql.append(" Select sectionId, sectionName, sectionTypeId ");
+            sql.append(" From section ");
+            sql.append(" Where sectionId = ? ");
+
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ps.setString(1, sectionId);
+
+            ResultSet rs = ps.executeQuery();
+            if(rs.next()){
+                Section section = Section.builder()
+                        .sectionID(rs.getString("sectionId"))
+                        .sectionName(rs.getString("sectionName"))
+                        .sectionTypeId(rs.getInt("sectionTypeId"))
+                        .build();
+                return section;
+            }
+            return null;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public Optional<Section> getSectionById(String sectionId){
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
