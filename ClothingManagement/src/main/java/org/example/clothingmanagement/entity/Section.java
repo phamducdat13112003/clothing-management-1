@@ -18,6 +18,9 @@ public class Section {
     private String sectionTypeName;
     private String description;
 
+    public Section(String sectionID, String sectionName, int sectionTypeID) {
+    }
+
 
     public void setNumberOfBins(int size) {
     }
