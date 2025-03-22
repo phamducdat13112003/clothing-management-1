@@ -302,7 +302,33 @@ public class BinDetailDAO {
         }
         return productList;
     }
+    public String findBinDetailIdByBinAndProduct(String binId, String productDetailId) {
+        String sql = "SELECT binDetailId FROM BinDetail WHERE binId = ? AND ProductDetailId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, binId);
+            stmt.setString(2, productDetailId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("binDetailId");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    public void updateBinDetailQuantity(String binDetailId, int additionalQuantity) {
+        String sql = "UPDATE BinDetail SET quantity = quantity + ? WHERE binDetailId = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, additionalQuantity);
+            stmt.setString(2, binDetailId);
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args){
         BinDetailService binDetailService = new BinDetailService();
