@@ -33,13 +33,59 @@ public class ConfirmTOServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         TOService toService = new TOService();
-        List<TransferOrder> list = toService.getAllTransferOrders();
-        request.setAttribute("list", list);
-        request.getRequestDispatcher("confirmTO.jsp").forward(request, response);
+        int page = 1;
+        int pageSize = 5; // Số dòng trên mỗi trang
+
+        // Lấy tham số trang từ request
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+        String toID = request.getParameter("toID");
+        boolean isUpdateStatus = false;
+        if(toID != null) {
+            isUpdateStatus=  toService.updateTransferOrderStatus(toID);
+            if(isUpdateStatus) {
+                request.setAttribute("messageSuccess", "Update TO Status Successful");
+            }else{
+                request.setAttribute("message", "Update TO Status Failed");
+            }
+        }
+        int totalTO = toService.countTransferOrdersPending();
+        int totalPages = (int) Math.ceil((double) totalTO / pageSize);
+        List<TransferOrder> list = toService.getTransferOrdersPending(page, pageSize);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("transferOrders", list);
+        request.getRequestDispatcher("./confirmTO.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
+        TOService toService = new TOService();
+        String search = request.getParameter("search").trim();
+        int page = 1;
+        int pageSize = 5; // Số dòng trên mỗi trang
+        int totalTO =0;
+        // Lấy tham số trang từ request
+        String pageParam = request.getParameter("page");
+        if (pageParam != null) {
+            page = Integer.parseInt(pageParam);
+        }
+
+        List<TransferOrder> list = null;
+
+        if(search != null) {
+            list = toService.searchTransferOrdersByTOID(search, page, pageSize);
+            totalTO = toService.countTransferOrdersByTOID(search);
+        }else{
+            list = toService.getTransferOrdersPending(page, pageSize);
+            totalTO = toService.countTransferOrdersPending();
+        }
+        int totalPages = (int) Math.ceil((double) totalTO / pageSize);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("transferOrders", list);
+        request.getRequestDispatcher("./confirmTO.jsp").forward(request, response);
     }
 }

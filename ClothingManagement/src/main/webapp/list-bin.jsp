@@ -184,11 +184,13 @@
                                                                 Detail
                                                             </a>
                                                         </p>
-                                                        <p class="sherah-table__product-desc">
-                                                            <a href="javascript:void(0);" onclick="confirmDeleteBin('${bin.binID}')" class="delete-link">
-                                                                Delete
-                                                            </a>
-                                                        </p>
+                                                        <c:if test="${account.getRoleId() == 1}">
+                                                            <p class="sherah-table__product-desc">
+                                                                <a href="javascript:void(0);" onclick="confirmDeleteBin('${bin.binID}')" class="delete-link">
+                                                                    Delete
+                                                                </a>
+                                                            </p>
+                                                        </c:if>
                                                     </div>
                                                 </td>
                                             </tr>

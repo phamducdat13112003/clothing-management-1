@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Site Title -->
-  <title>Manage Employee</title>
+  <title>List TO Order</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
@@ -46,7 +46,7 @@
                 <div class="sherah-breadcrumb mg-top-30">
                   <h2 class="sherah-breadcrumb__title">View Transfer Order List</h2>
                   <ul class="sherah-breadcrumb__list">
-                    <li><a href="viewbininventory">Home</a></li>
+                    <li><a href="TOList">Home</a></li>
                   </ul>
                 </div>
               </div>
@@ -103,7 +103,7 @@
                         <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}">Update</a>
 
                         <!-- Complete button - only show if status is not already COMPLETED -->
-                        <c:if test="${order.status != 'done'}">
+                        <c:if test="${order.status == 'Processing'}">
                         <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}"
                            onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
                         </c:if>

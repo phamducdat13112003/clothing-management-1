@@ -174,15 +174,15 @@
                                                         <p class="sherah-table__product-desc">${entry.quantity}</p>
                                                     </div>
                                                 </td>
-                                                <td class="sherah-table__column-2 sherah-table__data-2">
-                                                    <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">
-                                                            <a href="javascript:void(0);" onclick="confirmDeleteProduct('${bin.binID}', '${entry.productDetailId}')" class="delete-link">
-                                                                Delete
-                                                            </a>
-                                                        </p>
-                                                    </div>
-                                                </td>
+                                                    <td class="sherah-table__column-2 sherah-table__data-2">
+                                                        <div class="sherah-table__product-content">
+                                                            <p class="sherah-table__product-desc">
+                                                                <a href="javascript:void(0);" onclick="confirmDeleteProduct('${bin.binID}', '${entry.productDetailId}')" class="delete-link">
+                                                                    Delete
+                                                                </a>
+                                                            </p>
+                                                        </div>
+                                                    </td>
                                             </tr>
                                         </c:forEach>
 
