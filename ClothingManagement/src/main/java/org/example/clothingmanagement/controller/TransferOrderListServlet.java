@@ -19,6 +19,7 @@ import java.util.List;
 public class TransferOrderListServlet extends HttpServlet {
 
     private TransferOrderDAO transferOrderDAO;
+    private static final int RECORDS_PER_PAGE = 5; // Số lượng record trên mỗi trang
 
     @Override
     public void init() {
@@ -30,38 +31,129 @@ public class TransferOrderListServlet extends HttpServlet {
         String action = request.getParameter("action");
         String toID = request.getParameter("toID");
 
+        // Xử lý tham số phân trang, tìm kiếm và filter
+        int page = 1;
+        if (request.getParameter("page") != null) {
+            try {
+                page = Integer.parseInt(request.getParameter("page"));
+                if (page < 1) page = 1;
+            } catch (NumberFormatException e) {
+                page = 1;
+            }
+        }
+
+        String search = request.getParameter("search");
+        if (search == null) {
+            search = "";
+        }
+
+        // Các tham số filter
+        String statusFilter = request.getParameter("statusFilter");
+        String dateFrom = request.getParameter("dateFrom");
+        String dateTo = request.getParameter("dateTo");
+        String createdBy = request.getParameter("createdByFilter");
+
         if ("cancel".equals(action)) {
             if (toID != null && !toID.trim().isEmpty()) {
                 boolean isCanceled = transferOrderDAO.cancelTransferOrder(toID);
                 if (isCanceled) {
-                    // Redirect to the list page after successful cancellation
-                    response.sendRedirect("/ClothingManagement_war/TOList");
+                    // Redirect to the list page after successful cancellation with filter params
+                    response.sendRedirect(buildRedirectUrl("/ClothingManagement_war/TOList", page, search,
+                            statusFilter, dateFrom, dateTo, createdBy));
                 } else {
                     // If cancellation failed, set an error message
                     request.setAttribute("errorMessage", "Error canceling the transfer order.");
-                    request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                    loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                            statusFilter, dateFrom, dateTo, createdBy);
                 }
             } else {
                 request.setAttribute("errorMessage", "Invalid Transfer Order ID.");
-                request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
             }
         } else if ("done".equals(action)) {
             if (toID != null && !toID.trim().isEmpty()) {
-                completeTransferOrder(request, response, toID);
+                completeTransferOrder(request, response, toID, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
             } else {
                 request.setAttribute("errorMessage", "Invalid Transfer Order ID.");
-                request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
             }
         } else {
-            // Default: Show all transfer orders
-            List<TransferOrder> transferOrders = transferOrderDAO.getAllTransferOrders();
-            request.setAttribute("transferOrders", transferOrders);
-            request.getRequestDispatcher("to-list.jsp").forward(request, response);
+            // Default: Show all transfer orders with pagination, search and filter
+            loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                    statusFilter, dateFrom, dateTo, createdBy);
         }
     }
 
-    private void completeTransferOrder(HttpServletRequest request, HttpServletResponse response, String toID)
+    private String buildRedirectUrl(String baseUrl, int page, String search,
+                                    String statusFilter, String dateFrom,
+                                    String dateTo, String createdBy) {
+        StringBuilder url = new StringBuilder(baseUrl);
+        url.append("?page=").append(page);
+
+        if (search != null && !search.isEmpty()) {
+            url.append("&search=").append(search);
+        }
+
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            url.append("&statusFilter=").append(statusFilter);
+        }
+
+        if (dateFrom != null && !dateFrom.isEmpty()) {
+            url.append("&dateFrom=").append(dateFrom);
+        }
+
+        if (dateTo != null && !dateTo.isEmpty()) {
+            url.append("&dateTo=").append(dateTo);
+        }
+
+        if (createdBy != null && !createdBy.isEmpty()) {
+            url.append("&createdByFilter=").append(createdBy);
+        }
+
+        return url.toString();
+    }
+
+    private void loadTransferOrdersWithPaginationAndFilter(HttpServletRequest request, HttpServletResponse response,
+                                                           int page, String search, String statusFilter, String dateFrom,
+                                                           String dateTo, String createdBy)
             throws ServletException, IOException {
+        // Tính vị trí bắt đầu cho LIMIT trong SQL
+        int offset = (page - 1) * RECORDS_PER_PAGE;
+
+        // Lấy danh sách trạng thái để hiển thị trong dropdown filter
+        List<String> allStatuses = transferOrderDAO.getAllDistinctStatuses();
+        List<String> allCreatedBy = transferOrderDAO.getAllDistinctCreatedBy();
+
+        // Lấy danh sách đơn hàng với phân trang, tìm kiếm và filter
+        List<TransferOrder> transferOrders = transferOrderDAO.getTransferOrdersWithPaginationAndFilter(
+                offset, RECORDS_PER_PAGE, search, statusFilter, dateFrom, dateTo, createdBy);
+
+        // Lấy tổng số đơn hàng để tính số trang
+        int totalRecords = transferOrderDAO.getTotalTransferOrdersWithFilter(search, statusFilter, dateFrom, dateTo, createdBy);
+        int totalPages = (int) Math.ceil((double) totalRecords / RECORDS_PER_PAGE);
+
+        // Đặt các thuộc tính cho JSP
+        request.setAttribute("transferOrders", transferOrders);
+        request.setAttribute("currentPage", page);
+        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("search", search);
+        request.setAttribute("statusFilter", statusFilter);
+        request.setAttribute("dateFrom", dateFrom);
+        request.setAttribute("dateTo", dateTo);
+        request.setAttribute("createdByFilter", createdBy);
+        request.setAttribute("allStatuses", allStatuses);
+        request.setAttribute("allCreatedBy", allCreatedBy);
+
+        // Forward đến trang JSP
+        request.getRequestDispatcher("to-list.jsp").forward(request, response);
+    }
+
+    private void completeTransferOrder(HttpServletRequest request, HttpServletResponse response, String toID,
+                                       int page, String search, String statusFilter, String dateFrom,
+                                       String dateTo, String createdBy) throws ServletException, IOException {
 
         System.out.println("Starting completion process for Transfer Order: " + toID);
 
@@ -74,14 +166,16 @@ public class TransferOrderListServlet extends HttpServlet {
             TransferOrder transferOrder = transferOrderDAO.getTransferOrderByID(toID);
             if (transferOrder == null) {
                 request.setAttribute("errorMessage", "Transfer Order not found.");
-                request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
                 return;
             }
 
             // Allow completion from either Pending or Processing status
             if (!"Pending".equals(transferOrder.getStatus()) && !"Processing".equals(transferOrder.getStatus())) {
                 request.setAttribute("errorMessage", "Only orders in Pending or Processing status can be completed.");
-                request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
                 return;
             }
 
@@ -91,7 +185,8 @@ public class TransferOrderListServlet extends HttpServlet {
             List<TODetail> details = transferOrderDAO.getTODetailsByTOID(toID);
             if (details == null || details.isEmpty()) {
                 request.setAttribute("errorMessage", "No details found for this transfer order.");
-                request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
                 return;
             }
 
@@ -140,14 +235,16 @@ public class TransferOrderListServlet extends HttpServlet {
                         conn.commit();
                         System.out.println("Transaction committed - Transfer Order completed successfully");
 
-                        request.setAttribute("successMessage", "Transfer Order completed successfully.");
-                        response.sendRedirect("/ClothingManagement_war/TOList");
+                        request.getSession().setAttribute("successMessage", "Transfer Order completed successfully.");
+                        response.sendRedirect(buildRedirectUrl("/ClothingManagement_war/TOList", page, search,
+                                statusFilter, dateFrom, dateTo, createdBy));
                     } else {
                         conn.rollback();
                         System.out.println("Transaction rolled back - Failed to update transfer order status");
 
                         request.setAttribute("errorMessage", "Error updating transfer order status.");
-                        request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                        loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                                statusFilter, dateFrom, dateTo, createdBy);
                     }
                 }
             } else {
@@ -155,22 +252,50 @@ public class TransferOrderListServlet extends HttpServlet {
                 System.out.println("Transaction rolled back - Failed to update bin quantities");
 
                 request.setAttribute("errorMessage", "Error updating bin quantities.");
-                request.getRequestDispatcher("to-list.jsp").forward(request, response);
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
             }
         } catch (Exception e) {
             System.err.println("Exception occurred during transfer completion: " + e.getMessage());
             e.printStackTrace();
 
             request.setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
-            request.getRequestDispatcher("to-list.jsp").forward(request, response);
+            loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                    statusFilter, dateFrom, dateTo, createdBy);
         }
     }
 
-
-
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // This might be needed if you want to handle form submissions for completing transfer orders
-        doGet(request, response);
+        // Xử lý form tìm kiếm và filter
+        String search = request.getParameter("search");
+        String statusFilter = request.getParameter("statusFilter");
+        String dateFrom = request.getParameter("dateFrom");
+        String dateTo = request.getParameter("dateTo");
+        String createdBy = request.getParameter("createdByFilter");
+
+        StringBuilder redirectUrl = new StringBuilder("/ClothingManagement_war/TOList?page=1");
+
+        if (search != null && !search.isEmpty()) {
+            redirectUrl.append("&search=").append(search);
+        }
+
+        if (statusFilter != null && !statusFilter.isEmpty()) {
+            redirectUrl.append("&statusFilter=").append(statusFilter);
+        }
+
+        if (dateFrom != null && !dateFrom.isEmpty()) {
+            redirectUrl.append("&dateFrom=").append(dateFrom);
+        }
+
+        if (dateTo != null && !dateTo.isEmpty()) {
+            redirectUrl.append("&dateTo=").append(dateTo);
+        }
+
+        if (createdBy != null && !createdBy.isEmpty()) {
+            redirectUrl.append("&createdByFilter=").append(createdBy);
+        }
+
+        response.sendRedirect(redirectUrl.toString());
     }
 }
