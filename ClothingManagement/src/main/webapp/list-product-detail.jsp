@@ -103,7 +103,9 @@
                                         <h2 class="sherah-breadcrumb__title">Manage Product "${product.name}"</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="list-product-detail?id=${product.id}">Home</a></li>
+                                            <c:if test="${sessionScope.role == 1 || sessionScope.role == 2}">
                                             <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product Detail</a></li>
+                                            </c:if>
                                         </ul>
 
                                     </div>
