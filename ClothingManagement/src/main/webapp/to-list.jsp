@@ -30,6 +30,108 @@
   <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .search-form {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+    }
+    .search-input {
+      padding: 8px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px 0 0 4px;
+      width: 250px;
+    }
+    .search-button {
+      padding: 8px 15px;
+      background-color: #5830E0;
+      color: white;
+      border: none;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+    .search-button:hover {
+      background-color: #4120b9;
+    }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .pagination a {
+      color: #5830E0;
+      padding: 8px 16px;
+      text-decoration: none;
+      border: 1px solid #ddd;
+      margin: 0 4px;
+    }
+    .pagination a.active {
+      background-color: #5830E0;
+      color: white;
+      border: 1px solid #5830E0;
+    }
+    .pagination a:hover:not(.active) {background-color: #ddd;}
+
+    /* Filter styles */
+    .filter-container {
+      background-color: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      border: 1px solid #ddd;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+      align-items: center;
+    }
+    .filter-group {
+      margin-right: 15px;
+      margin-bottom: 10px;
+      flex: 1;
+      min-width: 200px;
+    }
+    .filter-label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+    .filter-select, .filter-input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+    .filter-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 10px;
+    }
+    .filter-button {
+      padding: 8px 20px;
+      background-color: #5830E0;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin-left: 10px;
+    }
+    .filter-button.reset {
+      background-color: #6c757d;
+    }
+    .filter-button:hover {
+      opacity: 0.9;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .filter-group {
+        flex: 100%;
+        margin-right: 0;
+      }
+    }
+  </style>
 </head>
 <body id="sherah-dark-light">
 <jsp:include page="include/sidebar.jsp"></jsp:include>
@@ -50,16 +152,69 @@
                   </ul>
                 </div>
               </div>
-<%--              <div class="col-6">--%>
-<%--                <form action="searchproductbin" method="post" class="search-form">--%>
-<%--                  <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">--%>
-<%--                  <button type="submit" class="search-button">Search</button>--%>
-<%--                </form>--%>
-<%--              </div>--%>
+              <div class="col-6">
+                <form action="TOList" method="post" class="search-form">
+                  <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">
+                  <button type="submit" class="search-button">Search</button>
+                </form>
+              </div>
             </div>
+
+            <!-- Filter Section -->
+            <div class="filter-container">
+              <form action="TOList" method="post">
+                <div class="filter-row">
+                  <div class="filter-group">
+                    <label class="filter-label">Status</label>
+                    <select name="statusFilter" class="filter-select">
+                      <option value="">All Statuses</option>
+                      <c:forEach items="${allStatuses}" var="status">
+                        <option value="${status}" ${statusFilter eq status ? 'selected' : ''}>${status}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
+                  <div class="filter-group">
+                    <label class="filter-label">Created By</label>
+                    <select name="createdByFilter" class="filter-select">
+                      <option value="">All Users</option>
+                      <c:forEach items="${allCreatedBy}" var="creator">
+                        <option value="${creator}" ${createdByFilter eq creator ? 'selected' : ''}>${creator}</option>
+                      </c:forEach>
+                    </select>
+                  </div>
+                </div>
+                <div class="filter-row">
+                  <div class="filter-group">
+                    <label class="filter-label">Date From</label>
+                    <input type="date" name="dateFrom" value="${dateFrom}" class="filter-input">
+                  </div>
+                  <div class="filter-group">
+                    <label class="filter-label">Date To</label>
+                    <input type="date" name="dateTo" value="${dateTo}" class="filter-input">
+                  </div>
+                </div>
+
+                <!-- Keep search value when applying filters -->
+                <input type="hidden" name="search" value="${search}">
+
+                <div class="filter-actions">
+                  <a href="${pageContext.request.contextPath}/TOList" class="filter-button reset">Reset</a>
+                  <button type="submit" class="filter-button">Apply Filters</button>
+                </div>
+              </form>
+            </div>
+
+            <!-- Messages section -->
             <c:if test="${not empty sessionScope.successMessage}">
-              <p style="color:green;">${sessionScope.successMessage}</p>
-              <c:remove var="successMessage" scope="session"/>
+              <div class="alert alert-success" role="alert">
+                  ${sessionScope.successMessage}
+                <c:remove var="successMessage" scope="session"/>
+              </div>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+              <div class="alert alert-danger" role="alert">
+                  ${errorMessage}
+              </div>
             </c:if>
 
             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
@@ -98,51 +253,58 @@
                         </div>
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2">
-
                         <!-- Link to edit the transfer order -->
                         <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}">Update</a>
 
                         <!-- Complete button - only show if status is not already COMPLETED -->
                         <c:if test="${order.status != 'done'}">
-                        <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}"
-                           onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
+                          <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
+                             onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
                         </c:if>
                         <!-- Link to delete the transfer order -->
-                        <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}"
+                        <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
                            onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>
-            </div>
                       </td>
-
                     </tr>
                   </c:forEach>
                 </c:if>
                 <c:if test="${empty transferOrders}">
                   <tr>
-                    <td colspan="12" class="text-center">No transfer order exists</td>
+                    <td colspan="5" class="text-center">No transfer orders found</td>
                   </tr>
                 </c:if>
                 </tbody>
               </table>
-              <div class="pagination">
-                <c:if test="${currentPage > 1}">
-                  <a href="viewproductbindetail?page=${currentPage - 1}&search=${search}">Previous</a>
-                </c:if>
 
-                <c:forEach var="i" begin="1" end="${totalPages}">
-                  <a href="viewproductbindetail?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
-                </c:forEach>
+              <!-- Pagination section -->
+              <c:if test="${not empty transferOrders}">
+                <div class="pagination">
+                  <c:if test="${currentPage > 1}">
+                    <a href="${pageContext.request.contextPath}/TOList?page=${currentPage - 1}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}">Previous</a>
+                  </c:if>
 
-                <c:if test="${currentPage < totalPages}">
-                  <a href="viewproductbindetail?page=${currentPage + 1}&search=${search}">Next</a>
-                </c:if>
-              </div>
+                  <c:forEach var="i" begin="1" end="${totalPages}">
+                    <c:choose>
+                      <c:when test="${i == currentPage}">
+                        <a href="#" class="active">${i}</a>
+                      </c:when>
+                      <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/TOList?page=${i}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}">${i}</a>
+                      </c:otherwise>
+                    </c:choose>
+                  </c:forEach>
+
+                  <c:if test="${currentPage < totalPages}">
+                    <a href="${pageContext.request.contextPath}/TOList?page=${currentPage + 1}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}">Next</a>
+                  </c:if>
+                </div>
+              </c:if>
             </div>
           </div>
           <!-- End Dashboard Inner -->
         </div>
       </div>
     </div>
-
   </div>
 </section>
 <script src="js/jquery.min.js"></script>

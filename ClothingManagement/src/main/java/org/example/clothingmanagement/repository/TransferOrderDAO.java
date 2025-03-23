@@ -34,28 +34,6 @@ public class TransferOrderDAO {
         return employeeIds;
     }
 
-    public List<TransferOrder> getAllTransferOrders() {
-        List<TransferOrder> transferOrders = new ArrayList<>();
-        String sql = "SELECT * FROM TransferOrder";
-
-        try (Connection conn = DBContext.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                String toID = rs.getString("TOID");
-                LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
-                String createdBy = rs.getString("CreatedBy");
-                String status = rs.getString("Status");
-                TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
-                transferOrders.add(transferOrder);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return transferOrders;
-    }
-
     public TransferOrder getTransferOrderById(String toID) {
         TransferOrder transferOrder = null;
         String sql = "SELECT * FROM TransferOrder WHERE TOID = ?";
@@ -930,7 +908,6 @@ public class TransferOrderDAO {
         }
     }
 
-
     public boolean isProductInBin(String binID, String productDetailID) {
         String query = "SELECT COUNT(*) FROM bindetail WHERE binId = ? AND productDetailId = ?";
 
@@ -950,6 +927,121 @@ public class TransferOrderDAO {
         }
         return false;
     }
+
+    public List<TransferOrder> getAllTransferOrders() {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+        String sql = "SELECT * FROM TransferOrder";
+        try (Connection conn = DBContext.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                String toID = rs.getString("TOID");
+                LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
+                String createdBy = rs.getString("CreatedBy");
+                String status = rs.getString("Status");
+                TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
+                transferOrders.add(transferOrder);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transferOrders;
+    }
+
+    public int countTransferOrdersPending() {
+        String sql = "SELECT COUNT(*) FROM TransferOrder WHERE Status = 'Pending'";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean updateTransferOrderStatus(String toID) {
+        String sql = "UPDATE TransferOrder SET Status = 'Processing' WHERE TOID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, toID);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<TransferOrder> getTransferOrdersPending(int page, int pageSize) {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+        String sql = "SELECT * FROM TransferOrder WHERE Status ='Pending' LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String toID = rs.getString("TOID");
+                LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
+                String createdBy = rs.getString("CreatedBy");
+                String status = rs.getString("Status");
+                TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
+                transferOrders.add(transferOrder);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transferOrders;
+    }
+
+    public List<TransferOrder> searchTransferOrdersByTOID(String toID, int page, int pageSize) {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+        String sql = "SELECT * FROM TransferOrder WHERE Status = 'Pending' AND TOID LIKE ? LIMIT ?, ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int offset = (page - 1) * pageSize;
+            stmt.setString(1, "%" + toID + "%"); // Tìm kiếm TOID có chứa từ khóa
+            stmt.setInt(2, offset);
+            stmt.setInt(3, pageSize);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String foundToID = rs.getString("TOID");
+                    LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
+                    String createdBy = rs.getString("CreatedBy");
+                    String status = rs.getString("Status");
+                    TransferOrder transferOrder = new TransferOrder(foundToID, createdDate, createdBy, status);
+                    transferOrders.add(transferOrder);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transferOrders;
+    }
+
+    public int countTransferOrdersByTOID(String toID) {
+        String sql = "SELECT COUNT(*) FROM TransferOrder WHERE Status = 'Pending' AND TOID LIKE ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + toID + "%"); // Tìm kiếm TOID có chứa từ khóa
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
 
 //    public boolean addProductToBin(String binID, String productDetailID, int quantity) {
 //        String maxBinDetailIdQuery = "SELECT MAX(binDetailId) FROM bindetail WHERE binId = ?";
@@ -1080,5 +1172,282 @@ public class TransferOrderDAO {
         }
 
         return sectionID;
+    }
+
+    public List<TransferOrder> getTransferOrdersWithPaginationAndSearch(int offset, int limit, String search) {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT * FROM transferorder WHERE TOID LIKE ? OR CreatedBy LIKE ? OR Status LIKE ? " +
+                    "ORDER BY CreatedDate DESC LIMIT ?, ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                String searchPattern = "%" + search + "%";
+                ps.setString(1, searchPattern);
+                ps.setString(2, searchPattern);
+                ps.setString(3, searchPattern);
+                ps.setInt(4, offset);
+                ps.setInt(5, limit);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        TransferOrder to = new TransferOrder();
+                        to.setToID(rs.getString("TOID"));
+                        to.setCreatedBy(rs.getString("CreatedBy"));
+                        to.setStatus(rs.getString("Status"));
+                        to.setCreatedDate(rs.getDate("CreatedDate").toLocalDate());
+                        transferOrders.add(to);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting transfer orders with pagination: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return transferOrders;
+    }
+
+
+    public int getTotalTransferOrders(String search) {
+        int count = 0;
+
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT COUNT(*) FROM transferorder WHERE TOID LIKE ? OR CreatedBy LIKE ? OR Status LIKE ?";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql)) {
+                String searchPattern = "%" + search + "%";
+                ps.setString(1, searchPattern);
+                ps.setString(2, searchPattern);
+                ps.setString(3, searchPattern);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        count = rs.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting transfer orders: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public List<String> getAllDistinctStatuses() {
+        List<String> statuses = new ArrayList<>();
+
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT DISTINCT Status FROM transferorder ORDER BY Status";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String status = rs.getString("Status");
+                    if (status != null && !status.isEmpty()) {
+                        statuses.add(status);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting distinct statuses: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return statuses;
+    }
+
+    /**
+     * Lấy danh sách các người tạo khác nhau của Transfer Order
+     * @return Danh sách các người tạo
+     */
+    public List<String> getAllDistinctCreatedBy() {
+        List<String> creators = new ArrayList<>();
+
+        try (Connection conn = DBContext.getConnection()) {
+            String sql = "SELECT DISTINCT CreatedBy FROM transferorder ORDER BY CreatedBy";
+
+            try (PreparedStatement ps = conn.prepareStatement(sql);
+                 ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String createdBy = rs.getString("CreatedBy");
+                    if (createdBy != null && !createdBy.isEmpty()) {
+                        creators.add(createdBy);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting distinct creators: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return creators;
+    }
+
+    /**
+     * Lấy danh sách Transfer Order có phân trang, tìm kiếm và filter
+     */
+    public List<TransferOrder> getTransferOrdersWithPaginationAndFilter(int offset, int limit, String search,
+                                                                        String statusFilter, String dateFrom,
+                                                                        String dateTo, String createdBy) {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+
+        try (Connection conn = DBContext.getConnection()) {
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("SELECT * FROM transferorder WHERE 1=1");
+
+            // Thêm điều kiện tìm kiếm
+            if (search != null && !search.trim().isEmpty()) {
+                sqlBuilder.append(" AND (TOID LIKE ? OR CreatedBy LIKE ? OR Status LIKE ?)");
+            }
+
+            // Thêm điều kiện filter theo status
+            if (statusFilter != null && !statusFilter.trim().isEmpty()) {
+                sqlBuilder.append(" AND Status = ?");
+            }
+
+            // Thêm điều kiện filter theo khoảng thời gian
+            if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+                sqlBuilder.append(" AND CreatedDate >= ?");
+            }
+
+            if (dateTo != null && !dateTo.trim().isEmpty()) {
+                sqlBuilder.append(" AND CreatedDate <= ?");
+            }
+
+            // Thêm điều kiện filter theo người tạo
+            if (createdBy != null && !createdBy.trim().isEmpty()) {
+                sqlBuilder.append(" AND CreatedBy = ?");
+            }
+
+            sqlBuilder.append(" ORDER BY CreatedDate DESC LIMIT ?, ?");
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
+                int paramIndex = 1;
+
+                // Đặt các tham số tìm kiếm
+                if (search != null && !search.trim().isEmpty()) {
+                    String searchPattern = "%" + search + "%";
+                    ps.setString(paramIndex++, searchPattern);
+                    ps.setString(paramIndex++, searchPattern);
+                    ps.setString(paramIndex++, searchPattern);
+                }
+
+                // Đặt các tham số filter
+                if (statusFilter != null && !statusFilter.trim().isEmpty()) {
+                    ps.setString(paramIndex++, statusFilter);
+                }
+
+                if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+                    ps.setDate(paramIndex++, java.sql.Date.valueOf(dateFrom));
+                }
+
+                if (dateTo != null && !dateTo.trim().isEmpty()) {
+                    ps.setDate(paramIndex++, java.sql.Date.valueOf(dateTo));
+                }
+
+                if (createdBy != null && !createdBy.trim().isEmpty()) {
+                    ps.setString(paramIndex++, createdBy);
+                }
+
+                // Đặt các tham số limit và offset
+                ps.setInt(paramIndex++, offset);
+                ps.setInt(paramIndex, limit);
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        TransferOrder to = new TransferOrder();
+                        to.setToID(rs.getString("TOID"));
+                        to.setCreatedBy(rs.getString("CreatedBy"));
+                        to.setStatus(rs.getString("Status"));
+                        to.setCreatedDate(rs.getDate("CreatedDate").toLocalDate());
+                        transferOrders.add(to);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error getting transfer orders with filter: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return transferOrders;
+    }
+
+    /**
+     * Lấy tổng số Transfer Order với các điều kiện filter
+     */
+    public int getTotalTransferOrdersWithFilter(String search, String statusFilter,
+                                                String dateFrom, String dateTo, String createdBy) {
+        int count = 0;
+
+        try (Connection conn = DBContext.getConnection()) {
+            StringBuilder sqlBuilder = new StringBuilder();
+            sqlBuilder.append("SELECT COUNT(*) FROM transferorder WHERE 1=1");
+
+            // Thêm điều kiện tìm kiếm
+            if (search != null && !search.trim().isEmpty()) {
+                sqlBuilder.append(" AND (TOID LIKE ? OR CreatedBy LIKE ? OR Status LIKE ?)");
+            }
+
+            // Thêm điều kiện filter theo status
+            if (statusFilter != null && !statusFilter.trim().isEmpty()) {
+                sqlBuilder.append(" AND Status = ?");
+            }
+
+            // Thêm điều kiện filter theo khoảng thời gian
+            if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+                sqlBuilder.append(" AND CreatedDate >= ?");
+            }
+
+            if (dateTo != null && !dateTo.trim().isEmpty()) {
+                sqlBuilder.append(" AND CreatedDate <= ?");
+            }
+
+            // Thêm điều kiện filter theo người tạo
+            if (createdBy != null && !createdBy.trim().isEmpty()) {
+                sqlBuilder.append(" AND CreatedBy = ?");
+            }
+
+            try (PreparedStatement ps = conn.prepareStatement(sqlBuilder.toString())) {
+                int paramIndex = 1;
+
+                // Đặt các tham số tìm kiếm
+                if (search != null && !search.trim().isEmpty()) {
+                    String searchPattern = "%" + search + "%";
+                    ps.setString(paramIndex++, searchPattern);
+                    ps.setString(paramIndex++, searchPattern);
+                    ps.setString(paramIndex++, searchPattern);
+                }
+
+                // Đặt các tham số filter
+                if (statusFilter != null && !statusFilter.trim().isEmpty()) {
+                    ps.setString(paramIndex++, statusFilter);
+                }
+
+                if (dateFrom != null && !dateFrom.trim().isEmpty()) {
+                    ps.setDate(paramIndex++, java.sql.Date.valueOf(dateFrom));
+                }
+
+                if (dateTo != null && !dateTo.trim().isEmpty()) {
+                    ps.setDate(paramIndex++, java.sql.Date.valueOf(dateTo));
+                }
+
+                if (createdBy != null && !createdBy.trim().isEmpty()) {
+                    ps.setString(paramIndex++, createdBy);
+                }
+
+                try (ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        count = rs.getInt(1);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting transfer orders with filter: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return count;
     }
 }

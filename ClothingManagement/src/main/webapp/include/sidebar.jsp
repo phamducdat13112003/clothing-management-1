@@ -177,7 +177,6 @@
                                             <span class="menu-bar__name">Supplier</span></span></a></span>
                             </li>
                         </c:if>
-                        <c:if test="${account.getRoleId() == 4}">
                             <li><a href="viewbininventory" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"
@@ -189,7 +188,6 @@
                                             </span>
                                             <span class="menu-bar__name">View bin inventory</span></span></a></span>
                             </li>
-                        </c:if>
                         <c:if test="${account.getRoleId() == 2}">
                             <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span
                                     class="menu-bar__text">
@@ -274,13 +272,15 @@
                                     <li><a href="${pageContext.request.contextPath}/TOList"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">Transfer Order List</span></span></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/TOCreate"><span
-                                            class="menu-bar__text"><span
-                                            class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    <c:if test="${account.getRoleId() == 4}">
+                                        <li><a href="${pageContext.request.contextPath}/TOCreate"><span
+                                                class="menu-bar__text"><span
+                                                class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    </c:if>
                                     <c:if test="${account.getRoleId() == 1}">
                                     <li><a href="${pageContext.request.contextPath}/confirmTO"><span
                                             class="menu-bar__text"><span
-                                            class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                            class="menu-bar__name">Confirm Transfer Order</span></span></a></li>
                                     </c:if>
                                 </ul>
                             </div>
