@@ -27,8 +27,6 @@
 	<link rel="stylesheet" href="css/jquery-ui.css">
 	<link rel="stylesheet" href="css/reset.css">
 	<link rel="stylesheet" href="css/style.css">
-
-
 </head>
 <body id="sherah-dark-light">
 
@@ -120,6 +118,7 @@
 																					<label for="email" class="sherah-profile-info__title">Email:</label>
 																					<input class="sherah-profile-info__text" type="email" name="email" id="email" value="${employee.email}" disabled title="Contact admin if you want to change this field" readonly><br>
 																					<input type="hidden" name="email" value="${employee.email}">
+
 																					<label for="phone" class="sherah-profile-info__title">Phone:</label>
 																					<input class="sherah-profile-info__text" type="text" name="phone" id="phone" value="${employee.phone}" readonly>
 																					<c:if test="${not empty phoneError}">
@@ -135,27 +134,28 @@
 																					<br>
 
 																					<label for="gender" class="sherah-profile-info__title">Gender:</label>
-																					<input class="sherah-profile-info__text" type="text" name="gender" id="gender" value="${employee.gender}" disabled title="Contact admin if you want to change this field" readonly><br>
+																					<input class="sherah-profile-info__text" type="text" name="gender" id="gender" value="${employee.gender}" disabled title="Contact admin if you want to change this field" readonly>
 																					<!-- Hidden field to send the gender value in the request -->
 																					<input type="hidden" name="gender" value="${employee.gender}">
+																					<br>
 
 																					<label for="dateOfBirth" class="sherah-profile-info__title">Date of Birth:</label>
-																					<input class="sherah-profile-info__text" type="date" name="dateOfBirth" id="dateOfBirth" value="${employee.dateOfBirth}" readonly><br>
+																					<input class="sherah-profile-info__text" type="date" name="dateOfBirth" id="dateOfBirth" value="${employee.dob}" readonly>
 																					<c:if test="${not empty dobError}">
 																						<span class="error-message" style="color: red;">${dobError}</span>
 																					</c:if>
 																					<br>
 
 																					<label for="status" class="sherah-profile-info__title">Status:</label>
-																					<input class="sherah-profile-info__text" type="text" name="status" id="status" value="${employee.status}" readonly><br>
+																					<input class="sherah-profile-info__text" type="text" name="status" id="status" value="${employee.status}" readonly>
 
 																					<label for="warehouseID" class="sherah-profile-info__title">Warehouse Name:</label>
-																					<input  type="hidden" name="warehouseID" id="warehouseID" value="${employee.warehouseID}" readonly><br>
+																					<input type="hidden" name="warehouseID" id="warehouseID" value="${employee.warehouseID}">
+																					<input class="sherah-profile-info__text" type="text" name="warehouse" id="warehouse" value="${warehouseName}" readonly>
 
-																					<input class="sherah-profile-info__text" type="text" name="warehouse" id="warehouse" value="${warehouseName}" readonly><br>
-																					<input type="hidden" name="roleID" id="roleID" value="${employee.roleId}" readonly><br>
+																					<input type="hidden" name="roleID" id="roleID" value="${employee.roleId}" readonly>
 
-																					<button type="submit">Save</button>
+																					<button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
 																					<c:if test="${not empty sessionScope.successMessage}">
 																						<div style="color: green;">${sessionScope.successMessage}</div>
 																						<c:remove var="successMessage" scope="session" />
@@ -173,69 +173,67 @@
 													</div>
 
 
-													<div class="tab-pane fade" id="id2" role="tabpanel">
-														<div class="sherah-paymentm sherah__item-group sherah-default-bg sherah-border ">
-															<h4 class="sherah__item-group sherah-default-bg sherah-border__title">Change Password</h4>
-															<div class="row">
-																<div class="col-xxl-8  col-lg-6 col-md-6 col-12">
-																	<!-- Sign in Form -->
-																	<form action="updatePassword" method="post" onsubmit="return validateForm();">
-																		<input type="hidden" name="activeTab" id="activeTab" value="${activeTab}">
-																		<input type="hidden" name="employeeID" value="${employee.employeeID}">
-																		<div class="form-group">
-																			<label class="sherah-wc__form-label">Old Password *</label>
-																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="oldPassword" type="password" name="oldPassword" required="required">
-																				<c:if test="${not empty incorrectOldPassError}">
-																					<span class="error-message" style="color: red;">${incorrectOldPassError}</span>
-																				</c:if>
-																			</div>
-																		</div>
+<%--													<div class="tab-pane fade" id="id2" role="tabpanel">--%>
+<%--														<div class="sherah-paymentm sherah__item-group sherah-default-bg sherah-border ">--%>
+<%--															<h4 class="sherah__item-group sherah-default-bg sherah-border__title">Change Password</h4>--%>
+<%--															<div class="row">--%>
+<%--																<div class="col-xxl-8  col-lg-6 col-md-6 col-12">--%>
+<%--																	<!-- Sign in Form -->--%>
+<%--																	<form action="updatePassword" method="post" onsubmit="return validateForm();">--%>
+<%--																		<input type="hidden" name="activeTab" id="activeTab" value="id2">--%>
+<%--																		<input type="hidden" name="employeeID" value="${employee.employeeID}">--%>
+<%--																		<div class="form-group">--%>
+<%--																			<label class="sherah-wc__form-label">Old Password *</label>--%>
+<%--																			<div class="form-group__input">--%>
+<%--																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="oldPassword" type="password" name="oldPassword" required="required">--%>
+<%--																				<c:if test="${not empty incorrectOldPassError}">--%>
+<%--																					<span class="error-message" style="color: red;">${incorrectOldPassError}</span>--%>
+<%--																				</c:if>--%>
+<%--																			</div>--%>
+<%--																		</div>--%>
 
-																		<div class="form-group">
-																			<label class="sherah-wc__form-label">New Password *</label>
-																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="newPassword" type="password" name="newPassword" required="required">
-																			</div>
-																		</div>
+<%--																		<div class="form-group">--%>
+<%--																			<label class="sherah-wc__form-label">New Password *</label>--%>
+<%--																			<div class="form-group__input">--%>
+<%--																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="newPassword" type="password" name="newPassword" required="required">--%>
+<%--																			</div>--%>
+<%--																		</div>--%>
 
-																		<div class="form-group">
-																			<label class="sherah-wc__form-label">Re-enter Password *</label>
-																			<div class="form-group__input">
-																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="password" name="reenterPassword" required="required">
-																				<c:if test="${not empty mismatchError}">
-																					<span class="error-message" style="color: red;">${mismatchError}</span>
-																				</c:if>
-																				<c:if test="${not empty lengthError}">
-																					<span class="error-message" style="color: red;">${lengthError}</span>
-																				</c:if>
-																				<c:if test="${not empty validError}">
-																					<span class="error-message" style="color: red;">${validError}</span>
-																				</c:if>
+<%--																		<div class="form-group">--%>
+<%--																			<label class="sherah-wc__form-label">Re-enter Password *</label>--%>
+<%--																			<div class="form-group__input">--%>
+<%--																				<input class="sherah-wc__form-input" placeholder="&#9679;&#9679;&#9679;&#9679;&#9679;&#9679;" id="reenterPassword" type="password" name="reenterPassword" required="required">--%>
+<%--																				<c:if test="${not empty mismatchError}">--%>
+<%--																					<span class="error-message" style="color: red;">${mismatchError}</span>--%>
+<%--																				</c:if>--%>
+<%--																				<c:if test="${not empty lengthError}">--%>
+<%--																					<span class="error-message" style="color: red;">${lengthError}</span>--%>
+<%--																				</c:if>--%>
+<%--																				<c:if test="${not empty validError}">--%>
+<%--																					<span class="error-message" style="color: red;">${validError}</span>--%>
+<%--																				</c:if>--%>
 
-																			</div>
-																		</div>
+<%--																			</div>--%>
+<%--																		</div>--%>
 
-																		<%--																		<input type="hidden" name="accountId" value="${employee.accountId}"> <!-- Hidden accountId -->--%>
+<%--																		<div class="form-group mg-top-30">--%>
+<%--																			<button type="submit" class="sherah-btn sherah-btn__primary">Change Password</button>--%>
+<%--																			<c:if test="${not empty message}">--%>
+<%--																				<span class="error-message" style="color: green;">${message}</span>--%>
+<%--																			</c:if>--%>
+<%--																		</div>--%>
+<%--																	</form>--%>
 
-																		<div class="form-group mg-top-30">
-																			<button type="submit" class="sherah-btn sherah-btn__primary">Change Password</button>
-																			<c:if test="${not empty message}">
-																				<span class="error-message" style="color: green;">${message}</span>
-																			</c:if>
-																		</div>
-																	</form>
-
-																	<!-- End Sign in Form -->
-																</div>
-																<div class="col-xxl-4 col-lg-6 col-md-6 col-12">
-																	<div class="sherah-password__img">
-																		<img src="img/p-update-img.png" alt="">
-																	</div>
-																</div>
-															</div>
-														</div>
-													</div>
+<%--																	<!-- End Sign in Form -->--%>
+<%--																</div>--%>
+<%--																<div class="col-xxl-4 col-lg-6 col-md-6 col-12">--%>
+<%--																	<div class="sherah-password__img">--%>
+<%--																		<img src="img/p-update-img.png" alt="">--%>
+<%--																	</div>--%>
+<%--																</div>--%>
+<%--															</div>--%>
+<%--														</div>--%>
+<%--													</div>--%>
 
 												</div>
 											</div>
@@ -273,40 +271,43 @@
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
 
-<script>
-	// Example JavaScript to check if the new password and re-entered password match
-	document.querySelector('form').addEventListener('submit', function(event) {
-		var newPassword = document.getElementById('new-password').value;
-		var reenterPassword = document.getElementById('reenter-password').value;
+<%--<script>--%>
+<%--	document.querySelector('form').addEventListener('submit', function(event) {--%>
+<%--		var newPassword = document.getElementById('newPassword').value;--%>
+<%--		var reenterPassword = document.getElementById('reenterPassword').value;--%>
 
-		if (newPassword !== reenterPassword) {
-			alert('The new passwords do not match!');
-			event.preventDefault(); // Prevent form submission if passwords don't match
-		}
-	});
-</script>
+<%--		if (newPassword !== reenterPassword) {--%>
+<%--			alert('The new passwords do not match!');--%>
+<%--			event.preventDefault();--%>
+<%--		}--%>
+<%--	});--%>
+<%--</script>--%>
 
-<script>
-	// Khi người dùng chuyển tab, lưu trạng thái của tab vào LocalStorage
-	$('#list-tab a').on('click', function (e) {
-		e.preventDefault();
-		var tabId = $(this).attr('href').substring(1); // Lấy ID của tab
-		localStorage.setItem('activeTab', tabId); // Lưu trạng thái của tab
-		$(this).tab('show');
-	});
+<%--<script>--%>
+<%--	// When document is ready--%>
+<%--	$(document).ready(function() {--%>
+<%--		// Check URL parameters for tab parameter--%>
+<%--		const urlParams = new URLSearchParams(window.location.search);--%>
+<%--		const tabParam = urlParams.get('tab');--%>
 
-	// Khi trang được tải lại, kiểm tra LocalStorage và chọn tab đã lưu
-	$(document).ready(function() {
-		var activeTab = localStorage.getItem('activeTab');
-		if (activeTab) {
-			$('#list-tab a[href="#' + activeTab + '"]').tab('show');
-		}
-	});
+<%--		// Check if tab parameter exists in URL or in localStorage--%>
+<%--		let activeTab = tabParam || localStorage.getItem('activeTab') || 'id1';--%>
 
+<%--		// Activate the tab--%>
+<%--		$('#list-tab a[href="#' + activeTab + '"]').tab('show');--%>
 
-</script>
+<%--		// Update active tab hidden field--%>
+<%--		$('#activeTab').val(activeTab);--%>
+<%--	});--%>
 
-
+<%--	// When tab is clicked--%>
+<%--	$('#list-tab a').on('click', function (e) {--%>
+<%--		e.preventDefault();--%>
+<%--		var tabId = $(this).attr('href').substring(1);--%>
+<%--		localStorage.setItem('activeTab', tabId);--%>
+<%--		$('#activeTab').val(tabId);--%>
+<%--		$(this).tab('show');--%>
+<%--	});--%>
+<%--</script>--%>
 </body>
 </html>
-		
