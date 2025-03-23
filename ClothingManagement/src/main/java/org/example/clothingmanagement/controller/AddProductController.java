@@ -68,7 +68,7 @@ public class AddProductController extends HttpServlet {
             finalId = "P001";
         }
 
-        Product product = new Product(finalId, productName, price, seasons, supplierID, material, madeIn, gender, description, categoryID, minQuantity, createdBy, 1, createdDate);
+        Product product = new Product(finalId, productName, price, seasons, supplierID, material, madeIn, gender, description, categoryID, minQuantity, createdBy, 0, createdDate);
         boolean checkDup = ps.checkDup(product);
         if (!checkDup) {
             boolean check = ps.addProduct(product);

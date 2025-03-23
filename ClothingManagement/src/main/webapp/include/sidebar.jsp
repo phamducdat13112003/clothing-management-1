@@ -26,7 +26,7 @@
                         <c:if test="${account.getRoleId() == 1}">
                             <li><a href="dashboard" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
-                                                <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"--%>
+                                                <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg" --%>
                                                      width="18.075" height="18.075" viewBox="0 0 18.075 18.075">
                                                 <g id="Icon" transform="translate(0 0)">
                                                 <path id="Path_29" data-name="Path 29"
@@ -69,7 +69,8 @@
                             <!-- Dropdown Menu -->
                             <div class="collapse sherah__dropdown" id="menu-item_vendors" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
-                                    <li><a href="${pageContext.request.contextPath}/view-list-section-type"><span class="menu-bar__text"><span class="menu-bar__name">List SectionType</span></span></a>
+                                    <li><a href="${pageContext.request.contextPath}/view-list-section-type"><span
+                                            class="menu-bar__text"><span class="menu-bar__name">List SectionType</span></span></a>
                                     </li>
                                     <li><a href="vendor-list.html"><span class="menu-bar__text"><span
                                             class="menu-bar__name">Vendor List</span></span></a></li>
@@ -132,9 +133,15 @@
                                             class="menu-bar__name">Products</span></span></a></li>
                                     <li><a href="${pageContext.request.contextPath}/product-detail-list"><span
                                             class="menu-bar__name">Product Details</span></a></li>
-                                    <li><a href="${pageContext.request.contextPath}/add-product"><span
-                                            class="menu-bar__text"><span
-                                            class="menu-bar__name">Upload Product</span></span></a></li>
+                                    <c:if test="${account.getRoleId() == 1 || account.getRoleId() == 2}">
+                                    <li>
+                                        <a href="${pageContext.request.contextPath}/add-product">
+                                            <span class="menu-bar__text">
+                                                <span class="menu-bar__name">Upload Product</span>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    </c:if>
                                 </ul>
                             </div>
                         </li>
@@ -177,7 +184,7 @@
                                             <span class="menu-bar__name">Supplier</span></span></a></span>
                             </li>
                         </c:if>
-                            <li><a href="viewbininventory" class="collapsed"><span class="menu-bar__text">
+                        <li><a href="viewbininventory" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"
                                                      width="22.259" height="19.146" viewBox="0 0 22.259 19.146">
@@ -187,7 +194,7 @@
                                                 </svg>
                                             </span>
                                             <span class="menu-bar__name">View bin inventory</span></span></a></span>
-                            </li>
+                        </li>
                         <c:if test="${account.getRoleId() == 2}">
                             <li><a href="#!" class="collapsed" data-bs-toggle="collapse" data-bs-target="#menu-item__9"><span
                                     class="menu-bar__text">
@@ -246,10 +253,10 @@
                                         <li><a href="viewdeliveryorder"><span class="menu-bar__text"><span
                                                 class="menu-bar__name">View Delivery Order</span></span></a></li>
                                     </ul>
-<%--                                    <ul class="menu-bar__one-dropdown">--%>
-<%--                                        <li><a href="#"><span class="menu-bar__text"><span--%>
-<%--                                                class="menu-bar__name">View Delivery</span></span></a></li>--%>
-<%--                                    </ul>--%>
+                                        <%--                                    <ul class="menu-bar__one-dropdown">--%>
+                                        <%--                                        <li><a href="#"><span class="menu-bar__text"><span--%>
+                                        <%--                                                class="menu-bar__name">View Delivery</span></span></a></li>--%>
+                                        <%--                                    </ul>--%>
                                 </div>
                             </li>
                         </c:if>
@@ -278,9 +285,9 @@
                                                 class="menu-bar__name">New Transfer Order</span></span></a></li>
                                     </c:if>
                                     <c:if test="${account.getRoleId() == 1}">
-                                    <li><a href="${pageContext.request.contextPath}/confirmTO"><span
-                                            class="menu-bar__text"><span
-                                            class="menu-bar__name">Confirm Transfer Order</span></span></a></li>
+                                        <li><a href="${pageContext.request.contextPath}/confirmTO"><span
+                                                class="menu-bar__text"><span
+                                                class="menu-bar__name">Confirm Transfer Order</span></span></a></li>
                                     </c:if>
                                 </ul>
                             </div>

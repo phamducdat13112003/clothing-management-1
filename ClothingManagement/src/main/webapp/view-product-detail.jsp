@@ -139,15 +139,18 @@
                                                 <input type="hidden" name="id" value="${pd.id}"/>
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="sherah-wc__form-label">Product Image Upload </label>
                                                         <div class="form-group__input">
-                                                            <input type="file" name="img" class="form-control d-none"
+                                                            <c:if test="${sessionScope.role == 1}">
+                                                                <div>
+                                                                    <label class="sherah-wc__form-label">Product Image Upload </label>
+                                                                </div>
+                                                                <input type="file" name="img" class="form-control d-none"
                                                                    id="inputGroupFile04" onchange="chooseFile(this)"
                                                                    accept="image/gif,image/jpeg,image/png"
                                                                    aria-describedby="inputGroupFileAddon04"
                                                                    aria-label="Upload">
-                                                            <label for="inputGroupFile04" class="choose-file-label">Choose
-                                                                file</label>
+                                                            <label for="inputGroupFile04" class="choose-file-label">Choose file</label>
+                                                            </c:if>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -156,16 +159,40 @@
                                                     <div class="form-group">
                                                         <label class="sherah-wc__form-label">Weight</label>
                                                         <div class="form-group__input">
-                                                            <input class="sherah-wc__form-input" placeholder="Kilogram"
+                                                            <c:if test="${sessionScope.role == 1}">
+                                                                <input class="sherah-wc__form-input" placeholder="Kilogram"
                                                                    type="number" name="weight" min="0.1" step="0.1" max="10.0"
                                                                    value="${pd.weight}" required>
-
+                                                            </c:if>
+                                                            <c:if test="${sessionScope.role != 1}">
+                                                                <input class="sherah-wc__form-input" placeholder="Kilogram"
+                                                                       type="number" name="weight" min="0.1" step="0.1" max="10.0"
+                                                                       value="${pd.weight}" readonly>
+                                                            </c:if>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Size</label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="size"
+                                                                   type="text" name="size"
+                                                                   value="${pd.size}" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Color</label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="color"
+                                                                   type="text" name="color"
+                                                                   value="${pd.color}" readonly>
                                                         </div>
                                                     </div>
                                                 </div>
                                                 <div>
+                                                <c:if test="${sessionScope.role == 1}">
                                                     <button type="submit" class="btn btn-primary">Update</button>
                                                     <button type="reset" class="btn btn-secondary">Reset</button>
+                                                </c:if>
                                                 </div>
                                             </div>
                                         </div>
