@@ -92,8 +92,6 @@ public class AddEmployeeServlet extends HttpServlet {
         String genderParam = request.getParameter("gender");
         boolean gender = "1".equals(genderParam);
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
-        String warehouseID = request.getParameter("warehouse");
-
         // Kiểm tra lỗi cho từng trường
         if (!isValidEmail(email)) {
             request.setAttribute("errorEmail", "Invalid email");
@@ -124,7 +122,7 @@ public class AddEmployeeServlet extends HttpServlet {
             request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./addEmployee.jsp").forward(request, response);
         }else{
-            Employee employee = new Employee(employeeId ,name, email, phone, address, gender, dateOfBirth, warehouseID,"");
+            Employee employee = new Employee(employeeId ,name, email, phone, address, gender, dateOfBirth, "W001","");
             Part part = request.getPart("img");
             String contentType = part.getContentType();
             long fileSize = part.getSize(); // Kích thước tệp ảnh (bytes)
