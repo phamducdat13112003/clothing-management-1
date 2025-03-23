@@ -141,7 +141,9 @@
                                                     <div class="form-group">
                                                         <div class="form-group__input">
                                                             <c:if test="${sessionScope.role == 1}">
-                                                                <label class="sherah-wc__form-label">Product Image Upload </label>
+                                                                <div>
+                                                                    <label class="sherah-wc__form-label">Product Image Upload </label>
+                                                                </div>
                                                                 <input type="file" name="img" class="form-control d-none"
                                                                    id="inputGroupFile04" onchange="chooseFile(this)"
                                                                    accept="image/gif,image/jpeg,image/png"
