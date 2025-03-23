@@ -11,7 +11,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <!-- Site Title -->
-  <title>List TO Order</title>
+  <title>Manage Employee</title>
 
   <!-- Font -->
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap"
@@ -148,7 +148,7 @@
                 <div class="sherah-breadcrumb mg-top-30">
                   <h2 class="sherah-breadcrumb__title">View Transfer Order List</h2>
                   <ul class="sherah-breadcrumb__list">
-                    <li><a href="TOList">Home</a></li>
+                    <li><a href="viewbininventory">Home</a></li>
                   </ul>
                 </div>
               </div>
@@ -260,8 +260,7 @@
                         <c:if test="${order.status != 'done'}">
                           <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
                              onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
-
-                      
+                        </c:if>
                         <!-- Link to delete the transfer order -->
                         <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
                            onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>
