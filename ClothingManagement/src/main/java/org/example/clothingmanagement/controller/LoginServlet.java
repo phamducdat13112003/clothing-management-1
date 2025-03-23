@@ -60,6 +60,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("account_id", account.getId());
             session.setAttribute("employeeId", account.getEmployeeId());
             session.setAttribute("employeeName",employee.getEmployeeName());
+            session.setAttribute("warehouseId", employee.getWarehouseID());
             session.setMaxInactiveInterval(60 * 60 * 24);
             if (remember != null && remember.equalsIgnoreCase("1")) {
                 cookie_email.setMaxAge(60 * 60);
