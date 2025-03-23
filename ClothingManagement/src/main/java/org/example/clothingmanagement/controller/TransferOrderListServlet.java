@@ -172,12 +172,18 @@ public class TransferOrderListServlet extends HttpServlet {
             }
 
             // Allow completion from either Pending or Processing status
+
             if (!"Pending".equals(transferOrder.getStatus()) && !"Processing".equals(transferOrder.getStatus())) {
                 request.setAttribute("errorMessage", "Only orders in Pending or Processing status can be completed.");
                 loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
                         statusFilter, dateFrom, dateTo, createdBy);
-                return;
-            }
+
+            // if (!"Processing".equals(transferOrder.getStatus())) {
+            //     request.setAttribute("errorMessage", "Only orders in Processing status can be completed.");
+            //     request.getRequestDispatcher("to-list.jsp").forward(request, response);
+
+            //     return;
+            // }
 
             System.out.println("Transfer Order status is: " + transferOrder.getStatus());
 

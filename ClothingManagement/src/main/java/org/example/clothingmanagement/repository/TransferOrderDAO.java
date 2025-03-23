@@ -34,28 +34,6 @@ public class TransferOrderDAO {
         return employeeIds;
     }
 
-    public List<TransferOrder> getAllTransferOrders() {
-        List<TransferOrder> transferOrders = new ArrayList<>();
-        String sql = "SELECT * FROM TransferOrder";
-
-        try (Connection conn = DBContext.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                String toID = rs.getString("TOID");
-                LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
-                String createdBy = rs.getString("CreatedBy");
-                String status = rs.getString("Status");
-                TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
-                transferOrders.add(transferOrder);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return transferOrders;
-    }
-
     public TransferOrder getTransferOrderById(String toID) {
         TransferOrder transferOrder = null;
         String sql = "SELECT * FROM TransferOrder WHERE TOID = ?";
@@ -930,7 +908,6 @@ public class TransferOrderDAO {
         }
     }
 
-
     public boolean isProductInBin(String binID, String productDetailID) {
         String query = "SELECT COUNT(*) FROM bindetail WHERE binId = ? AND productDetailId = ?";
 
@@ -950,6 +927,121 @@ public class TransferOrderDAO {
         }
         return false;
     }
+
+    public List<TransferOrder> getAllTransferOrders() {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+        String sql = "SELECT * FROM TransferOrder";
+        try (Connection conn = DBContext.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                String toID = rs.getString("TOID");
+                LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
+                String createdBy = rs.getString("CreatedBy");
+                String status = rs.getString("Status");
+                TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
+                transferOrders.add(transferOrder);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transferOrders;
+    }
+
+    public int countTransferOrdersPending() {
+        String sql = "SELECT COUNT(*) FROM TransferOrder WHERE Status = 'Pending'";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean updateTransferOrderStatus(String toID) {
+        String sql = "UPDATE TransferOrder SET Status = 'Processing' WHERE TOID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, toID);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public List<TransferOrder> getTransferOrdersPending(int page, int pageSize) {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+        String sql = "SELECT * FROM TransferOrder WHERE Status ='Pending' LIMIT ? OFFSET ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, pageSize);
+            stmt.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                String toID = rs.getString("TOID");
+                LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
+                String createdBy = rs.getString("CreatedBy");
+                String status = rs.getString("Status");
+                TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
+                transferOrders.add(transferOrder);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transferOrders;
+    }
+
+    public List<TransferOrder> searchTransferOrdersByTOID(String toID, int page, int pageSize) {
+        List<TransferOrder> transferOrders = new ArrayList<>();
+        String sql = "SELECT * FROM TransferOrder WHERE Status = 'Pending' AND TOID LIKE ? LIMIT ?, ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            int offset = (page - 1) * pageSize;
+            stmt.setString(1, "%" + toID + "%"); // Tìm kiếm TOID có chứa từ khóa
+            stmt.setInt(2, offset);
+            stmt.setInt(3, pageSize);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    String foundToID = rs.getString("TOID");
+                    LocalDate createdDate = rs.getDate("CreatedDate").toLocalDate();
+                    String createdBy = rs.getString("CreatedBy");
+                    String status = rs.getString("Status");
+                    TransferOrder transferOrder = new TransferOrder(foundToID, createdDate, createdBy, status);
+                    transferOrders.add(transferOrder);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transferOrders;
+    }
+
+    public int countTransferOrdersByTOID(String toID) {
+        String sql = "SELECT COUNT(*) FROM TransferOrder WHERE Status = 'Pending' AND TOID LIKE ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + toID + "%"); // Tìm kiếm TOID có chứa từ khóa
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+
+
 
 //    public boolean addProductToBin(String binID, String productDetailID, int quantity) {
 //        String maxBinDetailIdQuery = "SELECT MAX(binDetailId) FROM bindetail WHERE binId = ?";

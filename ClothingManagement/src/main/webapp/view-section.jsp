@@ -158,9 +158,11 @@
                                                         <p class="sherah-table__product-desc" style="display: inline-block; margin-right: 10px;">
                                                             <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">Detail</a>
                                                         </p>
-                                                        <p class="sherah-table__product-desc" style="display: inline-block;">
-                                                            <a href="javascript:void(0);" onclick="confirmDeleteSection('${s.sectionID}')" class="delete-link">Delete</a>
-                                                        </p>
+                                                        <c:if test="${account.getRoleId() == 1}">
+                                                            <p class="sherah-table__product-desc" style="display: inline-block;">
+                                                                <a href="javascript:void(0);" onclick="confirmDeleteSection('${s.sectionID}')" class="delete-link">Delete</a>
+                                                            </p>
+                                                        </c:if>
                                                     </div>
                                                 </td>
                                             </tr>
