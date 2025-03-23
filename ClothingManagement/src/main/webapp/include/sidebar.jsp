@@ -280,7 +280,7 @@
                                     <c:if test="${account.getRoleId() == 1}">
                                     <li><a href="${pageContext.request.contextPath}/confirmTO"><span
                                             class="menu-bar__text"><span
-                                            class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                            class="menu-bar__name">Confirm Transfer Order</span></span></a></li>
                                     </c:if>
                                 </ul>
                             </div>
