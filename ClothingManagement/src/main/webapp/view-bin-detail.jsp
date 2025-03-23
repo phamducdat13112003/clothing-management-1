@@ -11,7 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
     <!-- Site Title -->
-    <title>SectionType List</title>
+    <title>Bin Detail List</title>
 
     <!-- Font -->
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;0,900;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
@@ -103,7 +103,7 @@
                             <div class="row align-items-center justify-content-between">
                                 <div class="col-6">
                                     <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Manage Bin ${bin.binName} </h2>
+                                        <h2 class="sherah-breadcrumb__title">Manage Bin "${bin.binName}" </h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="view-bin-detail?id=${bin.binID}">Home</a></li>
                                             <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>

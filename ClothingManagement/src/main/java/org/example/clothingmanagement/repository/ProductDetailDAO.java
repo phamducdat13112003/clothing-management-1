@@ -267,7 +267,7 @@ public class ProductDetailDAO {
             sql.append(" WHERE productId = ? ");
             if(!nameSearch.isEmpty()){
                 sql.append(" AND (color LIKE ? ");
-                sql.append(" OR ProductId LIKE ? ");
+                sql.append(" OR ProductDetailId LIKE ? ");
                 sql.append(" OR size LIKE ?) ");
             }
             sql.append(" ORDER BY ProductDetailId ");

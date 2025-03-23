@@ -162,6 +162,24 @@
 
                                                         </div>
                                                     </div>
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Size</label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="size"
+                                                                   type="text" name="size"
+                                                                   value="${pd.size}" readonly>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label class="sherah-wc__form-label">Color</label>
+                                                        <div class="form-group__input">
+                                                            <input class="sherah-wc__form-input" placeholder="color"
+                                                                   type="text" name="color"
+                                                                   value="${pd.color}" readonly>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 <div>
                                                     <button type="submit" class="btn btn-primary">Update</button>

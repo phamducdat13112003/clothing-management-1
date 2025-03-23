@@ -90,7 +90,7 @@
 
                                                                                         <!-- Price -->
                                                                                         <label for="price">Price <span class="required">*</span></label>
-                                                                                        <input type="number" id="price" name="price" step="10000" min="10000" required>
+                                                                                        <input type="number" id="price" name="price" step="10000" min="10000" max="10000000" required>
 
 <%--                                                                                        <!-- Bin ID -->--%>
 <%--                                                                                        <label for="binID">Bin ID:</label>--%>
@@ -127,7 +127,7 @@
 
                                                                                         <!-- Min Quantity -->
                                                                                         <label for="minQuantity">Minimum Quantity <span class="required">*</span></label>
-                                                                                        <input type="number" id="minQuantity" name="minQuantity"  min="1" required>
+                                                                                        <input type="number" id="minQuantity" name="minQuantity"  min="1" max="1000" required>
 
                                                                                         <!-- Description -->
                                                                                         <label for="description">Description:</label>
