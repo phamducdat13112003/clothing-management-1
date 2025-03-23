@@ -127,7 +127,12 @@
                                                     <div class="col-12">
                                                         <div class="form-group">
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="ProductId" type="hidden" name="productId" value="${product.id}" required>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="ProductId" type="hidden" name="productId" value="${product.id}" required>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="ProductId" type="hidden" name="productId" value="${product.id}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -135,10 +140,12 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" type="text" name="name" required value="${product.name}">
-<%--                                                                <c:if test="${not empty errorName}">--%>
-<%--                                                                    <span class="error-message">${errorName}</span>--%>
-<%--                                                                </c:if>--%>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <input class="sherah-wc__form-input" type="text" name="name" required value="${product.name}">
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" type="text" name="name" value="${product.name}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -146,10 +153,12 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Price <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="VND" type="number" min="10000" max="10000000" step="10000" name="price" value="${product.price}" required>
-<%--                                                                <c:if test="${not empty errorEmail}">--%>
-<%--                                                                    <span class="error-message">${errorEmail}</span>--%>
-<%--                                                                </c:if>--%>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="VND" type="number" min="10000" max="10000000" step="10000" name="price" value="${product.price}" required>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="VND" type="number" min="10000" max="10000000" step="10000" name="price" value="${product.price}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -157,10 +166,12 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Material <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" required>
-<%--                                                                <c:if test="${not empty errorPhone}">--%>
-<%--                                                                    <span class="error-message">${errorPhone}</span>--%>
-<%--                                                                </c:if>--%>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" required>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -168,11 +179,16 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <select class="sherah-wc__form-input" name="gender" required>
-                                                                    <option value="Male" ${product.gender == "Male" ? "selected" : ""}>Male</option>
-                                                                    <option value="Female" ${product.gender == "Female" ? "selected" : ""}>Female</option>
-                                                                    <option value="Unisex" ${product.gender == "Unisex" ? "selected" : ""}>Unisex</option>
-                                                                </select>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <select class="sherah-wc__form-input" name="gender" required>
+                                                                        <option value="Male" ${product.gender == "Male" ? "selected" : ""}>Male</option>
+                                                                        <option value="Female" ${product.gender == "Female" ? "selected" : ""}>Female</option>
+                                                                        <option value="Unisex" ${product.gender == "Unisex" ? "selected" : ""}>Unisex</option>
+                                                                    </select>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="gender" type="text" name="gender" value="${product.gender}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -180,32 +196,47 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Season <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <select class="sherah-wc__form-input" name="season" required>
-                                                                    <option value="Spring/Summer" ${product.seasons == "Spring/Summer" ? "selected" : ""}>Spring/Summer</option>
-                                                                    <option value="Fall/Winter" ${product.seasons == "Fall/Winter" ? "selected" : ""}>Fall/Winter</option>
-                                                                    <option value="Pre-Fall" ${product.seasons == "Pre-Fall" ? "selected" : ""}>Pre-Fall</option>
-                                                                    <option value="Others" ${product.seasons == "Others" ? "selected" : ""}>Others</option>
-                                                                </select>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <select class="sherah-wc__form-input" name="season" required>
+                                                                        <option value="Spring/Summer" ${product.seasons == "Spring/Summer" ? "selected" : ""}>Spring/Summer</option>
+                                                                        <option value="Fall/Winter" ${product.seasons == "Fall/Winter" ? "selected" : ""}>Fall/Winter</option>
+                                                                        <option value="Pre-Fall" ${product.seasons == "Pre-Fall" ? "selected" : ""}>Pre-Fall</option>
+                                                                        <option value="Others" ${product.seasons == "Others" ? "selected" : ""}>Others</option>
+                                                                    </select>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="season" type="text" name="season" value="${product.seasons}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Category <span class="required">*</span></label>
-                                                            <select class="sherah-wc__form-input" name="categoryID" required>
-                                                                <c:forEach var="category" items="${categories}">
-                                                                    <tr>
-                                                                        <option value="${category.categoryID}" ${product.category.categoryName == "${category.categoryName}" ? "selected" : ""}>${category.categoryName}</option>
-                                                                    </tr>
-                                                                </c:forEach>
-                                                            </select>
+                                                            <c:if test="${sessionScope.role == 1}">
+                                                                <select class="sherah-wc__form-input" name="categoryID" required>
+                                                                    <c:forEach var="category" items="${categories}">
+                                                                        <tr>
+                                                                            <option value="${category.categoryID}" ${product.category.categoryName == "${category.categoryName}" ? "selected" : ""}>${category.categoryName}</option>
+                                                                        </tr>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </c:if>
+                                                            <c:if test="${sessionScope.role !=1}">
+                                                                <input class="sherah-wc__form-input" placeholder="category" type="text" name="categoryID" value="${category.categoryName}" readonly>
+                                                            </c:if>
                                                         </div>
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Minimum Quantity <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 max="9999" step=1 name="minQuantity" value="${product.minQuantity}" required>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 max="9999" step=1 name="minQuantity" value="${product.minQuantity}" required>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 max="9999" step=1 name="minQuantity" value="${product.minQuantity}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -213,7 +244,12 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Made In</label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" required>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" required>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" readonly>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -237,11 +273,12 @@
                                                         <div class="form-group">
                                                             <label class="sherah-wc__form-label">Description</label>
                                                             <div class="form-group__input">
-                                                                <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50">${product.description}</textarea>
-
-                                                            <%--                                                                <c:if test="${not empty errorName}">--%>
-                                                                <%--                                                                    <span class="error-message">${errorName}</span>--%>
-                                                                <%--                                                                </c:if>--%>
+                                                                <c:if test="${sessionScope.role == 1}">
+                                                                    <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50">${product.description}</textarea>
+                                                                </c:if>
+                                                                <c:if test="${sessionScope.role !=1}">
+                                                                    <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50" readonly>${product.description}</textarea>
+                                                                </c:if>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -249,8 +286,10 @@
                                                 <!-- End Basic Information -->
                                             </div>
                                             <div class="mg-top-40 sherah-dflex sherah-dflex-gap-30">
-                                                <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
-                                                <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
+                                                <c:if test="${sessionScope.role == 1}">
+                                                    <button type="submit" class="sherah-btn sherah-btn__primary">Save</button>
+                                                    <button type="reset" class="sherah-btn sherah-btn__third">Cancel</button>
+                                                </c:if>
                                             </div>
                                         </div>
                                     </div>
@@ -315,22 +354,25 @@
                                                 </td>
                                                 <c:if test="${list.status==1}">
                                                     <c:if test="${list.quantity==0}">
-                                                    <td class="sherah-table__column-2 sherah-table__data-2">
-                                                        <div class="sherah-table__product-content">
-                                                            <p class="sherah-table__product-desc">
-                                                                <a href="#"
-                                                                    onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${list.id}&productid=${list.productId}');">
+                                                        <c:if test="${sessionScope.role == 1}">
+                                                            <td class="sherah-table__column-2 sherah-table__data-2">
+                                                                <div class="sherah-table__product-content">
+                                                                    <p class="sherah-table__product-desc">
+                                                                        <a href="#"
+                                                                           onclick="return confirmDelete('${pageContext.request.contextPath}/delete-product-detail?id=${list.id}&productid=${list.productId}');">
 
-                                                                    Delete
-                                                                </a>
-                                                            </p>
-                                                        </div>
-                                                    </td>
+                                                                            Delete
+                                                                        </a>
+                                                                    </p>
+                                                                </div>
+                                                            </td>
+                                                        </c:if>
                                                     </c:if>
                                                 </c:if>
 
                                                 <c:if test="${list.status==0}">
-                                                    <td class="sherah-table__column-2 sherah-table__data-2">
+                                                <c:if test="${sessionScope.role == 1 || sessionScope.role == 2}">
+                                                <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">
                                                                 <a href="#"
@@ -340,6 +382,7 @@
                                                             </p>
                                                         </div>
                                                     </td>
+                                                </c:if>
                                                 </c:if>
 
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
