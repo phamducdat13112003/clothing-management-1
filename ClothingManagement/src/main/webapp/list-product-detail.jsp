@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
-                                <form class="sherah-wc__form-main" action="update-product" method="post">
+                                <form name="myForm" class="sherah-wc__form-main" action="update-product" onsubmit="return validateForm()" method="post">
                                     <div class="row">
                                         <div class="col-12">
                                             <!-- Basic Information -->
@@ -133,7 +133,7 @@
                                                     </div>
                                                     <div class="col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Product Name</label>
+                                                            <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" type="text" name="name" required value="${product.name}">
 <%--                                                                <c:if test="${not empty errorName}">--%>
@@ -144,9 +144,9 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Price</label>
+                                                            <label class="sherah-wc__form-label">Price <span class="required">*</span></label>
                                                             <div class="form-group__input">
-                                                                <input class="sherah-wc__form-input" placeholder="VND" type="number" min="0" max="9999999" name="price" value="${product.price}" required>
+                                                                <input class="sherah-wc__form-input" placeholder="VND" type="number" min="10000" max="10000000" step="10000" name="price" value="${product.price}" required>
 <%--                                                                <c:if test="${not empty errorEmail}">--%>
 <%--                                                                    <span class="error-message">${errorEmail}</span>--%>
 <%--                                                                </c:if>--%>
@@ -155,7 +155,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Material</label>
+                                                            <label class="sherah-wc__form-label">Material <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" required>
 <%--                                                                <c:if test="${not empty errorPhone}">--%>
@@ -166,7 +166,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Gender</label>
+                                                            <label class="sherah-wc__form-label">Gender <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <select class="sherah-wc__form-input" name="gender" required>
                                                                     <option value="Male" ${product.gender == "Male" ? "selected" : ""}>Male</option>
@@ -178,7 +178,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Season</label>
+                                                            <label class="sherah-wc__form-label">Season <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <select class="sherah-wc__form-input" name="season" required>
                                                                     <option value="Spring/Summer" ${product.seasons == "Spring/Summer" ? "selected" : ""}>Spring/Summer</option>
@@ -191,7 +191,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Category</label>
+                                                            <label class="sherah-wc__form-label">Category <span class="required">*</span></label>
                                                             <select class="sherah-wc__form-input" name="categoryID" required>
                                                                 <c:forEach var="category" items="${categories}">
                                                                     <tr>
@@ -203,7 +203,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Minimum Quantity</label>
+                                                            <label class="sherah-wc__form-label">Minimum Quantity <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Minimum quantity" type="number" min=0 max="9999" step=1 name="minQuantity" value="${product.minQuantity}" required>
                                                             </div>
@@ -227,7 +227,7 @@
                                                     </div>
                                                     <div class="col-lg-6 col-md-6 col-12">
                                                         <div class="form-group">
-                                                            <label class="sherah-wc__form-label">Supplier</label>
+                                                            <label class="sherah-wc__form-label">Supplier <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <input class="sherah-wc__form-input" placeholder="Supplier" type="text" name="supplier" value="${product.supplier.supplierName}" readonly>
                                                             </div>
@@ -432,6 +432,65 @@
             window.location.href = url;
         }
         return false;
+    }
+</script>
+<script type="text/javascript">
+    function validateForm() {
+        var name = document.forms["myForm"]["name"].value;
+        var material = document.forms["myForm"]["material"].value;
+        var madeIn = document.forms["myForm"]["madeIn"].value;
+
+        // Kiểm tra xem trường "name" có bị bỏ trống không
+        if (name === "") {
+            alert("Name must be filled out");
+            return false;
+        }
+
+        if (name.trim() === "") {
+            alert("Name cannot contain only space");
+            return false;
+        }
+
+        var namePattern = /^[a-zA-Z0-9\s]+$/; // Biểu thức chính quy chỉ cho phép chữ và số
+        if (!namePattern.test(name)) {
+            alert("Name must contain only letters and numbers");
+            return false;
+        }
+
+        // Kiểm tra trường "material"
+        if (material === "") {
+            alert("Material must be filled out");
+            return false;
+        }
+
+        if (material.trim() === "") {
+            alert("Material cannot contain only space");
+            return false;
+        }
+
+        var materialPattern = /^[a-zA-Z0-9%,\s]+$/; // Biểu thức chính quy cho phép chữ, số và ký tự '%'
+        if (!materialPattern.test(material)) {
+            alert("Material must contain only letters, numbers, and the '%' character");
+            return false;
+        }
+
+        // Kiểm tra trường "madeIn" (nếu có dữ liệu nhập vào)
+        if (madeIn !== "") { // Kiểm tra nếu người dùng nhập dữ liệu
+            if(madeIn.trim() !== ""){
+                var madeInPattern = /^[a-zA-Z\s]+$/;  // Biểu thức chính quy cho chỉ chữ cái
+                if (!madeInPattern.test(madeIn)) {
+                    alert("Made In can only contain letters");
+                    return false;  // Ngừng gửi form nếu không hợp lệ
+                }
+            }
+            else{
+                alert("Made In cannot contain only space");
+                return false;
+            }
+
+        }
+
+        return true;  // Nếu tất cả kiểm tra hợp lệ, cho phép gửi form
     }
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
