@@ -67,7 +67,7 @@
                                                 <div class="tab-content" id="nav-tabContent">
                                                     <!--  Features Single Tab -->
                                                     <div class="tab-pane fade show active" id="id1" role="tabpanel">
-                                                        <form action="${pageContext.request.contextPath}/add-product" method="post">
+                                                        <form name="myForm" action="${pageContext.request.contextPath}/add-product" onsubmit="return validateForm()" method="post">
                                                             <div class="row">
                                                                 <div class="col-12">
                                                                     <div class="sherah-ptabs__separate">
@@ -145,7 +145,9 @@
                                                                                         <!-- Made In -->
                                                                                         <label for="madeIn">Made In:</label>
                                                                                         <input type="text" id="madeIn" name="madeIn">
+
                                                                                         <input type="hidden" name=employeeId value="${sessionScope.employeeId}" />
+
                                                                                         <input type="hidden" id="createdDate" name="createdDate" value="<%= java.time.LocalDate.now() %>">
 
 
@@ -196,19 +198,53 @@
 <script src="js/jvector-map.js"></script>
 <script src="js/main.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-    window.onload = () => {
-        const urlParams = new URLSearchParams(window.location.search);
-        const errorCode = parseInt(urlParams.get('abc'));
-        switch (errorCode) {
-            case 1:
-                window.alert('Successful')
-                break;
-            case 2:
-                window.alert('Something went wrong');
-                break;
+<script type="text/javascript">
+    function validateForm() {
+        var name = document.forms["myForm"]["productName"].value;
+        var material = document.forms["myForm"]["material"].value;
+        var madeIn = document.forms["myForm"]["madeIn"].value;
+
+        // Kiểm tra xem trường "name" có bị bỏ trống không
+        if (name === "") {
+            alert("Name must be filled out");
+            return false;
         }
-    };
+
+        if(name.trim() === "" ){
+            alert("Name cannot contain only space");
+            return false
+        }
+
+        var namePattern = /^[a-zA-Z0-9\s]+$/; // Biểu thức chính quy chỉ cho phép chữ và số
+        if (!namePattern.test(name)) {
+            alert("Name must contain only letters and numbers");
+            return false;
+        }
+
+        if(material === ""){
+            alert("Material must be filled out");
+            return false;
+        }
+
+        if(material.trim() === ""){
+            alert("Material cannot contain only space");
+            return false;
+        }
+
+        var materialPattern = /^[a-zA-Z0-9%,\s]+$/; // Biểu thức chính quy cho phép chữ, số và ký tự '%'
+        if (!materialPattern.test(material)) {
+            alert("Material must contain only letters, numbers, and the '%' character");
+            return false;
+        }
+
+        if (madeIn !== "" && madeIn.trim() !== "") { // Kiểm tra nếu người dùng nhập dữ liệu
+            var madeInPattern = /^[a-zA-Z\s]+$/;  // Biểu thức chính quy cho chỉ chữ cái
+            if (!madeInPattern.test(madeIn)) {
+                alert("Made In can only contain letters");
+                return false;  // Ngừng gửi form nếu không hợp lệ
+            }
+        }
+    }
 </script>
 <script>
     window.onload = function () {
