@@ -106,11 +106,11 @@ public class WarehouseDAO {
     }
 
     // Retrieve warehouse name by ID
-    public static String getWarehouseNameById(int warehouseID) throws SQLException {
+    public static String getWarehouseNameById(String warehouseID) throws SQLException {
         String sql = "SELECT WarehouseName FROM Warehouse WHERE WarehouseID = ?";
         try (Connection conn = DBContext.getConnection();
              PreparedStatement pt = conn.prepareStatement(sql)) {
-            pt.setInt(1, warehouseID);
+            pt.setString(1, warehouseID);
             try (ResultSet resultSet = pt.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getString("WarehouseName");
@@ -122,9 +122,26 @@ public class WarehouseDAO {
 
 
     public static void main(String[] args) {
-        WarehouseDAO warehouseDAO = new WarehouseDAO();
-        for(Warehouse warehouse : warehouseDAO.getAllWareHouse()){
-            System.out.println(warehouse.getWarehouseName());
+        try {
+            // Test with valid warehouse ID
+            String warehouseName = getWarehouseNameById("W001");
+            if (warehouseName != null) {
+                System.out.println("Warehouse found: " + warehouseName);
+            } else {
+                System.out.println("Warehouse with ID WH001 not found.");
+            }
+
+            // Test with non-existent warehouse ID
+            String nonExistentWarehouse = getWarehouseNameById("INVALID_ID");
+            if (nonExistentWarehouse != null) {
+                System.out.println("Warehouse found: " + nonExistentWarehouse);
+            } else {
+                System.out.println("Warehouse with ID INVALID_ID not found.");
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Database error occurred: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
