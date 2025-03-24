@@ -63,9 +63,42 @@
               </div>
             </div>
 
+            <%
+              ServletContext context = application;
+              String sectionID = request.getParameter("id");
+
+              // Check for success message
+              String successMessage = (String) context.getAttribute("successMessage_" + sectionID);
+              if (successMessage != null && !successMessage.isEmpty()) {
+            %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <%= successMessage %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <%
+                // Clear the message after displaying it
+                context.removeAttribute("successMessage_" + sectionID);
+              }
+
+              // Check for error message
+              String errorMessage = (String) context.getAttribute("errorMessage_" + sectionID);
+              if (errorMessage != null && !errorMessage.isEmpty()) {
+            %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <%= errorMessage %>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <%
+                // Clear the message after displaying it
+                context.removeAttribute("errorMessage_" + sectionID);
+              }
+            %>
+
+
             <!-- Bins associated with this section, if any -->
             <div class="sherah-card-header mt-4 d-flex justify-content-between align-items-center">
               <h4>Bins in this Section</h4>
+
               <a href="addBin?sectionID=${section.sectionID}" class="btn btn-success btn-sm">
                 <i class="fas fa-plus-circle"></i> Add New Bin
               </a>
@@ -102,6 +135,7 @@
                       </td>
                       <td>
                         <a href="viewBin?binID=${bin.binID}" class="btn btn-sm btn-info">View</a>
+                        <a href="updateBin?binID=${bin.binID}" class="btn btn-sm btn-warning">Update</a>
                       </td>
                     </tr>
                   </c:forEach>
