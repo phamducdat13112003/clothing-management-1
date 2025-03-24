@@ -1,14 +1,13 @@
 package org.example.clothingmanagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class BinDetail {
     private String binDetailId;
     private String binId;
@@ -26,9 +25,12 @@ public class BinDetail {
     private String color;
     private String size;
     private String image;
+    private String productName;
 
     public BinDetail(String binDetailId, int quantity) {
         this.binDetailId = binDetailId;
         this.totalQuantity = quantity;
     }
+
+
 }
