@@ -1,14 +1,13 @@
 package org.example.clothingmanagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Bin {
     private String binID;
     private String binName;
@@ -19,4 +18,6 @@ public class Bin {
     // attribute that does not exist in db
     private Double currentCapacity;
     private Double availableCapacity;
+
+
 }
