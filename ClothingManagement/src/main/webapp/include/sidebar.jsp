@@ -285,6 +285,8 @@
                                 </ul>
                             </div>
                         </li>
+                        <c:if test="${account.getRoleId() == 4 || account.getRoleId() == 1}">
+
                         <li><a href="ViewInventoryDocList" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"
@@ -304,6 +306,7 @@
                                             </span>
                                             <span class="menu-bar__name">Inventory</span></span></a></span>
                         </li>
+                        </c:if>
                         <li><a class="collapsed" href="profile-info.html"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
                                                 <svg class="sherah-svg-icon" xmlns="http://www.w3.org/2000/svg"

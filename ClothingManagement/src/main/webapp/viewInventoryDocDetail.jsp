@@ -46,6 +46,12 @@
       text-align: left;
     }
 
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+
     th, td {
       padding: 12px;
       border: 1px solid #ddd;
@@ -98,7 +104,7 @@
 <!-- sherah Dashboard -->
 <section class="sherah-adashboard sherah-show">
   <div class="container">
-
+<h2>View InventoryDoc Detail</h2>
       <table border="1">
         <tr>
           <th>Product Detail ID</th>
@@ -106,23 +112,23 @@
           <th>Color</th>
           <th>Size</th>
           <th>Original Quantity</th>
-          <th>Recount Quantity</th>
-          <th>Difference</th>
+<%--          <th>Recount Quantity</th>--%>
+<%--          <th>Difference</th>--%>
         </tr>
         <c:forEach var="detail" items="${listInvenDoc}">
           <tr>
             <td>${detail.productDetailId}</td>
-            <td>${detail.productDetailId}</td>
+            <td>${detail.productName}</td>
             <td>${detail.color}</td>
             <td>${detail.size}</td>
             <td>${detail.originalQuantity}</td>
-            <td>
-              <c:choose>
-                <c:when test="${detail.recountQuantity == -1}">0</c:when>
-                <c:otherwise>${detail.recountQuantity}</c:otherwise>
-              </c:choose>
-            </td>
-            <td>Ahihi</td>
+<%--            <td>--%>
+<%--              <c:choose>--%>
+<%--                <c:when test="${detail.recountQuantity == -1}">0</c:when>--%>
+<%--                <c:otherwise>${detail.recountQuantity}</c:otherwise>--%>
+<%--              </c:choose>--%>
+<%--            </td>--%>
+<%--            <td>Ahihi</td>--%>
           </tr>
         </c:forEach>
       </table>

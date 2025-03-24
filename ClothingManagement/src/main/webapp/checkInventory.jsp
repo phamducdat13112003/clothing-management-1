@@ -182,8 +182,9 @@
             </table>
 
             <input type="hidden" name="inventoryDocId" value="${inventoryDocId}">
+            <input type="hidden" name="binId" value="${binId}">
             <button type="submit">Submit</button>
-            <button type="reset">Cancel</button>
+            <button type="button" onclick="window.location.href='ViewInventoryDocList'">Cancel</button>
         </form>
 
         <script>

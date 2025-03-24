@@ -129,11 +129,11 @@
 <section class="sherah-adashboard sherah-show">
     <div class="container">
         <h2>Inventory Doc List</h2>
-<%--        <c:if test="${account.roleId == 1 }">--%>
+        <c:if test="${account.roleId == 1 }">
             <form action="CreateInventoryDocServlet" method="get"><%-- tạo kiểm kho--%>
                 <button type="submit">Add New InventoryDoc</button>
             </form>
-<%--        </c:if>--%>
+        </c:if>
         <table border="1">
             <tr>
                 <th>InventoryDocID</th>
