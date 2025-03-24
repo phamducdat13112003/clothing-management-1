@@ -13,7 +13,23 @@ public class TOService {
         return transferOrderDAO.hasProcessingTO(binID);
     }
 
-    public List<TransferOrder> getAllTransferOrders(){
-        return transferOrderDAO.getAllTransferOrders();
+    public List<TransferOrder> getTransferOrdersPending(int page, int pageSize){
+        return transferOrderDAO.getTransferOrdersPending(page, pageSize);
+    }
+
+    public boolean updateTransferOrderStatus(String toID){
+        return transferOrderDAO.updateTransferOrderStatus(toID);
+    }
+
+    public int countTransferOrdersPending(){
+        return transferOrderDAO.countTransferOrdersPending();
+    }
+
+    public List<TransferOrder> searchTransferOrdersByTOID(String toID, int page, int pageSize){
+        return transferOrderDAO.searchTransferOrdersByTOID(toID, page, pageSize);
+    }
+
+    public int countTransferOrdersByTOID(String toID){
+        return transferOrderDAO.countTransferOrdersByTOID(toID);
     }
 }

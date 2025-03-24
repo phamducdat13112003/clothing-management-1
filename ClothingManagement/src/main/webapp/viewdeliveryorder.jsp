@@ -34,169 +34,7 @@
   <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    .sherah-popup {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.5);
-    }
-
-    .sherah-popup-content {
-      background-color: #fff;
-      margin: 15% auto;
-      padding: 20px;
-      width: 50%;
-      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-      border-radius: 5px;
-      animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .sherah-popup-close {
-      float: right;
-      font-size: 24px;
-      cursor: pointer;
-    }
-
-    .popup-title {
-      text-align: center;
-      font-size: 22px;
-      color: #2c3e50;
-      font-weight: bold;
-    }
-
-    .popup-body {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-    }
-
-    .supplier-info, .product-info, .order-info {
-      width: 48%;
-      background: #ecf0f1;
-      padding: 10px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-    }
-
-    .product-image {
-      display: block;
-      width: 100px;
-      height: 100px;
-      object-fit: cover;
-      margin-bottom: 10px;
-    }
-
-    @keyframes fadeIn {
-      from {
-        opacity: 0;
-        transform: scale(0.9);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
-    }
-
-    .search-form {
-      display: flex;
-      align-items: center;
-      gap: 10px; /* Khoảng cách giữa input và button */
-    }
-
-    .search-form input {
-      flex: 1; /* Input mở rộng để chiếm hết không gian trống */
-      padding: 8px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .search-form button {
-      padding: 8px 12px;
-      border-radius: 5px;
-      background-color: #6c757d;
-      color: white;
-      border: none;
-      cursor: pointer;
-    }
-
-    .search-form button:hover {
-      background-color: #5a6268;
-    }
-
-    .pagination-container {
-      margin-top: 15px;
-      text-align: center;
-    }
-
-    .pagination-btn {
-      margin: 2px;
-      padding: 5px 10px;
-      border: 1px solid #ccc;
-      cursor: pointer;
-    }
-
-    .pagination-btn.active {
-      background-color: #007bff;
-      color: white;
-      border-color: #007bff;
-    }
-    /* Định dạng chung cho các thẻ <a> */
-    .sherah-table__product-content a {
-      font-weight: bold;
-      text-decoration: none;
-      padding: 4px 8px;
-      border-radius: 5px;
-      transition: all 0.3s ease-in-out;
-      display: inline-block;
-    }
-
-    /* Màu sắc theo trạng thái */
-    .status-pending a {
-      color: #f39c12; /* Cam vàng */
-      background: rgba(243, 156, 18, 0.1);
-      border: 1px solid #f39c12;
-    }
-
-    .status-confirmed a {
-      color: #3498db; /* Xanh dương */
-      background: rgba(52, 152, 219, 0.1);
-      border: 1px solid #3498db;
-    }
-
-    .status-processing a {
-      color: #e67e22; /* Cam */
-      background: rgba(230, 126, 34, 0.1);
-      border: 1px solid #e67e22;
-    }
-
-    .status-done a {
-      color: #2ecc71; /* Xanh lá */
-      background: rgba(46, 204, 113, 0.1);
-      border: 1px solid #2ecc71;
-    }
-
-    .status-cancel a {
-      color: #e74c3c; /* Đỏ */
-      background: rgba(231, 76, 60, 0.1);
-      border: 1px solid #e74c3c;
-    }
-
-    /* Hiệu ứng hover */
-    .sherah-table__product-content a:hover {
-      background: rgba(0, 0, 0, 0.1);
-      color: #000;
-      transform: scale(1.05);
-    }
-
-
-
-  </style>
-
+  <link rel="stylesheet" href="css/styleviewdo.css">
 </head>
 <body id="sherah-dark-light">
 <div class="sherah-body-area">
@@ -329,6 +167,9 @@
     let rows = table.querySelectorAll("tr");
     let rowsPerPage = 5; // Số dòng trên mỗi trang
     let currentPage = 1;
+    let pagesToShow = 5; // Số trang hiển thị trong dãy
+    let totalPages = Math.ceil(rows.length / rowsPerPage);
+    let startPage = 1; // Trang bắt đầu của dãy
 
     function displayTablePage(page) {
       let start = (page - 1) * rowsPerPage;
@@ -339,11 +180,24 @@
     }
 
     function createPaginationButtons() {
-      let totalPages = Math.ceil(rows.length / rowsPerPage);
       let paginationContainer = document.getElementById("pagination");
       paginationContainer.innerHTML = "";
 
-      for (let i = 1; i <= totalPages; i++) {
+      if (totalPages > pagesToShow) {
+        let prevBtn = document.createElement("button");
+        prevBtn.innerText = "Previous";
+        prevBtn.disabled = startPage === 1;
+        prevBtn.addEventListener("click", function () {
+          if (startPage > 1) {
+            startPage -= pagesToShow;
+            updatePagination();
+          }
+        });
+        paginationContainer.appendChild(prevBtn);
+      }
+
+      let endPage = Math.min(startPage + pagesToShow - 1, totalPages);
+      for (let i = startPage; i <= endPage; i++) {
         let btn = document.createElement("button");
         btn.innerText = i;
         btn.classList.add("pagination-btn");
@@ -357,12 +211,31 @@
         });
         paginationContainer.appendChild(btn);
       }
+
+      if (totalPages > pagesToShow) {
+        let nextBtn = document.createElement("button");
+        nextBtn.innerText = "Next";
+        nextBtn.disabled = endPage === totalPages;
+        nextBtn.addEventListener("click", function () {
+          if (endPage < totalPages) {
+            startPage += pagesToShow;
+            updatePagination();
+          }
+        });
+        paginationContainer.appendChild(nextBtn);
+      }
+    }
+
+    function updatePagination() {
+      createPaginationButtons();
+      displayTablePage(currentPage);
+      updateActiveButton();
     }
 
     function updateActiveButton() {
       let buttons = document.querySelectorAll(".pagination-btn");
       buttons.forEach((btn, index) => {
-        btn.classList.toggle("active", index + 1 === currentPage);
+        btn.classList.toggle("active", parseInt(btn.innerText) === currentPage);
       });
     }
 

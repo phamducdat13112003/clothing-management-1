@@ -114,7 +114,7 @@ public class AddAccountServlet extends HttpServlet {
             request.setAttribute("message", "Appear error can't add account");
             request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
         } catch (MessagingException e) {
-            request.setAttribute("message", "Failed to send email!");
+            request.setAttribute("message", "Account successfully added but failed to send email!");
             request.getRequestDispatcher("./manageAccount.jsp").forward(request, response);
         }
         int totalPages = (int) Math.ceil((double) totalAccounts / pageSize);

@@ -29,7 +29,11 @@ public class EmployeeProfileServlet extends HttpServlet {
 
         switch (action) {
             case "view":
-                viewEmployee(request, response);
+                try {
+                    viewEmployee(request, response);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
                 break;
             default:
                 response.getWriter().write("Invalid action1.");
@@ -47,15 +51,17 @@ public class EmployeeProfileServlet extends HttpServlet {
         }
     }
 
-    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String employeeID = request.getParameter("employeeID");
+    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
+        HttpSession session = request.getSession();
+        String employeeID = (String) session.getAttribute("employeeId");
+        System.out.println("employeeID: " + employeeID);
+        String warehouseID = (String) session.getAttribute("warehouseId");
+        System.out.println("warehouse id received: " + warehouseID);
+
+
         EmployeeDAO employeeDAO = new EmployeeDAO();
         List<Employee> employees = employeeDAO.getAllEmployees();
 
-        System.out.println("Employees in DB:");
-        for (Employee emp : employees) {
-            System.out.println(emp.getEmployeeID()); // Debugging
-        }
 
         Employee employee = null;
         // Tìm nhân viên với ID đã cho
@@ -69,25 +75,17 @@ public class EmployeeProfileServlet extends HttpServlet {
 
         if (employee != null) {
             String roleName = null;
+            roleName = employeeDAO.getRoleNameByEmployeeID(employeeID);
             String warehouseName = null;
-                //warehouseName = WarehouseDAO.getWarehouseNameById(employee.getWarehouseID());
-                //roleName = RoleDAO.getRoleNameById(employee.getRoleId());
+            try {
 
-            System.out.println("---- Employee Information ----");
-            System.out.println("Employee ID: " + employee.getEmployeeID());
-            System.out.println("Name: " + employee.getEmployeeName());
-            System.out.println("Email: " + employee.getEmail());
-            System.out.println("Phone: " + employee.getPhone());
-            System.out.println("Address: " + employee.getAddress());
-            System.out.println("Gender: " + employee.isGender());
-            System.out.println("Date of Birth: " + employee.getDob());
-            System.out.println("Status: " + employee.getStatus());
-            //System.out.println("Role ID: " + employee.getRoleId());
-            System.out.println("Warehouse ID: " + employee.getWarehouseID());
-            System.out.println("Image URL: " + employee.getImage());
-            System.out.println("Role Name: " + roleName);
-            System.out.println("Warehouse Name: " + warehouseName);
-            System.out.println("------------------------------");
+                warehouseName = WarehouseDAO.getWarehouseNameById(warehouseID);
+                System.out.println("Warehouse name retrieved: " + warehouseName);
+            } catch (Exception e) {
+                System.out.println("Error retrieving warehouse name: " + e.getMessage());
+                e.printStackTrace();
+            }
+
 
 
             //Luu rolename vao session

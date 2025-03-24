@@ -114,7 +114,7 @@
                             <div class="row align-items-center justify-content-between">
                                 <div class="col-6">
                                     <div class="sherah-breadcrumb mg-top-30">
-                                        <h2 class="sherah-breadcrumb__title">Manage Bin ${section.sectionName} </h2>
+                                        <h2 class="sherah-breadcrumb__title">Manage Bin "${section.sectionName}" </h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="list-bin?id=${section.sectionID}">Home</a></li>
                                             <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
@@ -184,11 +184,13 @@
                                                                 Detail
                                                             </a>
                                                         </p>
-                                                        <p class="sherah-table__product-desc">
-                                                            <a href="javascript:void(0);" onclick="confirmDeleteBin('${bin.binID}')" class="delete-link">
-                                                                Delete
-                                                            </a>
-                                                        </p>
+                                                        <c:if test="${account.getRoleId() == 1}">
+                                                            <p class="sherah-table__product-desc">
+                                                                <a href="javascript:void(0);" onclick="confirmDeleteBin('${bin.binID}')" class="delete-link">
+                                                                    Delete
+                                                                </a>
+                                                            </p>
+                                                        </c:if>
                                                     </div>
                                                 </td>
                                             </tr>

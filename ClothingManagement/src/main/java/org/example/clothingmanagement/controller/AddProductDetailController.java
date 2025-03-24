@@ -72,7 +72,7 @@ public class AddProductDetailController extends HttpServlet {
         } else {
             productDetailId = productId + "-" + "001";
         }
-        int status = 1;
+        int status = 0;
 
         // get image
         String urlImage = "";
