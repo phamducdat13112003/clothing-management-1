@@ -110,12 +110,8 @@
 
                                                                         <div class="sherah-profile-info__v2 mg-top-30">
                                                                             <h3 class="sherah-profile-info__heading mg-btm-30">
-                                                                                Personal Information</h3>
-
-
-                                                                            <h2>Add New Product</h2>
-
-                                                                            <div class="col-lg-6 col-12">
+                                                                                Add New Product Detail</h3>
+                                                                            <div class="col-lg-12 col-12">
                                                                                 <!-- Basic Information -->
                                                                                 <div class="product-form-box sherah-border mg-top-30">
                                                                                     <h4 class="form-title m-0">Basic
