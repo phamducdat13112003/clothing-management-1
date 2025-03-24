@@ -106,7 +106,7 @@
                                         <h2 class="sherah-breadcrumb__title">Manage Section ${sectionType.sectionTypeName} </h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="view-list-section?stid=${sectionType.sectionTypeId}">Home</a></li>
-<%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
+                                            <li class="active"><a href="addsection">Add Section</a></li>
                                         </ul>
                                         <c:if test="${not empty message}">
                                             <span class="error-message">${message}</span>
@@ -156,7 +156,10 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc" style="display: inline-block; margin-right: 10px;">
-                                                            <a href="${pageContext.request.contextPath}/list-bin?id=${s.sectionID}">Detail</a>
+                                                            <a href="list-bin?id=${s.sectionID}">Detail</a>
+                                                        </p>
+                                                        <p class="sherah-table__product-desc" style="display: inline-block; margin-right: 10px;">
+                                                            <a href="editsection?sectionID=${s.sectionID}">Edit</a>
                                                         </p>
                                                         <c:if test="${account.getRoleId() == 1}">
                                                             <p class="sherah-table__product-desc" style="display: inline-block;">
@@ -167,7 +170,6 @@
                                                 </td>
                                             </tr>
                                         </c:forEach>
-
                                     </c:if>
                                     <c:if test="${empty list}">
                                         <tr>
@@ -193,8 +195,6 @@
                         <!-- End Dashboard Inner -->
                     </div>
                 </div>
-
-
             </div>
         </div>
     </section>

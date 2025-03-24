@@ -87,7 +87,6 @@ public class EmployeeProfileServlet extends HttpServlet {
             }
 
 
-
             //Luu rolename vao session
             request.getSession().setAttribute("employee", employee);
             request.getSession().setAttribute("warehouseName", warehouseName);
