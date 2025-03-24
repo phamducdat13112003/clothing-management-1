@@ -71,10 +71,6 @@
                                 <ul class="menu-bar__one-dropdown">
                                     <li><a href="${pageContext.request.contextPath}/view-list-section-type"><span class="menu-bar__text"><span class="menu-bar__name">List SectionType</span></span></a>
                                     </li>
-                                    <li><a href="vendor-list.html"><span class="menu-bar__text"><span
-                                            class="menu-bar__name">Vendor List</span></span></a></li>
-                                    <li><a href="vendor-profile.html"><span class="menu-bar__text"><span
-                                            class="menu-bar__name">Vendor Profile</span></span></a></li>
                                 </ul>
                             </div>
                         </li>
