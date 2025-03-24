@@ -1,7 +1,10 @@
 package org.example.clothingmanagement.repository;
 
+import jakarta.servlet.ServletContext;
 import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.BinDetail;
+import org.example.clothingmanagement.entity.Product;
+import org.example.clothingmanagement.entity.ProductDetail;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +17,8 @@ import java.util.Optional;
 import static org.example.clothingmanagement.repository.DBContext.getConnection;
 
 public class BinDAO {
+
+
     // Add this method to the existing BinDAO class
     public boolean addBin(Bin bin) {
         try(Connection con = DBContext.getConnection()) {
@@ -712,5 +717,329 @@ public class BinDAO {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    public boolean updateBin(Bin bin) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "UPDATE Bin SET BinName = ?, Status = ? WHERE BinID = ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, bin.getBinName());
+            ps.setBoolean(2, bin.isStatus());
+            ps.setString(3, bin.getBinID());
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0; // Return true if update was successful
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean isBinNameDuplicateInSection(String binName, String sectionID, String currentBinID) {
+        String sql = "SELECT COUNT(*) FROM bin WHERE binName = ? AND sectionID = ? AND binID != ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, binName);
+            ps.setString(2, sectionID);
+            ps.setString(3, currentBinID);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public List<BinDetail> getBinProductDetails(String binId) throws SQLException {
+        List<BinDetail> binDetails = new ArrayList<>();
+
+        String sql = "SELECT bd.binDetailId, bd.quantity, " +
+                "pd.ProductDetailID, pd.Weight, pd.Color, pd.Size, " +
+                "p.ProductName " +
+                "FROM bindetail bd " +
+                "JOIN productdetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
+                "JOIN product p ON pd.ProductID = p.ProductID " +
+                "WHERE bd.binId = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, binId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    BinDetail dto = new BinDetail();
+                    dto.setBinDetailId(rs.getString("binDetailId"));
+                    dto.setProductDetailId(rs.getString("ProductDetailID"));
+                    dto.setProductName(rs.getString("ProductName"));
+                    dto.setQuantity(rs.getInt("quantity"));
+                    dto.setWeight(rs.getDouble("Weight"));
+                    dto.setColor(rs.getString("Color"));
+                    dto.setSize(rs.getString("Size"));
+
+                    binDetails.add(dto);
+                }
+            }
+        }
+
+        return binDetails;
+    }
+
+    public List<String> getAllDistinctMaterials() {
+        List<String> materials = new ArrayList<>();
+        String sql = "SELECT DISTINCT Material FROM product ORDER BY Material";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                materials.add(rs.getString("Material"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting distinct materials: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return materials;
+    }
+
+    /**
+     * Get all distinct seasons from products
+     *
+     * @return List of distinct seasons
+     */
+    public List<String> getAllDistinctSeasons() {
+        List<String> seasons = new ArrayList<>();
+        String sql = "SELECT DISTINCT Seasons FROM product ORDER BY Seasons";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                seasons.add(rs.getString("Seasons"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting distinct seasons: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return seasons;
+    }
+
+    /**
+     * Get all distinct countries of origin (MadeIn)
+     *
+     * @return List of distinct countries
+     */
+    public List<String> getAllDistinctMadeIn() {
+        List<String> countries = new ArrayList<>();
+        String sql = "SELECT DISTINCT MadeIn FROM product ORDER BY MadeIn";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                countries.add(rs.getString("MadeIn"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting distinct countries: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return countries;
+    }
+
+    /**
+     * Get product details with pagination and filtering
+     *
+     * @param offset The starting position for pagination
+     * @param limit The number of records to return
+     * @param search The search text for product name/ID
+     * @param material Filter by material
+     * @param season Filter by season
+     * @param madeIn Filter by country of origin
+     * @return List of product details
+     */
+    public List<ProductDetail> getProductDetailsWithFilters(int offset, int limit,
+                                                            String search, String material,
+                                                            String season, String madeIn) {
+        List<ProductDetail> productDetails = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(
+                "SELECT pd.ProductDetailID, pd.Quantity, pd.Weight, pd.Color, pd.Size, pd.ProductImage, " +
+                        "p.ProductID, p.ProductName, p.Material, p.Seasons, p.MadeIn " +
+                        "FROM productdetail pd " +
+                        "JOIN product p ON pd.ProductID = p.ProductID " +
+                        "WHERE 1=1 "
+        );
+
+        // Add filter conditions
+        List<Object> params = new ArrayList<>();
+
+        // Search filter (product name or product detail ID)
+        if (search != null && !search.isEmpty()) {
+            sql.append("AND (p.ProductName LIKE ? OR pd.ProductDetailID LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+
+        // Material filter
+        if (material != null && !material.isEmpty()) {
+            sql.append("AND p.Material = ? ");
+            params.add(material);
+        }
+
+        // Season filter
+        if (season != null && !season.isEmpty()) {
+            sql.append("AND p.Seasons = ? ");
+            params.add(season);
+        }
+
+        // Made In filter
+        if (madeIn != null && !madeIn.isEmpty()) {
+            sql.append("AND p.MadeIn = ? ");
+            params.add(madeIn);
+        }
+
+        // Add ordering and pagination
+        sql.append("ORDER BY p.ProductName, pd.ProductDetailID ");
+        sql.append("LIMIT ?, ?");
+        params.add(offset);
+        params.add(limit);
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    // Create and populate ProductDetail object
+                    ProductDetail detail = new ProductDetail();
+                    detail.setId(rs.getString("ProductDetailID"));
+                    detail.setQuantity(rs.getInt("Quantity"));
+                    detail.setWeight(rs.getDouble("Weight"));
+                    detail.setColor(rs.getString("Color"));
+                    detail.setSize(rs.getString("Size"));
+
+                    // Create and populate Product object
+                    Product product = new Product();
+                    product.setId(rs.getString("ProductID"));
+                    product.setName(rs.getString("ProductName"));
+                    product.setMaterial(rs.getString("Material"));
+                    product.setSeasons(rs.getString("Seasons"));
+                    product.setMadeIn(rs.getString("MadeIn"));
+
+                    // Set product in product detail
+                    detail.setProduct(product);
+
+                    productDetails.add(detail);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error getting product details with filters: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return productDetails;
+    }
+
+    /**
+     * Count total product details with filters applied
+     *
+     * @param search The search text for product name/ID
+     * @param material Filter by material
+     * @param season Filter by season
+     * @param madeIn Filter by country of origin
+     * @return Total count of matching records
+     */
+    public int countProductDetailsWithFilters(String search, String material,
+                                              String season, String madeIn) {
+        int count = 0;
+        StringBuilder sql = new StringBuilder(
+                "SELECT COUNT(*) as total " +
+                        "FROM productdetail pd " +
+                        "JOIN product p ON pd.ProductID = p.ProductID " +
+                        "WHERE 1=1 "
+        );
+
+        // Add filter conditions
+        List<Object> params = new ArrayList<>();
+
+        // Search filter (product name or product detail ID)
+        if (search != null && !search.isEmpty()) {
+            sql.append("AND (p.ProductName LIKE ? OR pd.ProductDetailID LIKE ?) ");
+            params.add("%" + search + "%");
+            params.add("%" + search + "%");
+        }
+
+        // Material filter
+        if (material != null && !material.isEmpty()) {
+            sql.append("AND p.Material = ? ");
+            params.add(material);
+        }
+
+        // Season filter
+        if (season != null && !season.isEmpty()) {
+            sql.append("AND p.Seasons = ? ");
+            params.add(season);
+        }
+
+        // Made In filter
+        if (madeIn != null && !madeIn.isEmpty()) {
+            sql.append("AND p.MadeIn = ? ");
+            params.add(madeIn);
+        }
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql.toString())) {
+
+            // Set parameters
+            for (int i = 0; i < params.size(); i++) {
+                stmt.setObject(i + 1, params.get(i));
+            }
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt("total");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Error counting product details with filters: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
+    public int getBinCountForSection(String sectionID) {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM bin WHERE sectionID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, sectionID);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    count = rs.getInt(1);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
     }
 }
