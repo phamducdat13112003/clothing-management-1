@@ -8,6 +8,8 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Employee {
     private String employeeID;
     private String employeeName;
