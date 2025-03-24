@@ -77,9 +77,7 @@ public class EditEmployeeServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         EmployeeService employeeService = new EmployeeService();
         AccountService accountService = new AccountService();
-        WarehouseDAO warehouseDAO = new WarehouseDAO();
         StringBuilder message = new StringBuilder();
-        List<Warehouse> listWarehouse = null;
         List<Role> list = null;
         Employee employee = null;
         int page = 1;
@@ -98,9 +96,7 @@ public class EditEmployeeServlet extends HttpServlet {
         String genderParam = request.getParameter("gender");
         boolean gender = "1".equals(genderParam);
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dob"));
-        String warehouseID = request.getParameter("warehouse");
         String status = request.getParameter("status");
-        listWarehouse = warehouseDAO.getAllWareHouse();
         if (!isValidEmail(email)) {
             request.setAttribute("errorEmail", "Invalid email");
         }
@@ -130,10 +126,9 @@ public class EditEmployeeServlet extends HttpServlet {
             request.setAttribute("message", message.toString());
             request.setAttribute("employee", employee);
             request.setAttribute("list", list);
-            request.setAttribute("listWarehouse", listWarehouse);
             request.getRequestDispatcher("./editEmployee.jsp").forward(request, response);
         }else{
-            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, status, warehouseID, "");
+            Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, status, "W001", "");
             Part part = request.getPart("img");
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();
@@ -263,6 +258,6 @@ public class EditEmployeeServlet extends HttpServlet {
         return false;
     }
     private boolean isValidName(String name) {
-        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặêếềểễệôốồổỗộơớờởỡợíìịỉĩĩêêôóồỗổởởỏòôîịøñç]+$");
+        return name.matches("^[a-zA-Z\\sàáạảãâấầẩẫậăắằẳẵặèéẹẻẽêếềểễệìíịỉĩòóọỏõôốồổỗộơớờởỡợùúụủũưứừửữựýỳỵỷỹđĐ]+$");
     }
 }

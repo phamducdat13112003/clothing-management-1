@@ -107,7 +107,7 @@
               <div class="sherah-page-inner sherah-border sherah-basic-page sherah-default-bg mg-top-25 p-0">
                 <form class="sherah-wc__form-main" action="editemployee" method="post" enctype="multipart/form-data">
                   <div class="row">
-                    <div class="col-lg-6 col-12">
+                    <div class="col-lg-12 col-12">
                       <!-- Basic Information -->
                       <div class="product-form-box sherah-border mg-top-30">
                         <h4 class="form-title m-0">Basic Information</h4>
@@ -199,17 +199,6 @@
                       <div class="product-form-box sherah-border mg-top-30">
                         <h4 class="form-title m-0">Organization</h4>
                         <div class="col-lg-6 col-md-6 col-12">
-                          <div class="form-group">
-                            <label class="sherah-wc__form-label">Warehouse:  <span class="required">*</span></label>
-                              <select class="form-group__input" name="warehouse" aria-label="Default select example">
-                                  <c:forEach items="${listWarehouse}" var="ware">
-                                      <option value="${ware.warehouseId}"
-                                              <c:if test="${ware.warehouseId == employee.warehouseID}">selected="selected"</c:if>>
-                                              ${ware.warehouseName}
-                                      </option>
-                                  </c:forEach>
-                              </select>
-                          </div>
                           <div class="col-12">
                             <div class="form-group">
                               <label class="sherah-wc__form-label">Status <span class="required">*</span></label>

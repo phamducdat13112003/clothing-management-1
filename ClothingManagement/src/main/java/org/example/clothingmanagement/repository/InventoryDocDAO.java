@@ -2,6 +2,7 @@ package org.example.clothingmanagement.repository;
 
 import org.example.clothingmanagement.entity.*;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -315,6 +316,79 @@ public class InventoryDocDAO {
             e.printStackTrace();
         }
     }
+
+    // Kiểm tra xem có thể thêm sản phẩm vào bin hay không
+    public static boolean canAddProductsToBin(String binId, List<String> productDetailIds, List<Integer> quantities) {
+        String maxCapacityQuery = "SELECT MaxCapacity FROM bin WHERE BinID = ?";
+        String existingWeightQuery = "SELECT SUM(pd.Weight * bd.Quantity) FROM bindetail bd " +
+                "JOIN productdetail pd ON bd.ProductDetailId = pd.ProductDetailID " +
+                "WHERE bd.BinID = ? AND bd.ProductDetailId NOT IN (";
+        String productWeightQuery = "SELECT Weight FROM productdetail WHERE ProductDetailID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement maxCapStmt = conn.prepareStatement(maxCapacityQuery);
+             PreparedStatement productWeightStmt = conn.prepareStatement(productWeightQuery)) {
+
+            // Lấy giá trị MaxCapacity của Bin
+            maxCapStmt.setString(1, binId);
+            ResultSet rs = maxCapStmt.executeQuery();
+            if (!rs.next()) return false;
+            double maxCapacity = rs.getDouble(1);
+
+            // Tính tổng trọng lượng sản phẩm mới được thêm vào (x)
+            double x = 0;
+            for (int i = 0; i < productDetailIds.size(); i++) {
+                productWeightStmt.setString(1, productDetailIds.get(i));
+                ResultSet weightRs = productWeightStmt.executeQuery();
+                if (weightRs.next()) {
+                    double weight = weightRs.getDouble(1);
+                    x += weight * quantities.get(i);
+                }
+            }
+
+            // Tạo câu truy vấn động để lấy tổng trọng lượng sản phẩm cũ (y)
+            StringBuilder queryBuilder = new StringBuilder(existingWeightQuery);
+            for (int i = 0; i < productDetailIds.size(); i++) {
+                queryBuilder.append("?");
+                if (i < productDetailIds.size() - 1) queryBuilder.append(", ");
+            }
+            queryBuilder.append(")");
+
+            try (PreparedStatement existingWeightStmt = conn.prepareStatement(queryBuilder.toString())) {
+                existingWeightStmt.setString(1, binId);
+                for (int i = 0; i < productDetailIds.size(); i++) {
+                    existingWeightStmt.setString(i + 2, productDetailIds.get(i));
+                }
+                ResultSet existingWeightRs = existingWeightStmt.executeQuery();
+                double y = existingWeightRs.next() ? existingWeightRs.getDouble(1) : 0;
+
+                // Kiểm tra điều kiện x + y <= z
+                return (x + y) <= maxCapacity;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void updateProductDetailQuantity(List<String> productDetailIds, List<Integer> differenceQuantities) {
+        String sql = "UPDATE productdetail SET Quantity = Quantity + ? WHERE ProductDetailID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < productDetailIds.size(); i++) {
+                pstmt.setInt(1, differenceQuantities.get(i)); // Cộng số lượng chênh lệch vào Quantity hiện tại
+                pstmt.setString(2, productDetailIds.get(i));  // Chọn ProductDetailID cần cập nhật
+                pstmt.addBatch(); // Thêm vào batch để tối ưu
+            }
+
+            pstmt.executeBatch(); // Thực thi batch update
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
 
 

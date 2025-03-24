@@ -139,7 +139,7 @@ mau
     <c:if test="${not empty binsStatusOne}">
       <form action="CreateInventoryDocServlet" method="post">
         <select name="employee" required>
-          <option value="">-- Select Employee --</option>
+          <option value="">-- Assign Employee --</option>
           <c:forEach var="employee" items="${employeeList}">
             <option value="${employee.employeeID}">${employee.employeeName}</option>
           </c:forEach>

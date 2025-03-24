@@ -25,12 +25,12 @@ import java.util.List;
 public class CountInventoryServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-          String BinId = request.getParameter("binId");
+          String binId = request.getParameter("binId");
           String inventoryDocId = request.getParameter("inventoryDocId");
           String employee = request.getParameter("employee");
           String status = request.getParameter("status");
 
-          List <BinDetail> listDetail= InventoryDocDAO.getBinDetailByBinID(BinId);
+          List <BinDetail> listDetail= InventoryDocDAO.getBinDetailByBinID(binId);
           List<InventoryDocDetail> listInvenDoc = InventoryDocDetailDAO.getInventoryDocDetailsByDocID(inventoryDocId);
 
         List<BinDetail> filteredList = new ArrayList<>();
@@ -50,9 +50,28 @@ public class CountInventoryServlet extends HttpServlet {
             }
         }
 
-        if (!listInvenDoc.isEmpty()) {
-            String counterID = listInvenDoc.get(0).getCounterId();
-            String reCounterID = listInvenDoc.get(0).getRecounterId();
+        List<InventoryDocDetail> filterList = new ArrayList<>();
+
+        for (InventoryDocDetail invenDetail : listInvenDoc) {
+            boolean isDuplicate = false;
+
+            for (BinDetail binDetail : listDetail) {
+                if (invenDetail.getProductDetailId().equals(binDetail.getProductDetailId()) &&
+                        invenDetail.getRecountQuantity() == binDetail.getQuantity()) {
+                    isDuplicate = true;
+                    break;  // Nếu tìm thấy trùng, không cần kiểm tra tiếp
+                }
+            }
+
+            // Chỉ thêm vào danh sách mới nếu KHÔNG trùng
+            if (!isDuplicate) {
+                filterList.add(invenDetail);
+            }
+        }
+
+        if (!filterList.isEmpty()) {
+            String counterID = filterList.get(0).getCounterId();
+            String reCounterID = filterList.get(0).getRecounterId();
 
             if (status.equalsIgnoreCase("Pending") && !counterID.equals(employee)) {
                 response.getWriter().write("<script>alert('None of your Business!'); history.back();</script>");
@@ -66,6 +85,7 @@ public class CountInventoryServlet extends HttpServlet {
         }
 
           request.setAttribute("listDetail", filteredList);
+          request.setAttribute("binId", binId);
           request.setAttribute("inventoryDocId", inventoryDocId);
           request.getRequestDispatcher("checkInventory.jsp").forward(request,response);
     }
@@ -74,6 +94,7 @@ public class CountInventoryServlet extends HttpServlet {
         try {
             // Lấy InventoryDocID từ request
             String inventoryDocId = request.getParameter("inventoryDocId");
+            String binId= request.getParameter("binId");
             HttpSession session = request.getSession();
             String accountId = (String) session.getAttribute("account_id");
             String employeeId = InventoryDocDAO.getEmployeeIDByAccountID(accountId);
@@ -82,20 +103,25 @@ public class CountInventoryServlet extends HttpServlet {
             String[] productDetailIds = request.getParameterValues("productdetailId[]");
             String[] recountQuantitiesStr = request.getParameterValues("realQuantity[]");
 
+
             // Chuyển đổi sang danh sách
             List<String> productDetailIdList = new ArrayList<>();
             List<Integer> recountQuantityList = new ArrayList<>();
-
             for (int i = 0; i < productDetailIds.length; i++) {
                 productDetailIdList.add(productDetailIds[i]);
                 recountQuantityList.add(Integer.parseInt(recountQuantitiesStr[i]));
             }
-
-            // Gọi DAO để cập nhật dữ liệu
-            InventoryDocDetailDAO.firstCount(productDetailIdList, recountQuantityList, inventoryDocId);
-            InventoryDocDAO.updateInventoryDocStatus(inventoryDocId,"Counted");
-            // Chuyển hướng sau khi cập nhật thành công
-            response.sendRedirect("ViewInventoryDocList");
+            if(InventoryDocDAO.canAddProductsToBin(binId,productDetailIdList,recountQuantityList)) {
+                // Gọi DAO để cập nhật dữ liệu
+                InventoryDocDetailDAO.firstCount(productDetailIdList, recountQuantityList, inventoryDocId);
+                InventoryDocDAO.updateInventoryDocStatus(inventoryDocId, "Counted");
+                // Chuyển hướng sau khi cập nhật thành công
+                response.sendRedirect("ViewInventoryDocList");
+            }
+            else{
+                response.getWriter().write("<script>alert('Over the Maxcapacity'); history.back();</script>");
+                return; // Dừng xử lý tiếp
+            }
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("ViewInventoryDocList");

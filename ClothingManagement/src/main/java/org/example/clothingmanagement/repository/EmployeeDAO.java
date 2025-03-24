@@ -24,8 +24,6 @@ public class EmployeeDAO {
         return ds;
     }
 
-
-
     public boolean createEmployee(Employee employee) {
         String sql = "INSERT INTO Employee (EmployeeID,EmployeeName, Email, Phone, Address, Gender, Dob, Status, WarehouseID, Image) " +
                 "VALUES (?,?, ?, ?, ?, ?, ?, 'Active', ?, ?)";

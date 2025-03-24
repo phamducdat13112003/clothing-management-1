@@ -46,6 +46,12 @@
             text-align: left;
         }
 
+        h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+
         th, td {
             padding: 12px;
             border: 1px solid #ddd;
@@ -105,6 +111,8 @@
 <!-- sherah Dashboard -->
 <section class="sherah-adashboard sherah-show">
     <div class="container">
+        <h2>Clear Difference</h2>
+
         <form id="actionForm" method="post">
             <table border="1">
                 <tr>
@@ -122,7 +130,7 @@
                             <input type="hidden" name="productDetailId[]" value="${detail.productDetailId}">
                                 ${detail.productDetailId}
                         </td>
-                        <td>${detail.productDetailId}</td> <!-- Hiển thị tên sản phẩm -->
+                        <td>${detail.productName}</td> <!-- Hiển thị tên sản phẩm -->
                         <td>${detail.color}</td>
                         <td>${detail.size}</td>
                         <td>${detail.originalQuantity}</td>
@@ -133,7 +141,9 @@
                                 <c:otherwise>${detail.recountQuantity}</c:otherwise>
                             </c:choose>
                         </td>
-                        <td>Difference</td>
+                        <td> <c:set var="diff" value="${(detail.recountQuantity == -1 ? 0 : detail.recountQuantity)-detail.originalQuantity}" />
+
+                            <input type="hidden" name="difference[]" value="${diff}">${diff}</td>
                     </tr>
                 </c:forEach>
             </table>

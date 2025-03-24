@@ -177,13 +177,15 @@
                         <td>
                             <input type="number" id="realQuantity${status.index}" name="realQuantity[]" oninput="updateDifference(${status.index})"  required>
                         </td>
-                        <td id="difference${status.index}">0</td>            </tr>
+                        <td id="difference${status.index}">0</td>
+                    </tr>
                 </c:forEach>
             </table>
 
             <input type="hidden" name="inventoryDocId" value="${inventoryDocId}">
+            <input type="hidden" name="binId" value="${binId}">
             <button type="submit">Submit</button>
-            <button type="reset">Cancel</button>
+            <button type="button" onclick="window.location.href='ViewInventoryDocList'">Cancel</button>
         </form>
 
         <script>
