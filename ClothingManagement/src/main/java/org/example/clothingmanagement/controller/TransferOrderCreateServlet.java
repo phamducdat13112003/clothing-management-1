@@ -47,8 +47,6 @@ public class TransferOrderCreateServlet extends HttpServlet {
         List<String> binIds = transferOrderDAO.getAllBinIds();
         request.setAttribute("binIds", binIds);
         request.getRequestDispatcher("to-create.jsp").forward(request, response);
-
-
     }
 
     @Override
