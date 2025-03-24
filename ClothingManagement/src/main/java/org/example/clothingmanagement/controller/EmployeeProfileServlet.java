@@ -1,247 +1,150 @@
 package org.example.clothingmanagement.controller;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import org.example.clothingmanagement.validator.ValidateEmployee;
+import org.example.clothingmanagement.entity.Account;
 import org.example.clothingmanagement.entity.Employee;
-import org.example.clothingmanagement.repository.RoleDAO;
-import org.example.clothingmanagement.repository.WarehouseDAO;
-import org.example.clothingmanagement.repository.EmployeeDAO;
-import org.example.clothingmanagement.repository.AccountDAO;
+import org.example.clothingmanagement.service.AccountService;
+import org.example.clothingmanagement.service.EmployeeService;
 
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.time.LocalDate;
-import java.util.List;
+import java.util.UUID;
 
-@MultipartConfig
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024,      // 1 MB
+        maxFileSize = 1024 * 1024 * 5,        // 5 MB
+        maxRequestSize = 1024 * 1024 * 10     // 10 MB
+)
+
 @WebServlet(name = "ViewProfileServlet", value = "/employee")
 public class EmployeeProfileServlet extends HttpServlet {
-
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null || action.isEmpty()) {
-            action = "view";
+        HttpSession session = request.getSession();
+
+        // Check if user is logged in
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect("login.jsp");
+            return;
         }
 
-        switch (action) {
-            case "view":
-                try {
-                    viewEmployee(request, response);
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-                break;
-            default:
-                response.getWriter().write("Invalid action1.");
+        // Get current account and employee info from session
+        Account account = (Account) session.getAttribute("account");
+        String employeeId = session.getAttribute("employeeId").toString();
+
+        try {
+            // Get fresh data from database
+            AccountService accountService = new AccountService();
+            EmployeeService employeeService = new EmployeeService();
+
+            Account currentAccount = accountService.getAccountById(account.getId());
+            Employee employee = employeeService.getEmployeeByEmployeeId(employeeId);
+            System.out.println("Employee Image Path: " + employee.getImage());
+
+            // Set attributes for the JSP
+            request.setAttribute("account", currentAccount);
+            request.setAttribute("employee", employee);
+
+
+            // Forward to profile page
+            RequestDispatcher dispatcher = request.getRequestDispatcher("profile-info.jsp");
+            dispatcher.forward(request, response);
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-
-        if ("update".equals(action)) {
-            updateEmployee(request, response);
-        } else {
-            response.getWriter().write("Invalid action2.");
-        }
-    }
-
-    private void viewEmployee(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, SQLException {
         HttpSession session = request.getSession();
-        String employeeID = (String) session.getAttribute("employeeId");
-        System.out.println("employeeID: " + employeeID);
-        String warehouseID = (String) session.getAttribute("warehouseId");
-        System.out.println("warehouse id received: " + warehouseID);
 
-
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        List<Employee> employees = employeeDAO.getAllEmployees();
-
-
-        Employee employee = null;
-        // Tìm nhân viên với ID đã cho
-        for (Employee emp : employees) {
-            if (emp.getEmployeeID().equals(employeeID)) {
-                employee = emp;
-                break;
-            }
-        }
-
-
-        if (employee != null) {
-            String roleName = null;
-            roleName = employeeDAO.getRoleNameByEmployeeID(employeeID);
-            String warehouseName = null;
-            try {
-
-                warehouseName = WarehouseDAO.getWarehouseNameById(warehouseID);
-                System.out.println("Warehouse name retrieved: " + warehouseName);
-            } catch (Exception e) {
-                System.out.println("Error retrieving warehouse name: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-
-
-            //Luu rolename vao session
-            request.getSession().setAttribute("employee", employee);
-            request.getSession().setAttribute("warehouseName", warehouseName);
-            request.getSession().setAttribute("roleName", roleName);
-
-            request.setAttribute("employee", employee);
-            request.setAttribute("warehouseName", warehouseName);
-            request.getRequestDispatcher("profile-info.jsp").forward(request, response);
-        } else {
-            response.getWriter().write("Employee not found.");
-        }
-    }
-
-
-    private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HttpSession session = request.getSession();
-        String accountID = (String) session.getAttribute("account_id");
-
-        // If accountID is null, return error
-        if (accountID == null || accountID.equals("null")) {
-            response.getWriter().write("Lỗi: Không tìm thấy AccountID trong phiên làm việc.");
+        // Check if user is logged in
+        if (session.getAttribute("account") == null) {
+            response.sendRedirect("login.jsp");
             return;
         }
 
-        // Retrieve roleName and warehouseName from session
-        String roleName = (String) session.getAttribute("roleName");
-        String warehouseName = (String) session.getAttribute("warehouseName");
+        // Get employee ID from session
+        String employeeId = session.getAttribute("employeeId").toString();
 
-        // Get other employee details from request
-        String employeeID = request.getParameter("employeeID");
-        System.out.println("Employee ID: " + employeeID);
-
-        String employeeName = request.getParameter("employeeName");
-        String phone = request.getParameter("phone");
-        String address = request.getParameter("address");
-        String email = request.getParameter("email");
-        String gender = request.getParameter("gender");
-        String dateOfBirth = request.getParameter("dateOfBirth");
-        String status = request.getParameter("status");
-        String image = request.getParameter("image");
-
-
-
-
-        int warehouseID = -1; // Default invalid value
-        String warehouseIdStr = request.getParameter("warehouseID");
-        if (warehouseIdStr != null && !warehouseIdStr.trim().isEmpty()) {
-            try {
-                warehouseID = Integer.parseInt(warehouseIdStr);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid warehouseID: " + warehouseIdStr);
-                response.getWriter().write("Error: Invalid warehouseID.");
+        try {
+            // Get the uploaded file
+            Part filePart = request.getPart("profileImage");
+            if (filePart == null || filePart.getSize() == 0) {
+                session.setAttribute("imageUpdateError", "No image file was selected");
+                response.sendRedirect("profile-info.jsp");
                 return;
             }
-        }
 
-        int roleID = -1; // Default invalid value
-        String roleIdStr = request.getParameter("roleID");
-        if (roleIdStr != null && !roleIdStr.trim().isEmpty()) {
-            try {
-                roleID = Integer.parseInt(roleIdStr);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid roleID: " + roleIdStr);
-                response.getWriter().write("Error: Invalid roleID.");
+            // Validate file type
+            String contentType = filePart.getContentType();
+            if (!contentType.startsWith("image/")) {
+                session.setAttribute("imageUpdateError", "Only image files are allowed");
+                response.sendRedirect("profile-info.jsp");
                 return;
             }
-        }
 
-        // Validate roleID and warehouseID before proceeding
-        if (roleID == -1 || warehouseID == -1) {
-            response.getWriter().write("Error: RoleID or WarehouseID is missing or invalid.");
-            return;
-        }
+            // Get original filename
+            String originalFileName = getOriginalFileName(filePart);
 
+            // Define upload directory
+            String applicationPath = request.getServletContext().getRealPath("");
+            String uploadPath = applicationPath + File.separator + "img";
 
-        String employeeNameError = null;
-        String phoneError = null;
-        String addressError = null;
-        String dobError = null;
+            // Create directory if it doesn't exist
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
 
-        if (!ValidateEmployee.isValidFullName(employeeName)) {
-            employeeNameError = "Tên không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt hoặc khoảng trắng liên tục.";
-        }
-        if (!ValidateEmployee.isValidPhone(phone)) {
-            phoneError = "Số điện thoại không hợp lệ. Vui lòng nhập số điện thoại hợp lệ.";
-        }
-        if (!ValidateEmployee.isValidAddress(address)) {
-            addressError = "Địa chỉ không hợp lệ. Vui lòng không sử dụng ký tự đặc biệt ngoài , . - /.";
-        }
-        if (!ValidateEmployee.isAdult(dateOfBirth)) {
-            dobError = "Người dùng phải trên 18 tuổi.";
-        }
+            // Save the file with original name
+            String filePath = uploadPath + File.separator + originalFileName;
+            filePart.write(filePath);
 
-        // If validation errors, send back to JSP
-        if (employeeNameError != null || phoneError != null || addressError != null || dobError != null) {
-            request.setAttribute("employeeNameError", employeeNameError);
-            request.setAttribute("phoneError", phoneError);
-            request.setAttribute("addressError", addressError);
-            request.setAttribute("dobError", dobError);
+            // Update employee record with new image URL
+            EmployeeService employeeService = new EmployeeService();
+            Employee employee = employeeService.getEmployeeByEmployeeId(employeeId);
 
-            // Prepare employee object
-            Employee employee = new Employee();
-            employee.setEmployeeID(employeeID);
-            employee.setEmployeeName(employeeName);
-            employee.setPhone(phone);
-            employee.setAddress(address);
-            employee.setEmail(email);
-            //employee.setGender(gender);
-            employee.setDob(LocalDate.parse(dateOfBirth));
-            employee.setStatus(status);
-            //employee.setWarehouseID(warehouseID);
-            employee.setImage(image);
-            //employee.setRoleId(roleID);
+            // Set the relative path to the image
+            employee.setImage(originalFileName);
 
-            // Store values in session
-            session.setAttribute("roleName", roleName);
-            session.setAttribute("warehouseName", warehouseName);
+            // Save to database
+            employeeService.updateEmployeeImage(employee);
 
-            request.setAttribute("employee", employee);
-            request.setAttribute("warehouseName", warehouseName);
-            request.setAttribute("roleName", roleName);
-            request.getRequestDispatcher("profile-info.jsp").forward(request, response);
-            return;
-        }
+            // Set success message
+            session.setAttribute("imageUpdateSuccess", "Profile image updated successfully");
 
-        // Create Employee Object for Update
-        Employee employee = new Employee();
-        employee.setEmployeeID(employeeID);
-        employee.setEmployeeName(employeeName);
-        employee.setPhone(phone);
-        employee.setAddress(address);
-        employee.setEmail(email);
-        //employee.setGender(gender);
-        employee.setDob(LocalDate.parse(dateOfBirth));
-        employee.setStatus(status);
-        //employee.setWarehouseID(warehouseID);
-        employee.setImage(image);
-        //employee.setRoleId(roleID);
+            // Redirect to the employee servlet to reload the profile
+            response.sendRedirect(request.getContextPath() + "/employee");
 
-        System.out.println("Updating employee: " + employee.toString());
-
-        // Update the employee in the database
-        boolean isUpdated = EmployeeDAO.updateEmployee(employee);
-
-        // Check if the update was successful
-        if (isUpdated) {
-            request.getSession().setAttribute("originalName", employeeName);
-            request.getSession().setAttribute("successMessage", "Cập nhật thành công!");
-            response.sendRedirect("employee?action=view&employeeID=" + employeeID);
-        } else {
-            response.getWriter().write("Cập nhật thông tin nhân viên thất bại.");
+        } catch (Exception e) {
+            e.printStackTrace();
+            session.setAttribute("imageUpdateError", "Error updating profile image: " + e.getMessage());
+            response.sendRedirect(request.getContextPath() + "/employee");
         }
     }
 
+    private String getOriginalFileName(Part part) {
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+
+        for (String item : items) {
+            if (item.trim().startsWith("filename")) {
+                // Extract filename and remove any path information
+                String filename = item.substring(item.indexOf("=") + 2, item.length() - 1);
+                // Remove potential path information from some browsers
+                return filename.substring(filename.lastIndexOf("\\") + 1)
+                        .substring(filename.lastIndexOf("/") + 1);
+            }
+        }
+        return "unknown_file" + System.currentTimeMillis(); // Fallback filename
+    }
 
 
 }
