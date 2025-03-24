@@ -249,6 +249,34 @@ public class SectionDAO {
         }
     }
 
+    public Section getSectionBySectionId(String sectionId) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT s.sectionID, s.sectionName, s.sectionTypeID, " +
+                    "st.sectionTypeName, st.description " +
+                    "FROM section s " +
+                    "JOIN sectiontype st ON s.sectionTypeID = st.sectionTypeID " +
+                    "WHERE s.sectionID = ?";
+
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setString(1, sectionId);
+
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return Section.builder()
+                        .sectionID(rs.getString("sectionID"))
+                        .sectionName(rs.getString("sectionName"))
+                        .sectionTypeId(rs.getInt("sectionTypeID"))
+                        .sectionTypeName(rs.getString("sectionTypeName"))
+                        .description(rs.getString("description"))
+                        .build();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return null; // Trả về null nếu không tìm thấy section
+    }
+
+
     public List<Section> getSectionsBySectionTypeIsReceiptStorage(){
         try(Connection con = DBContext.getConnection()){
             String sql = "SELECT * FROM section WHERE SectionTypeID = '1'";
@@ -359,6 +387,35 @@ public class SectionDAO {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Section> getAllSectionWithPagination(int page, int pageSize) {
+        try (Connection con = DBContext.getConnection()) {
+            String sql = "SELECT s.sectionID, s.sectionName, s.sectionTypeID, " +
+                    "st.sectionTypeName, st.description " +
+                    "FROM section s " +
+                    "JOIN sectiontype st ON s.sectionTypeID = st.sectionTypeID " +
+                    "LIMIT ? OFFSET ?";
+            PreparedStatement ps = con.prepareStatement(sql);
+            ps.setInt(1, pageSize);
+            ps.setInt(2, (page - 1) * pageSize);
+            ResultSet rs = ps.executeQuery();
+            List<Section> sections = new ArrayList<>();
+            while (rs.next()) {
+                Section section = Section.builder()
+                        .sectionID(rs.getString("sectionID"))
+                        .sectionName(rs.getString("sectionName"))
+                        .sectionTypeId(rs.getInt("sectionTypeID"))
+                        .sectionTypeName(rs.getString("sectionTypeName"))
+                        .description(rs.getString("description"))
+                        .build();
+                sections.add(section);
+            }
+            return sections;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     public Section getSectionByID(String sectionID) {
         try(Connection con = DBContext.getConnection()){
@@ -513,5 +570,22 @@ public class SectionDAO {
             e.printStackTrace();
         }
         return exists;
+    }
+
+    public int getNextSectionNumber(String sectionId) {
+        String sql = "SELECT MAX(CAST(SUBSTRING(SectionID, 3, 3) AS UNSIGNED)) FROM section WHERE SectionID LIKE ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, sectionId + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int maxNumber = rs.getInt(1);
+                    return maxNumber + 1;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 1; // Nếu chưa có thì bắt đầu từ 1
     }
 }

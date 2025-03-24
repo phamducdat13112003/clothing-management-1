@@ -29,6 +29,8 @@ public class ClearDifferenceServlet extends HttpServlet {
 
         List<InventoryDocDetail> filteredList = new ArrayList<>();
 
+
+
         for (InventoryDocDetail invenDetail : listInvenDoc) {
             boolean isDuplicate = false;
 
@@ -45,7 +47,9 @@ public class ClearDifferenceServlet extends HttpServlet {
                 filteredList.add(invenDetail);
             }
         }
-
+        if(filteredList.isEmpty()){
+            filteredList=listInvenDoc;
+        }
         request.setAttribute("listInvenDoc", filteredList);
         request.setAttribute("inventoryDocId", inventoryDocId);
         request.setAttribute("employeeList", employeeList);

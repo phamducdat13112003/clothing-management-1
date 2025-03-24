@@ -142,30 +142,6 @@ public class SectionTypeDAO {
         }
     }
 
-//    public Optional<SectionType> getSectionTypeById(int sectionTypeId){
-//        try(Connection con = DBContext.getConnection()){
-//            StringBuilder sql = new StringBuilder();
-//            sql.append(" SELECT SectionTypeID, SectionTypeName, WarehouseID, Description ");
-//            sql.append(" FROM SectionType ");
-//            sql.append(" WHERE 1=1 ");
-//            sql.append(" AND SectionTypeID=? ");
-//            PreparedStatement ps = con.prepareStatement(sql.toString());
-//            ps.setInt(1, sectionTypeId);
-//            ResultSet rs = ps.executeQuery();
-//            if(rs.next()) {
-//                SectionType sectionType = SectionType.builder()
-//                        .sectionTypeId(rs.getInt("SectionTypeID"))
-//                        .sectionTypeName(rs.getString("SectionTypeName"))
-//                        .warehouseId(rs.getString("WarehouseID"))
-//                        .description(rs.getString("Description"))
-//                        .build();
-//                return Optional.of(sectionType);
-//            }
-//            return Optional.empty();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        }
-//    }
 
     public SectionType getSectionTypeById(int sectionTypeId) {
         try(Connection con = DBContext.getConnection()){
@@ -219,7 +195,22 @@ public class SectionTypeDAO {
         return null; // Trả về null nếu không tìm thấy SectionType
     }
 
+    public String getSectionTypeNameById(int sectionTypeID) {
+        String sectionTypeName = null;
+        String sql = "SELECT SectionTypeName FROM SectionTypes WHERE SectionTypeID = ?";
 
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, sectionTypeID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    sectionTypeName = rs.getString("SectionTypeName");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
-
+        return sectionTypeName;
+    }
 }
