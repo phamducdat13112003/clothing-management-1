@@ -121,6 +121,7 @@
                                             <span class="menu-bar__name">Products</span></span> <span
                                 class="sherah__toggle"></span></a></span>
                             <!-- Dropdown Menu -->
+                            <c:if test="${account.getRoleId() != 3}">
                             <div class="collapse sherah__dropdown" id="menu-item_products" data-bs-parent="#sherahMenu">
                                 <ul class="menu-bar__one-dropdown">
                                     <li><a href="${pageContext.request.contextPath}/product-list"><span
@@ -128,11 +129,14 @@
                                             class="menu-bar__name">Products</span></span></a></li>
                                     <li><a href="${pageContext.request.contextPath}/product-detail-list"><span
                                             class="menu-bar__name">Product Details</span></a></li>
+                                    <c:if test="${account.getRoleId() == 1 && account.getRoleId() == 2}">
                                     <li><a href="${pageContext.request.contextPath}/add-product"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">Upload Product</span></span></a></li>
+                                    </c:if>
                                 </ul>
                             </div>
+                            </c:if>
                         </li>
                         <c:if test="${account.getRoleId() == 3}">
                             <li><a href="account" class="collapsed"><span class="menu-bar__text">
