@@ -1,9 +1,6 @@
 package org.example.clothingmanagement.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +10,8 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @Builder
+@Getter
+@Setter
 public class Product {
     private String id;
     private String name;
@@ -85,4 +84,7 @@ public class Product {
         this.Status = Status;
         this.createdDate = createdDate;
     }
+
+
+
 }
