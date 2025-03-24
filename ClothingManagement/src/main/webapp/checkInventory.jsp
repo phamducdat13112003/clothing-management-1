@@ -167,7 +167,7 @@
                             <input type="hidden" name="productdetailId[]" value="${list.productDetailId}">
                                 ${list.productDetailId}
                         </td>
-                        <td>${list.productDetailId}</td>
+                        <td>${productDetailToProductName[list.productDetailId]}</td>
                         <td>${list.size}</td>
                         <td>${list.color}</td>
                         <td>

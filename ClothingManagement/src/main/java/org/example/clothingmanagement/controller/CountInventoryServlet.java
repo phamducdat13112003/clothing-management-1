@@ -19,6 +19,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @WebServlet(name = "CountInventoryServlet", value = "/CountInventoryServlet")
@@ -32,6 +33,8 @@ public class CountInventoryServlet extends HttpServlet {
 
           List <BinDetail> listDetail= InventoryDocDAO.getBinDetailByBinID(binId);
           List<InventoryDocDetail> listInvenDoc = InventoryDocDetailDAO.getInventoryDocDetailsByDocID(inventoryDocId);
+        Map<String, String> productDetailToProductName = InventoryDocDAO.getProductDetailToProductNameMap();
+        request.setAttribute("productDetailToProductName", productDetailToProductName);
 
         List<BinDetail> filteredList = new ArrayList<>();
 
@@ -68,6 +71,11 @@ public class CountInventoryServlet extends HttpServlet {
                 filterList.add(invenDetail);
             }
         }
+
+        if(filteredList.isEmpty()){
+            filteredList=listDetail;
+        }
+
 
         if (!filterList.isEmpty()) {
             String counterID = filterList.get(0).getCounterId();
