@@ -65,10 +65,15 @@ public class ClearDifferenceServlet extends HttpServlet {
             // Lấy danh sách ProductDetailID và RecountQuantity
             String[] productDetailIds = request.getParameterValues("productDetailId[]");
             String[] recountQuantitiesStr = request.getParameterValues("recountQuantity[]");
+            String[] Difference = request.getParameterValues("difference[]");
 
             // Chuyển đổi sang danh sách
             List<String> productDetailIdList = new ArrayList<>();
             List<Integer> recountQuantityList = new ArrayList<>();
+            List<Integer> differenceList = new ArrayList<>();
+            for (int i = 0; i < Difference.length; i++) {
+                differenceList.add(Integer.parseInt(Difference[i]));
+            }
 
             for (int i = 0; i < productDetailIds.length; i++) {
                 productDetailIdList.add(productDetailIds[i]);
@@ -77,6 +82,7 @@ public class ClearDifferenceServlet extends HttpServlet {
 
             // Gọi DAO để cập nhật dữ liệu
             InventoryDocDAO.updateBinDetails(binId,productDetailIdList, recountQuantityList);
+            InventoryDocDAO.updateProductDetailQuantity(productDetailIdList,differenceList);
             InventoryDocDAO.updateInventoryDocStatus(inventoryDocId,"Confirmed");
             InventoryDocDAO.changeBinStatus(binId,1);
 

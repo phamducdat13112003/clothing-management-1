@@ -177,7 +177,8 @@
                         <td>
                             <input type="number" id="realQuantity${status.index}" name="realQuantity[]" oninput="updateDifference(${status.index})"  required>
                         </td>
-                        <td id="difference${status.index}">0</td>            </tr>
+                        <td id="difference${status.index}">0</td>
+                    </tr>
                 </c:forEach>
             </table>
 

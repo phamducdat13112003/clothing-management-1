@@ -141,7 +141,9 @@
                                 <c:otherwise>${detail.recountQuantity}</c:otherwise>
                             </c:choose>
                         </td>
-                        <td>Difference</td>
+                        <td> <c:set var="diff" value="${(detail.recountQuantity == -1 ? 0 : detail.recountQuantity)-detail.originalQuantity}" />
+
+                            <input type="hidden" name="difference[]" value="${diff}">${diff}</td>
                     </tr>
                 </c:forEach>
             </table>

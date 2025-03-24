@@ -371,6 +371,25 @@ public class InventoryDocDAO {
         return false;
     }
 
+    public static void updateProductDetailQuantity(List<String> productDetailIds, List<Integer> differenceQuantities) {
+        String sql = "UPDATE productdetail SET Quantity = Quantity + ? WHERE ProductDetailID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            for (int i = 0; i < productDetailIds.size(); i++) {
+                pstmt.setInt(1, differenceQuantities.get(i)); // Cộng số lượng chênh lệch vào Quantity hiện tại
+                pstmt.setString(2, productDetailIds.get(i));  // Chọn ProductDetailID cần cập nhật
+                pstmt.addBatch(); // Thêm vào batch để tối ưu
+            }
+
+            pstmt.executeBatch(); // Thực thi batch update
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+
 
 
 }
