@@ -6,7 +6,9 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.example.clothingmanagement.repository.DBContext.getConnection;
 
@@ -387,6 +389,23 @@ public class InventoryDocDAO {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public static Map<String, String> getProductDetailToProductNameMap() {
+        Map<String, String> productDetailMap = new HashMap<>();
+        String sql = "SELECT pd.ProductDetailID, p.ProductName " +
+                "FROM productdetail pd " +
+                "JOIN product p ON pd.ProductID = p.ProductID";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                productDetailMap.put(rs.getString("ProductDetailID"), rs.getString("ProductName"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return productDetailMap;
     }
 
 

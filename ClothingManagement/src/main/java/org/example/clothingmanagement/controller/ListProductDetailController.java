@@ -31,26 +31,6 @@ public class ListProductDetailController extends HttpServlet {
         else{
             product = new Product();
         }
-        List<Category> categories = cs.selectAll();
-        List<Supplier> suppliers = ss.getAllSuppliers();
-        List<Employee> employees = es.getAllEmployee();
-        for(Category c : categories){
-            if(product.getCategoryId().equals(c.getCategoryID())){
-                product.setCategory(c);
-            }
-        }
-        for(Supplier s : suppliers){
-            if(product.getSupplierId().equalsIgnoreCase(s.getSupplierId())){
-                product.setSupplier(s);
-            }
-        }
-        for(Employee e : employees){
-            if(product.getCreatedBy().equalsIgnoreCase(e.getEmployeeID())){
-                product.setEmployee(e);
-            }
-        }
-
-
         // pagination
         int page = 1;
         int pageSize = 5;
@@ -65,8 +45,6 @@ public class ListProductDetailController extends HttpServlet {
         int totalProduct = pds.getAllProductDetailByProductId(product.getId()).size();
         int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
 
-        req.setAttribute("product", product);
-        req.setAttribute("categories", categories);
         req.setAttribute("list", productDetails);
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);

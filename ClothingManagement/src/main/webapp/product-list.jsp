@@ -209,7 +209,7 @@
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">
-                                                            <a href="${pageContext.request.contextPath}/list-product-detail?id=${entry.key.id}">
+                                                            <a href="${pageContext.request.contextPath}/update-product?id=${entry.key.id}">
                                                                 Detail
                                                             </a>
                                                         </p>
@@ -232,10 +232,10 @@
                                         <a href="product-list?page=${currentPage - 1}&search=${search}">Previous</a>
                                     </c:if>
 
-                                    <c:forEach var="i" begin="1" end="${totalPages}">
-                                        <a href="product-list?page=${i}&search=${search}"
-                                           class="${i == currentPage ? 'active' : ''}">${i}</a>
+                                    <c:forEach var="i" begin="${currentPage - 1 > 0 ? currentPage - 1 : 1}" end="${currentPage + 1 < totalPages ? currentPage + 1 : totalPages}">
+                                        <a href="product-list?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                                     </c:forEach>
+
                                     <c:if test="${currentPage < totalPages}">
                                         <a href="product-list?page=${currentPage + 1}&search=${search}">Next</a>
                                     </c:if>

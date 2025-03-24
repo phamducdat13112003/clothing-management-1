@@ -19,18 +19,35 @@ public class ProductService {
     public HashMap<Product, String> getAllProductsWithPagination(int page, int pageSize) {
         List<Product> products = pd.getProductsWithPagination(page, pageSize);
         List<Category> categories = cs.selectAll();
-        HashMap<Product, String> map = new HashMap<>();
+        LinkedHashMap<Product, String> map = new LinkedHashMap<>();
         for (Product product : products) {
-            // take the first productDetail of a product
-            if (pds.findTheFirstProductDetailOfProductId(product.getId()).isPresent()) {
-                ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId(product.getId()).get();
-                product.setUrlImage(productDetail.getImage());
-            } else {
-                product.setUrlImage("errorImage-NoDataFound");
+//            // take the first productDetail of a product
+//            if (pds.findTheFirstProductDetailOfProductId(product.getId()).isPresent()) {
+//                ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId(product.getId()).get();
+//                product.setUrlImage(productDetail.getImage());
+//            } else {
+//                product.setUrlImage("errorImage-NoDataFound");
+//            }
+//            for (Category category : categories) {
+//                if (product.getCategoryId() == category.getCategoryID()) {
+//                    map.put(product, category.getCategoryName());
+//                }
+//            }
+            map.put(product, "");
+        }
+        for (Map.Entry<Product, String> entry : map.entrySet()) {
+            Product key = entry.getKey();     // Lấy khóa (Product)
+            if(pds.findTheFirstProductDetailOfProductId(key.getId()).isPresent()) {
+                ProductDetail productDetail = pds.findTheFirstProductDetailOfProductId(key.getId()).get();
+                entry.getKey().setUrlImage(productDetail.getImage());
+
+            }
+            else{
+                entry.setValue("errorImage-NoDataFound");
             }
             for (Category category : categories) {
-                if (product.getCategoryId() == category.getCategoryID()) {
-                    map.put(product, category.getCategoryName());
+                if (entry.getKey().getCategoryId() == category.getCategoryID()) {
+                    entry.setValue(category.getCategoryName());
                 }
             }
         }

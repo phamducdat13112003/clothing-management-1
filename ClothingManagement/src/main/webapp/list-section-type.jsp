@@ -166,7 +166,8 @@
                                         <a href="view-list-section-type?page=${currentPage - 1}&search=${search}">Previous</a>
                                     </c:if>
 
-                                    <c:forEach var="i" begin="1" end="${totalPages}">
+
+                                    <c:forEach var="i" begin="${currentPage - 1 > 0 ? currentPage - 1 : 1}" end="${currentPage + 1 < totalPages ? currentPage + 1 : totalPages}">
                                         <a href="view-list-section-type?page=${i}&search=${search}" class="${i == currentPage ? 'active' : ''}">${i}</a>
                                     </c:forEach>
                                     <c:if test="${currentPage < totalPages}">

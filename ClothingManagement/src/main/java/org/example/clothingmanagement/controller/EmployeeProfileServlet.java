@@ -64,9 +64,56 @@ public class EmployeeProfileServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
 
-        // Check if user is logged in
-        if (session.getAttribute("account") == null) {
-            response.sendRedirect("login.jsp");
+
+        EmployeeDAO employeeDAO = new EmployeeDAO();
+        List<Employee> employees = employeeDAO.getAllEmployees();
+
+
+        Employee employee = null;
+        // Tìm nhân viên với ID đã cho
+        for (Employee emp : employees) {
+            if (emp.getEmployeeID().equals(employeeID)) {
+                employee = emp;
+                break;
+            }
+        }
+
+
+        if (employee != null) {
+            String roleName = null;
+            roleName = employeeDAO.getRoleNameByEmployeeID(employeeID);
+            String warehouseName = null;
+            try {
+
+                warehouseName = WarehouseDAO.getWarehouseNameById(warehouseID);
+                System.out.println("Warehouse name retrieved: " + warehouseName);
+            } catch (Exception e) {
+                System.out.println("Error retrieving warehouse name: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+
+            //Luu rolename vao session
+            request.getSession().setAttribute("employee", employee);
+            request.getSession().setAttribute("warehouseName", warehouseName);
+            request.getSession().setAttribute("roleName", roleName);
+
+            request.setAttribute("employee", employee);
+            request.setAttribute("warehouseName", warehouseName);
+            request.getRequestDispatcher("profile-info.jsp").forward(request, response);
+        } else {
+            response.getWriter().write("Employee not found.");
+        }
+    }
+
+
+    private void updateEmployee(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession();
+        String accountID = (String) session.getAttribute("account_id");
+
+        // If accountID is null, return error
+        if (accountID == null || accountID.equals("null")) {
+            response.getWriter().write("Lỗi: Không tìm thấy AccountID trong phiên làm việc.");
             return;
         }
 

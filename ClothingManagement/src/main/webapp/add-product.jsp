@@ -83,7 +83,7 @@
 
                                                                                         <!-- Product Name -->
                                                                                         <label for="productName">Product Name <span class="required">*</span></label>
-                                                                                        <input type="text" id="productName" name="productName" required>
+                                                                                        <input type="text" id="productName" name="productName" maxlength="50" required>
 
 <%--                                                                                        <label for="urlImage">Upload Image:</label>--%>
 <%--                                                                                        <input type="file" id="urlImage" name="image" accept="image/*" required>--%>

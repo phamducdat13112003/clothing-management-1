@@ -47,6 +47,34 @@ public class SectionService {
         return sd.getTotalSections();
     }
 
+    public boolean isSectionNameExists(String sectionName){
+        return sd.isSectionNameExists(sectionName);
+    }
+
+    public int getNextSectionNumber(String sectionId){
+        return sd.getNextSectionNumber(sectionId);
+    }
+
+    public boolean insertSection(Section section){
+        return sd.insertSection(section);
+    }
+
+    public List<Section> getAllSections(){
+        return sd.getAllSections();
+    }
+
+    public List<Section> getAllSectionWithPagination(int page, int pageSize){
+        return sd.getAllSectionWithPagination(page,pageSize);
+    }
+
+    public boolean updateSection(Section section){
+        return sd.updateSection(section);
+    }
+
+    public Section getSectionBySectionId(String sectionId){
+        return sd.getSectionBySectionId(sectionId);
+    }
+
     public static void main(String[] args){
         SectionService ss = new SectionService();
         List<Section> list = ss.SearchSectionWithPagination(2,"b",1,5);
