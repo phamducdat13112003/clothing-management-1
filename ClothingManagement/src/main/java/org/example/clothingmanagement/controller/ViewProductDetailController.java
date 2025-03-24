@@ -67,7 +67,7 @@ public class ViewProductDetailController extends HttpServlet {
 
             if (!source.isEmpty()) {
                 String filename = id + ".png";
-                if (!Files.exists(Path.of(realPath))) { // check folder /img/ Employee is existed
+                if (!Files.exists(Path.of(realPath))) { // check folder /img/ProductDetail  is existed
                     Files.createDirectories(Path.of(realPath));
                 }
                 part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
