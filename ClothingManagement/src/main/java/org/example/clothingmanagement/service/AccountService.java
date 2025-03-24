@@ -74,5 +74,7 @@ public class AccountService {
         accountDAO.updatePassByEmail(password, email);
     }
 
-
+    public void updatePassword(String accountId, String newPassword) throws SQLException {
+        accountDAO.updatePassword(accountId, newPassword);
+    }
 }

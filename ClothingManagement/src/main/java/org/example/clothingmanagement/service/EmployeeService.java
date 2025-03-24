@@ -84,4 +84,8 @@ public class EmployeeService {
     public Employee getEmployeeByEmployeeId(String employeeId) throws SQLException{
         return employeeDAO.getEmployeeByEmployeeId(employeeId);
     }
+
+    public void updateEmployeeImage(Employee employee) throws SQLException {
+        employeeDAO.updateEmployeeImage(employee);
+    }
 }
