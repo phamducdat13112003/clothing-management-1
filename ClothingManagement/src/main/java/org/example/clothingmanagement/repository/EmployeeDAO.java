@@ -97,6 +97,24 @@ public class EmployeeDAO {
         return false;
     }
 
+    public String getRoleNameByEmployeeID(String employeeID) {
+        String sql = "SELECT r.RoleName FROM role r " +
+                "JOIN account a ON r.RoleID = a.RoleID " +
+                "WHERE a.EmployeeID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pt = conn.prepareStatement(sql)) {
+            pt.setString(1, employeeID);
+            try (ResultSet rs = pt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("RoleName");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public int getTotalEmployeeCount() {
         String sql = "SELECT COUNT(*) AS total FROM Employee WHERE Status = 'Active'";
         try (Connection conn = DBContext.getConnection();
