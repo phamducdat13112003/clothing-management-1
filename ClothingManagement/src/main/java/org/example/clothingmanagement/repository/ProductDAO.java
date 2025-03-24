@@ -333,6 +333,8 @@ public class ProductDAO {
         return null;
     }
 
+
+
 //    public List<Product> getProductsByBinID(String binID, int page, int pageSize) {
 //        List<Product> products = new ArrayList<>();
 //        String sql = "SELECT * FROM product WHERE BinID = ? LIMIT ? OFFSET ?";
