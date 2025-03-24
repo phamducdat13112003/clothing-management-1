@@ -157,6 +157,24 @@ public class SectionDAO {
         }
     }
 
+    public int getSectionCount() {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM section";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return count;
+    }
+
     public Section getSectionsById(String sectionId) {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
@@ -283,18 +301,34 @@ public class SectionDAO {
 
     public String generateSectionID() {
         try(Connection con = DBContext.getConnection()){
-            String sql = "SELECT sectionID FROM section ORDER BY sectionID DESC LIMIT 1";
+            String sql = "SELECT sectionID FROM section WHERE sectionID LIKE 'SE%'";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
 
-            if(rs.next()){
-                String lastID = rs.getString("sectionID");
-                int numericPart = Integer.parseInt(lastID.substring(2));
-                numericPart++;
-                return String.format("SE%03d", numericPart);
-            } else {
-                return "SE001"; // First section
+            int highestNumericPart = 0;
+
+            while(rs.next()){
+                String sectionID = rs.getString("sectionID");
+                // Make sure we only process IDs that match our pattern
+                if (sectionID.matches("SE\\d+")) {
+                    try {
+                        int numericPart = Integer.parseInt(sectionID.substring(2));
+                        if (numericPart > highestNumericPart) {
+                            highestNumericPart = numericPart;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Skip any malformed IDs
+                        continue;
+                    }
+                }
             }
+
+            // Increment the highest found numeric part
+            highestNumericPart++;
+
+            // Format the new ID with leading zeros
+            return String.format("SE%03d", highestNumericPart);
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -446,7 +480,38 @@ public class SectionDAO {
     }
 
 
+    public boolean isSectionNameExistsExcludingCurrent(String sectionName, String currentSectionID) {
+        boolean exists = false;
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM section WHERE LOWER(sectionName) = LOWER(?) AND sectionID != ?")) {
 
+            ps.setString(1, sectionName);
+            ps.setString(2, currentSectionID);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    exists = rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
 
+    public boolean isSectionNameExists(String sectionName) {
+        boolean exists = false;
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement("SELECT COUNT(*) FROM section WHERE LOWER(sectionName) = LOWER(?)")) {
 
+            ps.setString(1, sectionName);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    exists = rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return exists;
+    }
 }
