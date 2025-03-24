@@ -27,6 +27,8 @@ public class ProductDetail {
     private int blockedQuantity;
     private String productName;
 
+    private Product product;
+
     public ProductDetail(String id,String image,Double weight) {
         this.id = id;
         this.image = image;
@@ -51,4 +53,6 @@ public class ProductDetail {
         this.id = id;
         this.color = color;
     }
+
+
 }
