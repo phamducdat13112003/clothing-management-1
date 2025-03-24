@@ -21,12 +21,14 @@ public class SectionServlet extends HttpServlet {
     private SectionTypeDAO sectionTypeDAO;
     private BinDAO binDAO;
 
+    // Maximum number of sections allowed in the warehouse
+    private static final int MAX_SECTIONS = 20;
+
     @Override
     public void init() {
         sectionDAO = new SectionDAO();
         sectionTypeDAO = new SectionTypeDAO();
         binDAO = new BinDAO();
-
     }
 
     @Override
@@ -46,7 +48,7 @@ public class SectionServlet extends HttpServlet {
                 viewSection(request, response);
                 break;
             case "showAdd":
-                showAddForm(request, response);
+                checkAndShowAddForm(request, response);
                 break;
             case "showEdit":
                 showEditForm(request, response);
@@ -70,7 +72,7 @@ public class SectionServlet extends HttpServlet {
 
         switch (action) {
             case "add":
-                addSection(request, response);
+                checkAndAddSection(request, response);
                 break;
             case "view":
                 viewSection(request, response);
@@ -83,6 +85,42 @@ public class SectionServlet extends HttpServlet {
         }
     }
 
+
+    private boolean canAddMoreSections() {
+        int currentSectionCount = sectionDAO.getSectionCount();
+        return currentSectionCount < MAX_SECTIONS;
+    }
+
+    /**
+     * Check if more sections can be added before showing the add form
+     */
+    private void checkAndShowAddForm(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        if (!canAddMoreSections()) {
+            request.setAttribute("errorMessage", "Cannot add more sections. Maximum limit of " + MAX_SECTIONS + " sections has been reached.");
+            listSections(request, response);
+            return;
+        }
+
+        showAddForm(request, response);
+    }
+
+    /**
+     * Check if more sections can be added before actually adding the section
+     */
+    private void checkAndAddSection(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        if (!canAddMoreSections()) {
+            request.setAttribute("errorMessage", "Cannot add more sections. Maximum limit of " + MAX_SECTIONS + " sections has been reached.");
+            listSections(request, response);
+            return;
+        }
+
+        addSection(request, response);
+    }
+
     private void viewSection(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String sectionID = request.getParameter("id");
@@ -90,7 +128,6 @@ public class SectionServlet extends HttpServlet {
 
         // Get the section type details for this section
         SectionType sectionType = sectionTypeDAO.getSectionTypeById(section.getSectionTypeId());
-
 
         List<Bin> bins = binDAO.getBinsBySection(sectionID);
 
@@ -109,7 +146,15 @@ public class SectionServlet extends HttpServlet {
             section.setTotalBins(totalBins);
         }
 
+        // Add information about section limits
+        int currentSectionCount = sections.size();
+        boolean canAddMore = currentSectionCount < MAX_SECTIONS;
+
         request.setAttribute("sections", sections);
+        request.setAttribute("currentSectionCount", currentSectionCount);
+        request.setAttribute("maxSections", MAX_SECTIONS);
+        request.setAttribute("canAddMoreSections", canAddMore);
+
         request.getRequestDispatcher("/section-list.jsp").forward(request, response);
     }
 
@@ -117,6 +162,7 @@ public class SectionServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String newSectionID = sectionDAO.generateSectionID();
+        System.out.println("newSection:" + newSectionID);
         List<SectionType> sectionTypes = sectionTypeDAO.getAllSectionTypes();
 
         request.setAttribute("sectionID", newSectionID);
@@ -157,6 +203,21 @@ public class SectionServlet extends HttpServlet {
             return;
         }
 
+        // Check for duplicate section name
+        if (sectionDAO.isSectionNameExists(sectionName.trim())) {
+            request.setAttribute("errorMessage", "Section name already exists. Please use a different name.");
+
+            // Recreate form with entered values
+            List<SectionType> sectionTypes = sectionTypeDAO.getAllSectionTypes();
+            request.setAttribute("sectionID", sectionID);
+            request.setAttribute("sectionName", sectionName);
+            request.setAttribute("sectionTypeID", sectionTypeID);
+            request.setAttribute("sectionTypes", sectionTypes);
+
+            request.getRequestDispatcher("/section-add.jsp").forward(request, response);
+            return;
+        }
+
         Section section = new Section(sectionID, sectionName, sectionTypeID);
         boolean success = sectionDAO.insertSection(section);
 
@@ -179,7 +240,30 @@ public class SectionServlet extends HttpServlet {
         // Validation
         if (sectionName == null || sectionName.trim().isEmpty()) {
             request.setAttribute("errorMessage", "Section name cannot be empty");
-            showEditForm(request, response);
+
+            // Recreate the section object to pass back to the form
+            Section section = new Section(sectionID, sectionName, sectionTypeID);
+            request.setAttribute("section", section);
+
+            List<SectionType> sectionTypes = sectionTypeDAO.getAllSectionTypes();
+            request.setAttribute("sectionTypes", sectionTypes);
+
+            request.getRequestDispatcher("/section-edit.jsp").forward(request, response);
+            return;
+        }
+
+        // Check for duplicate section name (excluding the current section)
+        if (sectionDAO.isSectionNameExistsExcludingCurrent(sectionName.trim(), sectionID)) {
+            request.setAttribute("errorMessage", "Section name already exists. Please use a different name.");
+
+            // Recreate the section object to pass back to the form
+            Section section = new Section(sectionID, sectionName, sectionTypeID);
+            request.setAttribute("section", section);
+
+            List<SectionType> sectionTypes = sectionTypeDAO.getAllSectionTypes();
+            request.setAttribute("sectionTypes", sectionTypes);
+
+            request.getRequestDispatcher("/section-edit.jsp").forward(request, response);
             return;
         }
 
