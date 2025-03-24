@@ -308,7 +308,7 @@ public class ProductDetailDAO {
         try(Connection con = DBContext.getConnection()){
             StringBuilder sql = new StringBuilder();
             sql.append(" SELECT ProductDetailId, Quantity, Weight, Color, Size, ProductImage, ProductId FROM ProductDetail ");
-            sql.append(" WHERE ProductId = ? ");
+            sql.append(" WHERE ProductId = ? AND status = 1 ");
             sql.append(" LIMIT 1 ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setString(1, id);

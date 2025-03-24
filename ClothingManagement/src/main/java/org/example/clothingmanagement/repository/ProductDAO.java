@@ -623,10 +623,9 @@ public class ProductDAO {
         String poID = "PO2025030800001";
 
         List<Map<String, Object>> podetailList = productDAO.getListPodetailByPoID(poID);
-
-        // 결과 출력
-        for (Map<String, Object> podetail : podetailList) {
-            System.out.println(podetail);
+        List<Product> list = productDAO.getProductsWithPagination(1,5);
+        for(Product product : list) {
+            System.out.println(product);
         }
     }
 
