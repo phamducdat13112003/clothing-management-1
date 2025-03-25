@@ -112,8 +112,8 @@
           <th>Color</th>
           <th>Size</th>
           <th>Original Quantity</th>
-<%--          <th>Recount Quantity</th>--%>
-<%--          <th>Difference</th>--%>
+          <th>Recount Quantity</th>
+          <th>Difference</th>
         </tr>
         <c:forEach var="detail" items="${listInvenDoc}">
           <tr>
@@ -122,13 +122,13 @@
             <td>${detail.color}</td>
             <td>${detail.size}</td>
             <td>${detail.originalQuantity}</td>
-<%--            <td>--%>
-<%--              <c:choose>--%>
-<%--                <c:when test="${detail.recountQuantity == -1}">0</c:when>--%>
-<%--                <c:otherwise>${detail.recountQuantity}</c:otherwise>--%>
-<%--              </c:choose>--%>
-<%--            </td>--%>
-<%--            <td>Ahihi</td>--%>
+            <td>
+              <c:choose>
+                <c:when test="${detail.recountQuantity == -1}">Uncounted</c:when>
+                <c:otherwise>${detail.recountQuantity}</c:otherwise>
+              </c:choose>
+            </td>
+            <td>${(detail.recountQuantity == -1 ? 0 : detail.recountQuantity)-detail.originalQuantity}</td>
           </tr>
         </c:forEach>
       </table>

@@ -111,7 +111,7 @@
 <!-- sherah Dashboard -->
 <section class="sherah-adashboard sherah-show">
     <div class="container">
-        <h2>Clear Difference</h2>
+        <h2>Confirm Inventory Doc</h2>
 
         <form id="actionForm" method="post">
             <table border="1">
@@ -137,7 +137,7 @@
                         <td>
                             <input type="hidden" name="recountQuantity[]" value="${detail.recountQuantity}">
                             <c:choose>
-                                <c:when test="${detail.recountQuantity == -1}">0</c:when>
+                                <c:when test="${detail.recountQuantity == -1}">Uncounted</c:when>
                                 <c:otherwise>${detail.recountQuantity}</c:otherwise>
                             </c:choose>
                         </td>
@@ -150,35 +150,48 @@
 
             <input type="hidden" name="inventoryDocId" value="${inventoryDocId}">
             <input type="hidden" name="binId" value="${binId}">
+            <input type="hidden" name="need" value="${need}">
 
-            <label>Select Action:</label>
             <c:set var="hasRecountId" value="false"/>
             <c:forEach var="detail" items="${listInvenDoc}">
                 <c:if test="${detail.recounterId != null}">
                     <c:set var="hasRecountId" value="true"/>
                 </c:if>
             </c:forEach>
+
+            <c:if test="${account.roleId == 1}">
+                
             <label>Select Action:</label>
             <select id="actionSelect" onchange="handleSelectionChange()">
                 <option value="">-- Select --</option>
-                <option value="clearDifference">Clear Difference</option>
-                <c:if test="${!hasRecountId}">
+
+                <c:if test="${need ne 'daydu' and status eq 'Confirmed'and status ne 'Done'}">
+                    <option value="clearDifference">Clear Difference</option>
+                </c:if>
+                <c:if test="${status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">
+                <option value="confirm">Confirm</option>
+                </c:if>
+                <c:if test="${!hasRecountId and status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">
                     <option value="recount">Recount</option>
                 </c:if>
+
+                <c:if test="${status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">
                 <option value="cancel">Cancel</option>
+                </c:if>
             </select>
 
             <!-- Ô nhập nhân viên (ẩn mặc định) -->
             <div id="staffInput" style="display: none;">
                 <label>Employee:</label>
                 <select name="employee">
-                    <option value="">-- Chọn Employee --</option>
+                    <option value="">-- Assign Employee Recount --</option>
                     <c:forEach var="employee" items="${employeeList}">
                         <option value="${employee.employeeID}">${employee.employeeName}</option>
                     </c:forEach>
                 </select>
-                <button type="submit" id="recountSubmit" formaction="RecountInventoryServlet">Xác nhận Recount</button>
+                <button type="submit" id="recountSubmit" formaction="RecountInventoryServlet">Recount</button>
             </div>
+            </c:if>
         </form>
 
         <script>
@@ -199,6 +212,15 @@
                 else if (actionSelect.value === "recount") {
                     staffInput.style.display = "block"; // Hiện ô nhập nhân viên
                 }
+                else if (actionSelect.value === "confirm") {
+                    var confirmAction = confirm("Bạn có chắc chắn muốn xác nhận kiểm kê không?");
+                    if (confirmAction) {
+                        form.action = "ConfirmInvenServlet";
+                        form.submit();
+                    } else {
+                        actionSelect.value = ""; // Giữ trạng thái ban đầu
+                    }
+                }
                 else if (actionSelect.value === "cancel") {
                     var confirmCancel = confirm("Bạn có chắc chắn muốn hủy kiểm kê không?");
                     if (confirmCancel) {
@@ -212,7 +234,6 @@
                     staffInput.style.display = "none"; // Ẩn ô nhập nhân viên nếu không chọn Recount
                 }
             }
-        </script>
         </script>
 
     </div>

@@ -319,7 +319,6 @@ public class InventoryDocDAO {
         }
     }
 
-    // Kiểm tra xem có thể thêm sản phẩm vào bin hay không
     public static boolean canAddProductsToBin(String binId, List<String> productDetailIds, List<Integer> quantities) {
         String maxCapacityQuery = "SELECT MaxCapacity FROM bin WHERE BinID = ?";
         String existingWeightQuery = "SELECT SUM(pd.Weight * bd.Quantity) FROM bindetail bd " +
