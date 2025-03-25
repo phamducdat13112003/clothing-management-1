@@ -60,8 +60,6 @@ public class DashBoardServlet extends HttpServlet {
         int totalSuppliers = dashBoardService.getTotalSuppliers();
         int totalEmployees = dashBoardService.getTotalEmployees();
         double totalOrderValue = dashBoardService.getTotalOrderValue();
-        Map<String, Map<String, Object>> poDataBySupplier = dashBoardService.getPODataBySupplier();
-        String poDataJson = new Gson().toJson(poDataBySupplier);
         Map<String, Double> totalPOByMonth;
         if (startDate != null && endDate != null) {
             totalPOByMonth = dashBoardService.getTotalPOByMonth(startDate, endDate);
@@ -74,7 +72,6 @@ public class DashBoardServlet extends HttpServlet {
         DecimalFormat df = new DecimalFormat("#,###.##");
         String formattedTotalOrderValue = df.format(totalOrderValue);
         String totalPOByMonthJson = new Gson().toJson(totalPOByMonth);
-        request.setAttribute("poDataBySupplierJson", poDataJson);
         request.setAttribute("totalOrders", totalOrders);
         request.setAttribute("binDetail", binDetail);
         request.setAttribute("productList", productList);

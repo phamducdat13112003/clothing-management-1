@@ -30,6 +30,7 @@
   <link rel="stylesheet" href="css/jquery-ui.css">
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
   <style>
     .search-form {
       display: flex;
@@ -252,18 +253,33 @@
                           <p class="sherah-table__product-desc">${order.createdDate}</p>
                         </div>
                       </td>
-                      <td class="sherah-table__column-2 sherah-table__data-2">
+                      <td class="sherah-table__column-2 sherah-table__data-2 d-flex align-items-center">
                         <!-- Link to edit the transfer order -->
-                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}">Update</a>
+                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}" class="text-primary me-2" title="Update">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+
+                        <a href="${pageContext.request.contextPath}/TOList?action=process&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
+                           onclick="return confirm('Are you sure you want to mark this transfer order as processing?');"
+                           class="text-success me-2" title="Processing">
+                          <i class="bi bi-check-circle"></i>
+                        </a>
 
                         <!-- Complete button - only show if status is not already COMPLETED -->
                         <c:if test="${order.status != 'done'}">
                           <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
-                             onclick="return confirm('Are you sure you want to mark this transfer order as completed?');">Complete</a>
+                             onclick="return confirm('Are you sure you want to mark this transfer order as completed?');"
+                             class="text-success me-2" title="Complete">
+                            <i class="bi bi-check-circle"></i>
+                          </a>
                         </c:if>
+
                         <!-- Link to delete the transfer order -->
                         <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
-                           onclick="return confirm('Are you sure you want to delete this transfer order?');">Cancel</a>
+                           onclick="return confirm('Are you sure you want to cancel this transfer order?');"
+                           class="text-danger" title="Cancel">
+                          <i class="bi bi-trash"></i>
+                        </a>
                       </td>
                     </tr>
                   </c:forEach>

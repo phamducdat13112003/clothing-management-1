@@ -316,10 +316,10 @@ public class BinDAO {
             if (rs.next()) {
                 return rs.getInt("totalBins");
             }
-            return 0;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+        return 0;
     }
 
     public List<BinDetail> searchBinDetail(String nameSearch, String binID, int page, int pageSize) {
@@ -595,7 +595,7 @@ public class BinDAO {
     }
 
     public boolean deleteBin(String binId){
-        String sql= "UPDATE bin SET status = 0 WHERE binID = ?";
+        String sql= "UPDATE Bin SET status = 0 WHERE BinId = ?";
         try (Connection conn = DBContext.getConnection();
         PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setString(1, binId);
@@ -607,7 +607,7 @@ public class BinDAO {
     }
 
     public int getTotalBinsBySection(String sectionId) {
-        String sql = "SELECT COUNT(*) FROM Bin WHERE SectionID = ?";
+        String sql = "SELECT COUNT(*) FROM Bin WHERE SectionID = ? WHERE Status = 1";
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, sectionId);

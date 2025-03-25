@@ -314,129 +314,24 @@
                                     </div>
                                     <!-- End Charts Two -->
                                 </div>
-                                <div class="col-lg-6 col-12">
-                                    <!-- Charts One -->
-                                    <div class="charts-main sherah-default-bg charts-home-two sherah-border mg-top-30">
-                                        <!-- Top Heading -->
-                                        <div class="charts-main__heading  mg-btm-20">
-                                            <h3 class="sherah-heading__title">Po for Suppliers</h3>
-                                        </div>
-                                        <div class="charts-main__one">
-                                            <div class="tab-content" id="nav-tabContent">
-                                                <div class="tab-pane fade show active" id="sherah-chart__t1" role="tabpanel" aria-labelledby="sherah-chart__t1">
-                                                    <div class="sherah-chart__inside sherah-chart__monthly--states">
-                                                        <canvas id="poSupplierChart"></canvas>
-                                                        <script>
-                                                            var poDataJson = '<%= request.getAttribute("poDataBySupplierJson") %>';
-                                                            var poData = JSON.parse(poDataJson);
-                                                            console.log("Dữ liệu PO theo nhà cung cấp:", poData);
-
-                                                            var months = Object.keys(poData);
-                                                            var suppliers = new Set();
-                                                            var datasets = [];
-
-                                                            months.forEach(month => {
-                                                                Object.keys(poData[month]).forEach(supplier => suppliers.add(supplier));
-                                                            });
-
-                                                            // Tạo bảng màu sắc để mỗi supplier có một màu riêng
-                                                            var colorPalette = [
-                                                                "#FF5733", "#33FF57", "#3357FF", "#FF33A1", "#FFBD33", "#A133FF", "#33FFF0", "#F033FF", "#338AFF", "#8AFF33"
-                                                            ];
-
-                                                            var supplierColors = {};
-                                                            var colorIndex = 0;
-
-                                                            suppliers.forEach(supplier => {
-                                                                if (!supplierColors[supplier]) {
-                                                                    supplierColors[supplier] = {
-                                                                        strong: colorPalette[colorIndex % colorPalette.length], // Màu chính
-                                                                        light: colorPalette[colorIndex % colorPalette.length] + "140" // Màu nhạt hơn
-                                                                    };
-                                                                    colorIndex++;
-                                                                }
-
-                                                                let poCounts = months.map(month => poData[month][supplier] ? poData[month][supplier].POCount : 0);
-                                                                let totalValues = months.map(month => poData[month][supplier] ? poData[month][supplier].TotalValue : 0);
-
-                                                                datasets.push({
-                                                                    label: supplier + " - PO Count",
-                                                                    data: poCounts,
-                                                                    backgroundColor: supplierColors[supplier].strong,
-                                                                    borderColor: supplierColors[supplier].strong,
-                                                                    borderWidth: 1,
-                                                                    barPercentage: 0.8,
-                                                                    categoryPercentage: 0.9,
-                                                                    stack: "poCountStack"
-                                                                });
-
-                                                                datasets.push({
-                                                                    label: supplier + " - Total Value",
-                                                                    data: totalValues,
-                                                                    type: "line",
-                                                                    borderColor: supplierColors[supplier].light,
-                                                                    backgroundColor: supplierColors[supplier].light,
-                                                                    borderWidth: 2,
-                                                                    pointRadius: 6,
-                                                                    pointHoverRadius: 8,
-                                                                    pointStyle: "circle",
-                                                                    fill: false
-                                                                });
-                                                            });
-
-                                                            var ctx = document.getElementById("poSupplierChart").getContext("2d");
-                                                            new Chart(ctx, {
-                                                                type: "bar",
-                                                                data: {
-                                                                    labels: months,
-                                                                    datasets: datasets
-                                                                },
-                                                                options: {
-                                                                    responsive: true,
-                                                                    plugins: {
-                                                                        legend: {
-                                                                            display: true,
-                                                                            position: "top", // 🔹 Chú thích hiển thị trên đầu biểu đồ
-                                                                            labels: {
-                                                                                usePointStyle: true,
-                                                                                boxWidth: 15 // Giúp chú thích nhỏ gọn hơn
-                                                                            }
-                                                                        },
-                                                                        tooltip: {
-                                                                            enabled: true,
-                                                                            mode: "index",
-                                                                            intersect: false,
-                                                                            callbacks: {
-                                                                                title: function(tooltipItems) {
-                                                                                    return "Tháng " + tooltipItems[0].label;
-                                                                                },
-                                                                                label: function(tooltipItem) {
-                                                                                    let datasetLabel = tooltipItem.dataset.label || "";
-                                                                                    let value = tooltipItem.raw;
-                                                                                    return datasetLabel + ": " + value.toLocaleString();
-                                                                                }
-                                                                            }
-                                                                        }
-                                                                    },
-                                                                    interaction: {
-                                                                        mode: "nearest",
-                                                                        axis: "x",
-                                                                        intersect: false
-                                                                    },
-                                                                    scales: {
-                                                                        y: { beginAtZero: true },
-                                                                        x: { stacked: true }
-                                                                    }
-                                                                }
-                                                            });
-                                                        </script>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- End Charts One -->
-                                </div>
+<%--                                <div class="col-lg-6 col-12">--%>
+<%--                                    <!-- Charts One -->--%>
+<%--                                    <div class="charts-main sherah-default-bg charts-home-two sherah-border mg-top-30">--%>
+<%--                                        <!-- Top Heading -->--%>
+<%--                                        <div class="charts-main__heading  mg-btm-20">--%>
+<%--                                            <h3 class="sherah-heading__title"></h3>--%>
+<%--                                        </div>--%>
+<%--                                        <div class="charts-main__one">--%>
+<%--                                            <div class="tab-content" id="nav-tabContent">--%>
+<%--                                                <div class="tab-pane fade show active" id="sherah-chart__t1" role="tabpanel" aria-labelledby="sherah-chart__t1">--%>
+<%--                                                    <div class="sherah-chart__inside sherah-chart__monthly--states">--%>
+<%--                                                    </div>--%>
+<%--                                                </div>--%>
+<%--                                            </div>--%>
+<%--                                        </div>--%>
+<%--                                    </div>--%>
+<%--                                    <!-- End Charts One -->--%>
+<%--                                </div>--%>
                             </div>
 
                             <div class="row">

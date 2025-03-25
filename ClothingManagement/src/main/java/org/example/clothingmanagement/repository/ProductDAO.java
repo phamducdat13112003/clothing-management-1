@@ -434,7 +434,7 @@ public class ProductDAO {
 
     public List<Map<String, Object>> getAllProductProductDetail() {
         List<Map<String, Object>> productDetails = new ArrayList<>();
-        String sql = "SELECT p.ProductID,  p.ProductName, p.Price,  p.Material, p.Gender, p.Seasons, p.MinQuantity, p.CreatedDate, p.Description, p.MadeIn, p.CategoryID, p.CreatedBy, p.SupplierID, p.Status AS product_status, pd.ProductDetailID AS product_detail_id, pd.Quantity, pd.Weight, pd.Color, pd.Size, pd.ProductImage, pd.Status AS product_detail_status FROM Product p INNER JOIN ProductDetail pd ON p.ProductID = pd.ProductID";
+        String sql = "SELECT p.ProductID,  p.ProductName, p.Price,  p.Material, p.Gender, p.Seasons, p.MinQuantity, p.CreatedDate, p.Description, p.MadeIn, p.CategoryID, p.CreatedBy, p.SupplierID, p.Status AS product_status, pd.ProductDetailID AS product_detail_id, pd.Quantity, pd.Weight, pd.Color, pd.Size, pd.ProductImage, pd.Status AS product_detail_status FROM Product p INNER JOIN ProductDetail pd ON p.ProductID = pd.ProductID WHERE p.Status ='1'";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
