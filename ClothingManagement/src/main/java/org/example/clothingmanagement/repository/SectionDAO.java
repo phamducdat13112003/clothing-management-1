@@ -1,5 +1,6 @@
 package org.example.clothingmanagement.repository;
 
+import org.example.clothingmanagement.entity.Bin;
 import org.example.clothingmanagement.entity.Section;
 import org.example.clothingmanagement.service.SectionService;
 
@@ -587,5 +588,32 @@ public class SectionDAO {
             e.printStackTrace();
         }
         return 1; // Nếu chưa có thì bắt đầu từ 1
+    }
+
+    public List<Bin> getBinsBySection(String sectionID) throws SQLException {
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT BinID, SectionID, MaxCapacity, Status " +
+                "FROM Bin " +
+                "WHERE SectionID = ? AND Status = TRUE"; // Using boolean true for active bins
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, sectionID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Bin bin = new Bin();
+                    bin.setBinID(rs.getString("BinID"));
+                    bin.setSectionID(rs.getString("SectionID"));
+                    bin.setMaxCapacity(rs.getDouble("MaxCapacity"));
+                    bin.setStatus(rs.getBoolean("Status"));
+
+                    bins.add(bin);
+                }
+            }
+        }
+
+        return bins;
     }
 }
