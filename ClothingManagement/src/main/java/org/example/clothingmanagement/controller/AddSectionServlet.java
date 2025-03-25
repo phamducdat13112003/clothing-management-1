@@ -54,7 +54,7 @@ public class AddSectionServlet extends HttpServlet {
         String sectionTypeName = sectionTypeService.getSectionTypeNameById(sectionTypeID);
 
         if (!isValidSectionName(sectionName)) {
-            request.setAttribute("errorMessage", "Section name cannot contain special characters");
+            request.setAttribute("message", "Section name cannot contain special characters");
             List<SectionType> list= sectionTypeService.getAllSectionTypes();
             request.setAttribute("sectionTypes", list);
             request.setAttribute("sectionName", sectionName);
@@ -76,7 +76,7 @@ public class AddSectionServlet extends HttpServlet {
         sectionId = sectionId + String.format("%03d", nextNumber);
 
         if (sectionService.isSectionNameExists(sectionName)) {
-            request.setAttribute("errorMessage", "Section name already exists. Please use a different name.");
+            request.setAttribute("message", "Section name already exists. Please use a different name.");
             List<SectionType> list= sectionTypeService.getAllSectionTypes();
             request.setAttribute("sectionName", sectionName);
             request.setAttribute("sectionTypeID", sectionTypeID);
@@ -89,22 +89,27 @@ public class AddSectionServlet extends HttpServlet {
         boolean success = sectionService.insertSection(section);
 
         if (success) {
-            request.setAttribute("successMessage", "Section added successfully");
+            request.setAttribute("messageSuccess", "Section added successfully");
         } else {
-            request.setAttribute("errorMessage", "Failed to add section");
+            request.setAttribute("message", "Failed to add section");
         }
-        List<Section> list = sectionService.getAllSectionWithPagination(page, pageSize);
-        int totalPages = (int) Math.ceil((double) totalSections / pageSize);
+        List<Section> list = sectionService.getSectionsWithPagination(sectionTypeID, page, pageSize);
+        totalSections = sectionService.getTotalSections();
         for (Section s : list) {
             int totalBins = binService.countBinsBySectionId(s.getSectionID());
-            s.setTotalBins(totalBins);
+            s.setNumberOfBins(totalBins);
         }
-        request.setAttribute("sectionTypes", list);
+        SectionType sectionType = null;
+        if(sectionTypeService.getSectionTypeById(sectionTypeID).isPresent()){
+            sectionType = sectionTypeService.getSectionTypeById(sectionTypeID).get();
+        }
+        int totalPages = (int) Math.ceil((double) totalSections / pageSize);
+        request.setAttribute("list", list);
         request.setAttribute("sectionName", sectionName);
-        request.setAttribute("sectionTypeID", sectionTypeID);
+        request.setAttribute("sectionType", sectionType);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
-        request.getRequestDispatcher("/view-section.jsp").forward(request, response);
+        request.getRequestDispatcher("./view-section.jsp").forward(request, response);
     }
 
     private boolean isValidSectionName(String sectionName) {

@@ -63,7 +63,7 @@ public class SectionDAO {
             StringBuilder sql = new StringBuilder();
             sql.append(" Select sectionId, sectionName, sectionTypeId ");
             sql.append(" From section ");
-            sql.append(" Where sectionTypeId = ? ");
+            sql.append(" Where sectionTypeId = ? AND Status = 1 ");
             sql.append(" Order by sectiontypeId ");
             sql.append(" LIMIT ? OFFSET ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
@@ -231,7 +231,7 @@ public class SectionDAO {
             StringBuilder sql = new StringBuilder();
             sql.append(" Select sectionId, sectionName, sectionTypeId ");
             sql.append(" From section ");
-            sql.append(" Where sectionTypeId = ? ");
+            sql.append(" Where sectionTypeId = ? AND Status = 1");
             PreparedStatement ps = con.prepareStatement(sql.toString());
             ps.setInt(1, sectionTypeId);
             ResultSet rs = ps.executeQuery();
@@ -491,19 +491,19 @@ public class SectionDAO {
         }
     }
 
-    public List<Section> getSectionsWithBinCount(int page, int pageSize, String sectionId) {
+    public List<Section> getSectionsWithBinCount(int page, int pageSize, int sectionTypeId) {
         List<Section> sections = new ArrayList<>();
         try (Connection con = DBContext.getConnection()) {
             String sql = """
             SELECT s.SectionID, s.SectionName, COUNT(b.BinID) AS NumberOfBins
             FROM Section s
             LEFT JOIN Bin b ON s.SectionID = b.SectionID
-            WHERE s.SectionID = ?
+            WHERE s.SectionTypeID = ? AND s.Status = 1
             GROUP BY s.SectionID, s.SectionName
             LIMIT ? OFFSET ?
         """;
             PreparedStatement ps = con.prepareStatement(sql);
-            ps.setString(1, sectionId);
+            ps.setInt(1, sectionTypeId);
             ps.setInt(2, pageSize);
             ps.setInt(3, (page - 1) * pageSize);
 
@@ -522,10 +522,26 @@ public class SectionDAO {
         return sections;
     }
 
+    public int getSectionTypeIdBySectionId(String sectionId) {
+        String sql = "SELECT SectionTypeID FROM Section WHERE SectionID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, sectionId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("SectionTypeID");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return 0; // Trả về null nếu không tìm thấy
+    }
+
+
 
     public int getTotalSections() {
         try (Connection con = DBContext.getConnection()) {
-            String sql = "SELECT COUNT(*) FROM Section";
+            String sql = "SELECT COUNT(*) FROM Section WHERE Status = 1";
             PreparedStatement ps = con.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
@@ -616,4 +632,40 @@ public class SectionDAO {
 
         return bins;
     }
+
+    public boolean deleteSections(String sectionId) {
+        String sql = "UPDATE Section SET Status = 0 WHERE SectionID = ?";
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, sectionId);
+            int rowsDeleted = stmt.executeUpdate();
+            return rowsDeleted > 0; // true if rowsDeleted > 0
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Section> getSectionsByTypeId(int sectionTypeId) {
+        String sql = "SELECT * FROM Section WHERE SectionTypeID = ?";
+        List<Section> sections = new ArrayList<>();
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, sectionTypeId);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Section section = new Section();
+                section.setSectionID(rs.getString("SectionID"));
+                section.setSectionName(rs.getString("SectionName"));
+                section.setSectionTypeId(rs.getInt("SectionTypeID"));
+                sections.add(section);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return sections;
+    }
+
+
 }
