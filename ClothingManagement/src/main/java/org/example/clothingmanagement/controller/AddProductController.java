@@ -36,7 +36,7 @@ public class AddProductController extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String productName = capitalizeWords(req.getParameter("productName"));
+        String productName = capitalizeWords(req.getParameter("productName").trim());
         Double price = Double.parseDouble(req.getParameter("price"));
         Integer categoryID = Integer.parseInt(req.getParameter("categoryID"));
         String material = req.getParameter("material");

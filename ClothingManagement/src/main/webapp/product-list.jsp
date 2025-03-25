@@ -127,7 +127,13 @@
                                         <th class="sherah-table__column-2 sherah-table__h2">Image</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Category</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Price</th>
-                                        <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
+                                        <c:if test="${sessionScope.role == 1 || sessionScope.role == 2}">
+                                            <th class="sherah-table__column-2 sherah-table__h2">MinQuantity</th>
+                                            <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
+                                        </c:if>
+                                        <c:if test="${sessionScope.role == 4}">
+                                            <th class="sherah-table__column-2 sherah-table__h2">Quantity</th>
+                                        </c:if>
                                         <th class="sherah-table__column-2 sherah-table__h2">Status</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Action</th>
                                     </tr>
@@ -164,16 +170,45 @@
                                                         <p class="sherah-table__product-desc">${entry.key.price}</p>
                                                     </div>
                                                 </td>
-                                                <td class="sherah-table__column-2 sherah-table__data-2">
-                                                    <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.totalQuantity}</p>
-                                                    </div>
-                                                </td>
+                                                <c:if test="${sessionScope.role == 1 || sessionScope.role == 2}">
+                                                    <td class="sherah-table__column-2 sherah-table__data-2">
+                                                        <div class="sherah-table__product-content">
+                                                            <p class="sherah-table__product-desc">${entry.key.minQuantity}</p>
+                                                        </div>
+                                                    </td>
+                                                    <td class="sherah-table__column-2 sherah-table__data-2">
+                                                        <div class="sherah-table__product-content">
+                                                            <p class="sherah-table__product-desc">${entry.key.totalQuantity}</p>
+                                                        </div>
+                                                    </td>                                                </c:if>
+                                                <c:if test="${sessionScope.role == 4}">
+                                                    <td class="sherah-table__column-2 sherah-table__data-2">
+                                                        <div class="sherah-table__product-content">
+                                                            <p class="sherah-table__product-desc">${entry.key.totalQuantity}</p>
+                                                        </div>
+                                                    </td>
+                                                </c:if>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
                                                         <p class="sherah-table__product-desc">${entry.key.status}</p>
                                                     </div>
                                                 </td>
+<%--                                                <c:if test="${entry.key.totalQuantity <= (entry.key.minQuantity*120)/100 && entry.key.status==1}">--%>
+<%--                                                    <c:if test ="${sessionScope.role==2}">--%>
+<%--                                                        <td class="sherah-table__column-2 sherah-table__data-2">--%>
+<%--                                                            <div class="sherah-table__product-content">--%>
+<%--                                                                <p class="sherah-table__product-desc">--%>
+<%--                                                                    <a href="#">--%>
+<%--                                                                        Create PO--%>
+<%--                                                                    </a>--%>
+<%--                                                                </p>--%>
+<%--                                                            </div>--%>
+<%--                                                        </td>--%>
+<%--                                                    </c:if>--%>
+<%--                                                    <c:if test ="${sessionScope.role==1}">--%>
+<%--                                                        --%>
+<%--                                                    </c:if>--%>
+<%--                                                </c:if>--%>
                                                 <c:if test="${entry.key.status==1}">
                                                     <c:if test="${entry.key.totalQuantity==0}">
                                                         <c:if test="${sessionScope.role == 1}">
