@@ -123,11 +123,9 @@
                                         <!-- Organization -->
                                         <div class="product-form-box sherah-border mg-top-30">
                                             <h4 class="form-title m-0"></h4>
-
                                                 <div class="form-group">
                                                     <img src="${pd.image}" class="product-image" alt="Product Image">
                                                 </div>
-
                                         </div>
                                     </div>
 
