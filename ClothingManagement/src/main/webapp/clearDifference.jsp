@@ -160,7 +160,7 @@
             </c:forEach>
 
             <c:if test="${account.roleId == 1}">
-                
+
             <label>Select Action:</label>
             <select id="actionSelect" onchange="handleSelectionChange()">
                 <option value="">-- Select --</option>

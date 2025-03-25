@@ -69,31 +69,31 @@ public class InventoryDocDAO {
         return list;
     }
 
-    public static void updateBinDetails(String binID, List<String> productDetailIDs, List<Integer> quantities) throws SQLException {
-        if (productDetailIDs == null || quantities == null || productDetailIDs.size() != quantities.size()) {
-            throw new IllegalArgumentException("Danh sách ProductDetailID và quantity không hợp lệ.");
-        }
-
-        String sql = "UPDATE bindetail SET quantity = ? WHERE binId = ? AND ProductDetailId = ?";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            conn.setAutoCommit(false); // Bắt đầu transaction
-
-            for (int i = 0; i < productDetailIDs.size(); i++) {
-                stmt.setInt(1, quantities.get(i));
-                stmt.setString(2, binID);
-                stmt.setString(3, productDetailIDs.get(i));
-                stmt.addBatch(); // Thêm vào batch
-            }
-
-            stmt.executeBatch(); // Thực thi batch update
-            conn.commit(); // Commit transaction
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
+//    public static void updateBinDetails(String binID, List<String> productDetailIDs, List<Integer> quantities) throws SQLException {
+//        if (productDetailIDs == null || quantities == null || productDetailIDs.size() != quantities.size()) {
+//            throw new IllegalArgumentException("Danh sách ProductDetailID và quantity không hợp lệ.");
+//        }
+//
+//        String sql = "UPDATE bindetail SET quantity = ? WHERE binId = ? AND ProductDetailId = ?";
+//
+//        try (Connection conn = DBContext.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            conn.setAutoCommit(false); // Bắt đầu transaction
+//
+//            for (int i = 0; i < productDetailIDs.size(); i++) {
+//                stmt.setInt(1, quantities.get(i));
+//                stmt.setString(2, binID);
+//                stmt.setString(3, productDetailIDs.get(i));
+//                stmt.addBatch(); // Thêm vào batch
+//            }
+//
+//            stmt.executeBatch(); // Thực thi batch update
+//            conn.commit(); // Commit transaction
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw e;
+//        }
+//    }
 
     public void createInventoryDoc(String inventoryDocID,String createdBy, Date createdDate, String binID, String status) throws SQLException {
         String sql = "INSERT INTO inventorydoc (InventoryDocID, CreatedBy, CreatedDate, BinID, Status) VALUES (?, ?, ?, ?, ?)";
@@ -406,6 +406,50 @@ public class InventoryDocDAO {
         }
         return productDetailMap;
     }
+
+    public static void updateBinDetails(String binID, List<String> productDetailIDs, List<Integer> quantities) throws SQLException {
+        if (productDetailIDs == null || quantities == null || productDetailIDs.size() != quantities.size()) {
+            throw new IllegalArgumentException("Danh sách ProductDetailID và quantity không hợp lệ.");
+        }
+
+        String updateSQL = "UPDATE bindetail SET quantity = ? WHERE binId = ? AND ProductDetailId = ?";
+        String deleteSQL = "DELETE FROM bindetail WHERE binId = ? AND ProductDetailId = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement updateStmt = conn.prepareStatement(updateSQL);
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteSQL)) {
+
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            for (int i = 0; i < productDetailIDs.size(); i++) {
+                String productDetailID = productDetailIDs.get(i);
+                int quantity = quantities.get(i);
+
+                if (quantity == 0) {
+                    // Nếu quantity = 0, xóa bản ghi
+                    deleteStmt.setString(1, binID);
+                    deleteStmt.setString(2, productDetailID);
+                    deleteStmt.addBatch();
+                } else {
+                    // Ngược lại, cập nhật quantity
+                    updateStmt.setInt(1, quantity);
+                    updateStmt.setString(2, binID);
+                    updateStmt.setString(3, productDetailID);
+                    updateStmt.addBatch();
+                }
+            }
+
+            // Thực thi batch update và delete
+            deleteStmt.executeBatch();
+            updateStmt.executeBatch();
+
+            conn.commit(); // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
 
 
 
