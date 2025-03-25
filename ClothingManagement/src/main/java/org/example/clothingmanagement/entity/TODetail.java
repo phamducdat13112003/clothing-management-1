@@ -16,7 +16,9 @@ public class TODetail {
     private String originBinID;
     private String finalBinID;
 
-
     private String productName;
     private double weight;
+
+
+    private String virtualBinID;
 }
