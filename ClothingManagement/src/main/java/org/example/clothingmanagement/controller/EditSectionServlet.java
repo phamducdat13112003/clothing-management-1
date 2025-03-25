@@ -102,7 +102,7 @@ public class EditSectionServlet extends HttpServlet {
         totalSections = sectionService.getTotalSections();
         for (Section s : list) {
             int totalBins = binService.countBinsBySectionId(s.getSectionID());
-            s.setTotalBins(totalBins);
+            s.setNumberOfBins(totalBins);
         }
 
         if (success) {
