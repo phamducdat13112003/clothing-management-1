@@ -88,10 +88,10 @@
                             <div class="row mg-top-30">
                                 <div class="col-12 sherah-flex-between">
                                     <div class="sherah-breadcrumb">
-                                        <h2 class="sherah-breadcrumb__title">Delivery Order Detail</h2>
+                                        <h2 class="sherah-breadcrumb__title"> Create Delivery Order </h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="viewdeliveryorder">Delivery Order List</a></li>
-                                            <li class="active"><a href="#">Delivery Order Detail</a></li>
+                                            <li class="active"><a href="#"> Create Delivery Order </a></li>
                                             <li class="active"><a href="#">${purchaseOrder.poID}</a></li>
                                         </ul>
                                     </div>
