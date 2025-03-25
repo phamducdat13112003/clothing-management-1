@@ -32,10 +32,6 @@ public class DashBoardService {
         return dashBoardDAO.getTotalPOByMonth(startDate, endDate);
     }
 
-    public Map<String, Map<String, Object>> getPODataBySupplier(){
-        return dashBoardDAO.getPODataBySupplier();
-    }
-
     public List<ProductDetail> getProductStorageList(String productId){
         return dashBoardDAO.getProductStorageList(productId);
     }

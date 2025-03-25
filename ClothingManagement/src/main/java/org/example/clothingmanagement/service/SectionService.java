@@ -39,8 +39,16 @@ public class SectionService {
         return sd.getSectionsBySectionTypeIsReceiptStorage();
     }
 
-    public List<Section> getSectionsWithBinCount(int page, int pageSize, String sectionId){
-        return sd.getSectionsWithBinCount(page,pageSize, sectionId);
+    public List<Section> getSectionsWithBinCount(int page, int pageSize, int sectionTypeId){
+        return sd.getSectionsWithBinCount(page,pageSize,sectionTypeId);
+    }
+
+    public int getSectionTypeIdBySectionId(String sectionId){
+        return sd.getSectionTypeIdBySectionId(sectionId);
+    }
+
+    public List<Section> getSectionsByTypeId(int sectionTypeId){
+        return sd.getSectionsByTypeId(sectionTypeId);
     }
 
     public int getTotalSections(){
@@ -59,10 +67,6 @@ public class SectionService {
         return sd.insertSection(section);
     }
 
-    public List<Section> getAllSections(){
-        return sd.getAllSections();
-    }
-
     public List<Section> getAllSectionWithPagination(int page, int pageSize){
         return sd.getAllSectionWithPagination(page,pageSize);
     }
@@ -73,6 +77,10 @@ public class SectionService {
 
     public Section getSectionBySectionId(String sectionId){
         return sd.getSectionBySectionId(sectionId);
+    }
+
+    public boolean deleteSections(String sectionId){
+        return sd.deleteSections(sectionId);
     }
 
     public static void main(String[] args){

@@ -37,28 +37,25 @@ public class DeleteSectionServlet extends HttpServlet {
         BinService binService = new BinService();
         SectionService sectionService = new SectionService();
         SectionTypeService sectionTypeService = new SectionTypeService();
-        // pagination
+
         int page = 1;
         int pageSize = 5;
-        String pageParam = request.getParameter("page");
-        if (pageParam != null) {
-            page = Integer.parseInt(pageParam);
-        }
-
         List<Section> list = null;
         String sectionId = request.getParameter("sectionId");
+        int sectionTypeId = sectionService.getSectionTypeIdBySectionId(sectionId);
         int numberofBins = binService.countBinsBySectionId(sectionId);
         boolean deleted = false;
         if (numberofBins == 0) {
-            deleted = binService.deleteBin(sectionId);
+            deleted = sectionService.deleteSections(sectionId);
         }
         if (deleted) {
-            list = sectionService.getSectionsWithBinCount(page, pageSize, sectionId);
+            list = sectionService.getSectionsWithBinCount(page, pageSize, sectionTypeId);
             request.setAttribute("messageSuccess", "Section deleted successfully");
         } else {
-            list = sectionService.getSectionsWithBinCount(page, pageSize, sectionId);
+            list = sectionService.getSectionsWithBinCount(page, pageSize, sectionTypeId);
             request.setAttribute("message", "Section deletion failed because bin still active");
         }
+
         SectionType sectionType = sectionTypeService.getSectionTypeBySectionId(sectionId);
         int totalSections = sectionService.getTotalSections();
         int totalPages = (int) Math.ceil((double) totalSections / pageSize);
@@ -66,7 +63,7 @@ public class DeleteSectionServlet extends HttpServlet {
         request.setAttribute("sectionType", sectionType);
         request.setAttribute("currentPage", page);
         request.setAttribute("totalPages", totalPages);
-        request.getRequestDispatcher("view-section.jsp").forward(request, response);
+        request.getRequestDispatcher("./view-section.jsp").forward(request, response);
     }
 
     @Override
