@@ -197,7 +197,7 @@ public class SectionTypeDAO {
 
     public String getSectionTypeNameById(int sectionTypeID) {
         String sectionTypeName = null;
-        String sql = "SELECT SectionTypeName FROM SectionTypes WHERE SectionTypeID = ?";
+        String sql = "SELECT SectionTypeName FROM SectionType WHERE SectionTypeID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {

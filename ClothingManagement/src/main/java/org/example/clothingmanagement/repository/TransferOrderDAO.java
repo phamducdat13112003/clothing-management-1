@@ -262,30 +262,23 @@ public class TransferOrderDAO {
     }
 
 
-    // Method to insert a new TODetail into the database
     public boolean addTODetail(TODetail toDetail) {
-        String sql = "INSERT INTO TODetail (TODetailID, ProductDetailID, Quantity, TOID, OriginBinID, FinalBinID) " +
+        String sql = "INSERT INTO todetail (TODetailID, ProductDetailID, Quantity, TOID, OriginBinId, FinalBinId) " +
                 "VALUES (?, ?, ?, ?, ?, ?)";
-
         try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            // Set the values in the PreparedStatement
-            stmt.setString(1, toDetail.getToDetailID()); // TODetailID (Unique ID)
-            stmt.setString(2, toDetail.getProductDetailID()); // ProductDetailID
-            stmt.setInt(3, toDetail.getQuantity()); // Quantity
-            stmt.setString(4, toDetail.getToID()); // TOID (Transfer Order ID)
-            stmt.setString(5, toDetail.getOriginBinID()); // OriginBinID
-            stmt.setString(6, toDetail.getFinalBinID()); // FinalBinID
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-            // Execute the update (insert the TODetail into the database)
-            int rowsAffected = stmt.executeUpdate();
-
-            return rowsAffected > 0; // Return true if the insert was successful
+            pstmt.setString(1, toDetail.getToDetailID());
+            pstmt.setString(2, toDetail.getProductDetailID());
+            pstmt.setInt(3, toDetail.getQuantity());
+            pstmt.setString(4, toDetail.getToID());
+            pstmt.setString(5, toDetail.getOriginBinID());
+            pstmt.setString(6, toDetail.getFinalBinID());
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            e.printStackTrace(); // Log the exception
+            e.printStackTrace();
+            return false;
         }
-
-        return false; // Return false if an error occurred
     }
 
 
@@ -823,7 +816,7 @@ public class TransferOrderDAO {
 
     public List<TODetail> getTODetailsByTOID(String toID) {
         List<TODetail> details = new ArrayList<>();
-        String sql = "SELECT * FROM todetail WHERE toID = ?";
+        String sql = "SELECT toDetailID, toID, productDetailID, quantity, originBinID, finalBinID FROM todetail WHERE toID = ?";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

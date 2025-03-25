@@ -7,6 +7,7 @@ import lombok.*;
 @Data
 @Builder
 @Getter
+@Setter
 public class Section {
     private String sectionID;
     private String sectionName;
@@ -15,8 +16,6 @@ public class Section {
 
     private String sectionTypeName;
     private String description;
-
-    @Setter
     private int totalBins;
 
 

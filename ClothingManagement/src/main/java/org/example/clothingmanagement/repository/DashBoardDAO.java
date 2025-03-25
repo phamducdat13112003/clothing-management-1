@@ -110,29 +110,6 @@ public class DashBoardDAO {
         return poByMonth;
     }
 
-    public Map<String, Map<String, Object>> getPODataBySupplier() {
-        Map<String, Map<String, Object>> poData = new LinkedHashMap<>();
-        String sql = "SELECT DATE_FORMAT(CreatedDate, '%Y-%m') AS Month, SupplierName, COUNT(POID) AS POCount, SUM(TotalPrice) AS TotalValue " +
-                "FROM PO INNER JOIN Supplier ON PO.SupplierID = Supplier.SupplierID " +
-                "WHERE PO.Status = 'Done' " +
-                "GROUP BY Month, SupplierName ORDER BY Month, SupplierName";
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-            while (rs.next()) {
-                String month = rs.getString("Month");
-                String supplier = rs.getString("SupplierName");
-                int poCount = rs.getInt("POCount");
-                double totalValue = rs.getDouble("TotalValue");
-                poData.putIfAbsent(month, new LinkedHashMap<>());
-                poData.get(month).put(supplier, Map.of("POCount", poCount, "TotalValue", totalValue));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return poData;
-    }
-
     public List<ProductDetail> getProductStorageList(String productId) {
         List<ProductDetail> list = new ArrayList<>();
         String sql = """

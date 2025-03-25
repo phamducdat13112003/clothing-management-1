@@ -609,4 +609,15 @@ public class EmployeeDAO {
 
     }
 
+    public void updateEmployeeImage(Employee employee) throws SQLException {
+        String query = "UPDATE Employee SET image = ? WHERE employeeID = ?";
+        try (Connection connection = DBContext.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+
+            preparedStatement.setString(1, employee.getImage());
+            preparedStatement.setString(2, employee.getEmployeeID());
+
+            preparedStatement.executeUpdate();
+        }
+    }
 }
