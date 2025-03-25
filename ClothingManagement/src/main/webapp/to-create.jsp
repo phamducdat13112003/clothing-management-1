@@ -160,6 +160,7 @@
             font-weight: bold;  /* Optional: make the error message bold */
             margin-top: 10px;  /* Optional: add some spacing */
         }
+
     </style>
 </head>
 <body id="sherah-dark-light">
@@ -266,41 +267,6 @@
                     <button type="submit">Create Transfer Order</button>
                 </div>
 
-                <c:if test="${not empty errorGeneral}">
-                    <p class="error-message">${errorGeneral}</p>
-                </c:if>
-                <c:if test="${not empty errorProduct}">
-                    <p class="error-message">${errorProduct}</p>
-                </c:if>
-
-                <c:if test="${not empty successMessage}">
-                    <p style="color:green;">${successMessage}</p>
-                </c:if>
-                <c:if test="${not empty errorToID}">
-                    <p class="error-message">${errorToID}</p>
-                </c:if>
-                <c:if test="${not empty errorBinSame}">
-                    <p class="error-message">${errorBinSame}</p>
-                </c:if>
-                <c:if test="${not empty errorQuantity1}">
-                    <p class="error-message">${errorQuantity1}</p>
-                </c:if>
-                <c:if test="${not empty errorQuantity2}">
-                    <p class="error-message">${errorQuantity2}</p>
-                </c:if>
-                <c:if test="${not empty errorDetail}">
-                    <p class="error-message">${errorDetail}</p>
-                </c:if>
-                <c:if test="${not empty errorBin}">
-                    <p class="error-message">${errorBin}</p>
-                </c:if>
-                <c:if test="${not empty errorCapacity}">
-                    <p class="error-message">${errorCapacity}</p>
-                </c:if>
-                <c:if test="${not empty errorSection}">
-                    <p class="error-message">${errorSection}</p>
-                </c:if>
-
             </form>
         </div>
 
@@ -314,6 +280,40 @@
 
     // Log the employee ID to the console
     console.log("Employee ID: " + employeeID);
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to show alerts if errors exist
+        function showErrorAlerts() {
+            const errorMessages = [
+                '${errorGeneral}',
+                '${errorProduct}',
+                '${errorToID}',
+                '${errorBinSame}',
+                '${errorQuantity1}',
+                '${errorQuantity2}',
+                '${errorDetail}',
+                '${errorBin}',
+                '${errorCapacity}',
+                '${errorSection}'
+            ];
+
+            // Filter out empty error messages
+            const validErrors = errorMessages.filter(msg => msg && msg.trim() !== '');
+
+            // Show alerts if there are any errors
+            if (validErrors.length > 0) {
+                // Combine all non-empty error messages
+                const combinedErrors = validErrors.join('\n\n');
+
+                // Show a single alert with all errors
+                window.alert('Đã xảy ra lỗi:\n\n' + combinedErrors);
+            }
+        }
+
+        // Call the function to show alerts
+        showErrorAlerts();
+    });
 </script>
 <script>
     let rowCount = 1;  // Start row number from 1
@@ -817,6 +817,7 @@
         });
     });
 </script>
+
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>
 <script src="js/jquery-ui.min.js"></script>
