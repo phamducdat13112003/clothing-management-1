@@ -48,6 +48,7 @@ public class ListProductDetailController extends HttpServlet {
         req.setAttribute("list", productDetails);
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
+        req.setAttribute("product", product);
         req.getRequestDispatcher("list-product-detail.jsp").forward(req, resp);
     }
 
