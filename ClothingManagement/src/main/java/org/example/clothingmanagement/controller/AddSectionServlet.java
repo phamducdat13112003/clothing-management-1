@@ -85,7 +85,7 @@ public class AddSectionServlet extends HttpServlet {
             return;
         }
 
-        Section section = new Section(sectionId, sectionName, sectionTypeID);
+        Section section = new Section(sectionId, sectionName, sectionTypeID, 1);
         boolean success = sectionService.insertSection(section);
 
         if (success) {
