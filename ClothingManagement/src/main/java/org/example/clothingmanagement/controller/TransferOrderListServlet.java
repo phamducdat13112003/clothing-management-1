@@ -174,14 +174,6 @@ public class TransferOrderListServlet extends HttpServlet {
                     System.out.println("Failed to update temporary bin quantity");
                     break;
                 }
-
-                // Add to VirtualBin for tracking
-                boolean isVirtualBinUpdated = virtualBinDAO.updateVirtualBin(conn, toID, productDetailID, originalBinID, finalBinID, quantity);
-                if (!isVirtualBinUpdated) {
-                    allProcessingSuccessful = false;
-                    System.out.println("Failed to update VirtualBin");
-                    break;
-                }
             }
 
             if (allProcessingSuccessful) {
@@ -260,12 +252,11 @@ public class TransferOrderListServlet extends HttpServlet {
                 return;
             }
 
-            // Retrieve details from VirtualBin and TODetail
-            String transferDetailsQuery = "SELECT v.VirtualBinID, v.ProductDetailID, v.Quantity, " +
-                    "td.FinalBinId, td.OriginBinId " +
-                    "FROM VirtualBin v " +
-                    "JOIN TODetail td ON v.ProductDetailID = td.ProductDetailID " +
-                    "WHERE td.TOID = ?";
+            // Retrieve details directly from TODetail
+            String transferDetailsQuery = "SELECT ProductDetailID, Quantity, FinalBinId " +
+                    "FROM todetail " +
+                    "WHERE TOID = ?";
+
 
             List<TODetail> details = new ArrayList<>();
             try (PreparedStatement ps = conn.prepareStatement(transferDetailsQuery)) {
@@ -277,15 +268,13 @@ public class TransferOrderListServlet extends HttpServlet {
                         detail.setProductDetailID(rs.getString("ProductDetailID"));
                         detail.setQuantity(rs.getInt("Quantity"));
                         detail.setFinalBinID(rs.getString("FinalBinId"));
-                        detail.setOriginBinID(rs.getString("OriginBinId"));
-                        detail.setVirtualBinID(rs.getString("VirtualBinID"));
                         details.add(detail);
                     }
                 }
             }
 
             if (details.isEmpty()) {
-                request.setAttribute("errorMessage", "No details found for this transfer order in VirtualBin.");
+                request.setAttribute("errorMessage", "No details found for this transfer order.");
                 loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
                         statusFilter, dateFrom, dateTo, createdBy);
                 return;
@@ -297,23 +286,10 @@ public class TransferOrderListServlet extends HttpServlet {
                 String productDetailID = detail.getProductDetailID();
                 int quantity = detail.getQuantity();
                 String finalBinID = detail.getFinalBinID();
-                String virtualBinID = detail.getVirtualBinID();
 
                 System.out.println("Processing transfer: " + quantity + " units of " + productDetailID +
                         " to final bin " + finalBinID);
 
-                // Remove entry from VirtualBin
-                try (PreparedStatement psDeleteVirtualBin = conn.prepareStatement(
-                        "DELETE FROM VirtualBin WHERE VirtualBinID = ?")) {
-                    psDeleteVirtualBin.setString(1, virtualBinID);
-                    int deletedRows = psDeleteVirtualBin.executeUpdate();
-
-                    if (deletedRows == 0) {
-                        allUpdatesSuccessful = false;
-                        System.out.println("Failed to remove entry from VirtualBin");
-                        break;
-                    }
-                }
 
                 // Update final (destination) bin quantity
                 boolean isFinalBinUpdated = transferOrderDAO.updateBinQuantity(conn, finalBinID, productDetailID, quantity);
