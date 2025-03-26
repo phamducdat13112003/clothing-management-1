@@ -1,9 +1,13 @@
 package org.example.clothingmanagement.repository;
 
+import org.example.clothingmanagement.entity.TODetail;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class VirtualBinDAO {
     private String generateNewVirtualBinID(String toID, String productDetailID) throws SQLException {
@@ -117,25 +121,60 @@ public class VirtualBinDAO {
         }
     }
 
-//    private String generateNewVirtualBinID(Connection conn) throws SQLException {
-//        // Query to get the maximum existing ID
-//        String maxIDQuery = "SELECT MAX(VirtualBinID) AS MaxID FROM VirtualBin WHERE VirtualBinID LIKE 'VT-%'";
-//
-//        try (PreparedStatement ps = conn.prepareStatement(maxIDQuery);
-//             ResultSet rs = ps.executeQuery()) {
-//
-//            int nextNumber = 1;
-//
-//            // If an existing ID is found, increment the number
-//            if (rs.next() && rs.getString("MaxID") != null) {
-//                String maxID = rs.getString("MaxID");
-//                // Extract the numeric part and increment
-//                String numberPart = maxID.substring(3); // Remove 'VT-'
-//                nextNumber = Integer.parseInt(numberPart) + 1;
-//            }
-//
-//            // Format the new ID with leading zeros
-//            return String.format("VT-%03d", nextNumber);
-//        }
-//    }
+    public List<TODetail> getToDetail(String toID) throws SQLException {
+        List<TODetail> toDetails = new ArrayList<>();
+        String query = "SELECT ProductDetailID, Quantity, OriginBinID, FinalBinID " +
+                "FROM virtualbin WHERE TOID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, toID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    TODetail detail = new TODetail();
+                    detail.setProductDetailID(rs.getString("ProductDetailID"));
+                    detail.setQuantity(rs.getInt("Quantity"));
+                    detail.setOriginBinID(rs.getString("OriginBinID"));
+                    detail.setFinalBinID(rs.getString("FinalBinID"));
+                    toDetails.add(detail);
+                }
+            }
+        }
+
+        return toDetails;
+    }
+
+    public boolean updateVirtualBinLocation(String productDetailID, String toID, String finalBinID) throws SQLException {
+        String query = "UPDATE virtualbin " +
+                "SET FinalBinID = ? " +
+                "WHERE ProductDetailID = ? AND TOID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(query)) {
+
+            pstmt.setString(1, finalBinID);
+            pstmt.setString(2, productDetailID);
+            pstmt.setString(3, toID);
+
+            int rowsAffected = pstmt.executeUpdate();
+            return rowsAffected > 0;
+        }
+    }
+
+    public boolean removeVirtualBinEntry(String toID, String productDetailID, String binID) throws SQLException {
+        String sql = "DELETE FROM virtualbin WHERE TOID = ? AND ProductDetailID = ? AND OriginBinId = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, toID);
+            ps.setString(2, productDetailID);
+            ps.setString(3, binID);
+
+            int deletedRows = ps.executeUpdate();
+            return deletedRows > 0;
+        }
+    }
 }
