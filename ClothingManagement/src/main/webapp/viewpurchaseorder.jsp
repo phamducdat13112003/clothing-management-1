@@ -80,7 +80,7 @@
                                 <div class="search-container">
                                     <form action="searchpurchaseorder" method="GET" class="search-form">
                                         <input value="${txtS}" type="text" id="customSearch" name="txt"
-                                               placeholder="Search PO ID, CreateDate, Supplier, CreateBy, TotalPrice, Status,...">
+                                               placeholder="Search PO ID, CreateDate, Supplier, Employee, TotalPrice, Status,...">
                                         <button type="submit" class="btn btn-secondary btn-number">
                                             <i class="fa fa-search"></i>
                                         </button>
@@ -92,8 +92,8 @@
                                     <tr>
                                         <th class="sherah-table__column-1 sherah-table__h1">PO ID</th>
                                         <th class="sherah-table__column-2 sherah-table__h2">Crated Date</th>
-                                        <th class="sherah-table__column-3 sherah-table__h3">Supplier ID</th>
-                                        <th class="sherah-table__column-4 sherah-table__h4">CreateBy</th>
+                                        <th class="sherah-table__column-3 sherah-table__h3">Supplier Name</th>
+                                        <th class="sherah-table__column-4 sherah-table__h4">Employee</th>
                                         <th class="sherah-table__column-5 sherah-table__h5">Status</th>
                                         <th class="sherah-table__column-6 sherah-table__h6">TotalPrice</th>
                                     </tr>

@@ -20,6 +20,7 @@ public class BinDetailDAO {
             sql.append(" SELECT binDetailId, binId, productDetailId, quantity ");
             sql.append(" FROM binDetail ");
             sql.append(" WHERE binId = ? ");
+            sql.append(" AND quantity !=0 ");
             sql.append(" ORDER BY binId ASC ");
             sql.append(" LIMIT ? OFFSET ? ");
             PreparedStatement ps = con.prepareStatement(sql.toString());
