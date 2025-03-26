@@ -124,28 +124,29 @@ public class AddEmployeeServlet extends HttpServlet {
         }else{
             Employee employee = new Employee(employeeId ,name, email, phone, address, gender, dateOfBirth, "W001","");
             Part part = request.getPart("img");
-            String contentType = part.getContentType();
-            long fileSize = part.getSize(); // Kích thước tệp ảnh (bytes)
-            if (!isImageFile(contentType)) {
-                request.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
-            }else if (fileSize > 2 * 1024 * 1024) { // Kiem tra nếu lớn hơn 2MB
-                request.setAttribute("message", "Image size must not exceed 2MB.");
-            } else {
-                String realPath = request.getServletContext().getRealPath("img/Employee"); //where the photo is saved
-                String source = Path.of(part.getSubmittedFileName()).getFileName().toString(); //get the original filename of the file then
-                // convert it to a string, get just the filename without including the full path.
-                if (!source.isEmpty()) {
-                    String filename = null;
-                    try {
-                        filename = employeeService.getEmployeeId() + ".png";
-                    } catch (SQLException e) {
-                        request.setAttribute("message", "Can't create filename.");
+            if (part != null && part.getSize() > 0) {
+                String contentType = part.getContentType();
+                long fileSize = part.getSize();
+                if (!isImageFile(contentType)) {
+                    request.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
+                } else if (fileSize > 2 * 1024 * 1024) {
+                    request.setAttribute("message", "Image size must not exceed 2MB.");
+                } else {
+                    String realPath = request.getServletContext().getRealPath("img/Employee");
+                    String source = Path.of(part.getSubmittedFileName()).getFileName().toString();
+                    if (!source.isEmpty()) {
+                        String filename = null;
+                        try {
+                            filename = employeeService.getEmployeeId() + ".png";
+                        } catch (SQLException e) {
+                            request.setAttribute("message", "Can't create filename.");
+                        }
+                        if (!Files.exists(Path.of(realPath))) {
+                            Files.createDirectories(Path.of(realPath));
+                        }
+                        part.write(realPath + "/" + filename);
+                        employee.setImage("img/Employee/" + filename);
                     }
-                    if (!Files.exists(Path.of(realPath))) { // check folder /images/Employee is existed
-                        Files.createDirectories(Path.of(realPath));
-                    }
-                    part.write(realPath + "/" + filename); //Save the uploaded file to the destination folder with a new filename.
-                    employee.setImage("img/Employee/" + filename); //Set the path to the image file
                 }
             }
             boolean success = false;

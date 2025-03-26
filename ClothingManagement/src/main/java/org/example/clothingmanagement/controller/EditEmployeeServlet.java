@@ -130,10 +130,16 @@ public class EditEmployeeServlet extends HttpServlet {
         }else{
             Employee editEmployee = new Employee( employeeId, name, email , phone, address, gender, dateOfBirth, status, "W001", "");
             Part part = request.getPart("img");
+            long fileSize = part.getSize();
                 if (part != null && part.getSize() > 0) { // Check if part is not null and has content
                     String contentType = part.getContentType();
                     if (!isImageFile(contentType)) {
                         request.setAttribute("message", "Only image files (JPG, PNG, GIF) are allowed.");
+                        request.getRequestDispatcher("editemployee").include(request, response);
+                        return;
+                    }
+                    if (fileSize > 2 * 1024 * 1024) { // Kiểm tra nếu ảnh lớn hơn 2MB
+                        request.setAttribute("message", "Image size must not exceed 2MB.");
                         request.getRequestDispatcher("editemployee").include(request, response);
                         return;
                     }
