@@ -146,7 +146,7 @@
             <c:forEach var="doc" items="${listDoc}">
                 <tr>
                     <td>${doc.inventoryDocId}</td>
-                    <td>${doc.createdBy}</td>
+                    <td>${getCreatedByToEmployeeNameMap[doc.createdBy]}</td>
                     <td>${doc.createdDate}</td>
                     <td>${doc.binId}</td>
 <%--                    <td>${account.employeeId}</td>--%>
