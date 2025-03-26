@@ -15,63 +15,72 @@ import java.time.format.DateTimeFormatter;
 public class PurchaseOrderDAO {
     //CRUD
     public List<PurchaseOrder> getAllPurchaseOrder() {
-        try (Connection conn = DBContext.getConnection()) {
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * FROM `po` \n" +
-                    "ORDER BY FIELD(Status, 'Pending', 'Confirmed', 'Processing', 'Cancel', 'Done'),\n" +
-                    "CreatedDate DESC;\n");
-            PreparedStatement ps = conn.prepareStatement(sql.toString());
-            ResultSet rs = ps.executeQuery();
-            List<PurchaseOrder> purchaseOrders = new ArrayList<>();
+        String sql = "SELECT p.POID, p.CreatedDate, s.SupplierName, e.EmployeeName, p.Status, p.TotalPrice " +
+                "FROM po p " +
+                "JOIN employee e ON p.CreatedBy = e.EmployeeID " +
+                "JOIN supplier s ON p.SupplierID = s.SupplierID " +
+                "ORDER BY FIELD(p.Status, 'Pending', 'Confirmed', 'Processing', 'Cancel', 'Done'), " +
+                "p.CreatedDate DESC";
+
+        List<PurchaseOrder> purchaseOrders = new ArrayList<>();
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 PurchaseOrder purchaseOrder = new PurchaseOrder(
                         rs.getString("POID"),
                         rs.getDate("CreatedDate"),
-                        rs.getString("SupplierID"),
-                        rs.getString("CreatedBy"),
+                        rs.getString("SupplierName"),  // Lấy tên supplier thay vì ID
+                        rs.getString("EmployeeName"),  // Lấy tên employee thay vì ID
                         rs.getString("Status"),
                         rs.getFloat("TotalPrice")
                 );
                 purchaseOrders.add(purchaseOrder);
             }
-            return purchaseOrders;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error retrieving purchase orders", e);
         }
 
+        return purchaseOrders;
     }
+
 
     public List<PurchaseOrder> getAllPurchaseOrderHaveStatusProcessingAndConfirmed() {
-        try (Connection conn = DBContext.getConnection()) {
-            StringBuilder sql = new StringBuilder();
-            sql.append("SELECT * \n" +
-                    "FROM `po` \n" +
-                    "WHERE Status IN ('Confirmed', 'Processing', 'Done') \n" +
-                    "ORDER BY \n" +
-                    "    FIELD(Status, 'Confirmed', 'Processing', 'Done'),\n" +
-                    "    CreatedDate DESC;\n");
-            PreparedStatement ps = conn.prepareStatement(sql.toString());
-            ResultSet rs = ps.executeQuery();
-            List<PurchaseOrder> purchaseOrders = new ArrayList<>();
+        String sql = "SELECT p.POID, p.CreatedDate, s.SupplierName, e.EmployeeName, p.Status, p.TotalPrice " +
+                "FROM po p " +
+                "JOIN employee e ON p.CreatedBy = e.EmployeeID " +
+                "JOIN supplier s ON p.SupplierID = s.SupplierID " +
+                "WHERE p.Status IN ('Confirmed', 'Processing', 'Done') " +
+                "ORDER BY FIELD(p.Status, 'Confirmed', 'Processing', 'Done'), p.CreatedDate DESC";
+
+        List<PurchaseOrder> purchaseOrders = new ArrayList<>();
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 PurchaseOrder purchaseOrder = new PurchaseOrder(
                         rs.getString("POID"),
                         rs.getDate("CreatedDate"),
-                        rs.getString("SupplierID"),
-                        rs.getString("CreatedBy"),
+                        rs.getString("SupplierName"),  // Lấy tên supplier thay vì ID
+                        rs.getString("EmployeeName"),  // Lấy tên employee thay vì ID
                         rs.getString("Status"),
                         rs.getFloat("TotalPrice")
                 );
                 purchaseOrders.add(purchaseOrder);
             }
-            return purchaseOrders;
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error retrieving purchase orders", e);
         }
 
+        return purchaseOrders;
     }
+
 
     public String getSupplierIDByPoID(String poID) {
         try (Connection conn = DBContext.getConnection()) {
@@ -91,7 +100,13 @@ public class PurchaseOrderDAO {
 
     public List<PurchaseOrder> searchPO(String searchQuery) {
         List<PurchaseOrder> purchaseOrders = new ArrayList<>();
-        String sql = "SELECT * FROM po WHERE POID LIKE ? OR CreatedDate LIKE ? OR SupplierID LIKE ? OR TotalPrice LIKE ? OR CreatedBy LIKE ? OR Status LIKE ? ORDER BY FIELD(Status, 'Pending', 'Confirmed', 'Processing','Cancel','Done')";
+        String sql = "SELECT p.POID, p.CreatedDate, s.SupplierName, e.EmployeeName, p.Status, p.TotalPrice " +
+                "FROM po p " +
+                "JOIN employee e ON p.CreatedBy = e.EmployeeID " +
+                "JOIN supplier s ON p.SupplierID = s.SupplierID " +
+                "WHERE p.POID LIKE ? OR p.CreatedDate LIKE ? OR s.SupplierName LIKE ? " +
+                "OR p.TotalPrice LIKE ? OR e.EmployeeName LIKE ? OR p.Status LIKE ? " +
+                "ORDER BY FIELD(p.Status, 'Pending', 'Confirmed', 'Processing', 'Cancel', 'Done'), p.CreatedDate DESC";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -107,21 +122,29 @@ public class PurchaseOrderDAO {
                 PurchaseOrder purchaseOrder = new PurchaseOrder(
                         rs.getString("POID"),
                         rs.getDate("CreatedDate"),
-                        rs.getString("SupplierID"),
-                        rs.getString("CreatedBy"),
+                        rs.getString("SupplierName"),  // Lấy tên supplier thay vì ID
+                        rs.getString("EmployeeName"),  // Lấy tên employee thay vì ID
                         rs.getString("Status"),
                         rs.getFloat("TotalPrice")
                 );
                 purchaseOrders.add(purchaseOrder);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error searching purchase orders", e);
         }
+
         return purchaseOrders;
     }
+
     public List<PurchaseOrder> searchDO(String searchQuery) {
         List<PurchaseOrder> purchaseOrders = new ArrayList<>();
-        String sql = "SELECT * FROM po WHERE POID LIKE ? OR CreatedDate LIKE ? OR SupplierID LIKE ? OR TotalPrice LIKE ? OR CreatedBy LIKE ? OR Status LIKE ? ORDER BY FIELD(Status, 'Confirmed', 'Processing','Done')";
+        String sql = "SELECT p.POID, p.CreatedDate, s.SupplierName, e.EmployeeName, p.Status, p.TotalPrice " +
+                "FROM po p " +
+                "JOIN employee e ON p.CreatedBy = e.EmployeeID " +
+                "JOIN supplier s ON p.SupplierID = s.SupplierID " +
+                "WHERE p.POID LIKE ? OR p.CreatedDate LIKE ? OR s.SupplierName LIKE ? " +
+                "OR p.TotalPrice LIKE ? OR e.EmployeeName LIKE ? OR p.Status LIKE ? " +
+                "ORDER BY FIELD(p.Status, 'Confirmed', 'Processing', 'Done'), p.CreatedDate DESC";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -137,18 +160,20 @@ public class PurchaseOrderDAO {
                 PurchaseOrder purchaseOrder = new PurchaseOrder(
                         rs.getString("POID"),
                         rs.getDate("CreatedDate"),
-                        rs.getString("SupplierID"),
-                        rs.getString("CreatedBy"),
+                        rs.getString("SupplierName"),  // Lấy tên supplier thay vì ID
+                        rs.getString("EmployeeName"),  // Lấy tên employee thay vì ID
                         rs.getString("Status"),
                         rs.getFloat("TotalPrice")
                 );
                 purchaseOrders.add(purchaseOrder);
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Error searching delivery orders", e);
         }
+
         return purchaseOrders;
     }
+
     public PurchaseOrder getPObyPoID(String poID) {
         try (Connection conn = DBContext.getConnection()) {
             String sql = "SELECT * FROM `po` WHERE POID = ?";
