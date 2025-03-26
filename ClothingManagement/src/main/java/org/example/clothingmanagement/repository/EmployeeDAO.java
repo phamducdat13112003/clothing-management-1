@@ -605,10 +605,6 @@ public class EmployeeDAO {
     }
 
 
-    public static void main(String[] args) {
-
-    }
-
     public void updateEmployeeImage(Employee employee) throws SQLException {
         String query = "UPDATE Employee SET image = ? WHERE employeeID = ?";
         try (Connection connection = DBContext.getConnection();
@@ -619,5 +615,9 @@ public class EmployeeDAO {
 
             preparedStatement.executeUpdate();
         }
+    }
+
+    public static void main(String[] args) {
+
     }
 }

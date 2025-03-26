@@ -35,17 +35,6 @@
     </div>
 
     <div class="password-form">
-        <c:if test="${not empty passwordError}">
-            <div class="alert alert-danger" role="alert">
-                    ${passwordError}
-            </div>
-        </c:if>
-
-        <c:if test="${not empty passwordSuccess}">
-            <div class="alert alert-success" role="alert">
-                    ${passwordSuccess}
-            </div>
-        </c:if>
 
         <form action="changePassword" method="post" onsubmit="return validateForm()">
             <div class="mb-3">
@@ -56,6 +45,16 @@
             <div class="mb-3">
                 <label for="newPassword" class="form-label">New Password</label>
                 <input type="password" class="form-control" id="newPassword" name="newPassword" required>
+                <div id="passwordRequirements" class="text-muted small mt-1">
+                    Password must:
+                    <ul class="ps-3">
+                        <li id="lengthReq">Be at least 8 characters long</li>
+                        <li id="letterReq">Contain letters</li>
+                        <li id="numberReq">Contain numbers</li>
+                        <li id="specialReq">Contain special characters</li>
+                        <li id="noWhitespaceReq">Not contain whitespace</li>
+                    </ul>
+                </div>
             </div>
 
             <div class="mb-3">
@@ -68,7 +67,7 @@
 
             <div class="text-center">
                 <button type="submit" class="btn btn-primary">Change Password</button>
-                <a href="profile" class="btn btn-outline-secondary ms-2">Cancel</a>
+                <a href="${pageContext.request.contextPath}/employee?action=view&employeeID=${employeeID}" class="btn btn-outline-secondary ms-2">Cancel</a>
             </div>
         </form>
     </div>
@@ -81,13 +80,67 @@
         const confirmPassword = document.getElementById('confirmPassword').value;
         const mismatchAlert = document.getElementById('passwordMismatch');
 
+        // Reset requirement indicators
+        ['lengthReq', 'letterReq', 'numberReq', 'specialReq', 'noWhitespaceReq']
+            .forEach(id => document.getElementById(id).classList.remove('text-success', 'text-danger'));
+
+        // Validation checks
+        let isValid = true;
+
+        // Check password match
         if (newPassword !== confirmPassword) {
             mismatchAlert.style.display = 'block';
-            return false;
+            isValid = false;
+        } else {
+            mismatchAlert.style.display = 'none';
         }
 
-        mismatchAlert.style.display = 'none';
-        return true;
+        // Check length
+        const lengthReq = document.getElementById('lengthReq');
+        if (newPassword.length < 8) {
+            lengthReq.classList.add('text-danger');
+            isValid = false;
+        } else {
+            lengthReq.classList.add('text-success');
+        }
+
+        // Check for letters
+        const letterReq = document.getElementById('letterReq');
+        if (!/[a-zA-Z]/.test(newPassword)) {
+            letterReq.classList.add('text-danger');
+            isValid = false;
+        } else {
+            letterReq.classList.add('text-success');
+        }
+
+        // Check for numbers
+        const numberReq = document.getElementById('numberReq');
+        if (!/[0-9]/.test(newPassword)) {
+            numberReq.classList.add('text-danger');
+            isValid = false;
+        } else {
+            numberReq.classList.add('text-success');
+        }
+
+        // Check for special characters
+        const specialReq = document.getElementById('specialReq');
+        if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(newPassword)) {
+            specialReq.classList.add('text-danger');
+            isValid = false;
+        } else {
+            specialReq.classList.add('text-success');
+        }
+
+        // Check for whitespace
+        const noWhitespaceReq = document.getElementById('noWhitespaceReq');
+        if (/\s/.test(newPassword) || newPassword.trim() === '') {
+            noWhitespaceReq.classList.add('text-danger');
+            isValid = false;
+        } else {
+            noWhitespaceReq.classList.add('text-success');
+        }
+
+        return isValid;
     }
 </script>
 </body>

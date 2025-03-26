@@ -129,6 +129,18 @@
 			</div>
 		</c:if>
 
+		<c:if test="${not empty passwordError}">
+			<div class="alert alert-danger" role="alert">
+					${passwordError}
+			</div>
+		</c:if>
+
+		<c:if test="${not empty passwordSuccess}">
+			<div class="alert alert-success" role="alert">
+					${passwordSuccess}
+			</div>
+		</c:if>
+
 		<h4 class="mb-4">Personal Information</h4>
 
 		<div class="row">

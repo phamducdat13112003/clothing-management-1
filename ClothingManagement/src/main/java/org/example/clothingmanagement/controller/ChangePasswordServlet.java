@@ -26,6 +26,15 @@ public class ChangePasswordServlet extends HttpServlet {
             return;
         }
 
+        // Get employeeID from session
+        Integer employeeID = (Integer) session.getAttribute("employeeID");
+
+        // Add employeeID to request scope for the JSP
+        request.setAttribute("employeeID", employeeID);
+
+
+
+
         // Forward to change password page
         RequestDispatcher dispatcher = request.getRequestDispatcher("changePassword.jsp");
         dispatcher.forward(request, response);
@@ -40,6 +49,8 @@ public class ChangePasswordServlet extends HttpServlet {
             response.sendRedirect("login.jsp");
             return;
         }
+
+
 
         // Get current account
         Account account = (Account) session.getAttribute("account");
