@@ -193,7 +193,7 @@
             document.addEventListener("input", function (event) {
                 if (event.target.name === "realQuantity[]") {
                     if (event.target.value < 0) {
-                        alert("Không được nhập số âm! Hệ thống sẽ đặt giá trị về 0.");
+                        alert("Do not enter negative number. Set to 0.");
                         event.target.value = 0; // Đặt lại giá trị 0 ngay lập tức
                     }
                 }
@@ -205,7 +205,7 @@
 
                 // Nếu nhập số âm, đặt lại giá trị về 0 và hiển thị cảnh báo
                 if (realQuantityInput.value < 0) {
-                    alert("Không được nhập số âm! Hệ thống sẽ đặt giá trị về 0.");
+                    alert("Do not enter negative number. Set to 0.");
                     realQuantityInput.value = 0; // Đặt lại giá trị ô nhập
                 }
 
@@ -229,7 +229,7 @@
                     let threshold = originalQuantity * 0.2; // 20% của originalQuantity
 
                     if (difference > threshold) {
-                        let confirmAction = confirm("Có ít nhất một mục lệch trên 20%. Bạn có muốn tiếp tục không?");
+                        let confirmAction = confirm("The difference is greater than 20%. Do you want continue?");
                         if (!confirmAction) {
                             event.preventDefault(); // Hủy gửi form
                             return;

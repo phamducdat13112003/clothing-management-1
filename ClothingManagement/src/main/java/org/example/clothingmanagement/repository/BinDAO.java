@@ -466,6 +466,10 @@ public class BinDAO {
         return bins;
     }
 
+
+
+
+
     // Fetch all bins associated with a specific section ID
     public List<Bin> getBinsBySection(String sectionID) {
         List<Bin> bins = new ArrayList<>();

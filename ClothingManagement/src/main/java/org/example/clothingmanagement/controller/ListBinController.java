@@ -42,7 +42,7 @@ public class ListBinController extends HttpServlet {
                 b.setAvailableCapacity(b.getMaxCapacity()-b.getCurrentCapacity());
             }
         }
-        int totalProduct = bs.getBinsBySectionId(sectionId, page, pageSize).size();
+        int totalProduct = bs.getBinsBySectionIdWithoutPagination(sectionId).size();
         int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
         Section section = null;
         if(ss.getSectionById(sectionId).isPresent()){

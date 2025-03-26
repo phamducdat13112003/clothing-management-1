@@ -160,25 +160,21 @@
             </c:forEach>
 
             <c:if test="${account.roleId == 1}">
-
             <label>Select Action:</label>
-            <select id="actionSelect" onchange="handleSelectionChange()">
-                <option value="">-- Select --</option>
-
-                <c:if test="${need ne 'daydu' and status eq 'Confirmed'and status ne 'Done'}">
-                    <option value="clearDifference">Clear Difference</option>
+            <div>
+                <c:if test="${need ne 'daydu' and status eq 'Confirmed' and status ne 'Done'}">
+                    <button type="button" onclick="handleAction('clearDifference')">Clear Difference</button>
                 </c:if>
-                <c:if test="${status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">
-                <option value="confirm">Confirm</option>
+                <c:if test="${status ne 'Cancel' and status ne 'Confirmed' and status ne 'Done'}">
+                    <button type="button" onclick="handleAction('confirm')">Confirm</button>
                 </c:if>
-                <c:if test="${!hasRecountId and status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">
-                    <option value="recount">Recount</option>
+                <c:if test="${!hasRecountId and status ne 'Cancel' and status ne 'Confirmed' and status ne 'Done'}">
+                    <button type="button" onclick="handleAction('recount')">Recount</button>
                 </c:if>
-
-                <c:if test="${status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">
-                <option value="cancel">Cancel</option>
+                <c:if test="${status ne 'Cancel' and status ne 'Confirmed' and status ne 'Done'}">
+                    <button type="button" onclick="handleAction('cancel')">Cancel</button>
                 </c:if>
-            </select>
+            </div>
 
             <!-- Ô nhập nhân viên (ẩn mặc định) -->
             <div id="staffInput" style="display: none;">
@@ -192,49 +188,112 @@
                 <button type="submit" id="recountSubmit" formaction="RecountInventoryServlet">Recount</button>
             </div>
             </c:if>
-        </form>
 
-        <script>
-            function handleSelectionChange() {
-                var actionSelect = document.getElementById("actionSelect");
-                var staffInput = document.getElementById("staffInput");
-                var form = document.getElementById("actionForm");
+            <script>
+                function handleAction(action) {
+                    var form = document.getElementById("actionForm");
+                    var staffInput = document.getElementById("staffInput");
 
-                if (actionSelect.value === "clearDifference") {
-                    var confirmAction = confirm("Bạn có chắc chắn muốn thực hiện Clear Difference không?");
-                    if (confirmAction) {
-                        form.action = "ClearDifferenceServlet";
-                        form.submit();
+                    if (action === "clearDifference") {
+                        if (confirm("Do you want to Clear Difference?")) {
+                            form.action = "ClearDifferenceServlet";
+                            form.submit();
+                        }
+                    } else if (action === "confirm") {
+                        if (confirm("Do you really want to Confirm Inventory?")) {
+                            form.action = "ConfirmInvenServlet";
+                            form.submit();
+                        }
+                    } else if (action === "cancel") {
+                        if (confirm("Do you really want to Cancel?")) {
+                            form.action = "CancelInventoryServlet"; // Cập nhật đúng servlet xử lý
+                            form.submit();
+                        }
+                    } else if (action === "recount") {
+                        staffInput.style.display = "block"; // Hiện ô nhập nhân viên
                     } else {
-                        actionSelect.value = ""; // Giữ trạng thái ban đầu
+                        staffInput.style.display = "none"; // Ẩn ô nhập nhân viên nếu không chọn Recount
                     }
                 }
-                else if (actionSelect.value === "recount") {
-                    staffInput.style.display = "block"; // Hiện ô nhập nhân viên
-                }
-                else if (actionSelect.value === "confirm") {
-                    var confirmAction = confirm("Bạn có chắc chắn muốn xác nhận kiểm kê không?");
-                    if (confirmAction) {
-                        form.action = "ConfirmInvenServlet";
-                        form.submit();
-                    } else {
-                        actionSelect.value = ""; // Giữ trạng thái ban đầu
-                    }
-                }
-                else if (actionSelect.value === "cancel") {
-                    var confirmCancel = confirm("Bạn có chắc chắn muốn hủy kiểm kê không?");
-                    if (confirmCancel) {
-                        form.action = "form";
-                        form.submit();
-                    } else {
-                        actionSelect.value = ""; // Giữ trạng thái ban đầu
-                    }
-                }
-                else {
-                    staffInput.style.display = "none"; // Ẩn ô nhập nhân viên nếu không chọn Recount
-                }
-            }
-        </script>
+            </script>
+
+
+        <%--            <c:if test="${account.roleId == 1}">--%>
+
+<%--            <label>Select Action:</label>--%>
+<%--            <select id="actionSelect" onchange="handleSelectionChange()">--%>
+<%--                <option value="">-- Select --</option>--%>
+
+<%--                <c:if test="${need ne 'daydu' and status eq 'Confirmed'and status ne 'Done'}">--%>
+<%--                    <option value="clearDifference">Clear Difference</option>--%>
+<%--                </c:if>--%>
+<%--                <c:if test="${status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">--%>
+<%--                <option value="confirm">Confirm</option>--%>
+<%--                </c:if>--%>
+<%--                <c:if test="${!hasRecountId and status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">--%>
+<%--                    <option value="recount">Recount</option>--%>
+<%--                </c:if>--%>
+
+<%--                <c:if test="${status ne 'Cancel' and status ne 'Confirmed'and status ne 'Done'}">--%>
+<%--                <option value="cancel">Cancel</option>--%>
+<%--                </c:if>--%>
+<%--            </select>--%>
+
+<%--            <!-- Ô nhập nhân viên (ẩn mặc định) -->--%>
+<%--            <div id="staffInput" style="display: none;">--%>
+<%--                <label>Employee:</label>--%>
+<%--                <select name="employee">--%>
+<%--                    <option value="">-- Assign Employee Recount --</option>--%>
+<%--                    <c:forEach var="employee" items="${employeeList}">--%>
+<%--                        <option value="${employee.employeeID}">${employee.employeeName}</option>--%>
+<%--                    </c:forEach>--%>
+<%--                </select>--%>
+<%--                <button type="submit" id="recountSubmit" formaction="RecountInventoryServlet">Recount</button>--%>
+<%--            </div>--%>
+<%--            </c:if>--%>
+<%--        </form>--%>
+
+<%--        <script>--%>
+<%--            function handleSelectionChange() {--%>
+<%--                var actionSelect = document.getElementById("actionSelect");--%>
+<%--                var staffInput = document.getElementById("staffInput");--%>
+<%--                var form = document.getElementById("actionForm");--%>
+
+<%--                if (actionSelect.value === "clearDifference") {--%>
+<%--                    var confirmAction = confirm("Do you want to Clear Difference?");--%>
+<%--                    if (confirmAction) {--%>
+<%--                        form.action = "ClearDifferenceServlet";--%>
+<%--                        form.submit();--%>
+<%--                    } else {--%>
+<%--                        actionSelect.value = ""; // Giữ trạng thái ban đầu--%>
+<%--                    }--%>
+<%--                }--%>
+<%--                else if (actionSelect.value === "recount") {--%>
+<%--                    staffInput.style.display = "block"; // Hiện ô nhập nhân viên--%>
+<%--                }--%>
+<%--                else if (actionSelect.value === "confirm") {--%>
+<%--                    var confirmAction = confirm("Do you really want to Confirm Inventory?");--%>
+<%--                    if (confirmAction) {--%>
+<%--                        form.action = "ConfirmInvenServlet";--%>
+<%--                        form.submit();--%>
+<%--                    } else {--%>
+<%--                        actionSelect.value = ""; // Giữ trạng thái ban đầu--%>
+<%--                    }--%>
+<%--                }--%>
+<%--                else if (actionSelect.value === "cancel") {--%>
+<%--                    var confirmCancel = confirm("Do you really want to Cancel?");--%>
+<%--                    if (confirmCancel) {--%>
+<%--                        form.action = "form";--%>
+<%--                        form.submit();--%>
+<%--                    } else {--%>
+<%--                        actionSelect.value = ""; // Giữ trạng thái ban đầu--%>
+<%--                    }--%>
+<%--                }--%>
+<%--                else {--%>
+<%--                    staffInput.style.display = "none"; // Ẩn ô nhập nhân viên nếu không chọn Recount--%>
+<%--                }--%>
+<%--            }--%>
+<%--        </script>--%>
 
     </div>
 </section>
