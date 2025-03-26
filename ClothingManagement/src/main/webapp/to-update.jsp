@@ -48,16 +48,29 @@
               <div class="row mg-top-30">
                 <div class="col-12 sherah-flex-between">
                   <div class="sherah-breadcrumb">
-                    <h2 class="sherah-breadcrumb__title">Update Transfer Order</h2>
+                    <h2 class="sherah-breadcrumb__title">Transfer Order Detail</h2>
                     <ul class="sherah-breadcrumb__list">
                       <li><a href="TOList">Transfer Order List</a></li>
-                      <li class="active"><a href="#">Update Transfer Order</a></li>
+                      <li class="active"><a href="#">Transfer Order Detail</a></li>
                       <li class="active"><a href="#">${transferOrder.toID}</a></li>
                     </ul>
                   </div>
                 </div>
               </div>
             </div>
+
+            <%-- Messages section --%>
+            <c:if test="${not empty sessionScope.successMessage}">
+              <div class="alert alert-success" role="alert">
+                  ${sessionScope.successMessage}
+                <c:remove var="successMessage" scope="session"/>
+              </div>
+            </c:if>
+            <c:if test="${not empty errorMessage}">
+              <div class="alert alert-danger" role="alert">
+                  ${errorMessage}
+              </div>
+            </c:if>
 
             <div class="sherah-table sherah-page-inner sherah-border sherah-default-bg mg-top-25">
               <div class="cart-wrapper">
@@ -82,10 +95,12 @@
                         <div class="d-flex justify-content-between mb-3">
                           <span class="text-muted">Status</span>
                           <span class="badge bg-${transferOrder.status == 'Pending' ? 'warning' :
-                                                 transferOrder.status == 'Done' ? 'success' :
-                                                 transferOrder.status == 'Cancelled' ? 'danger' : 'secondary'}">
-                            ${transferOrder.status}
+                              transferOrder.status == 'Completed' ? 'success' :
+                              transferOrder.status == 'Cancelled' ? 'danger' :
+                              transferOrder.status == 'Processing' ? 'primary' : 'secondary'}">
+                              ${transferOrder.status}
                           </span>
+
                         </div>
                       </div>
                     </div>
@@ -119,8 +134,9 @@
                             </div>
                             <div class="mt-2">
                               <span class="badge bg-${transferOrder.status == 'Pending' ? 'warning' :
-                                                     transferOrder.status == 'Done' ? 'success' :
-                                                     transferOrder.status == 'Cancelled' ? 'danger' : 'secondary'}">
+                                transferOrder.status == 'Completed' ? 'success' :
+                                transferOrder.status == 'Cancelled' ? 'danger' :
+                                transferOrder.status == 'Processing' ? 'primary' : 'secondary'}">
                                 ${transferOrder.status}
                               </span>
                             </div>
@@ -145,10 +161,11 @@
                             </div>
 
                             <!-- Single Edit Button -->
-                            <c:if test="${transferOrder.status == 'Pending'}">
-                              <button class="btn btn-sm btn-outline-primary mt-2" data-bs-toggle="modal" data-bs-target="#combinedEditModal">
+
+                            <c:if test="${transferOrder.status eq 'Pending' or transferOrder.status eq 'Processing'}">
+                              <a href="updateLocation?toID=${transferOrder.toID}" class="btn btn-sm btn-outline-primary mt-2">
                                 <i class="bi bi-pencil-square"></i> Edit Location
-                              </button>
+                              </a>
                             </c:if>
                           </div>
 
@@ -161,10 +178,10 @@
                                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                  <form id="locationEditForm">
+                                  <form id="locationEditForm" onsubmit="event.preventDefault();">
                                     <div class="mb-3">
                                       <label for="finalSectionSelect" class="form-label">Section ID</label>
-                                      <select class="form-select" id="finalSectionSelect">
+                                      <select class="form-select" id="finalSectionSelect" name="finalSectionSelect">
                                         <option value="">Select Section</option>
                                         <c:forEach items="${sections}" var="section">
                                           <option value="${section.sectionID}" ${section.sectionID == finalSectionID ? 'selected' : ''}>${section.sectionName}</option>
@@ -174,7 +191,7 @@
                                     </div>
                                     <div class="mb-3">
                                       <label for="finalBinSelect" class="form-label">Bin ID</label>
-                                      <select class="form-select" id="finalBinSelect" disabled>
+                                      <select class="form-select" id="finalBinSelect" name="finalBinSelect" disabled>
                                         <option value="">Select Bin</option>
                                       </select>
                                       <div class="invalid-feedback">Please select a bin</div>
@@ -183,7 +200,7 @@
                                 </div>
                                 <div class="modal-footer">
                                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                  <button type="button" class="btn btn-primary" id="saveLocationChanges">Save Changes</button>
+                                  <button type="submit" form="locationEditForm" class="btn btn-primary">Save Changes</button>
                                 </div>
                               </div>
                             </div>
@@ -264,152 +281,7 @@
   </section>
 </div>
 
-<!-- Modal for editing Section ID -->
 
-<script>
-  document.addEventListener("DOMContentLoaded", function() {
-    const contextPath = "${pageContext.request.contextPath}";
-    const finalSectionSelect = document.getElementById("finalSectionSelect");
-    const finalBinSelect = document.getElementById("finalBinSelect");
-    const saveButton = document.getElementById("saveLocationChanges");
-
-    // Pre-select the current section and enable bin selection immediately
-    if (finalSectionSelect.value) {
-      finalBinSelect.disabled = false;
-      loadBins(finalSectionSelect.value, "${toDetails[0].finalBinID}");
-    }
-
-    // Add event listener for section selection
-    finalSectionSelect.addEventListener("change", function() {
-      if (this.value) {
-        finalBinSelect.disabled = false;
-        loadBins(this.value);
-      } else {
-        finalBinSelect.disabled = true;
-        finalBinSelect.innerHTML = '<option value="">Select Bin</option>';
-      }
-    });
-
-    // Function to load bins for a section
-    function loadBins(sectionID, selectedBinID) {
-      if (!sectionID) {
-        finalBinSelect.innerHTML = '<option value="">Select Bin</option>';
-        finalBinSelect.disabled = true;
-        return;
-      }
-
-      // Create URL for the API call
-      const url = new URL(contextPath + "/getBinsBySection", window.location.origin);
-      url.searchParams.append("sectionID", sectionID);
-
-      // Fetch bins for the selected section
-      fetch(url.toString())
-              .then(response => {
-                if (!response.ok) {
-                  throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.json();
-              })
-              .then(data => {
-                // Clear current options
-                finalBinSelect.innerHTML = '<option value="">Select Bin</option>';
-
-                if (data.success && data.bins && data.bins.length > 0) {
-                  // Add new options
-                  data.bins.forEach(bin => {
-                    const option = document.createElement('option');
-                    option.value = bin.id || bin.binID;
-                    option.textContent = bin.name || bin.binName || bin.id || bin.binID;
-
-                    // If there's a previously selected bin, select it
-                    if (selectedBinID && (bin.id === selectedBinID || bin.binID === selectedBinID)) {
-                      option.selected = true;
-                    }
-
-                    finalBinSelect.appendChild(option);
-                  });
-                } else {
-                  finalBinSelect.innerHTML = '<option value="">No bins available</option>';
-                }
-              })
-              .catch(error => {
-                console.error("Error fetching bins:", error);
-                finalBinSelect.innerHTML = '<option value="">Error loading bins</option>';
-              });
-    }
-
-    // Handle save button click
-    saveButton.addEventListener("click", function() {
-      const newSectionID = finalSectionSelect.value;
-      const newSectionText = finalSectionSelect.options[finalSectionSelect.selectedIndex].textContent;
-      const newBinID = finalBinSelect.value;
-      const newBinText = finalBinSelect.options[finalBinSelect.selectedIndex].textContent;
-
-      // Validate selections
-      let isValid = true;
-
-      if (!newSectionID) {
-        finalSectionSelect.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        finalSectionSelect.classList.remove("is-invalid");
-      }
-
-      if (!newBinID) {
-        finalBinSelect.classList.add("is-invalid");
-        isValid = false;
-      } else {
-        finalBinSelect.classList.remove("is-invalid");
-      }
-
-      if (!isValid) {
-        return;
-      }
-
-      // Send update to server
-      const transferOrderID = "${transferOrder.toID}";
-      const url = contextPath + "/updateTransferOrderLocation";
-
-      const formData = new FormData();
-      formData.append("toID", transferOrderID);
-      formData.append("finalSectionID", newSectionID);
-      formData.append("finalBinID", newBinID);
-
-      fetch(url, {
-        method: "POST",
-        body: formData
-      })
-              .then(response => response.json())
-              .then(data => {
-                if (data.success) {
-                  // Update the displayed values
-                  document.getElementById('finalSectionDisplay').textContent = newSectionText;
-                  document.getElementById('finalBinDisplay').textContent = newBinText;
-
-                  // Show success message
-                  alert("Location updated successfully");
-                } else {
-                  alert("Failed to update location: " + (data.message || "Unknown error"));
-                }
-              })
-              .catch(error => {
-                console.error("Error updating location:", error);
-                alert("Error updating location. See console for details.");
-              })
-              .finally(() => {
-                // Close the modal
-                bootstrap.Modal.getInstance(document.getElementById('combinedEditModal')).hide();
-              });
-    });
-
-    // When the modal is about to be shown, ensure bins are loaded
-    document.getElementById('combinedEditModal').addEventListener('show.bs.modal', function() {
-      if (finalSectionSelect.value) {
-        loadBins(finalSectionSelect.value, "${toDetails[0].finalBinID}");
-      }
-    });
-  });
-</script>
 <!-- JavaScript -->
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery-migrate.js"></script>
