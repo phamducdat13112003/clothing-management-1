@@ -116,15 +116,9 @@
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Bin "${section.sectionName}" </h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="list-bin?id=${section.sectionID}">Home</a></li>
+                                            <li><a href="view-list-section-type">Home</a></li>
                                             <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
                                         </ul>
-                                        <c:if test="${not empty message}">
-                                            <span class="error-message">${message}</span>
-                                        </c:if>
-                                        <c:if test="${not empty messageSuccess}">
-                                            <span class="message">${messageSuccess}</span>
-                                        </c:if>
                                     </div>
                                 </div>
                                 <div class="col-6">

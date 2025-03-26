@@ -105,7 +105,7 @@
                                     <div class="sherah-breadcrumb mg-top-30">
                                         <h2 class="sherah-breadcrumb__title">Manage Bin "${bin.binName}" </h2>
                                         <ul class="sherah-breadcrumb__list">
-                                            <li><a href="view-bin-detail?id=${bin.binID}">Home</a></li>
+                                            <li><a href="view-list-section-type">Home</a></li>
                                             <%--                                            <li class="active"><a href="${pageContext.request.contextPath}/add-product-detail?id=${product.id}">Add Product</a></li>--%>
                                         </ul>
                                         <c:if test="${not empty message}">
