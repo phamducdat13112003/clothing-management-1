@@ -19,6 +19,4 @@ public class TODetail {
     private String productName;
     private double weight;
 
-
-    private String virtualBinID;
 }
