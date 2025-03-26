@@ -241,7 +241,6 @@ public class TransferOrderCreateServlet extends HttpServlet {
 
 
         // Xác thực Bin
-        String originBinID = request.getParameter("originBinID");
         String finalBinID = request.getParameter("finalBinID");
 
         // Xác thực sản phẩm và số lượng
@@ -267,12 +266,12 @@ public class TransferOrderCreateServlet extends HttpServlet {
         // Kiểm tra sức chứa của bin đích
         double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
         double currentBinWeight = transferOrderDAO.getCurrentBinWeight(finalBinID);
-        double pendingTransferWeight = transferOrderDAO.getPendingTransferTotalWeight(finalBinID);
-        double totalWeightAfterTransfer = currentBinWeight + pendingTransferWeight + totalTransferWeight;
+//        double pendingTransferWeight = transferOrderDAO.getPendingTransferTotalWeight(finalBinID);
+        double totalWeightAfterTransfer = currentBinWeight + totalTransferWeight;
 
         System.out.println("Final Bin Max Capacity: " + binMaxCapacity);
         System.out.println("Current Bin Weight: " + currentBinWeight);
-        System.out.println("Pending Transfer Weight: " + pendingTransferWeight);
+//        System.out.println("Pending Transfer Weight: " + pendingTransferWeight);
         System.out.println("Total Transfer Order Weight: " + totalTransferWeight);
         System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
 
@@ -280,30 +279,11 @@ public class TransferOrderCreateServlet extends HttpServlet {
             request.setAttribute("errorCapacity", "Bin đích không đủ sức chứa cho số lượng sản phẩm này. " +
                     "Sức chứa tối đa: " + binMaxCapacity + " kg. " +
                     "Trọng lượng hiện tại: " + currentBinWeight + " kg. " +
-                    "Trọng lượng đang chờ chuyển: " + pendingTransferWeight + " kg. " +
                     "Trọng lượng cần chuyển: " + totalTransferWeight + " kg.");
             return false;
         }
 
         return true;
-    }
-
-    private String findAvailableTempBin(String sectionID, double requiredWeight) throws SQLException {
-        // Fetch all bins in the temporary section
-        List<Bin> tempBins = sectionDAO.getBinsBySection(sectionID);
-
-
-        for (Bin bin : tempBins) {
-            double currentBinWeight = transferOrderDAO.getCurrentBinWeight(bin.getBinID());
-            double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(bin.getBinID());
-
-            // Check if the bin has enough remaining capacity
-            if ((currentBinWeight + requiredWeight) <= binMaxCapacity) {
-                return bin.getBinID();
-            }
-        }
-
-        return null; // No suitable bin found
     }
 
     private void preserveFormData(HttpServletRequest request) {
