@@ -83,7 +83,7 @@
         }
 
         .delete-link {
-            color: red ;/* Làm cho Delete có màu đỏ */
+            color: deepskyblue ;/* Làm cho Delete có màu xanh */
             font-weight: bold;
         }
 
