@@ -194,8 +194,8 @@
                                                                 class="required">*</span></label>
                                                         <select class="form-group__input" name="gender"
                                                                 aria-label="Default select example" required>
-                                                            <option value="1" selected>Nam</option>
-                                                            <option value="0">Nữ</option>
+                                                            <option value="1" selected>Male</option>
+                                                            <option value="0">Female</option>
                                                         </select>
                                                     </div>
                                                 </div>
