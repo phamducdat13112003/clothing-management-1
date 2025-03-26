@@ -88,10 +88,17 @@
                             <div class="row mg-top-30">
                                 <div class="col-12 sherah-flex-between">
                                     <div class="sherah-breadcrumb">
+                                         <c:if test='${purchaseOrder.status == "Processing"}'>
                                         <h2 class="sherah-breadcrumb__title"> Create Delivery Order </h2>
+                                         </c:if>
+                                        <c:if test='${purchaseOrder.status == "Done"}'>
+                                            <h2 class="sherah-breadcrumb__title">Delivery Order Detail</h2>
+                                        </c:if>
+                                        <c:if test='${purchaseOrder.status == "Confirmed"}'>
+                                            <h2 class="sherah-breadcrumb__title">Delivery Order Detail</h2>
+                                        </c:if>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="viewdeliveryorder">Delivery Order List</a></li>
-                                            <li class="active"><a href="#"> Create Delivery Order </a></li>
                                             <li class="active"><a href="#">${purchaseOrder.poID}</a></li>
                                         </ul>
                                     </div>
