@@ -90,7 +90,7 @@
 
                                                                                         <!-- Price -->
                                                                                         <label for="price">Price <span class="required">*</span></label>
-                                                                                        <input type="number" id="price" name="price" step="10000" min="10000" max="10000000" required>
+                                                                                        <input type="number" id="price" name="price" step="1000" min="1000" max="10000000" required>
 
 <%--                                                                                        <!-- Bin ID -->--%>
 <%--                                                                                        <label for="binID">Bin ID:</label>--%>
@@ -131,7 +131,7 @@
 
                                                                                         <!-- Description -->
                                                                                         <label for="description">Description:</label>
-                                                                                        <textarea id="description" name="description" rows="3"></textarea>
+                                                                                        <textarea id="description" name="description" rows="3" maxlength="255"></textarea>
 
 
                                                                                         <!-- Supplier ID -->
@@ -231,7 +231,7 @@
             return false;
         }
 
-        var materialPattern = /^[a-zA-Z0-9%,\s]+$/; // Biểu thức chính quy cho phép chữ, số và ký tự '%'
+        var materialPattern = /^[a-zA-Z0-9%,\s:\/àáảãạăắằẳẵặâấầẩẫậđéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ\s]+$/;
         if (!materialPattern.test(material)) {
             alert("Material must contain only letters, numbers, and the '%' character");
             return false;

@@ -74,17 +74,9 @@ public class UpdateProductController extends HttpServlet {
                 supplierId = s.getSupplierId();
             }
         }
-        boolean checkDup = false;
-        List<Product> list = ps.getAllProducts();
-        for(Product p : list) {
-            if (productName.equalsIgnoreCase(p.getName()) && season.equalsIgnoreCase(p.getSeasons()) && categoryID == p.getCategoryId() && supplierId.equalsIgnoreCase(p.getSupplierId())) {
-                checkDup = true;
-                break;
-            }
-        }
-
+        Product p = new Product(categoryID,description,gender,madeIn,material,minQuantity,productName,productPrice,season,productID,supplierId);
+        boolean checkDup = ps.checkDup(p);
         if(!checkDup) {
-            Product p = new Product(categoryID,description,gender,madeIn,material,minQuantity,productName,productPrice,season,productID,supplierId);
             boolean check = ps.updateProduct(p);
             if (check) {
                 HttpSession session = req.getSession();

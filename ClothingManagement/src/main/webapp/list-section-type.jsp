@@ -98,7 +98,6 @@
                                         <h2 class="sherah-breadcrumb__title">Manage SectionType</h2>
                                         <ul class="sherah-breadcrumb__list">
                                             <li><a href="view-list-section-type">Home</a></li>
-                                            <li class="active"><a href="">Add SectionType</a></li>
                                         </ul>
 
                                     </div>
