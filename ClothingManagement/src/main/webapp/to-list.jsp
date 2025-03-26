@@ -262,7 +262,7 @@
                         <a href="${pageContext.request.contextPath}/TOList?action=process&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
                            onclick="return confirm('Are you sure you want to mark this transfer order as processing?');"
                            class="text-success me-2" title="Processing">
-                          <i class="bi bi-check-circle"></i>
+                          <i class="bi-chevron-double-right"></i>
                         </a>
 
                         <!-- Complete button - only show if status is not already COMPLETED -->

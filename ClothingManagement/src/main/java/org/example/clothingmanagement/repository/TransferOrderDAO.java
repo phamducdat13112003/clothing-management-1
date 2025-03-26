@@ -154,9 +154,9 @@ public class TransferOrderDAO {
 
                 // Retrieve the ProductName from the join
                 String productName = rs.getString("ProductName");
-                //toDetail.setProductName(productName);  // Set the product name in TODetail
+                toDetail.setProductName(productName);  // Set the product name in TODetail
                 double weight = rs.getDouble("Weight");
-                //toDetail.setWeight(weight);
+                toDetail.setWeight(weight);
 
                 toDetails.add(toDetail);
             }
@@ -1367,9 +1367,7 @@ public class TransferOrderDAO {
         return transferOrders;
     }
 
-    /**
-     * Lấy tổng số Transfer Order với các điều kiện filter
-     */
+
     public int getTotalTransferOrdersWithFilter(String search, String statusFilter,
                                                 String dateFrom, String dateTo, String createdBy) {
         int count = 0;
@@ -1442,5 +1440,47 @@ public class TransferOrderDAO {
         }
 
         return count;
+    }
+
+    public boolean updateTransferOrderLocation(String toID, String finalBinID) {
+        String sqlTODetail = "UPDATE todetail SET FinalBinId = ? WHERE TOID = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement pstmtTODetail = conn.prepareStatement(sqlTODetail)) {
+
+            // Disable auto-commit for transaction
+            conn.setAutoCommit(false);
+
+            // Update TODetail table
+            pstmtTODetail.setString(1, finalBinID);
+            pstmtTODetail.setString(2, toID);
+            int toDetailRowsAffected = pstmtTODetail.executeUpdate();
+
+            // Commit transaction
+            conn.commit();
+
+            // Return true if at least one row was updated
+            return toDetailRowsAffected > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public int getCurrentBinQuantity(Connection conn, String binID, String productDetailID) {
+        String sqlGetQuantity = "SELECT Quantity FROM BinDetail WHERE BinId = ? AND ProductDetailId = ?";
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sqlGetQuantity)) {
+            pstmt.setString(1, binID);
+            pstmt.setString(2, productDetailID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next() ? rs.getInt("Quantity") : 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 }
