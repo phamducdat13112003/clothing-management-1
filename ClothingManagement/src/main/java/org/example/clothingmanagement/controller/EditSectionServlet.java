@@ -102,7 +102,7 @@ public class EditSectionServlet extends HttpServlet {
         totalSections = sectionService.getTotalSections();
         for (Section s : list) {
             int totalBins = binService.countBinsBySectionId(s.getSectionID());
-            s.setTotalBins(totalBins);
+            s.setNumberOfBins(totalBins);
         }
 
         if (success) {
@@ -121,6 +121,6 @@ public class EditSectionServlet extends HttpServlet {
     }
 
     private boolean isValidSectionName(String sectionName) {
-        return sectionName != null && sectionName.matches("^[a-zA-Z0-9 ]+$");
+        return sectionName != null && sectionName.matches("^[a-zA-Z0-9 /]+$");
     }
 }

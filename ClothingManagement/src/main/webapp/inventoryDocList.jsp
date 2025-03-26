@@ -152,7 +152,7 @@
 <%--                    <td>${account.employeeId}</td>--%>
                     <td>${doc.status}</td>
                     <td>
-                        <c:if test="${account.roleId == 4 && doc.status != 'Confirmed'&& doc.status != 'Cancel'&& doc.status != 'Counted'}">
+                        <c:if test="${account.roleId == 4 && (doc.status == 'Pending'|| doc.status == 'Recount')}">
                             <form action="CountInventoryServlet" method="get">
                                 <input type="hidden" name="binId" value=${doc.binId}>
                                 <input type="hidden" name="employee" value=${account.employeeId}>
@@ -171,11 +171,28 @@
                             </form>
 <%--                        </c:if>--%>
 
-                        <c:if test="${account.roleId == 1 && doc.status != 'Confirmed'&& doc.status != 'Cancel'&& doc.status != 'Pending'&& doc.status != 'Recount'}">
+                        <c:if test="${account.roleId == 1 && doc.status != 'Cancel'&& doc.status != 'Pending'&& doc.status != 'Recount'&& doc.status != 'Done'&& doc.status != 'Confirmed'}">
                             <form action="ClearDifferenceServlet" method="get">
                                 <input type="hidden" name="binId" value=${doc.binId}>
                                 <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                <input type="hidden" name="status" value=${doc.status}>
                                 <button type="submit">Confirm</button><%-- clear diffirent just for manager--%>
+                            </form>
+                        </c:if>
+                        <c:if test="${account.roleId == 1 && doc.status != 'Cancel'&& doc.status != 'Confirmed'&& doc.status != 'Done'}">
+                            <form action="form" method="post">
+                                <input type="hidden" name="binId" value=${doc.binId}>
+                                <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                <input type="hidden" name="status" value=${doc.status}>
+                                <button type="submit">Cancel</button><%-- clear diffirent just for manager--%>
+                            </form>
+                        </c:if>
+                        <c:if test="${account.roleId == 1 && doc.status == 'Confirmed'}">
+                            <form action="ClearDifferenceServlet" method="get">
+                                <input type="hidden" name="binId" value=${doc.binId}>
+                                <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                <input type="hidden" name="status" value=${doc.status}>
+                                <button type="submit">Clear Difference</button><%-- clear diffirent just for manager--%>
                             </form>
                         </c:if>
                     </td>

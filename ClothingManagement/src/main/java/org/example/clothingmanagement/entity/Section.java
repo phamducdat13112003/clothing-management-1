@@ -17,6 +17,7 @@ public class Section {
     private String sectionTypeName;
     private String description;
     private int totalBins;
+    private int status;
 
 
     public Section(String sectionID, String sectionName, int sectionTypeID) {
@@ -25,5 +26,10 @@ public class Section {
         this.sectionTypeId = sectionTypeID;
     }
 
-
+    public Section(String sectionID, String sectionName, int sectionTypeID, int status) {
+        this.sectionID = sectionID;
+        this.sectionName = sectionName;
+        this.sectionTypeId = sectionTypeID;
+        this.status = status;
+    }
 }

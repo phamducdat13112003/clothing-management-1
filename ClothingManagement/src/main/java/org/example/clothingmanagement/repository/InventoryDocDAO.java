@@ -69,31 +69,31 @@ public class InventoryDocDAO {
         return list;
     }
 
-    public static void updateBinDetails(String binID, List<String> productDetailIDs, List<Integer> quantities) throws SQLException {
-        if (productDetailIDs == null || quantities == null || productDetailIDs.size() != quantities.size()) {
-            throw new IllegalArgumentException("Danh sách ProductDetailID và quantity không hợp lệ.");
-        }
-
-        String sql = "UPDATE bindetail SET quantity = ? WHERE binId = ? AND ProductDetailId = ?";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            conn.setAutoCommit(false); // Bắt đầu transaction
-
-            for (int i = 0; i < productDetailIDs.size(); i++) {
-                stmt.setInt(1, quantities.get(i));
-                stmt.setString(2, binID);
-                stmt.setString(3, productDetailIDs.get(i));
-                stmt.addBatch(); // Thêm vào batch
-            }
-
-            stmt.executeBatch(); // Thực thi batch update
-            conn.commit(); // Commit transaction
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw e;
-        }
-    }
+//    public static void updateBinDetails(String binID, List<String> productDetailIDs, List<Integer> quantities) throws SQLException {
+//        if (productDetailIDs == null || quantities == null || productDetailIDs.size() != quantities.size()) {
+//            throw new IllegalArgumentException("Danh sách ProductDetailID và quantity không hợp lệ.");
+//        }
+//
+//        String sql = "UPDATE bindetail SET quantity = ? WHERE binId = ? AND ProductDetailId = ?";
+//
+//        try (Connection conn = DBContext.getConnection();
+//             PreparedStatement stmt = conn.prepareStatement(sql)) {
+//            conn.setAutoCommit(false); // Bắt đầu transaction
+//
+//            for (int i = 0; i < productDetailIDs.size(); i++) {
+//                stmt.setInt(1, quantities.get(i));
+//                stmt.setString(2, binID);
+//                stmt.setString(3, productDetailIDs.get(i));
+//                stmt.addBatch(); // Thêm vào batch
+//            }
+//
+//            stmt.executeBatch(); // Thực thi batch update
+//            conn.commit(); // Commit transaction
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw e;
+//        }
+//    }
 
     public void createInventoryDoc(String inventoryDocID,String createdBy, Date createdDate, String binID, String status) throws SQLException {
         String sql = "INSERT INTO inventorydoc (InventoryDocID, CreatedBy, CreatedDate, BinID, Status) VALUES (?, ?, ?, ?, ?)";
@@ -164,35 +164,35 @@ public class InventoryDocDAO {
         return bins;
     }
 
-    public static List<Employee> getAllEmployee(){
-        try(Connection con = DBContext.getConnection()){
-            StringBuilder sql = new StringBuilder();
-            sql.append(" SELECT employeeId, employeeName, email, phone, address, gender,dob,status,image,warehouseId FROM employee ");
-            sql.append(" WHERE warehouseId = 'W001' ");
-            sql.append(" ORDER BY employeeId");
-            PreparedStatement ps = con.prepareStatement(sql.toString());
-            ResultSet rs = ps.executeQuery();
-            List<Employee> employees = new ArrayList<>();
-            while (rs.next()) {
-                Employee employee = Employee.builder()
-                        .employeeID(rs.getString("EmployeeID"))
-                        .employeeName(rs.getString("EmployeeName"))
-                        .email(rs.getString("Email"))
-                        .phone(rs.getString("Phone"))
-                        .address(rs.getString("Address"))
-                        .gender(rs.getBoolean("Gender"))
-                        .dob(LocalDate.parse(rs.getString("Dob")))
-                        .status(rs.getString("Status"))
-                        .warehouseID(rs.getString("WarehouseID"))
-                        .image(rs.getString("Image"))
-                        .build();
-                employees.add(employee);
-            }
-            return employees;
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public static List<Employee> getAllEmployee(){
+//        try(Connection con = DBContext.getConnection()){
+//            StringBuilder sql = new StringBuilder();
+//            sql.append(" SELECT employeeId, employeeName, email, phone, address, gender,dob,status,image,warehouseId FROM employee ");
+//            sql.append(" WHERE warehouseId = 'W001' ");
+//            sql.append(" ORDER BY employeeId");
+//            PreparedStatement ps = con.prepareStatement(sql.toString());
+//            ResultSet rs = ps.executeQuery();
+//            List<Employee> employees = new ArrayList<>();
+//            while (rs.next()) {
+//                Employee employee = Employee.builder()
+//                        .employeeID(rs.getString("EmployeeID"))
+//                        .employeeName(rs.getString("EmployeeName"))
+//                        .email(rs.getString("Email"))
+//                        .phone(rs.getString("Phone"))
+//                        .address(rs.getString("Address"))
+//                        .gender(rs.getBoolean("Gender"))
+//                        .dob(LocalDate.parse(rs.getString("Dob")))
+//                        .status(rs.getString("Status"))
+//                        .warehouseID(rs.getString("WarehouseID"))
+//                        .image(rs.getString("Image"))
+//                        .build();
+//                employees.add(employee);
+//            }
+//            return employees;
+//        } catch (SQLException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
     public static String getEmployeeIDByAccountID(String accountID) {
         String query = "SELECT e.EmployeeID FROM account e WHERE e.AccountID = ? LIMIT 1";
@@ -280,31 +280,31 @@ public class InventoryDocDAO {
         return list;
     }
 
-    public static List<Bin> getBinsBySectionWithStatusOne(String sectionID) {
-        List<Bin> list = new ArrayList<>();
-        try {
-            String sql = "SELECT * FROM bin WHERE SectionID = ? AND Status = 1";
-            Connection conn = DBContext.getConnection();
-
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setString(1, sectionID);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(new Bin(
-                        rs.getString("BinID"),
-                        rs.getString("BinName"),
-                        rs.getDouble("MaxCapacity"),
-                        rs.getBoolean("Status"),
-                        rs.getString("SectionID"),
-                        null,  // currentCapacity (Không có trong DB)
-                        null   // availableCapacity (Không có trong DB)
-                ));
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
+//    public static List<Bin> getBinsBySectionWithStatusOne(String sectionID) {
+//        List<Bin> list = new ArrayList<>();
+//        try {
+//            String sql = "SELECT * FROM bin WHERE SectionID = ? AND Status = 1";
+//            Connection conn = DBContext.getConnection();
+//
+//            PreparedStatement ps = conn.prepareStatement(sql);
+//            ps.setString(1, sectionID);
+//            ResultSet rs = ps.executeQuery();
+//            while (rs.next()) {
+//                list.add(new Bin(
+//                        rs.getString("BinID"),
+//                        rs.getString("BinName"),
+//                        rs.getDouble("MaxCapacity"),
+//                        rs.getBoolean("Status"),
+//                        rs.getString("SectionID"),
+//                        null,  // currentCapacity (Không có trong DB)
+//                        null   // availableCapacity (Không có trong DB)
+//                ));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return list;
+//    }
 
     public static void changeBinStatus(String binID, int status) {
         String sql = "UPDATE bin SET Status = ? WHERE BinID = ?";
@@ -319,7 +319,6 @@ public class InventoryDocDAO {
         }
     }
 
-    // Kiểm tra xem có thể thêm sản phẩm vào bin hay không
     public static boolean canAddProductsToBin(String binId, List<String> productDetailIds, List<Integer> quantities) {
         String maxCapacityQuery = "SELECT MaxCapacity FROM bin WHERE BinID = ?";
         String existingWeightQuery = "SELECT SUM(pd.Weight * bd.Quantity) FROM bindetail bd " +
@@ -407,6 +406,144 @@ public class InventoryDocDAO {
         }
         return productDetailMap;
     }
+
+    public static void updateBinDetails(String binID, List<String> productDetailIDs, List<Integer> quantities) throws SQLException {
+        if (productDetailIDs == null || quantities == null || productDetailIDs.size() != quantities.size()) {
+            throw new IllegalArgumentException("Danh sách ProductDetailID và quantity không hợp lệ.");
+        }
+
+        String updateSQL = "UPDATE bindetail SET quantity = ? WHERE binId = ? AND ProductDetailId = ?";
+        String deleteSQL = "DELETE FROM bindetail WHERE binId = ? AND ProductDetailId = ?";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement updateStmt = conn.prepareStatement(updateSQL);
+             PreparedStatement deleteStmt = conn.prepareStatement(deleteSQL)) {
+
+            conn.setAutoCommit(false); // Bắt đầu transaction
+
+            for (int i = 0; i < productDetailIDs.size(); i++) {
+                String productDetailID = productDetailIDs.get(i);
+                int quantity = quantities.get(i);
+
+                if (quantity == 0) {
+                    // Nếu quantity = 0, xóa bản ghi
+                    deleteStmt.setString(1, binID);
+                    deleteStmt.setString(2, productDetailID);
+                    deleteStmt.addBatch();
+                } else {
+                    // Ngược lại, cập nhật quantity
+                    updateStmt.setInt(1, quantity);
+                    updateStmt.setString(2, binID);
+                    updateStmt.setString(3, productDetailID);
+                    updateStmt.addBatch();
+                }
+            }
+
+            // Thực thi batch update và delete
+            deleteStmt.executeBatch();
+            updateStmt.executeBatch();
+
+            conn.commit(); // Commit transaction
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw e;
+        }
+    }
+
+//    public static List<Bin> getBinsBySection(String sectionID) {
+//        List<Bin> list = new ArrayList<>();
+//        String sql = "SELECT * FROM bin b " +
+//                "WHERE b.SectionID = ? " +
+//                "AND EXISTS (SELECT 1 FROM bindetail bd WHERE bd.BinID = b.BinID)"; // Kiểm tra bin có hàng không
+//
+//        try (Connection conn = DBContext.getConnection();
+//             PreparedStatement ps = conn.prepareStatement(sql)) {
+//
+//            ps.setString(1, sectionID);
+//            ResultSet rs = ps.executeQuery();
+//
+//            while (rs.next()) {
+//                list.add(new Bin(
+//                        rs.getString("BinID"),
+//                        rs.getString("BinName"),
+//                        rs.getDouble("MaxCapacity"),
+//                        rs.getBoolean("Status"),
+//                        rs.getString("SectionID"),
+//                        null,  // currentCapacity (Không có trong DB)
+//                        null   // availableCapacity (Không có trong DB)
+//                ));
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//        return list;
+//    }
+
+    public static List<Employee> getAllEmployee() {
+        try (Connection con = DBContext.getConnection()) {
+            StringBuilder sql = new StringBuilder();
+            sql.append(" SELECT e.employeeId, e.employeeName, e.email, e.phone, e.address, e.gender, ");
+            sql.append(" e.dob, e.status, e.image, e.warehouseId ");
+            sql.append(" FROM employee e ");
+            sql.append(" JOIN account a ON e.employeeId = a.employeeId "); // JOIN với account để lấy roleId
+            sql.append(" WHERE e.warehouseId = 'W001' AND a.roleId = 4 "); // Lọc theo roleId = 4
+            sql.append(" ORDER BY e.employeeId");
+
+            PreparedStatement ps = con.prepareStatement(sql.toString());
+            ResultSet rs = ps.executeQuery();
+            List<Employee> employees = new ArrayList<>();
+
+            while (rs.next()) {
+                Employee employee = Employee.builder()
+                        .employeeID(rs.getString("EmployeeID"))
+                        .employeeName(rs.getString("EmployeeName"))
+                        .email(rs.getString("Email"))
+                        .phone(rs.getString("Phone"))
+                        .address(rs.getString("Address"))
+                        .gender(rs.getBoolean("Gender"))
+                        .dob(LocalDate.parse(rs.getString("Dob")))
+                        .status(rs.getString("Status"))
+                        .warehouseID(rs.getString("WarehouseID"))
+                        .image(rs.getString("Image"))
+                        .build();
+                employees.add(employee);
+            }
+            return employees;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static List<Bin> getBinsBySectionWithStatusOne(String sectionID) {
+        List<Bin> list = new ArrayList<>();
+        try {
+            String sql = "SELECT DISTINCT b.* FROM bin b " +
+                    "JOIN bindetail bd ON b.BinID = bd.BinID " +  // Chỉ lấy bin có trong bindetail
+                    "WHERE b.SectionID = ? AND b.Status = 1";
+
+            Connection conn = DBContext.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setString(1, sectionID);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                list.add(new Bin(
+                        rs.getString("BinID"),
+                        rs.getString("BinName"),
+                        rs.getDouble("MaxCapacity"),
+                        rs.getBoolean("Status"),
+                        rs.getString("SectionID"),
+                        null,  // currentCapacity (Không có trong DB)
+                        null   // availableCapacity (Không có trong DB)
+                ));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+
 
 
 

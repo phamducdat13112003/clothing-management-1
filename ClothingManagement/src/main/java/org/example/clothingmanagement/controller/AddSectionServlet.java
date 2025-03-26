@@ -85,7 +85,7 @@ public class AddSectionServlet extends HttpServlet {
             return;
         }
 
-        Section section = new Section(sectionId, sectionName, sectionTypeID);
+        Section section = new Section(sectionId, sectionName, sectionTypeID, 1);
         boolean success = sectionService.insertSection(section);
 
         if (success) {
@@ -113,6 +113,6 @@ public class AddSectionServlet extends HttpServlet {
     }
 
     private boolean isValidSectionName(String sectionName) {
-        return sectionName != null && sectionName.matches("^[a-zA-Z0-9 ]+$");
+        return sectionName != null && sectionName.matches("^[a-zA-Z0-9 /]+$");
     }
 }
