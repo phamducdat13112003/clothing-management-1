@@ -23,6 +23,8 @@ public class ClearDifferenceServlet extends HttpServlet {
         String binId = request.getParameter("binId");
         String inventoryDocId = request.getParameter("inventoryDocId");
         List<Employee> employeeList = InventoryDocDAO.getAllEmployee();
+        String status= request.getParameter("status");
+        String need= null;
 
         List <BinDetail> listDetail= InventoryDocDAO.getBinDetailByBinID(binId);
         List<InventoryDocDetail> listInvenDoc = InventoryDocDetailDAO.getInventoryDocDetailsByDocID(inventoryDocId);
@@ -48,11 +50,16 @@ public class ClearDifferenceServlet extends HttpServlet {
             }
         }
         if(filteredList.isEmpty()){
+            // chon cai bang
             filteredList=listInvenDoc;
+            need= "daydu";
+
         }
         request.setAttribute("listInvenDoc", filteredList);
         request.setAttribute("inventoryDocId", inventoryDocId);
         request.setAttribute("employeeList", employeeList);
+        request.setAttribute("status", status);
+        request.setAttribute("need", need);
         request.setAttribute("binId", binId);
         request.getRequestDispatcher("clearDifference.jsp").forward(request,response);
 
@@ -87,7 +94,7 @@ public class ClearDifferenceServlet extends HttpServlet {
             // Gọi DAO để cập nhật dữ liệu
             InventoryDocDAO.updateBinDetails(binId,productDetailIdList, recountQuantityList);
             InventoryDocDAO.updateProductDetailQuantity(productDetailIdList,differenceList);
-            InventoryDocDAO.updateInventoryDocStatus(inventoryDocId,"Confirmed");
+            InventoryDocDAO.updateInventoryDocStatus(inventoryDocId,"Done");
             InventoryDocDAO.changeBinStatus(binId,1);
 
             // Chuyển hướng sau khi cập nhật thành công

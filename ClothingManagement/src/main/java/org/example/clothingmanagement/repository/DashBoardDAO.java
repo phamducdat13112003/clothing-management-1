@@ -172,12 +172,13 @@ public class DashBoardDAO {
     }
 
     public List<BinDetail> getBinCapacityPercentage(int page, int pageSize) {
-        String sql = "SELECT b.binId, SUM(b.quantity * p.Weight) AS totalWeightInBin, p.Quantity AS maxCapacity, " +
-                "(SUM(b.quantity * p.Weight) / p.Quantity) * 100 AS binFullPercentage, " +
-                "(1 - (SUM(b.quantity * p.Weight) / p.Quantity)) * 100 AS binRemainingPercentage " +
+        String sql = "SELECT b.binId, SUM(b.quantity * p.Weight) AS totalWeightInBin, bin.MaxCapacity AS maxCapacity, " +
+                "(SUM(b.quantity * p.Weight) / bin.MaxCapacity) * 100 AS binFullPercentage, " +
+                "(1 - (SUM(b.quantity * p.Weight) / bin.MaxCapacity)) * 100 AS binRemainingPercentage " +
                 "FROM BinDetail b " +
                 "JOIN ProductDetail p ON b.ProductDetailID = p.ProductDetailID " +
-                "GROUP BY b.binId, p.Quantity "+
+                "JOIN Bin bin ON b.binId = bin.binId " +
+                "GROUP BY b.binId, bin.MaxCapacity " +
                 "LIMIT ? OFFSET ?";
         List<BinDetail> binCapacityList = new ArrayList<>();
         try (Connection conn = DBContext.getConnection();

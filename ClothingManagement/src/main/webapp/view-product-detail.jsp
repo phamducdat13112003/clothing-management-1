@@ -107,10 +107,6 @@
                             <div class="col-12">
                                 <div class="sherah-breadcrumb mg-top-30">
                                     <h2 class="sherah-breadcrumb__title">product detail</h2>
-                                    <ul class="sherah-breadcrumb__list">
-                                        <li><a href="manageemployee">Home</a></li>
-                                    </ul>
-
                                 </div>
                             </div>
                         </div>
@@ -123,11 +119,9 @@
                                         <!-- Organization -->
                                         <div class="product-form-box sherah-border mg-top-30">
                                             <h4 class="form-title m-0"></h4>
-
                                                 <div class="form-group">
                                                     <img src="${pd.image}" class="product-image" alt="Product Image">
                                                 </div>
-
                                         </div>
                                     </div>
 

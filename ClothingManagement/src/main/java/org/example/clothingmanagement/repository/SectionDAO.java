@@ -257,7 +257,6 @@ public class SectionDAO {
                     "FROM section s " +
                     "JOIN sectiontype st ON s.sectionTypeID = st.sectionTypeID " +
                     "WHERE s.sectionID = ?";
-
             PreparedStatement ps = con.prepareStatement(sql);
             ps.setString(1, sectionId);
 
@@ -460,7 +459,6 @@ public class SectionDAO {
             ps.setString(1, section.getSectionName());
             ps.setInt(2, section.getSectionTypeId());
             ps.setString(3, section.getSectionID());
-
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
         } catch (SQLException e) {
