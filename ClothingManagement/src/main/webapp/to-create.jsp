@@ -391,6 +391,13 @@
                             const option = document.createElement('option');
                             option.value = bin.id || bin.binID;
                             option.textContent = bin.name || bin.binName || bin.id || bin.binID;
+
+                            // Disable the option if status is false
+                            if (bin.status === false) {
+                                option.disabled = true;
+                                option.textContent += " (Inactive)";
+                            }
+
                             binSelect.appendChild(option);
                         });
                     } else {
@@ -678,7 +685,7 @@
             errorSpan.className = "quantity-error";
             errorSpan.style.color = "red";
             errorSpan.style.display = "none";
-            errorSpan.textContent = `Maximum available quantity: ${displayQuantity}`;
+            errorSpan.textContent = `Number `;
 
             // Add input event listener to validate quantity
             quantityInput.addEventListener("input", function() {
@@ -687,7 +694,7 @@
 
                 if (inputValue > availableQty) {
                     errorSpan.style.display = "block";
-                    this.setCustomValidity(`Maximum available quantity is ${availableQty}`);
+                    this.setCustomValidity(`Number exceeds available quantity!`);
                 } else {
                     errorSpan.style.display = "none";
                     this.setCustomValidity("");
