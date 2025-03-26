@@ -57,7 +57,7 @@ public class UpdateProductController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String productID = req.getParameter("productId");
-        String productName = req.getParameter("name");
+        String productName = capitalizeWords(req.getParameter("name").trim());
         Double productPrice = Double.parseDouble(req.getParameter("price"));
         String material = req.getParameter("material");
         String gender = req.getParameter("gender");
@@ -106,5 +106,18 @@ public class UpdateProductController extends HttpServlet {
 
 
 
+    }
+    public static String capitalizeWords(String str) {
+        String[] words = str.split("\\s+");  // Tách chuỗi theo khoảng trắng
+        StringBuilder capitalizedString = new StringBuilder();
+
+        for (String word : words) {
+            // Viết hoa chữ cái đầu và ghép lại thành chuỗi
+            capitalizedString.append(word.substring(0, 1).toUpperCase())  // Viết hoa chữ cái đầu
+                    .append(word.substring(1).toLowerCase())  // Giữ nguyên phần còn lại của từ
+                    .append(" ");  // Thêm khoảng trắng
+        }
+
+        return capitalizedString.toString().trim();  // Loại bỏ khoảng trắng dư thừa ở cuối
     }
 }

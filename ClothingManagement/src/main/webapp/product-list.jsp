@@ -180,7 +180,8 @@
                                                         <div class="sherah-table__product-content">
                                                             <p class="sherah-table__product-desc">${entry.key.totalQuantity}</p>
                                                         </div>
-                                                    </td>                                                </c:if>
+                                                    </td>
+                                                </c:if>
                                                 <c:if test="${sessionScope.role == 4}">
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
@@ -190,7 +191,12 @@
                                                 </c:if>
                                                 <td class="sherah-table__column-2 sherah-table__data-2">
                                                     <div class="sherah-table__product-content">
-                                                        <p class="sherah-table__product-desc">${entry.key.status}</p>
+                                                        <c:if test="${entry.key.status==1}">
+                                                            <p class="sherah-table__product-desc">Active</p>
+                                                        </c:if>
+                                                        <c:if test="${entry.key.status==0}">
+                                                            <p class="sherah-table__product-desc">Inactive</p>
+                                                        </c:if>
                                                     </div>
                                                 </td>
 <%--                                                <c:if test="${entry.key.totalQuantity <= (entry.key.minQuantity*120)/100 && entry.key.status==1}">--%>
