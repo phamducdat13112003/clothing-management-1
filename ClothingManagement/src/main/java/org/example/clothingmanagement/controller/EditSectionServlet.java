@@ -121,6 +121,6 @@ public class EditSectionServlet extends HttpServlet {
     }
 
     private boolean isValidSectionName(String sectionName) {
-        return sectionName != null && sectionName.matches("^[a-zA-Z0-9 ]+$");
+        return sectionName != null && sectionName.matches("^[a-zA-Z0-9 /]+$");
     }
 }
