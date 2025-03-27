@@ -154,7 +154,7 @@
         previous: '<i class="fas fa-angle-left"></i>'
       },
       lengthMenu: 'Showing _MENU_',
-      searchPlaceholder: 'Search...',
+      searchPlaceholder: 'SearchInventoryServlet...',
     },
     pageLength: 5,
     lengthMenu: [5, 10, 20, 50],

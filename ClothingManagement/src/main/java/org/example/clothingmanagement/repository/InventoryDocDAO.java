@@ -16,7 +16,9 @@ public class InventoryDocDAO {
 
     public List<InventoryDoc> getAllInventoryDocs() {
         List<InventoryDoc> inventoryDocs = new ArrayList<>();
-        String sql = "SELECT InventoryDocID, CreatedBy, CreatedDate, BinID, Status FROM inventorydoc";
+        String sql = "SELECT InventoryDocID, CreatedBy, CreatedDate, BinID, Status " +
+                "FROM inventorydoc ORDER BY InventoryDocID  DESC"; // Sắp xếp theo ngày tạo mới nhất
+
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -426,6 +428,33 @@ public class InventoryDocDAO {
             e.printStackTrace();
         }
         return list;
+    }
+
+    public List<InventoryDoc> searchInventoryDoc(String inventoryDocID, String binID) {
+        List<InventoryDoc> inventoryDocs = new ArrayList<>();
+        String sql = "SELECT * FROM inventorydoc WHERE InventoryDocID = ? or BinID = ? ORDER BY InventoryDocID  DESC";
+
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, inventoryDocID);
+            stmt.setString(2, binID);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    InventoryDoc doc = new InventoryDoc(
+                            rs.getString("InventoryDocID"),
+                            rs.getString("CreatedBy"),
+                            rs.getDate("CreatedDate"),
+                            rs.getString("BinID"),
+                            rs.getString("Status")
+                    );
+                    inventoryDocs.add(doc);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return inventoryDocs;
     }
 
 

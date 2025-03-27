@@ -496,7 +496,7 @@ public class BinDAO {
         return bins;
     }
 
-    // Search for bins by query (name or ID) across all sections
+    // SearchInventoryServlet for bins by query (name or ID) across all sections
     public List<Bin> searchBinsByQuery(String query) {
         List<Bin> bins = new ArrayList<>();
         String sql = "SELECT * FROM bin WHERE BinName LIKE ? OR BinID LIKE ?";
@@ -519,7 +519,7 @@ public class BinDAO {
         return bins;
     }
 
-    // Search for bins by section ID and a search query (name or ID)
+    // SearchInventoryServlet for bins by section ID and a search query (name or ID)
     public List<Bin> searchBinsBySectionAndQuery(String query, String sectionID) {
         List<Bin> bins = new ArrayList<>();
         String sql = "SELECT * FROM bin WHERE SectionID = ? AND (BinName LIKE ? OR BinID LIKE ?)";
@@ -888,7 +888,7 @@ public class BinDAO {
         // Add filter conditions
         List<Object> params = new ArrayList<>();
 
-        // Search filter (product name or product detail ID)
+        // SearchInventoryServlet filter (product name or product detail ID)
         if (search != null && !search.isEmpty()) {
             sql.append("AND (p.ProductName LIKE ? OR pd.ProductDetailID LIKE ?) ");
             params.add("%" + search + "%");
@@ -981,7 +981,7 @@ public class BinDAO {
         // Add filter conditions
         List<Object> params = new ArrayList<>();
 
-        // Search filter (product name or product detail ID)
+        // SearchInventoryServlet filter (product name or product detail ID)
         if (search != null && !search.isEmpty()) {
             sql.append("AND (p.ProductName LIKE ? OR pd.ProductDetailID LIKE ?) ");
             params.add("%" + search + "%");

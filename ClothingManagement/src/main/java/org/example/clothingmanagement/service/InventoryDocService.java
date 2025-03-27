@@ -82,5 +82,8 @@ public class InventoryDocService {
     public static List<Bin> getBinsBySectionWithStatusOne(String sectionID) {
        return dao.getBinsBySectionWithStatusOne(sectionID);
     }
+    public List<InventoryDoc> searchInventoryDoc(String inventoryDocID, String binID) {
+        return dao.searchInventoryDoc(inventoryDocID, binID);
+    }
 
-}
+    }

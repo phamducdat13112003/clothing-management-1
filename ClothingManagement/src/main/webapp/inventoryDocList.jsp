@@ -27,6 +27,13 @@
     <!-- Fav Icon -->
     <link rel="icon" href="img/favicon.png">
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+
     <!-- sherah Stylesheet -->
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/font-awesome-all.min.css">
@@ -134,6 +141,12 @@
                 <button type="submit">Add New InventoryDoc</button>
             </form>
         </c:if>
+        <div class="search-form">
+            <form action="SearchInventoryServlet" method="get" class="d-flex">
+                <input type="text" name="query" class="form-control me-2" placeholder="Enter BinID or InventoryDoc">
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
         <table border="1">
             <tr>
                 <th>InventoryDocID</th>
@@ -152,49 +165,60 @@
 <%--                    <td>${account.employeeId}</td>--%>
                     <td>${doc.status}</td>
                     <td>
-                        <c:if test="${account.roleId == 4 && (doc.status == 'Pending'|| doc.status == 'Recount')}">
-                            <form action="CountInventoryServlet" method="get">
-                                <input type="hidden" name="binId" value=${doc.binId}>
-                                <input type="hidden" name="employee" value=${account.employeeId}>
-                                <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
-                                <input type="hidden" name="status" value=${doc.status}>
+                        <div class="d-inline-flex gap-1">
+                            <c:if test="${account.roleId == 4 && (doc.status == 'Pending' || doc.status == 'Recount')}">
+                                <form action="CountInventoryServlet" method="get">
+                                    <input type="hidden" name="binId" value="${doc.binId}">
+                                    <input type="hidden" name="employee" value="${account.employeeId}">
+                                    <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                    <input type="hidden" name="status" value="${doc.status}">
+                                    <button type="submit" class="btn btn-primary btn-sm" data-bs-toggle="tooltip" title="Count">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </button>
+                                </form>
+                            </c:if>
 
-                                <button type="submit">Count</button><%-- kiểm kho just for ws--%>
-                            </form>
-                        </c:if>
-
-<%--                        <c:if test="${account.roleId == 4 && doc.status != 'Confirmed'&& doc.status != 'Recount'&& doc.status != 'Pendding'}">--%>
                             <form action="ViewInventoryDocDetail" method="get">
-                                <input type="hidden" name="binId" value=${doc.binId}>
+                                <input type="hidden" name="binId" value="${doc.binId}">
                                 <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
-                                <button type="submit">Detail</button>
+                                <button type="submit" class="btn btn-info btn-sm" data-bs-toggle="tooltip" title="Detail">
+                                    <i class="bi bi-search"></i>
+                                </button>
                             </form>
-<%--                        </c:if>--%>
 
-                        <c:if test="${account.roleId == 1 && doc.status != 'Cancel'&& doc.status != 'Pending'&& doc.status != 'Recount'&& doc.status != 'Done'&& doc.status != 'Confirmed'}">
-                            <form action="ClearDifferenceServlet" method="get">
-                                <input type="hidden" name="binId" value=${doc.binId}>
-                                <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
-                                <input type="hidden" name="status" value=${doc.status}>
-                                <button type="submit">Confirm</button><%-- clear diffirent just for manager--%>
-                            </form>
-                        </c:if>
-                        <c:if test="${account.roleId == 1 && doc.status != 'Cancel'&& doc.status != 'Confirmed'&& doc.status != 'Done'}">
-                            <form action="form" method="post">
-                                <input type="hidden" name="binId" value=${doc.binId}>
-                                <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
-                                <input type="hidden" name="status" value=${doc.status}>
-                                <button type="submit">Cancel</button><%-- clear diffirent just for manager--%>
-                            </form>
-                        </c:if>
-                        <c:if test="${account.roleId == 1 && doc.status == 'Confirmed'}">
-                            <form action="ClearDifferenceServlet" method="get">
-                                <input type="hidden" name="binId" value=${doc.binId}>
-                                <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
-                                <input type="hidden" name="status" value=${doc.status}>
-                                <button type="submit">Clear Difference</button><%-- clear diffirent just for manager--%>
-                            </form>
-                        </c:if>
+                            <c:if test="${account.roleId == 1 && doc.status != 'Cancel' && doc.status != 'Pending' && doc.status != 'Recount' && doc.status != 'Done' && doc.status != 'Confirmed'}">
+                                <form action="ClearDifferenceServlet" method="get">
+                                    <input type="hidden" name="binId" value="${doc.binId}">
+                                    <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                    <input type="hidden" name="status" value="${doc.status}">
+                                    <button type="submit" class="btn btn-success btn-sm" data-bs-toggle="tooltip" title="Confirm">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </button>
+                                </form>
+                            </c:if>
+
+                            <c:if test="${account.roleId == 1 && doc.status != 'Cancel' && doc.status != 'Confirmed' && doc.status != 'Done'}">
+                                <form action="form" method="post">
+                                    <input type="hidden" name="binId" value="${doc.binId}">
+                                    <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                    <input type="hidden" name="status" value="${doc.status}">
+                                    <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="tooltip" title="Cancel">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </c:if>
+
+                            <c:if test="${account.roleId == 1 && doc.status == 'Confirmed'}">
+                                <form action="ClearDifferenceServlet" method="get">
+                                    <input type="hidden" name="binId" value="${doc.binId}">
+                                    <input type="hidden" name="inventoryDocId" value="${doc.inventoryDocId}">
+                                    <input type="hidden" name="status" value="${doc.status}">
+                                    <button type="submit" class="btn btn-warning btn-sm" data-bs-toggle="tooltip" title="Clear Diffrence">
+                                        <i class="bi bi-chevron-double-right"></i>
+                                    </button>
+                                </form>
+                            </c:if>
+                        </div>
                     </td>
                 </tr>
             </c:forEach>
