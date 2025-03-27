@@ -107,7 +107,7 @@ public class TransferOrderUpdateServlet extends HttpServlet {
         // Check bin capacity
         double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
         double currentBinWeight = transferOrderDAO.getCurrentBinWeight(finalBinID);
-        double pendingTransferWeight = transferOrderDAO.getPendingTransferTotalWeight(finalBinID);
+        double pendingTransferWeight = transferOrderDAO.getProcessingTransferTotalWeight(finalBinID);
         double totalWeightAfterTransfer = currentBinWeight + pendingTransferWeight + totalTransferWeight;
 
         // Log capacity details for debugging

@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -132,7 +133,6 @@ public class TransferOrderListServlet extends HttpServlet {
                 return;
             }
 
-            VirtualBinDAO virtualBinDAO = new VirtualBinDAO();
             boolean allProcessingSuccessful = true;
             List<String> insufficientProducts = new ArrayList<>();
 
@@ -160,12 +160,47 @@ public class TransferOrderListServlet extends HttpServlet {
                 return;
             }
 
+            // Validate final bin capacity
+            String finalBinID = details.get(0).getFinalBinID(); // Assuming all details have the same final bin
+            double totalTransferWeight = 0.0;
+            for (TODetail detail : details) {
+                String productDetailID = detail.getProductDetailID();
+                int quantity = detail.getQuantity();
+
+                // Calculate total transfer weight
+                double productWeight = transferOrderDAO.getProductWeight(productDetailID);
+                totalTransferWeight += productWeight * quantity;
+            }
+
+            // Check bin capacity
+            double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
+            double currentBinWeight = transferOrderDAO.getCurrentBinWeight(finalBinID);
+            double processingTransferWeight = transferOrderDAO.getProcessingTransferTotalWeight(finalBinID);
+            double totalWeightAfterTransfer = currentBinWeight + totalTransferWeight + processingTransferWeight;
+
+            System.out.println("Final Bin Max Capacity: " + binMaxCapacity);
+            System.out.println("Current Bin Weight: " + currentBinWeight);
+            System.out.println("Processing Transfer Weight: " + processingTransferWeight);
+            System.out.println("Total Transfer Order Weight: " + totalTransferWeight);
+            System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
+
+            // Check if final bin has enough capacity
+            if (totalWeightAfterTransfer > binMaxCapacity) {
+                request.setAttribute("errorMessage", "Destination bin does not have sufficient capacity. " +
+                        "Max Capacity: " + binMaxCapacity + " kg. " +
+                        "Current Weight: " + currentBinWeight + " kg. " +
+                        "Processing TO Weight: " + processingTransferWeight + " kg." +
+                        "Transfer Weight: " + totalTransferWeight + " kg.");
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
+                return;
+            }
+
             // Process each detail - update bin quantities and virtual bin
             for (TODetail detail : details) {
                 String productDetailID = detail.getProductDetailID();
                 int quantity = detail.getQuantity();
                 String originalBinID = detail.getOriginBinID();
-                String finalBinID = detail.getFinalBinID();
 
                 // Remove quantity from source bin
                 boolean isOriginBinUpdated = transferOrderDAO.updateBinQuantity(conn, originalBinID, productDetailID, -quantity);
@@ -173,6 +208,15 @@ public class TransferOrderListServlet extends HttpServlet {
                     allProcessingSuccessful = false;
                     System.out.println("Failed to update temporary bin quantity");
                     break;
+                }
+                // Kiểm tra và xóa bin detail nếu số lượng còn lại là 0
+                int remainingQuantity = transferOrderDAO.getCurrentBinQuantity(conn, finalBinID, productDetailID);
+                if (remainingQuantity == 0) {
+                    boolean isBinDetailDeleted = transferOrderDAO.deleteBinDetail(conn, finalBinID, productDetailID);
+                    if (!isBinDetailDeleted) {
+                        System.out.println("Failed to delete bin detail for bin " + finalBinID + " and product " + productDetailID);
+                        // Có thể throw exception hoặc xử lý lỗi tùy theo logic của bạn
+                    }
                 }
             }
 
@@ -362,6 +406,14 @@ public class TransferOrderListServlet extends HttpServlet {
                 return;
             }
 
+            // Only allow cancellation for Pending status
+            if (!"Pending".equals(transferOrder.getStatus())) {
+                request.setAttribute("errorMessage", "Only Pending transfer orders can be canceled.");
+                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                        statusFilter, dateFrom, dateTo, createdBy);
+                return;
+            }
+
             // Retrieve transfer order details
             List<TODetail> details = transferOrderDAO.getTODetailsByTOID(toID);
             if (details == null || details.isEmpty()) {
@@ -373,82 +425,34 @@ public class TransferOrderListServlet extends HttpServlet {
 
             boolean allCancellationSuccessful = true;
 
-            // Handle cancellation based on current status
-            if ("Pending".equals(transferOrder.getStatus())) {
-                // For Pending status, simply return quantities to original bin
-                for (TODetail detail : details) {
-                    String productDetailID = detail.getProductDetailID();
-                    int quantity = detail.getQuantity();
-                    String originalBinID = detail.getOriginBinID();
+            // Update transfer order status to Canceled
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
+                ps.setString(1, "Canceled");
+                ps.setString(2, toID);
+                int updatedRows = ps.executeUpdate();
 
-                    // Add quantity back to the original bin
-                    boolean isVirtualBinUpdated = virtualBinDAO.removeVirtualBinEntry(toID, productDetailID, originalBinID);
-                    if (!isVirtualBinUpdated) {
-                        allCancellationSuccessful = false;
-                        System.out.println("Failed to update bin quantity for Pending order");
-                        break;
-                    }
+                if (updatedRows > 0) {
+                    conn.commit();
+                    System.out.println("Transaction committed - Transfer Order canceled successfully");
+
+                    request.getSession().setAttribute("successMessage", "Transfer Order canceled successfully.");
+
+                    response.sendRedirect(buildRedirectUrl(contextPath + "/TOList", page, search,
+                            statusFilter, dateFrom, dateTo, createdBy));
+                } else {
+                    conn.rollback();
+                    System.out.println("Transaction rolled back - Failed to update transfer order status");
+
+                    request.setAttribute("errorMessage", "Error updating transfer order status.");
+                    loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
+                            statusFilter, dateFrom, dateTo, createdBy);
                 }
-            } else if ("Processing".equals(transferOrder.getStatus())) {
-                // For Processing status, remove from VirtualBin and return to original bins
-                for (TODetail detail : details) {
-                    String productDetailID = detail.getProductDetailID();
-                    int quantity = detail.getQuantity();
-                    String originalBinID = detail.getOriginBinID();
-                    String finalBinID = detail.getFinalBinID();
-
-                    // Remove entry from VirtualBin
-                    boolean isVirtualBinUpdated = virtualBinDAO.updateVirtualBin(conn, toID, productDetailID, originalBinID, finalBinID, -quantity);
-                    if (!isVirtualBinUpdated) {
-                        allCancellationSuccessful = false;
-                        System.out.println("Failed to remove from VirtualBin");
-                        break;
-                    }
-
-                    // Add quantity back to the original bin
-                    boolean isBinUpdated = transferOrderDAO.updateBinQuantity(conn, originalBinID, productDetailID, quantity);
-                    if (!isBinUpdated) {
-                        allCancellationSuccessful = false;
-                        System.out.println("Failed to update bin quantity for Processing order");
-                        break;
-                    }
-                }
-            } else {
-                request.setAttribute("errorMessage", "Transfer Order cannot be canceled in current status.");
-                loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
-                        statusFilter, dateFrom, dateTo, createdBy);
-                return;
-            }
-
-            if (allCancellationSuccessful) {
-                // Update transfer order status to Canceled
-                try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
-                    ps.setString(1, "Canceled");
-                    ps.setString(2, toID);
-                    int updatedRows = ps.executeUpdate();
-
-                    if (updatedRows > 0) {
-                        conn.commit();
-                        System.out.println("Transaction committed - Transfer Order canceled successfully");
-
-                        request.getSession().setAttribute("successMessage", "Transfer Order canceled successfully.");
-
-                        response.sendRedirect(buildRedirectUrl(contextPath + "/TOList", page, search,
-                                statusFilter, dateFrom, dateTo, createdBy));
-                    } else {
-                        conn.rollback();
-                        System.out.println("Transaction rolled back - Failed to update transfer order status");
-
-                        request.setAttribute("errorMessage", "Error updating transfer order status.");
-                        loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
-                                statusFilter, dateFrom, dateTo, createdBy);
-                    }
-                }
-            } else {
+            } catch (SQLException e) {
                 conn.rollback();
-                System.out.println("Transaction rolled back - Failed to cancel transfer order");
+                System.err.println("Exception occurred during transfer order cancellation: " + e.getMessage());
+                e.printStackTrace();
 
-                request.setAttribute("errorMessage", "Error canceling transfer order.");
+                request.setAttribute("errorMessage", "An unexpected error occurred: " + e.getMessage());
                 loadTransferOrdersWithPaginationAndFilter(request, response, page, search,
                         statusFilter, dateFrom, dateTo, createdBy);
             }

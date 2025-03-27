@@ -266,19 +266,19 @@ public class TransferOrderCreateServlet extends HttpServlet {
         // Kiểm tra sức chứa của bin đích
         double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
         double currentBinWeight = transferOrderDAO.getCurrentBinWeight(finalBinID);
-//        double pendingTransferWeight = transferOrderDAO.getPendingTransferTotalWeight(finalBinID);
+        double processingTransferWeight = transferOrderDAO.getProcessingTransferTotalWeight(finalBinID);
         double totalWeightAfterTransfer = currentBinWeight + totalTransferWeight;
 
         System.out.println("Final Bin Max Capacity: " + binMaxCapacity);
         System.out.println("Current Bin Weight: " + currentBinWeight);
-//        System.out.println("Pending Transfer Weight: " + pendingTransferWeight);
+        System.out.println("Processing Transfer Weight: " + processingTransferWeight);
         System.out.println("Total Transfer Order Weight: " + totalTransferWeight);
         System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
 
         if (totalWeightAfterTransfer > binMaxCapacity) {
             request.setAttribute("errorCapacity", "Bin đích không đủ sức chứa cho số lượng sản phẩm này. " +
                     "Sức chứa tối đa: " + binMaxCapacity + " kg. " +
-                    "Trọng lượng hiện tại: " + currentBinWeight + " kg. " +
+                    "Trọng lượng hiện tại: " + currentBinWeight + " kg. " + 
                     "Trọng lượng cần chuyển: " + totalTransferWeight + " kg.");
             return false;
         }
