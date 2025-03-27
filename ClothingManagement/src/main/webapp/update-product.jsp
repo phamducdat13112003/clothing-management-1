@@ -152,10 +152,10 @@
                                                             <label class="sherah-wc__form-label">Price <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <c:if test="${sessionScope.role == 1}">
-                                                                    <input class="sherah-wc__form-input" placeholder="VND" type="number" min="10000" max="10000000" step="10000" name="price" value="${product.price}" required>
+                                                                    <input class="sherah-wc__form-input" placeholder="VND" type="number" min="1000" max="10000000" step="1000" name="price" value="${product.price}" required>
                                                                 </c:if>
                                                                 <c:if test="${sessionScope.role !=1}">
-                                                                    <input class="sherah-wc__form-input" placeholder="VND" type="number" min="10000" max="10000000" step="10000" name="price" value="${product.price}" readonly>
+                                                                    <input class="sherah-wc__form-input" placeholder="VND" type="number" min="1000" max="10000000" step="1000" name="price" value="${product.price}" readonly>
                                                                 </c:if>
                                                             </div>
                                                         </div>
@@ -243,7 +243,7 @@
                                                             <label class="sherah-wc__form-label">Made In</label>
                                                             <div class="form-group__input">
                                                                 <c:if test="${sessionScope.role == 1}">
-                                                                    <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" required>
+                                                                    <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}">
                                                                 </c:if>
                                                                 <c:if test="${sessionScope.role !=1}">
                                                                     <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" readonly>
@@ -385,7 +385,7 @@
             return false;
         }
 
-        var materialPattern = /^[a-zA-Z0-9%,\s]+$/; // Biểu thức chính quy cho phép chữ, số và ký tự '%'
+        var materialPattern = /^[a-zA-Z0-9%,\s:\/àáảãạăắằẳẵặâấầẩẫậđéèẻẽẹêếềểễệíìỉĩịóòỏõọôốồổỗộơớờởỡợúùủũụưứừửữựýỳỷỹỵ\s]+$/;
         if (!materialPattern.test(material)) {
             alert("Material must contain only letters, numbers, and the '%' character");
             return false;

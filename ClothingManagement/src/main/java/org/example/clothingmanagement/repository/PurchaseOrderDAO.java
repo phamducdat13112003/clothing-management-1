@@ -142,8 +142,9 @@ public class PurchaseOrderDAO {
                 "FROM po p " +
                 "JOIN employee e ON p.CreatedBy = e.EmployeeID " +
                 "JOIN supplier s ON p.SupplierID = s.SupplierID " +
-                "WHERE p.POID LIKE ? OR p.CreatedDate LIKE ? OR s.SupplierName LIKE ? " +
-                "OR p.TotalPrice LIKE ? OR e.EmployeeName LIKE ? OR p.Status LIKE ? " +
+                "WHERE (p.POID LIKE ? OR p.CreatedDate LIKE ? OR s.SupplierName LIKE ? " +
+                "OR p.TotalPrice LIKE ? OR e.EmployeeName LIKE ? OR p.Status LIKE ?) " +
+                "AND p.Status IN ('Confirmed', 'Processing', 'Done') " +  // Thêm điều kiện lọc Status
                 "ORDER BY FIELD(p.Status, 'Confirmed', 'Processing', 'Done'), p.CreatedDate DESC";
 
         try (Connection conn = DBContext.getConnection();

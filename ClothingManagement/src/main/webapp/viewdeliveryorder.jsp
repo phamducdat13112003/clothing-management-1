@@ -35,6 +35,71 @@
   <link rel="stylesheet" href="css/reset.css">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/styleviewdo.css">
+  <style>
+    /**/
+    .btn-warning {
+      background-color: #ffc107; /* Màu vàng */
+      border: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px; /* Khoảng cách giữa icon và chữ */
+    }
+
+    .btn-warning i {
+      font-size: 1.2rem; /* Tăng kích thước icon */
+    }
+
+    .btn-warning:hover {
+      background-color: #e0a800; /* Màu vàng đậm khi hover */
+      transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+    }
+
+    .btn-warning:active {
+      transform: scale(0.95); /* Nhấn vào sẽ nhỏ lại */
+    }
+
+    .btn-warning.text-white {
+      color: white;
+    }
+
+    .btn-warning.shadow-sm {
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Bóng đổ nhẹ */
+    }
+    .btn-primary {
+      background-color: #007bff; /* Màu xanh */
+      border: none;
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px; /* Khoảng cách giữa icon và chữ */
+    }
+
+    .btn-primary i {
+      font-size: 1.2rem; /* Tăng kích thước icon */
+    }
+
+    .btn-primary:hover {
+      background-color: #0056b3; /* Màu xanh đậm khi hover */
+      transform: scale(1.05); /* Hiệu ứng phóng to nhẹ */
+    }
+
+    .btn-primary:active {
+      transform: scale(0.95); /* Nhấn vào sẽ nhỏ lại */
+    }
+
+    .btn-primary.text-white {
+      color: white;
+    }
+
+    .btn-primary.shadow-sm {
+      box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Bóng đổ nhẹ */
+    }
+
+
+  </style>
 </head>
 <body id="sherah-dark-light">
 <div class="sherah-body-area">
@@ -53,10 +118,10 @@
                   <!-- Sherah Breadcrumb -->
                   <div class="sherah-breadcrumb">
 
-                    <h2 class="sherah-breadcrumb__title">Delivery Order list</h2>
+                    <h2 class="sherah-breadcrumb__title">Purchase Order list</h2>
                     <ul class="sherah-breadcrumb__list">
                       <li><a href="#">Home</a></li>
-                      <li class="active"><a href="#">Delivery Order List</a></li>
+                      <li class="active"><a href="#">Purchase Order List</a></li>
                     </ul>
                   </div>
                 </div>
@@ -89,6 +154,7 @@
                     <th class="sherah-table__column-4 sherah-table__h4">Employee</th>
                     <th class="sherah-table__column-5 sherah-table__h5">Status</th>
                     <th class="sherah-table__column-6 sherah-table__h6">TotalPrice</th>
+                    <th class="sherah-table__column-7 sherah-table__h7">Action</th>
                   </tr>
                   </thead>
                   <tbody class="sherah-table__body">
@@ -130,7 +196,8 @@
                                                     <c:when test="${listpo.status == 'Done'}">status-done</c:when>
                                                     <c:when test="${listpo.status == 'Cancel'}">status-cancel</c:when>
                                                     </c:choose>">
-                            <a href="deliveryorderdetail?poID=${listpo.poID}"> ${listpo.status}</a>
+<%--                            <a href="deliveryorderdetail?poID=${listpo.poID}"> ${listpo.status}</a>--%>
+                            <a href=""> ${listpo.status}</a>
                           </p>
                         </div>
                       </td>
@@ -142,6 +209,31 @@
                           </p>
                         </div>
                       </td>
+                      <td class="sherah-table__column-7 sherah-table__data-7">
+                        <div class="sherah-table__product-content d-flex gap-2">
+                          <c:if test='${listpo.status == "Confirmed"}'>
+                            <!-- Nút Change Status -->
+                            <form action="updatestatusdeliveryorder" method="GET" class="d-inline">
+                              <input type="hidden" name="status" value="Processing">
+                              <input type="hidden" name="poid" value="${listpo.poID}">
+                              <button type="submit" class="btn btn-warning text-white d-flex align-items-center gap-1 px-3 py-2 shadow-sm fw-semibold rounded-pill"
+                                      onclick="return confirm('Are you sure you want to processing this PO?');">
+                                <i class="bi bi-hourglass-split"></i> Change Status
+                              </button>
+                            </form>
+                          </c:if>
+
+                          <c:if test='${listpo.status == "Processing"}'>
+                            <!-- Nút Import Good -->
+                            <a href="deliveryorderdetail?poID=${listpo.poID}"
+                               class="btn btn-primary text-white d-flex align-items-center gap-1 px-3 py-2 shadow-sm fw-semibold rounded-pill">
+                              <i class="bi bi-box-arrow-in-down"></i> Import Good
+                            </a>
+                          </c:if>
+                        </div>
+                      </td>
+
+
                     </tr>
                     <!-- Đóng thẻ <tr> -->
                   </c:forEach>

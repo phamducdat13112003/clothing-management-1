@@ -90,7 +90,15 @@ public class ProductService {
             if(product.getName().equalsIgnoreCase(p.getName())
                     && product.getSeasons().equalsIgnoreCase(p.getSeasons())
                     && Objects.equals(product.getCategoryId(), p.getCategoryId())
-                    && Objects.equals(product.getSupplierId(), p.getSupplierId()))
+                    && Objects.equals(product.getSupplierId(), p.getSupplierId())
+                    && Objects.equals(product.getPrice(), p.getPrice())
+                    && Objects.equals(product.getGender(), p.getGender())
+                    && Objects.equals(product.getMaterial(), p.getMaterial())
+                    && Objects.equals(product.getMinQuantity(), p.getMinQuantity())
+                    && Objects.equals(product.getDescription(), p.getDescription())
+                    && Objects.equals(product.getSeasons(), p.getSeasons())
+                    && Objects.equals(product.getMadeIn(), p.getMadeIn())
+            )
             {
                 return true;
             }
