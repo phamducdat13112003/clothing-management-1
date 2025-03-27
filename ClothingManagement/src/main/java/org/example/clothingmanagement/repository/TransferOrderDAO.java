@@ -841,13 +841,13 @@ public class TransferOrderDAO {
         return details;
     }
 
-    public double getPendingTransferTotalWeight(String finalBinID) {
+    public double getProcessingTransferTotalWeight(String finalBinID) {
         double totalPendingWeight = 0.0;
         String sql = "SELECT td.quantity, pd.weight " +
                 "FROM TODetail td " +
                 "JOIN TransferOrder t ON td.toID = t.toID " +
                 "JOIN ProductDetail pd ON td.productDetailID = pd.productDetailID " +
-                "WHERE td.finalBinID = ? AND t.status = 'Pending'";
+                "WHERE td.finalBinID = ? AND t.status = 'Processing'";
 
         try (Connection conn = DBContext.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -1482,5 +1482,18 @@ public class TransferOrderDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public boolean deleteBinDetail(Connection conn, String binID, String productDetailID) {
+        String sql = "DELETE FROM bindetail WHERE BinID = ? AND ProductDetailID = ?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, binID);
+            ps.setString(2, productDetailID);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            System.err.println("Error deleting bin detail: " + e.getMessage());
+            return false;
+        }
     }
 }
