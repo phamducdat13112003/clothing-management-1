@@ -115,7 +115,7 @@ public class CreateDeliveryOrderServlet extends HttpServlet {
 
             // Cập nhật trạng thái PO nếu thành công
             purchaseOrderService.updateStatusPO(poid, "Done");
-            request.getSession().setAttribute("transferdosuccessfully", "Transfer to warehouse successfully: " + poid);
+            request.getSession().setAttribute("transferdosuccessfully", "Import good to warehouse successfully: " + poid);
             request.getRequestDispatcher("viewdeliveryorder").forward(request, response);
 
         } catch (Exception e) {

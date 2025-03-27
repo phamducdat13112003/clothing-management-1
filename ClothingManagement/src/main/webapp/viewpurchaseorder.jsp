@@ -35,6 +35,35 @@
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/styleviewpo.css">
+    <style>
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            border: none;
+            padding: 6px 12px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn i {
+            font-size: 1rem;
+        }
+
+        .btn-warning:hover {
+            background-color: #d39e00;
+        }
+
+        .btn-success:hover {
+            background-color: #218838;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+    </style>
 </head>
 <body id="sherah-dark-light">
 <div class="sherah-body-area">
@@ -96,6 +125,7 @@
                                         <th class="sherah-table__column-4 sherah-table__h4">Employee</th>
                                         <th class="sherah-table__column-5 sherah-table__h5">Status</th>
                                         <th class="sherah-table__column-6 sherah-table__h6">TotalPrice</th>
+                                        <th class="sherah-table__column-6 sherah-table__h6">Action</th>
                                     </tr>
                                     </thead>
                                     <tbody class="sherah-table__body">
@@ -137,7 +167,8 @@
                                                     <c:when test="${listpo.status == 'Done'}">status-done</c:when>
                                                     <c:when test="${listpo.status == 'Cancel'}">status-cancel</c:when>
                                                     </c:choose>">
-                                                        <a href="purchaseorderdetail?poID=${listpo.poID}"> ${listpo.status}</a>
+<%--                                                        <a href="purchaseorderdetail?poID=${listpo.poID}"> ${listpo.status}</a>--%>
+                                                        <a href=""> ${listpo.status}</a>
                                                     </p>
                                                 </div>
                                             </td>
@@ -149,6 +180,54 @@
                                                     </p>
                                                 </div>
                                             </td>
+                                            <td class="sherah-table__column-7 sherah-table__data-7">
+                                                <div class="sherah-table__product-content d-flex gap-2">
+                                                    <c:if test='${listpo.status == "Pending"}'>
+                                                        <!-- Nút Edit -->
+                                                        <a href="updateinfomationpo?poid=${listpo.poID}"
+                                                           class="btn btn-warning text-white d-flex align-items-center gap-1">
+                                                            <i class="bi bi-pencil-square"></i> Edit
+                                                        </a>
+
+                                                        <!-- Nút Confirm -->
+                                                        <form action="updatestatuspurchaseorder" method="GET" class="d-inline">
+                                                            <input type="hidden" name="poid" value="${listpo.poID}">
+                                                            <input type="hidden" name="status" value="Confirmed">
+                                                            <button type="submit" class="btn btn-success text-white d-flex align-items-center gap-1"
+                                                                    onclick="return confirm('Are you sure you want to confirm this PO?');">
+                                                                <i class="bi bi-check-circle"></i> Confirm
+                                                            </button>
+                                                        </form>
+
+                                                        <!-- Nút Cancel -->
+                                                        <form action="updatestatuspurchaseorder" method="GET" class="d-inline">
+                                                            <input type="hidden" name="poid" value="${listpo.poID}">
+                                                            <input type="hidden" name="status" value="Cancel">
+                                                            <button type="submit" class="btn btn-danger text-white d-flex align-items-center gap-1"
+                                                                    onclick="return confirm('Are you sure you want to cancel this PO?');">
+                                                                <i class="bi bi-x-circle"></i> Cancel
+                                                            </button>
+                                                        </form>
+                                                    </c:if>
+                                                    <c:if test='${listpo.status == "Confirmed"}'>
+                                                        <!-- Nút Edit -->
+                                                        <a href="updateinfomationpo?poid=${listpo.poID}"
+                                                           class="btn btn-warning text-white d-flex align-items-center gap-1">
+                                                            <i class="bi bi-pencil-square"></i> Edit
+                                                        </a>
+                                                        <!-- Nút Cancel -->
+                                                        <form action="updatestatuspurchaseorder" method="GET" class="d-inline">
+                                                            <input type="hidden" name="poid" value="${listpo.poID}">
+                                                            <input type="hidden" name="status" value="Cancel">
+                                                            <button type="submit" class="btn btn-danger text-white d-flex align-items-center gap-1"
+                                                                    onclick="return confirm('Are you sure you want to cancel this PO?');">
+                                                                <i class="bi bi-x-circle"></i> Cancel
+                                                            </button>
+                                                        </form>
+                                                    </c:if>
+                                                </div>
+                                            </td>
+
                                         </tr>
                                         <!-- Đóng thẻ <tr> -->
                                     </c:forEach>

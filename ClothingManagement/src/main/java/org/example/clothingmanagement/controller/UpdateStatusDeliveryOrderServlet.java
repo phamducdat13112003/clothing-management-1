@@ -29,7 +29,7 @@ public class UpdateStatusDeliveryOrderServlet extends HttpServlet {
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
-            request.getSession().setAttribute("updatepostatussuccessfully", "Update "+poid+" status success, now select Section and Bin to delivery!");
+            request.getSession().setAttribute("updatepostatussuccessfully", "Update "+poid+" status success, now select Section and Bin to Import Good!");
             request.setAttribute("purchaseOrderList", purchaseOrderList);
             request.getRequestDispatcher("deliveryorderdetail?poID="+poid).forward(request, response);
         }else {
