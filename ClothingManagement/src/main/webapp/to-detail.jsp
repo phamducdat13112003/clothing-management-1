@@ -52,8 +52,8 @@
                             </div>
                             <%--              <div class="col-6">--%>
                             <%--                <form action="searchproductbin" method="post" class="search-form">--%>
-                            <%--                  <input type="text" name="search" placeholder="SearchInventoryServlet..." value="${search}" class="search-input">--%>
-                            <%--                  <button type="submit" class="search-button">SearchInventoryServlet</button>--%>
+                            <%--                  <input type="text" name="search" placeholder="Search..." value="${search}" class="search-input">--%>
+                            <%--                  <button type="submit" class="search-button">Search</button>--%>
                             <%--                </form>--%>
                             <%--              </div>--%>
                         </div>

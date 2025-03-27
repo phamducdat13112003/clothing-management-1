@@ -41,7 +41,7 @@
             margin: 20px;
         }
 
-        /* SearchInventoryServlet form */
+        /* SearchInventoryDocServlet form */
         form {
             margin-bottom: 20px;
         }

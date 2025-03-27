@@ -239,7 +239,7 @@
                     </select>
                 </div>
 
-                <!-- Product Detail SearchInventoryServlet and Table -->
+                <!-- Product Detail Search and Table -->
                 <div class="form-row">
                     <label for="productDetailSearch">Search Product Detail ID:</label>
                     <input type="text" id="productDetailSearch" name="productDetailSearch" autocomplete="off" disabled>

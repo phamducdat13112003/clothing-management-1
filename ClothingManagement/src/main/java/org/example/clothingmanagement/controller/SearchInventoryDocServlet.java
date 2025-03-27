@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.InventoryDoc;
-import org.example.clothingmanagement.repository.InventoryDocDAO;
 import org.example.clothingmanagement.service.InventoryDocService;
 
 import java.io.IOException;
@@ -14,8 +13,8 @@ import java.util.List;
 import java.util.Map;
 
 
-@WebServlet(name = "SearchInventoryServlet", value = "/SearchInventoryServlet")
-public class SearchInventoryServlet extends HttpServlet {
+@WebServlet(name = "SearchInventoryDocServlet", value = "/SearchInventoryDocServlet")
+public class SearchInventoryDocServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException, ServletException {
         // Lấy dữ liệu từ request
