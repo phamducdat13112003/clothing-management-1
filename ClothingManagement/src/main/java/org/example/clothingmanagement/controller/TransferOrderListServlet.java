@@ -184,7 +184,7 @@ public class TransferOrderListServlet extends HttpServlet {
             System.out.println("Total Transfer Order Weight: " + totalTransferWeight);
             System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
 
-            // Check if final bin has enough capacity
+            // Check capacity bin đích
             if (totalWeightAfterTransfer > binMaxCapacity) {
                 request.setAttribute("errorMessage", "Destination bin does not have sufficient capacity. " +
                         "Max Capacity: " + binMaxCapacity + " kg. " +
@@ -196,7 +196,7 @@ public class TransferOrderListServlet extends HttpServlet {
                 return;
             }
 
-            // Process each detail - update bin quantities and virtual bin
+            // trừ quantity ở bin chuyển
             for (TODetail detail : details) {
                 String productDetailID = detail.getProductDetailID();
                 int quantity = detail.getQuantity();
@@ -210,11 +210,11 @@ public class TransferOrderListServlet extends HttpServlet {
                     break;
                 }
                 // Kiểm tra và xóa bin detail nếu số lượng còn lại là 0
-                int remainingQuantity = transferOrderDAO.getCurrentBinQuantity(conn, finalBinID, productDetailID);
+                int remainingQuantity = transferOrderDAO.getCurrentBinQuantity(conn, originalBinID, productDetailID);
                 if (remainingQuantity == 0) {
-                    boolean isBinDetailDeleted = transferOrderDAO.deleteBinDetail(conn, finalBinID, productDetailID);
+                    boolean isBinDetailDeleted = transferOrderDAO.deleteBinDetail(conn, originalBinID, productDetailID);
                     if (!isBinDetailDeleted) {
-                        System.out.println("Failed to delete bin detail for bin " + finalBinID + " and product " + productDetailID);
+                        System.out.println("Failed to delete bin detail for bin " + originalBinID + " and product " + productDetailID);
                         // Có thể throw exception hoặc xử lý lỗi tùy theo logic của bạn
                     }
                 }
