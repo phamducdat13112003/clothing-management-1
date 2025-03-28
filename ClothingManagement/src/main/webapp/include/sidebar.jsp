@@ -256,6 +256,7 @@
                             </li>
                         </c:if>
 
+                        <c:if test="${account.getRoleId() == 4 || account.getRoleId() == 1}">
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse"
                                data-bs-target="#menu-item_TOOrder"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -274,12 +275,16 @@
                                     <li><a href="${pageContext.request.contextPath}/TOList"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">Transfer Order List</span></span></a></li>
+                                    <c:if test="${account.getRoleId() == 4}">
                                     <li><a href="${pageContext.request.contextPath}/TOCreate"><span
                                             class="menu-bar__text"><span
                                             class="menu-bar__name">New Transfer Order</span></span></a></li>
+                                    </c:if>
                                 </ul>
                             </div>
                         </li>
+                        </c:if>
+
                         <c:if test="${account.getRoleId() == 4 || account.getRoleId() == 1}">
 
                         <li><a href="ViewInventoryDocList" class="collapsed"><span class="menu-bar__text">

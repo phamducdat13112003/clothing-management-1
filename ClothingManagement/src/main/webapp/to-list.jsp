@@ -255,31 +255,43 @@
                       </td>
                       <td class="sherah-table__column-2 sherah-table__data-2 d-flex align-items-center">
                         <!-- Link to edit the transfer order -->
-                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}" class="text-primary me-2" title="Update">
-                          <i class="bi bi-pencil"></i>
+                        <c:if test="${account.getRoleId() == 4 || account.getRoleId() == 1}">
+                        <a href="${pageContext.request.contextPath}/TOUpdate?toID=${order.toID}" class="text-primary me-2" title="View and edit">
+                          <i class="bi bi-eye"></i>
                         </a>
+                        </c:if>
 
+                        <c:if test="${account.getRoleId() == 4}">
+                        <c:if test="${order.status == 'Pending'}">
                         <a href="${pageContext.request.contextPath}/TOList?action=process&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
                            onclick="return confirm('Are you sure you want to mark this transfer order as processing?');"
                            class="text-success me-2" title="Processing">
                           <i class="bi-chevron-double-right"></i>
                         </a>
-
-                        <!-- Complete button - only show if status is not already COMPLETED -->
-                        <c:if test="${order.status != 'done'}">
-                          <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
-                             onclick="return confirm('Are you sure you want to mark this transfer order as completed?');"
-                             class="text-success me-2" title="Complete">
-                            <i class="bi bi-check-circle"></i>
-                          </a>
+                        </c:if>
                         </c:if>
 
+                        <c:if test="${account.getRoleId() == 4}">
+                        <!-- Complete button - only show if status is not already COMPLETED -->
+                          <c:if test="${order.status == 'Processing'}">
+                            <a href="${pageContext.request.contextPath}/TOList?action=done&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
+                              onclick="return confirm('Are you sure you want to mark this transfer order as completed?');"
+                              class="text-success me-2" title="Complete">
+                              <i class="bi bi-check-circle"></i>
+                            </a>
+                          </c:if>
+                        </c:if>
+
+                        <c:if test="${account.getRoleId() == 4}">
                         <!-- Link to delete the transfer order -->
+                        <c:if test="${order.status == 'Pending'}">
                         <a href="${pageContext.request.contextPath}/TOList?action=cancel&toID=${order.toID}&page=${currentPage}&search=${search}&statusFilter=${statusFilter}&dateFrom=${dateFrom}&dateTo=${dateTo}&createdByFilter=${createdByFilter}"
                            onclick="return confirm('Are you sure you want to cancel this transfer order?');"
                            class="text-danger" title="Cancel">
                           <i class="bi bi-trash"></i>
                         </a>
+                        </c:if>
+                        </c:if>
                       </td>
                     </tr>
                   </c:forEach>

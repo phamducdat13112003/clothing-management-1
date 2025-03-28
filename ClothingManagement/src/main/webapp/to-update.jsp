@@ -162,10 +162,12 @@
 
                             <!-- Single Edit Button -->
 
-                            <c:if test="${transferOrder.status eq 'Pending' or transferOrder.status eq 'Processing'}">
+                            <c:if test="${transferOrder.status eq 'Pending'}">
+                            <c:if test="${account.getRoleId() == 4}">
                               <a href="updateLocation?toID=${transferOrder.toID}" class="btn btn-sm btn-outline-primary mt-2">
                                 <i class="bi bi-pencil-square"></i> Edit Location
                               </a>
+                            </c:if>
                             </c:if>
                           </div>
 
