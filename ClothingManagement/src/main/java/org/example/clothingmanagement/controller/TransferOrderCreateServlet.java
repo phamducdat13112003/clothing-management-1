@@ -70,7 +70,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
             // check null to id
             if (toID == null || toID.trim().isEmpty()) {
                 preserveFormData(request);
-                request.setAttribute("errorToID", "Transfer Order ID không được để trống.");
+                request.setAttribute("errorToID", "Transfer Order ID cannot be null.");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
@@ -78,7 +78,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
             // check toID tồn tại không
             if (transferOrderDAO.isTransferOrderIDExist(toID)) {
                 preserveFormData(request);
-                request.setAttribute("errorToID", "Transfer Order ID đã tồn tại.");
+                request.setAttribute("errorToID", "Transfer Order ID already existed.");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
@@ -93,7 +93,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
             try {
                 createdDate = LocalDate.parse(request.getParameter("createdDate"));
             } catch (DateTimeParseException e) {
-                request.setAttribute("errorDate", "Định dạng ngày không hợp lệ.");
+                request.setAttribute("errorDate", "Date Format is not valid");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
@@ -119,7 +119,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                     totalWeight += productWeight * quantity;
                 } catch (NumberFormatException e) {
                     preserveFormData(request);
-                    request.setAttribute("errorQuantity3", "Định dạng số lượng không hợp lệ.");
+                    request.setAttribute("errorQuantity", "Định dạng số lượng không hợp lệ.");
                     request.getRequestDispatcher("to-create.jsp").forward(request, response);
                     return;
                 }
@@ -146,7 +146,6 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 return;
             }
 
-
             // Tạo Transfer Order sau khi đã kiểm tra dung lượng
             TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
 
@@ -168,7 +167,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         int availableQuantityInOriginBin = transferOrderDAO.getBinQuantity(originBinID, productDetailID);
                         if (availableQuantityInOriginBin < quantity) {
                             preserveFormData(request);
-                            request.setAttribute("errorQuantity2", "Số lượng không đủ trong bin nguồn.");
+                            request.setAttribute("errorQuantity", "Insufficient quantity in origin bin.");
                             request.getRequestDispatcher("to-create.jsp").forward(request, response);
                             return;
                         }
@@ -192,14 +191,14 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         // Thêm TODetail vào cơ sở dữ liệu
                         boolean isTODetailCreated = transferOrderDAO.addTODetail(toDetail);
                         if (!isTODetailCreated) {
-                            request.setAttribute("errorDetail", "Lỗi khi tạo chi tiết Transfer Order.");
+                            request.setAttribute("errorDetail", "Error adding TO detail");
                             request.getRequestDispatcher("to-create.jsp").forward(request, response);
                             return;
                         }
 
                     } catch (NumberFormatException e) {
                         preserveFormData(request);
-                        request.setAttribute("errorQuantity3", "Định dạng số lượng không hợp lệ.");
+                        request.setAttribute("errorQuantity", "Invalid Number Format.");
                         request.getRequestDispatcher("to-create.jsp").forward(request, response);
                         return;
                     }
@@ -207,20 +206,20 @@ public class TransferOrderCreateServlet extends HttpServlet {
 
             } else {
                 preserveFormData(request);
-                request.setAttribute("errorOrder", "Lỗi khi tạo Transfer Order.");
+                request.setAttribute("errorOrder", "Error creating Transfer Order");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
 
             // Chuyển hướng sau khi tạo thành công
-            request.getSession().setAttribute("successMessage", "Transfer Order đã được tạo thành công.");
+            request.getSession().setAttribute("successMessage", "Transfer Order created successfully!");
             response.sendRedirect(request.getContextPath() + "/TOList");
 
 
         } catch (Exception e) {
             e.printStackTrace();
             preserveFormData(request);
-            request.setAttribute("errorGeneral", "Đã xảy ra lỗi không mong muốn.");
+            request.setAttribute("errorGeneral", "General error.");
             request.getRequestDispatcher("to-create.jsp").forward(request, response);
         }
     }
@@ -230,12 +229,12 @@ public class TransferOrderCreateServlet extends HttpServlet {
         // Kiểm tra Transfer Order ID
         String toID = request.getParameter("toID");
         if (toID == null || toID.trim().isEmpty()) {
-            request.setAttribute("errorToID", "Transfer Order ID không được để trống.");
+            request.setAttribute("errorToID", "Transfer Order ID cannot be null.");
             return false;
         }
 
         if (transferOrderDAO.isTransferOrderIDExist(toID)) {
-            request.setAttribute("errorToID", "Transfer Order ID đã tồn tại.");
+            request.setAttribute("errorToID", "Transfer Order ID existed.");
             return false;
         }
 
@@ -258,7 +257,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 double productWeight = transferOrderDAO.getProductWeight(productDetailID);
                 totalTransferWeight += productWeight * quantity;
             } catch (NumberFormatException e) {
-                request.setAttribute("errorQuantity3", "Định dạng số lượng không hợp lệ.");
+                request.setAttribute("errorQuantity3", "Invalid Number Format.");
                 return false;
             }
         }
@@ -276,10 +275,9 @@ public class TransferOrderCreateServlet extends HttpServlet {
         System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
 
         if (totalWeightAfterTransfer > binMaxCapacity) {
-            request.setAttribute("errorCapacity", "Bin đích không đủ sức chứa cho số lượng sản phẩm này. " +
-                    "Sức chứa tối đa: " + binMaxCapacity + " kg. " +
-                    "Trọng lượng hiện tại: " + currentBinWeight + " kg. " + 
-                    "Trọng lượng cần chuyển: " + totalTransferWeight + " kg.");
+            request.setAttribute("errorCapacity", "Final bin don't have enough space for this order . " +
+                    "Current capacity: " + currentBinWeight + "/" + binMaxCapacity + " kg. " +
+                    "Order weight: " + totalTransferWeight + " kg.");
             return false;
         }
 
