@@ -226,7 +226,9 @@
                     <select name="finalSectionID" id="finalSectionID">
                         <option value="">Select Final Section</option>
                         <c:forEach var="section" items="${sections}">
-                            <option value="${section.sectionID}">${section.sectionName}</option>
+                            <c:if test="${section.sectionName ne 'Storage Received'}">
+                                <option value="${section.sectionID}">${section.sectionName}</option>
+                            </c:if>
                         </c:forEach>
                     </select>
                 </div>
