@@ -259,17 +259,6 @@
                     <div class="col-12">
                       <div class="d-flex justify-content-between">
                         <a href="TOList" class="btn btn-secondary">Back to List</a>
-
-                        <c:if test="${transferOrder.status == 'Pending'}">
-                          <div>
-                            <button type="button" class="btn btn-danger me-2" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                              Cancel Order
-                            </button>
-                            <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#completeModal">
-                              Complete Order
-                            </button>
-                          </div>
-                        </c:if>
                       </div>
                     </div>
                   </div>

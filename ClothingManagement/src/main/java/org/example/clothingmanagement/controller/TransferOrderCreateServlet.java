@@ -67,18 +67,11 @@ public class TransferOrderCreateServlet extends HttpServlet {
             // lấy to id từ jsp
             String toID = request.getParameter("toID");
 
-            // check null to id
-            if (toID == null || toID.trim().isEmpty()) {
-                preserveFormData(request);
-                request.setAttribute("errorToID", "Transfer Order ID cannot be null.");
-                request.getRequestDispatcher("to-create.jsp").forward(request, response);
-                return;
-            }
 
             // check toID tồn tại không
             if (transferOrderDAO.isTransferOrderIDExist(toID)) {
                 preserveFormData(request);
-                request.setAttribute("errorToID", "Transfer Order ID already existed.");
+                request.setAttribute("errorToID", "Transfer Order ID existed.");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
@@ -93,7 +86,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
             try {
                 createdDate = LocalDate.parse(request.getParameter("createdDate"));
             } catch (DateTimeParseException e) {
-                request.setAttribute("errorDate", "Date Format is not valid");
+                request.setAttribute("errorDate", "Invalid date format.");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
@@ -119,7 +112,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                     totalWeight += productWeight * quantity;
                 } catch (NumberFormatException e) {
                     preserveFormData(request);
-                    request.setAttribute("errorQuantity", "Định dạng số lượng không hợp lệ.");
+                    request.setAttribute("errorQuantity3", "Invalid number format.");
                     request.getRequestDispatcher("to-create.jsp").forward(request, response);
                     return;
                 }
@@ -139,12 +132,16 @@ public class TransferOrderCreateServlet extends HttpServlet {
             //so sánh max capacity của bin với tổng trọng lượng sau khi chuyển vào
             // > -> fail / < -> success
             if (totalWeightAfterTransfer > binMaxCapacity) {
-                request.setAttribute("errorCapacity", "Bin đích không đủ sức chứa cho số lượng sản phẩm này.");
+                request.setAttribute("errorCapacity", "Not enough available space in final bin. " +
+                        "Final Bin Max capacity: " + binMaxCapacity + " kg. " +
+                        "Current capacity: " + currentBinWeight + "/" + binMaxCapacity + " kg. " +
+                        "Order weight: " + totalWeight + " kg.");
                 //lấy lại thông tin để hiển thị
                 preserveFormData(request);
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
+
 
             // Tạo Transfer Order sau khi đã kiểm tra dung lượng
             TransferOrder transferOrder = new TransferOrder(toID, createdDate, createdBy, status);
@@ -167,7 +164,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         int availableQuantityInOriginBin = transferOrderDAO.getBinQuantity(originBinID, productDetailID);
                         if (availableQuantityInOriginBin < quantity) {
                             preserveFormData(request);
-                            request.setAttribute("errorQuantity", "Insufficient quantity in origin bin.");
+                            request.setAttribute("errorQuantity2", "Insufficient quantity in origin bin.");
                             request.getRequestDispatcher("to-create.jsp").forward(request, response);
                             return;
                         }
@@ -191,14 +188,14 @@ public class TransferOrderCreateServlet extends HttpServlet {
                         // Thêm TODetail vào cơ sở dữ liệu
                         boolean isTODetailCreated = transferOrderDAO.addTODetail(toDetail);
                         if (!isTODetailCreated) {
-                            request.setAttribute("errorDetail", "Error adding TO detail");
+                            request.setAttribute("errorDetail", "Error creating TO Detail.");
                             request.getRequestDispatcher("to-create.jsp").forward(request, response);
                             return;
                         }
 
                     } catch (NumberFormatException e) {
                         preserveFormData(request);
-                        request.setAttribute("errorQuantity", "Invalid Number Format.");
+                        request.setAttribute("errorQuantity3", "Invalid number format.");
                         request.getRequestDispatcher("to-create.jsp").forward(request, response);
                         return;
                     }
@@ -206,20 +203,20 @@ public class TransferOrderCreateServlet extends HttpServlet {
 
             } else {
                 preserveFormData(request);
-                request.setAttribute("errorOrder", "Error creating Transfer Order");
+                request.setAttribute("errorOrder", "Error creating Transfer Order.");
                 request.getRequestDispatcher("to-create.jsp").forward(request, response);
                 return;
             }
 
             // Chuyển hướng sau khi tạo thành công
-            request.getSession().setAttribute("successMessage", "Transfer Order created successfully!");
+            request.getSession().setAttribute("successMessage", "Transfer Order created successfully.");
             response.sendRedirect(request.getContextPath() + "/TOList");
 
 
         } catch (Exception e) {
             e.printStackTrace();
             preserveFormData(request);
-            request.setAttribute("errorGeneral", "General error.");
+            request.setAttribute("errorGeneral", "Unexpected error.");
             request.getRequestDispatcher("to-create.jsp").forward(request, response);
         }
     }
@@ -229,7 +226,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
         // Kiểm tra Transfer Order ID
         String toID = request.getParameter("toID");
         if (toID == null || toID.trim().isEmpty()) {
-            request.setAttribute("errorToID", "Transfer Order ID cannot be null.");
+            request.setAttribute("errorToID", "Transfer Order ID cannot be null or empty.");
             return false;
         }
 
@@ -257,7 +254,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
                 double productWeight = transferOrderDAO.getProductWeight(productDetailID);
                 totalTransferWeight += productWeight * quantity;
             } catch (NumberFormatException e) {
-                request.setAttribute("errorQuantity3", "Invalid Number Format.");
+                request.setAttribute("errorQuantity3", "Invalid date format.");
                 return false;
             }
         }
@@ -265,20 +262,18 @@ public class TransferOrderCreateServlet extends HttpServlet {
         // Kiểm tra sức chứa của bin đích
         double binMaxCapacity = transferOrderDAO.getBinMaxCapacity(finalBinID);
         double currentBinWeight = transferOrderDAO.getCurrentBinWeight(finalBinID);
-        double processingTransferWeight = transferOrderDAO.getProcessingTransferTotalWeight(finalBinID);
         double totalWeightAfterTransfer = currentBinWeight + totalTransferWeight;
 
         System.out.println("Final Bin Max Capacity: " + binMaxCapacity);
         System.out.println("Current Bin Weight: " + currentBinWeight);
-        System.out.println("Processing Transfer Weight: " + processingTransferWeight);
         System.out.println("Total Transfer Order Weight: " + totalTransferWeight);
         System.out.println("Total After Add TO: " + totalWeightAfterTransfer);
 
         if (totalWeightAfterTransfer > binMaxCapacity) {
-            request.setAttribute("errorCapacity", "Final bin don't have enough space for this order . " +
+            request.setAttribute("errorCapacity", "Not enough available space in final bin. " +
+                    "Final Bin Max capacity: " + binMaxCapacity + " kg. " +
                     "Current capacity: " + currentBinWeight + "/" + binMaxCapacity + " kg. " +
                     "Order weight: " + totalTransferWeight + " kg.");
-            return false;
         }
 
         return true;
@@ -324,6 +319,7 @@ public class TransferOrderCreateServlet extends HttpServlet {
 
             request.setAttribute("savedProductDetails", productDetails);
         }
-    }
 
+
+    }
 }

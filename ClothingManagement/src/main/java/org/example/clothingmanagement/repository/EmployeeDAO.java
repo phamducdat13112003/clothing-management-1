@@ -620,4 +620,19 @@ public class EmployeeDAO {
     public static void main(String[] args) {
 
     }
+
+    public List<String> getAllEmployeeIds() throws SQLException {
+        List<String> employeeIds = new ArrayList<>();
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT DISTINCT employeeID FROM employee ORDER BY employeeID");
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                employeeIds.add(rs.getString("employeeID"));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return employeeIds;
+    }
 }

@@ -309,7 +309,7 @@
                 const combinedErrors = validErrors.join('\n\n');
 
                 // Show a single alert with all errors
-                window.alert('Đã xảy ra lỗi:\n\n' + combinedErrors);
+                window.alert('Errors occurred:\n\n' + combinedErrors);
             }
         }
 
@@ -687,7 +687,7 @@
             errorSpan.className = "quantity-error";
             errorSpan.style.color = "red";
             errorSpan.style.display = "none";
-            errorSpan.textContent = `Number `;
+            errorSpan.textContent = `Number exceeds available quantity! `;
 
             // Add input event listener to validate quantity
             quantityInput.addEventListener("input", function() {

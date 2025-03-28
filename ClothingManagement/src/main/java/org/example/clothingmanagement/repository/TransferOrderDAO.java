@@ -13,254 +13,6 @@ import java.util.Scanner;
 
 public class TransferOrderDAO {
 
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
-    public boolean processTransferOrder(String toID) {
-        Connection conn = null;
-        try {
-            conn = DBContext.getConnection();
-            conn.setAutoCommit(false);
-            System.out.println("Starting process for Transfer Order: " + toID);
-
-            // Kiểm tra tồn tại Transfer Order
-            TransferOrder transferOrder = getTransferOrderByID(toID);
-            if (transferOrder == null) {
-                return false;
-            }
-
-            // Kiểm tra trạng thái
-            if (!"Pending".equals(transferOrder.getStatus())) {
-                return false;
-            }
-
-            // Lấy chi tiết Transfer Order
-            List<TODetail> details = getTODetailsByTOID(toID);
-            if (details == null || details.isEmpty()) {
-                return false;
-            }
-
-            boolean allProcessingSuccessful = true;
-            List<String> insufficientProducts = new ArrayList<>();
-
-            // Kiểm tra khả năng có sẵn của sản phẩm
-            for (TODetail detail : details) {
-                String productDetailID = detail.getProductDetailID();
-                int requiredQuantity = detail.getQuantity();
-                String originalBinID = detail.getOriginBinID();
-
-                int currentQuantity = getCurrentBinQuantity(conn, originalBinID, productDetailID);
-
-                if (currentQuantity < requiredQuantity) {
-                    insufficientProducts.add(productDetailID);
-                    allProcessingSuccessful = false;
-                }
-            }
-
-            // Nếu không đủ sản phẩm
-            if (!insufficientProducts.isEmpty()) {
-                return false;
-            }
-
-            // Kiểm tra trọng lượng bin
-            String finalBinID = details.get(0).getFinalBinID();
-            double totalTransferWeight = calculateTotalTransferWeight(conn, details);
-            double binMaxCapacity = getBinMaxCapacity(finalBinID);
-            double currentBinWeight = getCurrentBinWeight(finalBinID);
-            double processingTransferWeight = getProcessingTransferTotalWeight(finalBinID);
-            double totalWeightAfterTransfer = currentBinWeight + totalTransferWeight + processingTransferWeight;
-
-            // Kiểm tra sức chứa bin
-            if (totalWeightAfterTransfer > binMaxCapacity) {
-                return false;
-            }
-
-            // Cập nhật số lượng trong bin nguồn
-            for (TODetail detail : details) {
-                String productDetailID = detail.getProductDetailID();
-                int quantity = detail.getQuantity();
-                String originalBinID = detail.getOriginBinID();
-
-                boolean isOriginBinUpdated = updateBinQuantity(conn, originalBinID, productDetailID, -quantity);
-                if (!isOriginBinUpdated) {
-                    allProcessingSuccessful = false;
-                    break;
-                }
-
-                // Xóa bin detail nếu số lượng còn lại 0
-                int remainingQuantity = getCurrentBinQuantity(conn, originalBinID, productDetailID);
-                if (remainingQuantity == 0) {
-                    deleteBinDetail(conn, originalBinID, productDetailID);
-                }
-            }
-
-            if (allProcessingSuccessful) {
-                // Cập nhật trạng thái Transfer Order
-                try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
-                    ps.setString(1, "Processing");
-                    ps.setString(2, toID);
-                    int updatedRows = ps.executeUpdate();
-
-                    if (updatedRows > 0) {
-                        conn.commit();
-                        return true;
-                    } else {
-                        conn.rollback();
-                        return false;
-                    }
-                }
-            } else {
-                conn.rollback();
-                return false;
-            }
-        } catch (Exception e) {
-            System.err.println("Exception in processTransferOrder: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    private double calculateTotalTransferWeight(Connection conn, List<TODetail> details) throws SQLException {
-        double totalTransferWeight = 0.0;
-        for (TODetail detail : details) {
-            String productDetailID = detail.getProductDetailID();
-            int quantity = detail.getQuantity();
-            double productWeight = getProductWeight(productDetailID);
-            totalTransferWeight += productWeight * quantity;
-        }
-        return totalTransferWeight;
-    }
-
-    public boolean completeTransferOrder(String toID) {
-        Connection conn = null;
-        try {
-            conn = DBContext.getConnection();
-            conn.setAutoCommit(false);
-            System.out.println("Starting completion process for Transfer Order: " + toID);
-
-            // Check Transfer Order exists
-            TransferOrder transferOrder = getTransferOrderByID(toID);
-            if (transferOrder == null) {
-                return false;
-            }
-
-            // Only allow completion for Processing status
-            if (!"Processing".equals(transferOrder.getStatus())) {
-                return false;
-            }
-
-            // Retrieve transfer order details
-            List<TODetail> details = getTODetailsByTOID(toID);
-            if (details == null || details.isEmpty()) {
-                return false;
-            }
-
-            // Process each detail - update bin quantities
-            boolean allUpdatesSuccessful = true;
-            for (TODetail detail : details) {
-                String productDetailID = detail.getProductDetailID();
-                int quantity = detail.getQuantity();
-                String finalBinID = detail.getFinalBinID();
-
-                System.out.println("Processing transfer: " + quantity + " units of " + productDetailID +
-                        " to final bin " + finalBinID);
-
-                // Update final (destination) bin quantity
-                boolean isFinalBinUpdated = updateBinQuantity(conn, finalBinID, productDetailID, quantity);
-                if (!isFinalBinUpdated) {
-                    allUpdatesSuccessful = false;
-                    break;
-                }
-            }
-
-            if (allUpdatesSuccessful) {
-                // Update transfer order status to Completed
-                try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
-                    ps.setString(1, "Completed");
-                    ps.setString(2, toID);
-                    int updatedRows = ps.executeUpdate();
-
-                    if (updatedRows > 0) {
-                        conn.commit();
-                        return true;
-                    } else {
-                        conn.rollback();
-                        return false;
-                    }
-                }
-            } else {
-                conn.rollback();
-                return false;
-            }
-        } catch (Exception e) {
-            System.err.println("Exception in completeTransferOrder: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    public boolean cancelTransferOrder(String toID) {
-        Connection conn = null;
-        try {
-            conn = DBContext.getConnection();
-            conn.setAutoCommit(false);
-            System.out.println("Starting cancel process for Transfer Order: " + toID);
-
-            // Check if the transfer order exists
-            TransferOrder transferOrder = getTransferOrderByID(toID);
-            if (transferOrder == null) {
-                return false;
-            }
-
-            // Only allow cancellation for Pending status
-            if (!"Pending".equals(transferOrder.getStatus())) {
-                return false;
-            }
-
-            // Retrieve transfer order details
-            List<TODetail> details = getTODetailsByTOID(toID);
-            if (details == null || details.isEmpty()) {
-                return false;
-            }
-
-            // Update transfer order status to Canceled
-            try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
-                ps.setString(1, "Canceled");
-                ps.setString(2, toID);
-                int updatedRows = ps.executeUpdate();
-
-                if (updatedRows > 0) {
-                    conn.commit();
-                    return true;
-                } else {
-                    conn.rollback();
-                    return false;
-                }
-            }
-        } catch (Exception e) {
-            System.err.println("Exception in cancelTransferOrder: " + e.getMessage());
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (conn != null) conn.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public TransferOrder getTransferOrderById(String toID) {
         TransferOrder transferOrder = null;
         String sql = "SELECT * FROM TransferOrder WHERE TOID = ?";
@@ -1659,5 +1411,24 @@ public class TransferOrderDAO {
             System.err.println("Error deleting bin detail: " + e.getMessage());
             return false;
         }
+    }
+
+    public List<String> getAllUniqueStatuses() {
+        List<String> statuses = new ArrayList<>();
+        try (Connection conn = DBContext.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(
+                     "SELECT DISTINCT status FROM transferorder WHERE status IS NOT NULL ORDER BY status");
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                String status = rs.getString("status");
+                if (status != null) {
+                    statuses.add(status);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statuses;
     }
 }
