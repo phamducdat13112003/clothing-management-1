@@ -108,6 +108,34 @@
         <div class="container">
             <div class="row">
                 <div class="col-12">
+                    <!-- Error Message Display -->
+                    <%
+                        // Retrieve messages from ServletContext
+                        String errorMessage = (String) application.getAttribute("errorMessage");
+                        String successMessage = (String) application.getAttribute("successMessage");
+                    %>
+
+                    <c:if test="<%= errorMessage != null && !errorMessage.isEmpty() %>">
+                        <div class="error-message">
+                            <%= errorMessage %>
+                        </div>
+                        <% application.removeAttribute("errorMessage"); %>
+                    </c:if>
+
+                    <c:if test="<%= successMessage != null && !successMessage.isEmpty() %>">
+                        <div class="success-message">
+                            <%= successMessage %>
+                        </div>
+                        <% application.removeAttribute("successMessage"); %>
+                    </c:if>
+
+                    <!-- Success Message Display -->
+                    <c:if test="${not empty successMessage}">
+                        <div class="success-message">
+                                ${successMessage}
+                            <% session.removeAttribute("successMessage"); %>
+                        </div>
+                    </c:if>
                     <div class="sherah-body">
                         <!-- Dashboard Inner -->
                         <div class="sherah-dsinner">
