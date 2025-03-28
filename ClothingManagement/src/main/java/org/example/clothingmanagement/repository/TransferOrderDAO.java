@@ -15,23 +15,250 @@ public class TransferOrderDAO {
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    // Method to get all employee IDs
-    public List<String> getAllEmployeeIds() {
-        List<String> employeeIds = new ArrayList<>();
-        String sql = "SELECT EmployeeID FROM Employee";  // Assuming EmployeeID is the field for the employee ID
+    public boolean processTransferOrder(String toID) {
+        Connection conn = null;
+        try {
+            conn = DBContext.getConnection();
+            conn.setAutoCommit(false);
+            System.out.println("Starting process for Transfer Order: " + toID);
 
-        try (Connection conn = DBContext.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                employeeIds.add(rs.getString("EmployeeID"));
+            // Kiểm tra tồn tại Transfer Order
+            TransferOrder transferOrder = getTransferOrderByID(toID);
+            if (transferOrder == null) {
+                return false;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
-        return employeeIds;
+            // Kiểm tra trạng thái
+            if (!"Pending".equals(transferOrder.getStatus())) {
+                return false;
+            }
+
+            // Lấy chi tiết Transfer Order
+            List<TODetail> details = getTODetailsByTOID(toID);
+            if (details == null || details.isEmpty()) {
+                return false;
+            }
+
+            boolean allProcessingSuccessful = true;
+            List<String> insufficientProducts = new ArrayList<>();
+
+            // Kiểm tra khả năng có sẵn của sản phẩm
+            for (TODetail detail : details) {
+                String productDetailID = detail.getProductDetailID();
+                int requiredQuantity = detail.getQuantity();
+                String originalBinID = detail.getOriginBinID();
+
+                int currentQuantity = getCurrentBinQuantity(conn, originalBinID, productDetailID);
+
+                if (currentQuantity < requiredQuantity) {
+                    insufficientProducts.add(productDetailID);
+                    allProcessingSuccessful = false;
+                }
+            }
+
+            // Nếu không đủ sản phẩm
+            if (!insufficientProducts.isEmpty()) {
+                return false;
+            }
+
+            // Kiểm tra trọng lượng bin
+            String finalBinID = details.get(0).getFinalBinID();
+            double totalTransferWeight = calculateTotalTransferWeight(conn, details);
+            double binMaxCapacity = getBinMaxCapacity(finalBinID);
+            double currentBinWeight = getCurrentBinWeight(finalBinID);
+            double processingTransferWeight = getProcessingTransferTotalWeight(finalBinID);
+            double totalWeightAfterTransfer = currentBinWeight + totalTransferWeight + processingTransferWeight;
+
+            // Kiểm tra sức chứa bin
+            if (totalWeightAfterTransfer > binMaxCapacity) {
+                return false;
+            }
+
+            // Cập nhật số lượng trong bin nguồn
+            for (TODetail detail : details) {
+                String productDetailID = detail.getProductDetailID();
+                int quantity = detail.getQuantity();
+                String originalBinID = detail.getOriginBinID();
+
+                boolean isOriginBinUpdated = updateBinQuantity(conn, originalBinID, productDetailID, -quantity);
+                if (!isOriginBinUpdated) {
+                    allProcessingSuccessful = false;
+                    break;
+                }
+
+                // Xóa bin detail nếu số lượng còn lại 0
+                int remainingQuantity = getCurrentBinQuantity(conn, originalBinID, productDetailID);
+                if (remainingQuantity == 0) {
+                    deleteBinDetail(conn, originalBinID, productDetailID);
+                }
+            }
+
+            if (allProcessingSuccessful) {
+                // Cập nhật trạng thái Transfer Order
+                try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
+                    ps.setString(1, "Processing");
+                    ps.setString(2, toID);
+                    int updatedRows = ps.executeUpdate();
+
+                    if (updatedRows > 0) {
+                        conn.commit();
+                        return true;
+                    } else {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            } else {
+                conn.rollback();
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Exception in processTransferOrder: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private double calculateTotalTransferWeight(Connection conn, List<TODetail> details) throws SQLException {
+        double totalTransferWeight = 0.0;
+        for (TODetail detail : details) {
+            String productDetailID = detail.getProductDetailID();
+            int quantity = detail.getQuantity();
+            double productWeight = getProductWeight(productDetailID);
+            totalTransferWeight += productWeight * quantity;
+        }
+        return totalTransferWeight;
+    }
+
+    public boolean completeTransferOrder(String toID) {
+        Connection conn = null;
+        try {
+            conn = DBContext.getConnection();
+            conn.setAutoCommit(false);
+            System.out.println("Starting completion process for Transfer Order: " + toID);
+
+            // Check Transfer Order exists
+            TransferOrder transferOrder = getTransferOrderByID(toID);
+            if (transferOrder == null) {
+                return false;
+            }
+
+            // Only allow completion for Processing status
+            if (!"Processing".equals(transferOrder.getStatus())) {
+                return false;
+            }
+
+            // Retrieve transfer order details
+            List<TODetail> details = getTODetailsByTOID(toID);
+            if (details == null || details.isEmpty()) {
+                return false;
+            }
+
+            // Process each detail - update bin quantities
+            boolean allUpdatesSuccessful = true;
+            for (TODetail detail : details) {
+                String productDetailID = detail.getProductDetailID();
+                int quantity = detail.getQuantity();
+                String finalBinID = detail.getFinalBinID();
+
+                System.out.println("Processing transfer: " + quantity + " units of " + productDetailID +
+                        " to final bin " + finalBinID);
+
+                // Update final (destination) bin quantity
+                boolean isFinalBinUpdated = updateBinQuantity(conn, finalBinID, productDetailID, quantity);
+                if (!isFinalBinUpdated) {
+                    allUpdatesSuccessful = false;
+                    break;
+                }
+            }
+
+            if (allUpdatesSuccessful) {
+                // Update transfer order status to Completed
+                try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
+                    ps.setString(1, "Completed");
+                    ps.setString(2, toID);
+                    int updatedRows = ps.executeUpdate();
+
+                    if (updatedRows > 0) {
+                        conn.commit();
+                        return true;
+                    } else {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            } else {
+                conn.rollback();
+                return false;
+            }
+        } catch (Exception e) {
+            System.err.println("Exception in completeTransferOrder: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean cancelTransferOrder(String toID) {
+        Connection conn = null;
+        try {
+            conn = DBContext.getConnection();
+            conn.setAutoCommit(false);
+            System.out.println("Starting cancel process for Transfer Order: " + toID);
+
+            // Check if the transfer order exists
+            TransferOrder transferOrder = getTransferOrderByID(toID);
+            if (transferOrder == null) {
+                return false;
+            }
+
+            // Only allow cancellation for Pending status
+            if (!"Pending".equals(transferOrder.getStatus())) {
+                return false;
+            }
+
+            // Retrieve transfer order details
+            List<TODetail> details = getTODetailsByTOID(toID);
+            if (details == null || details.isEmpty()) {
+                return false;
+            }
+
+            // Update transfer order status to Canceled
+            try (PreparedStatement ps = conn.prepareStatement("UPDATE transferorder SET Status = ? WHERE TOID = ?")) {
+                ps.setString(1, "Canceled");
+                ps.setString(2, toID);
+                int updatedRows = ps.executeUpdate();
+
+                if (updatedRows > 0) {
+                    conn.commit();
+                    return true;
+                } else {
+                    conn.rollback();
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Exception in cancelTransferOrder: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public TransferOrder getTransferOrderById(String toID) {
@@ -89,18 +316,6 @@ public class TransferOrderDAO {
         return false;
     }
 
-    public boolean cancelTransferOrder(String toID) {
-        String sql = "UPDATE TransferOrder SET Status = 'Cancelled' WHERE TOID = ?";
-
-        try (Connection conn = DBContext.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, toID);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
 
     public String generateNextTOID() throws SQLException {
         String sql = "SELECT TOP 1 toID FROM TransferOrder ORDER BY toID DESC";
@@ -1034,57 +1249,6 @@ public class TransferOrderDAO {
     }
 
 
-
-
-//    public boolean addProductToBin(String binID, String productDetailID, int quantity) {
-//        String maxBinDetailIdQuery = "SELECT MAX(binDetailId) FROM bindetail WHERE binId = ?";
-//        String insertQuery = "INSERT INTO bindetail (binDetailId, binId, productDetailId, quantity) VALUES (?, ?, ?, ?)";
-//
-//        try (Connection conn = DBContext.getConnection();
-//             PreparedStatement maxStmt = conn.prepareStatement(maxBinDetailIdQuery)) {
-//
-//            // Retrieve the maximum binDetailId for the given binID
-//            maxStmt.setString(1, binID);
-//            ResultSet rs = maxStmt.executeQuery();
-//
-//            String newBinDetailId;
-//            if (rs.next()) {
-//                String maxBinDetailId = rs.getString(1);
-//
-//                // If no existing binDetailId, set newBinDetailId to binID + "001"
-//                if (maxBinDetailId == null) {
-//                    newBinDetailId = binID + "-001"; // Start with the first ID in the format
-//                } else {
-//                    // Extract the numeric part and increment it by 1
-//                    String[] parts = maxBinDetailId.split("-"); // Assuming format "FW001-001-01"
-//                    String numericPart = parts[parts.length - 1]; // Extract "01"
-//
-//                    int newNumericPart = Integer.parseInt(numericPart) + 1; // Increment by 1
-//                    String newNumericPartStr = String.format("%03d", newNumericPart); // Format to 3 digits
-//                    newBinDetailId = binID + "-" + newNumericPartStr; // Create the new binDetailId
-//                }
-//            } else {
-//                // In case no result was returned, generate the first binDetailId
-//                newBinDetailId = binID + "-01"; // Start with the first ID
-//            }
-//
-//            // Insert the new product into the bindetail table
-//            try (PreparedStatement stmt = conn.prepareStatement(insertQuery)) {
-//                stmt.setString(1, newBinDetailId);
-//                stmt.setString(2, binID);
-//                stmt.setString(3, productDetailID);
-//                stmt.setInt(4, quantity);
-//
-//                int rowsAffected = stmt.executeUpdate();
-//                return rowsAffected > 0; // Return true if the insertion was successful
-//            }
-//
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return false; // Return false in case of error
-//    }
 
 
     public static void main(String[] args) {
