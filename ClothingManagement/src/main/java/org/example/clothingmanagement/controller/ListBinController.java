@@ -23,76 +23,98 @@ public class ListBinController extends HttpServlet {
     BinDetailService bds = new BinDetailService();
     BinService bs = new BinService();
     SectionService ss = new SectionService();
+    private static final int PAGE_SIZE = 5;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        int page = 1;
-        int pageSize = 5;
-        String pageParam = req.getParameter("page");
-        if (pageParam != null) {
-            page = Integer.parseInt(pageParam);
+        // Xử lý tham số
+        int page = parsePageParameter(req);
+        String sectionId = req.getParameter("id");
+        String searchTerm = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
+
+        // Lấy danh sách bins
+        List<Bin> bins;
+        int totalBins;
+
+        if (searchTerm.isEmpty()) {
+            // Nếu không có từ khóa tìm kiếm
+            bins = bs.getBinsWithPagination(sectionId, page, PAGE_SIZE);
+            totalBins = bs.getBinsBySectionIdWithoutPagination(sectionId).size();
+        } else {
+            // Nếu có từ khóa tìm kiếm
+            bins = bs.searchBinWithPagination(sectionId, searchTerm, page, PAGE_SIZE);
+            totalBins = bs.searchBinWithoutPagination(sectionId, searchTerm).size();
         }
 
-        String sectionId = req.getParameter("id");
-        List<Bin> bins = bs.getBinsWithPagination(sectionId, page, pageSize);
-        for(Bin b : bins){
-            List<BinDetail> list = bds.getAllBinDetailAndProductDetailByBinId(b.getBinID());
-            for(BinDetail bd : list){
-                b.setCurrentCapacity(b.getCurrentCapacity()+(bd.getWeight()*bd.getQuantity()));
-                b.setAvailableCapacity(b.getMaxCapacity()-b.getCurrentCapacity());
-            }
-        }
-        int totalProduct = bs.getBinsBySectionIdWithoutPagination(sectionId).size();
-        int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
-        Section section = null;
-        if(ss.getSectionById(sectionId).isPresent()){
-            section = ss.getSectionById(sectionId).get();
-        }
+
+        // Tính tổng số trang
+        int totalPages = (int) Math.ceil((double) totalBins / PAGE_SIZE);
+
+        // Lấy thông tin section
+        Section section = ss.getSectionById(sectionId).orElse(null);
+
+        // Đặt các thuộc tính để truyền sang view
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
-        req.setAttribute("section",section);
-        req.setAttribute("bins",bins);
-        req.getRequestDispatcher("/list-bin.jsp").forward(req, resp);
+        req.setAttribute("section", section);
+        req.setAttribute("bins", bins);
+        req.setAttribute("searchTerm", searchTerm);
 
+        req.getRequestDispatcher("/section-detail.jsp").forward(req, resp);
+    }
+
+    // Phương thức hỗ trợ parse tham số trang
+    private int parsePageParameter(HttpServletRequest req) {
+        try {
+            return req.getParameter("page") != null ?
+                    Integer.parseInt(req.getParameter("page")) : 1;
+        } catch (NumberFormatException e) {
+            return 1;
+        }
     }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Set character encoding to handle UTF-8 for POST requests
+        req.setCharacterEncoding("UTF-8");
+
+        // Retrieve search parameters from POST request
         String sectionId = req.getParameter("id");
-        String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
-        String pageParam = req.getParameter("page");
+        String searchTerm = req.getParameter("search");
+        searchTerm = searchTerm != null ? searchTerm.trim() : "";
 
+        // Default to first page for POST requests
         int page = 1;
-        int pageSize = 5;
-        if(!nameSearch.isEmpty()){
-            if (pageParam != null) {
-                try {
-                    page = Integer.parseInt(pageParam);
-                } catch (NumberFormatException e) {
-                    page = 1;
-                }
-            }
+
+        // Lấy danh sách bins
+        List<Bin> bins;
+        int totalBins;
+
+        if (searchTerm.isEmpty()) {
+            // Nếu không có từ khóa tìm kiếm
+            bins = bs.getBinsWithPagination(sectionId, page, PAGE_SIZE);
+            totalBins = bs.getBinsBySectionIdWithoutPagination(sectionId).size();
+        } else {
+            // Nếu có từ khóa tìm kiếm
+            bins = bs.searchBinWithPagination(sectionId, searchTerm, page, PAGE_SIZE);
+            totalBins = bs.searchBinWithoutPagination(sectionId, searchTerm).size();
         }
 
-        List<Bin> bins = bs.searchBinWithPagination(sectionId,nameSearch, page, pageSize);
-        for(Bin b : bins){
-            List<BinDetail> list = bds.getAllBinDetailAndProductDetailByBinId(b.getBinID());
-            for(BinDetail bd : list){
-                b.setCurrentCapacity(b.getCurrentCapacity()+(bd.getWeight()*bd.getQuantity()));
-                b.setAvailableCapacity(b.getMaxCapacity()-b.getCurrentCapacity());
-            }
-        }
-        int totalProduct = bs.searchBinWithoutPagination(sectionId,nameSearch).size();
-        int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
-        Section section = null;
-        if(ss.getSectionById(sectionId).isPresent()){
-            section = ss.getSectionById(sectionId).get();
-        }
+        // Tính tổng số trang
+        int totalPages = (int) Math.ceil((double) totalBins / PAGE_SIZE);
+
+        // Lấy thông tin section
+        Section section = ss.getSectionById(sectionId).orElse(null);
+
+        // Đặt các thuộc tính để truyền sang view
         req.setAttribute("currentPage", page);
         req.setAttribute("totalPages", totalPages);
-        req.setAttribute("section",section);
-        req.setAttribute("bins",bins);
-        req.getRequestDispatcher("/list-bin.jsp").forward(req, resp);
+        req.setAttribute("section", section);
+        req.setAttribute("bins", bins);
+        req.setAttribute("search", searchTerm);
+
+        // Forward to the JSP
+        req.getRequestDispatcher("/section-detail.jsp").forward(req, resp);
     }
 
 }

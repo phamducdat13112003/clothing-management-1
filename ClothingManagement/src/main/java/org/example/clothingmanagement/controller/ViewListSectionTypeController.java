@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.entity.SectionType;
+import org.example.clothingmanagement.repository.SectionDAO;
 import org.example.clothingmanagement.service.SectionTypeService;
 
 import java.io.IOException;
@@ -28,6 +29,8 @@ public class ViewListSectionTypeController extends HttpServlet {
         List<SectionType> sectionTypes = sts.getSectionTypesWithPagination(page,pageSize);
         int totalProduct = sts.getAllSectionTypes().size();
         int totalPages = (int) Math.ceil((double) totalProduct / pageSize);
+
+
 
         req.setAttribute("list", sectionTypes);
         req.setAttribute("currentPage", page);

@@ -14,6 +14,7 @@ import org.example.clothingmanagement.service.SectionTypeService;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @WebServlet(name="ViewListSection",urlPatterns = "/view-list-section")
 public class ViewListSectionController extends HttpServlet {
@@ -29,6 +30,12 @@ public class ViewListSectionController extends HttpServlet {
         String pageParam = req.getParameter("page");
         if (pageParam != null) {
             page = Integer.parseInt(pageParam);
+        }
+
+        String sectionId = req.getParameter("sectionId");
+        if (sectionId != null) {
+            Optional<Section> section = ss.getSectionById(sectionId);
+            section.ifPresent(s -> req.setAttribute("section", s));
         }
 
         int sectionTypeId = Integer.parseInt(req.getParameter("stid"));
@@ -54,6 +61,7 @@ public class ViewListSectionController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         int sectionTypeId = Integer.parseInt(req.getParameter("stid"));
+
         String nameSearch = req.getParameter("search") != null ? req.getParameter("search").trim() : "";
         String pageParam = req.getParameter("page");
 

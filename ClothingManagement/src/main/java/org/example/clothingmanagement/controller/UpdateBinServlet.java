@@ -29,6 +29,12 @@ public class UpdateBinServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext context = getServletContext();
+
+        // Clear any existing messages in ServletContext
+        context.removeAttribute("successMessage");
+        context.removeAttribute("errorMessage");
+
         String binID = request.getParameter("binID");
 
         try {
@@ -57,13 +63,14 @@ public class UpdateBinServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServletContext context = getServletContext();
+
         String binID = request.getParameter("binID");
         String binName = request.getParameter("binName");
         String statusStr = request.getParameter("status");
         String sectionID = request.getParameter("sectionID");
 
         boolean status = Boolean.parseBoolean(statusStr);
-        ServletContext context = getServletContext();
 
         try {
             // Get the current bin for reference
@@ -75,9 +82,9 @@ public class UpdateBinServlet extends HttpServlet {
                 System.out.println("Duplicate check result: " + isDuplicate);
 
                 if (isDuplicate) {
-                    // Store error message in ServletContext with a unique key for this bin
-                    context.setAttribute("errorMessage_" + binID, "A bin with this name already exists in this section.");
-                    // Redirect back to update page instead of forwarding
+                    // Store error message in ServletContext
+                    context.setAttribute("errorMessage", "A bin with this name already exists in this section.");
+                    // Redirect back to update page
                     response.sendRedirect("updateBin?binID=" + binID);
                     return;
                 }
@@ -91,20 +98,20 @@ public class UpdateBinServlet extends HttpServlet {
             boolean updated = binDAO.updateBin(currentBin);
 
             if (updated) {
-                // Set success message in ServletContext with a unique key for this section
-                context.setAttribute("successMessage_" + sectionID, "Bin updated successfully!");
+                // Set success message in ServletContext
+                context.setAttribute("successMessage", "Bin updated successfully!");
             } else {
-                // Set error message in ServletContext with a unique key for this section
-                context.setAttribute("errorMessage_" + sectionID, "Failed to update bin.");
+                // Set error message in ServletContext
+                context.setAttribute("errorMessage", "Failed to update bin.");
             }
 
-            // Always redirect to section view after processing
-            response.sendRedirect("section?action=view&id=" + sectionID);
+            // Redirect to list-bin page for the specific section
+            response.sendRedirect("list-bin?id=" + sectionID);
 
         } catch (Exception e) {
             e.printStackTrace();
-            context.setAttribute("errorMessage_" + sectionID, "Error: " + e.getMessage());
-            response.sendRedirect("section?action=view&id=" + sectionID);
+            context.setAttribute("errorMessage", "Error: " + e.getMessage());
+            response.sendRedirect("list-bin?id=" + sectionID);
         }
     }
 }

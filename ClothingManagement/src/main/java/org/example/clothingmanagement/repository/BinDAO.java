@@ -598,20 +598,60 @@ public class BinDAO {
         }
     }
 
-    public boolean deleteBin(String binId){
-        String sql= "UPDATE Bin SET status = 0 WHERE BinId = ?";
-        try (Connection conn = DBContext.getConnection();
-        PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, binId);
-            int rowsUpdated = stmt.executeUpdate();
-            return rowsUpdated > 0;
+    public boolean deleteBin(String binId) {
+        // First, delete related bin details
+        String deleteBinDetailsSQL = "DELETE FROM bindetail WHERE binId = ?";
+
+        // Then, delete the bin itself
+        String deleteBinSQL = "DELETE FROM Bin WHERE BinId = ?";
+
+        Connection conn = null;
+        try {
+            conn = DBContext.getConnection();
+            // Disable auto-commit to ensure both deletions happen or neither
+            conn.setAutoCommit(false);
+
+            // Delete bin details first
+            try (PreparedStatement stmtDetails = conn.prepareStatement(deleteBinDetailsSQL)) {
+                stmtDetails.setString(1, binId);
+                stmtDetails.executeUpdate();
+            }
+
+            // Delete bin
+            try (PreparedStatement stmtBin = conn.prepareStatement(deleteBinSQL)) {
+                stmtBin.setString(1, binId);
+                int rowsDeleted = stmtBin.executeUpdate();
+
+                // Commit the transaction
+                conn.commit();
+
+                return rowsDeleted > 0;
+            }
         } catch (Exception e) {
+            // Rollback in case of error
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
             throw new RuntimeException(e);
+        } finally {
+            // Reset auto-commit and close connection
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException closeEx) {
+                    closeEx.printStackTrace();
+                }
+            }
         }
     }
 
     public int getTotalBinsBySection(String sectionId) {
-        String sql = "SELECT COUNT(*) FROM Bin WHERE SectionID = ? WHERE Status = 1";
+        String sql = "SELECT COUNT(*) FROM Bin WHERE SectionID = ? AND Status = 1";
         try (Connection con = DBContext.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, sectionId);

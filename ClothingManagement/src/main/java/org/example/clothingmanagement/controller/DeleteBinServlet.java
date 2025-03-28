@@ -38,50 +38,30 @@ public class DeleteBinServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String binId = request.getParameter("binId").trim();
-        int page = 1;
-        int pageSize = 5;
+        String sectionId = request.getParameter("sectionId");
+
         BinService binService = new BinService();
-        TOService toService = new TOService();
-        BinDetailService binDetailService = new BinDetailService();
-        SectionService sectionService = new SectionService();
-        String sectionId = sectionService.getSectionByBin(binId);
-        int totalBins = binService.getTotalBinsBySection(sectionId);
-        Section section = null;
-        if(sectionService.getSectionById(sectionId).isPresent()){
-            section = sectionService.getSectionById(sectionId).get();
-        }
-        if (binId.isEmpty()) {
-            request.setAttribute("message", "Can't get binID");
-        } else if (!binService.canDeleteBin(binId)) {
-            request.setAttribute("message", "Cannot delete bin because product still exists in bin.");
-        } else if (toService.hasProcessingTO(binId)) {
-            request.setAttribute("message", "Cannot delete bin because bin is in processing time status.");
+
+        // Check if the bin has any products
+        if (binService.hasBinProducts(binId)) {
+            // If bin has products, set error message
+            request.getSession().setAttribute("errorMessage", "Cannot delete bin. Bin contains products.");
         } else {
+            // If bin is empty, proceed with deletion
             boolean isDeletedBin = binService.deleteBin(binId);
             if (isDeletedBin) {
-                request.setAttribute("messageSuccess", "Delete Bin Successfully");
+                request.getSession().setAttribute("successMessage", "Bin deleted successfully");
             } else {
-                request.setAttribute("message", "Delete Failed");
+                request.getSession().setAttribute("errorMessage", "Failed to delete bin");
             }
         }
-        List<Bin> list = binService.getBinsWithPagination(sectionId, page, pageSize);
-        for (Bin b : list) {
-            List<BinDetail> listDetail = binDetailService.getAllBinDetailAndProductDetailByBinId(b.getBinID());
-            for (BinDetail bd : listDetail) {
-                b.setCurrentCapacity(b.getCurrentCapacity() + (bd.getWeight() * bd.getQuantity()));
-                b.setAvailableCapacity(b.getMaxCapacity() - b.getCurrentCapacity());
-            }
-        }
-        int totalPages = (int) Math.ceil((double) totalBins / pageSize);
-        request.setAttribute("bins", list);
-        request.setAttribute("section", section);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.getRequestDispatcher("./list-bin.jsp").forward(request, response);
+
+        // Redirect back to the list-bin page
+        response.sendRedirect("list-bin?id=" + sectionId);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        processRequest(request, response);
+        doGet(request, response);
     }
 }
