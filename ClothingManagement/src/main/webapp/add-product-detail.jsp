@@ -117,10 +117,11 @@
                                                                                     <h4 class="form-title m-0">Basic
                                                                                         Information
                                                                                         Of ${product.name}</h4>
-                                                                                    <form class="sherah-wc__form-main"
+                                                                                    <form name="myForm"
+                                                                                            class="sherah-wc__form-main"
                                                                                           action="${pageContext.request.contextPath}/add-product-detail"
-                                                                                          method="post"
                                                                                           onsubmit="return validateForm()"
+                                                                                          method="post"
                                                                                           enctype="multipart/form-data"
                                                                                     >
 
@@ -149,6 +150,7 @@
                                                                                                            name="weight"
                                                                                                            min="0.1"
                                                                                                            step="0.1"
+                                                                                                           max="3"
                                                                                                            required>
                                                                                                     <small class="error-message"
                                                                                                            style="color: red;"></small>
@@ -180,6 +182,9 @@
                                                                                                         <option value="XXL">
                                                                                                             XXL
                                                                                                         </option>
+<%--                                                                                                        <option value="OneSize">--%>
+<%--                                                                                                            One Size--%>
+<%--                                                                                                        </option>--%>
 
                                                                                                     </select>
                                                                                                 </div>
@@ -192,6 +197,7 @@
                                                                                                     <input class="sherah-wc__form-input"
                                                                                                            type="text"
                                                                                                            name="color"
+                                                                                                           maxlength="50"
                                                                                                            required>
                                                                                                     <small class="error-message"
                                                                                                            style="color: red;"></small>
@@ -296,54 +302,30 @@
 
     };
 </script>
-<script>
+<script type="text/javascript">
     function validateForm() {
-        let isValid = true;
+        var color = document.forms["myForm"]["color"].value;
 
-        let errorMessages = document.querySelectorAll(".error-message");
-        errorMessages.forEach(function (message) {
-            message.textContent = '';
-        });
 
-        const quantity = document.getElementById("quantity").value.trim();
-        if (quantity === "") {
-            document.querySelector("#quantity + .error-message").textContent = "Quantity is required.";
-            isValid = false;
-        } else if (quantity < 0) {
-            document.querySelector("#quantity + .error-message").textContent = "Quantity cannot be negative.";
-            isValid = false;
-        } else if (quantity > 999) {
-            document.querySelector("#quantity + .error-message").textContent = "Quantity must be less than 999.";
-            isValid = false;
-        }
 
-        const weight = document.getElementById("weight").value.trim();
-        if (weight === "") {
-            document.querySelector("#weight + .error-message").textContent = "Weight is required.";
-            isValid = false;
-        } else if (weight < 0.1) {
-            document.querySelector("#weight + .error-message").textContent = "Weight must be greater than 0.1kg";
-            isValid = false;
-        } else if (weight > 5) {
-            document.querySelector("#weight + .error-message").textContent = "Weight must be less than 5kg";
-            isValid = false;
-        }
-
-        const color = document.getElementById("color").value.trim();
+        // Kiểm tra xem trường "name" có bị bỏ trống không
         if (color === "") {
-            document.querySelector("#weight + .error-message").textContent = "Color is required.";
-            isValid = false;
-        } else if (!/^[a-zA-Z]+$/.test(color)) { // Kiểm tra chỉ có chữ cái thường và in hoa
-            document.querySelector("#weight + .error-message").textContent = "Color must contain only letters (a-z, A-Z).";
-            isValid = false;
-        } else if (color.length > 255) {
-            document.querySelector("#weight + .error-message").textContent = "Color must be less than 255 characters.";
-        } else if (color.length < 3) {
-            document.querySelector("#weight + .error-message").textContent = "Color must be greater than 2 characters.";
+            alert("Color must be filled out");
+            return false;
+        }
+
+        if(color.trim() === "" ){
+            alert("Color cannot contain only space");
+            return false
+        }
+
+        var colorPattern = /^[a-zA-Z\s]+$/; // Biểu thức chính quy chỉ cho phép chữ và số
+        if (!colorPattern.test(color)) {
+            alert("Color must contain only letters");
+            return false;
         }
 
 
-        return isValid;
     }
 </script>
 </body>

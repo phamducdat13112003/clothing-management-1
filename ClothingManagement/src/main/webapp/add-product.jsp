@@ -83,7 +83,7 @@
 
                                                                                         <!-- Product Name -->
                                                                                         <label for="productName">Product Name <span class="required">*</span></label>
-                                                                                        <input type="text" id="productName" name="productName" maxlength="50" required>
+                                                                                        <input type="text" id="productName" name="productName" maxlength="100" required>
 
 <%--                                                                                        <label for="urlImage">Upload Image:</label>--%>
 <%--                                                                                        <input type="file" id="urlImage" name="image" accept="image/*" required>--%>
@@ -106,7 +106,7 @@
 
                                                                                         <!-- Material -->
                                                                                         <label for="material">Material <span class="required">*</span></label>
-                                                                                        <input type="text" id="material" name="material" required>
+                                                                                        <input type="text" id="material" name="material" maxlength="100" required>
 
                                                                                         <!-- Gender -->
                                                                                         <label for="gender">Gender <span class="required">*</span></label>
