@@ -328,25 +328,6 @@
 
     }
 </script>
-<input type="file" id="inputGroupFile04" />
-<script>
-    const fileInput = document.getElementById("inputGroupFile04");
-
-    fileInput.addEventListener("change", function() {
-        const file = fileInput.files[0]; // Lấy file được chọn
-        if (file) {
-            const fileName = file.name;
-            const fileExtension = fileName.split('.').pop().toLowerCase(); // Lấy phần mở rộng của file
-
-            if (fileExtension === "png" || fileExtension === "jpg") {
-                alert("File hợp lệ!");
-            } else {
-                alert("Vui lòng chọn file có đuôi .png hoặc .jpg");
-                fileInput.value = ""; // Xóa file đã chọn nếu không hợp lệ
-            }
-        }
-    });
-</script>
 <script>
     const fileInput = document.getElementById("inputGroupFile04");
 
