@@ -139,7 +139,7 @@
                                                             <label class="sherah-wc__form-label">Product Name <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <c:if test="${sessionScope.role == 1}">
-                                                                    <input class="sherah-wc__form-input" type="text" name="name" required value="${product.name}">
+                                                                    <input class="sherah-wc__form-input" type="text" name="name" maxlength="100" required value="${product.name}">
                                                                 </c:if>
                                                                 <c:if test="${sessionScope.role !=1}">
                                                                     <input class="sherah-wc__form-input" type="text" name="name" value="${product.name}" readonly>
@@ -165,7 +165,7 @@
                                                             <label class="sherah-wc__form-label">Material <span class="required">*</span></label>
                                                             <div class="form-group__input">
                                                                 <c:if test="${sessionScope.role == 1}">
-                                                                    <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" required>
+                                                                    <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" maxlength="100" value="${product.material}" required>
                                                                 </c:if>
                                                                 <c:if test="${sessionScope.role !=1}">
                                                                     <input class="sherah-wc__form-input" placeholder="Material" type="text" name="material" value="${product.material}" readonly>
@@ -243,7 +243,7 @@
                                                             <label class="sherah-wc__form-label">Made In</label>
                                                             <div class="form-group__input">
                                                                 <c:if test="${sessionScope.role == 1}">
-                                                                    <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}">
+                                                                    <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" maxlength="50" value="${product.madeIn}">
                                                                 </c:if>
                                                                 <c:if test="${sessionScope.role !=1}">
                                                                     <input class="sherah-wc__form-input" placeholder="Made in" type="text" name="madeIn" value="${product.madeIn}" readonly>
@@ -272,7 +272,7 @@
                                                             <label class="sherah-wc__form-label">Description</label>
                                                             <div class="form-group__input">
                                                                 <c:if test="${sessionScope.role == 1}">
-                                                                    <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50">${product.description}</textarea>
+                                                                    <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50" maxlength="255">${product.description}</textarea>
                                                                 </c:if>
                                                                 <c:if test="${sessionScope.role !=1}">
                                                                     <textarea class="sherah-wc__form-input" name="description" rows="4" cols="50" readonly>${product.description}</textarea>

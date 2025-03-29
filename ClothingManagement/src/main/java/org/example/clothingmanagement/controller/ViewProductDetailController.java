@@ -4,18 +4,14 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import org.example.clothingmanagement.entity.Employee;
 import org.example.clothingmanagement.entity.Product;
 import org.example.clothingmanagement.entity.ProductDetail;
 import org.example.clothingmanagement.service.ProductDetailService;
 import org.example.clothingmanagement.service.ProductService;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.sql.SQLException;
-import java.util.List;
 
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024, // 1MB
