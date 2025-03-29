@@ -176,11 +176,13 @@
                                                 </td>
                                                     <td class="sherah-table__column-2 sherah-table__data-2">
                                                         <div class="sherah-table__product-content">
+                                                            <c:if test="${account.getRoleId() == 1}">
                                                             <p class="sherah-table__product-desc">
                                                                 <a href="javascript:void(0);" onclick="confirmDeleteProduct('${bin.binID}', '${entry.productDetailId}')" class="delete-link">
                                                                     Delete
                                                                 </a>
                                                             </p>
+                                                            </c:if>
                                                         </div>
                                                     </td>
                                             </tr>
