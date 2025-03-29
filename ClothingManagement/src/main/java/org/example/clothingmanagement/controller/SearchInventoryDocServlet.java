@@ -18,7 +18,7 @@ public class SearchInventoryDocServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, IOException, ServletException {
         // Lấy dữ liệu từ request
-        String query = request.getParameter("query");
+        String query = request.getParameter("query").trim();
 
         // Kiểm tra khoảng trống và độ dài
         if (query == null || query.trim().isEmpty() || query.length() > 20) {

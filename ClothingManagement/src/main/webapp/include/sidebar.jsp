@@ -46,6 +46,7 @@
                                             <span class="menu-bar__name">DashBoard</span></span></a></span>
                             </li>
                         </c:if>
+                        <c:if test="${account.getRoleId() != 3}">
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse"
                                data-bs-target="#menu-item_vendors"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -74,6 +75,8 @@
                                 </ul>
                             </div>
                         </li>
+                        </c:if>
+                        <c:if test="${account.getRoleId() == 1}">
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse"
                                data-bs-target="#menu-item__customers"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -108,6 +111,8 @@
                                 </ul>
                             </div>
                         </li>
+                        </c:if>
+                        <c:if test="${account.getRoleId() != 3}">
                         <li><a href="#!" class="collapsed" data-bs-toggle="collapse"
                                data-bs-target="#menu-item_products"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">
@@ -138,6 +143,7 @@
                             </div>
                             </c:if>
                         </li>
+                        </c:if>
                         <c:if test="${account.getRoleId() == 3}">
                             <li><a href="account" class="collapsed"><span class="menu-bar__text">
                                             <span class="sherah-menu-icon sherah-svg-icon__v1">

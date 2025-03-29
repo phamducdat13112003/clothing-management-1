@@ -142,7 +142,7 @@
             </form>
         </c:if>
         <div class="search-form">
-            <form action="SearchInventoryServlet" method="get" class="d-flex">
+            <form action="SearchInventoryDocServlet" method="get" class="d-flex">
                 <input type="text" name="query" class="form-control me-2" placeholder="Enter BinID or InventoryDoc">
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
