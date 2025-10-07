@@ -224,7 +224,7 @@ public class AccountDAO {
     public void createAccount(Account account) throws SQLException {
         String sql = "INSERT INTO account (AccountID,Email, Password, LastUpdate, RoleID, Status, EmployeeID) VALUES (?,?, ?, ?,?,'Active',?)";
         try (Connection connection = DBContext.getConnection();
-        PreparedStatement stmt = connection.prepareStatement(sql)) {
+             PreparedStatement stmt = connection.prepareStatement(sql)) {
             stmt.setString(1, account.getId());
             stmt.setString(2, account.getEmail());
             stmt.setString(3, account.getPassword());
